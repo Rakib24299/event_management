@@ -22,13 +22,21 @@ const paymentSchema = new Schema(
         required: [true, "User is required"],
     },
 
+    amount:
+    {
+        type: Number,
+        required: [true, "Payment amount is required"],
+        min: 0,
+    },
+
 
     transactionId: 
     {
         type: String,
-        required: [true, "Transaction ID is required"],
-        unique: true,
-        trim: true,
+         unique: true,
+         sparse: true, 
+         trim: true,
+         default: null,
     },
 
 
@@ -84,6 +92,9 @@ const paymentSchema = new Schema(
 );
 
 
+
+  
+        
         const Payment = mongoose.model("Payment", paymentSchema);
 
         module.exports = Payment;

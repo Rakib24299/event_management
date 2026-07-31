@@ -25,6 +25,7 @@ const bookingSchema = new Schema(
         type  : Number ,
         required :[true , "Ticket quantity is required"],
         min :1,
+        max :[10, "You cannot buy more than 10 tickets at once"]
     },
 
     totalAmount :
