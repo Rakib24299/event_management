@@ -8,7 +8,7 @@ const generateToken = (user) =>{
 
     return jwt.sign(payload, process.env.JWT_SECRET,
                 {
-                        expressIn : process.env.JWT_EXPIRES_IN,
+                        expresIn : process.env.JWT_EXPIRES_IN,
                 }
             );
 }
