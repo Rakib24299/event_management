@@ -19,8 +19,8 @@ const iconSchema = new Schema(
         },
 
         {_id: false}
-    
-)
+);
+
 
 const categorySchema = new Schema(
 
@@ -32,7 +32,6 @@ const categorySchema = new Schema(
             unique : true,
             trim : true,
         },
-
 
         slug :
         {
@@ -57,12 +56,12 @@ const categorySchema = new Schema(
             default: "active",
         },
 
-
     },
+
     {
         timestamps :true,
     }
-)
+);
 
 
 const Category = mongoose.model("Category", categorySchema);

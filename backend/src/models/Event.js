@@ -144,6 +144,14 @@ const eventSchema = new Schema(
             required: [true, "End time is required"],
             },
 
+        eventType: 
+            {
+            type: String,
+            enum: ["free", "paid"],
+            default: "paid",
+            },
+
+
         ticketPrice: 
             {
             type: Number,

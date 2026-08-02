@@ -23,7 +23,7 @@ const registerUserSchema = z.object(
                     .trim()
                     .regex(
                         /^(\+8801|01)[3-9]\d{8}$/,
-                    "Invalid phone number"
+                    "Invalid  phone number"
                 ),
 
               password: z
@@ -111,7 +111,19 @@ const loginSchema = z.object
          }),
 })
 
-const resetPasswordSchema = z.objec
+const forgotPasswordSchema = z.object
+({
+  body: z.object(
+       {
+          email: z
+            .string()
+            .trim()
+            .email("Invalid email address")
+            .toLowerCase(),
+        }),
+});
+
+const resetPasswordSchema = z.object
 ({
 
       body: z.object({
