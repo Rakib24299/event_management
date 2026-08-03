@@ -31,26 +31,26 @@ const organizationLogoSchema = new Schema(
   { _id: false }
 );
 
-const addressSchema = new Schema(
-  {
-    street: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-    city: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-    country: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-  },
-  { _id: false }
-);
+// const addressSchema = new Schema(
+//   {
+//     street: {
+//       type: String,
+//       trim: true,
+//       default: "",
+//     },
+//     city: {
+//       type: String,
+//       trim: true,
+//       default: "",
+//     },
+//     country: {
+//       type: String,
+//       trim: true,
+//       default: "",
+//     },
+//   },
+//   { _id: false }
+// );
 
 
 const userSchema = new Schema(
@@ -93,10 +93,11 @@ const userSchema = new Schema(
       default: () => ({}),
     },
 
-    address: {
-      type: addressSchema,
-      default: () => ({}),
-    },
+   address: {
+        type: String,
+        trim: true,
+        default: "",
+        },
 
     organizationName: {
       type: String,

@@ -4,6 +4,7 @@ const eventController = require("../controllers/event.controller");
 
 const validateRequest = require("../middlewares/validateRequest");
 const authMiddleware = require("../middlewares/auth.middleware");
+const roleMiddleware = require("../middlewares/role.middleware");
 
 const {
   createEventSchema,
@@ -18,13 +19,13 @@ const router = express.Router();
 router.post(
   "/",
   authMiddleware,
+  roleMiddleware("organizer", "admin"),
   validateRequest(createEventSchema),
   eventController.createEvent
 );
 
-// ======================
+
 // Get All Events
-// ======================
 
 router.get(
   "/",
@@ -47,10 +48,10 @@ router.get(
 router.patch(
   "/:id",
   authMiddleware,
+  roleMiddleware("organizer", "admin"),
   validateRequest(updateEventSchema),
   eventController.updateEvent
 );
-
 
 // Delete Event
 
@@ -58,6 +59,7 @@ router.patch(
 router.delete(
   "/:id",
   authMiddleware,
+  roleMiddleware("organizer", "admin"),
   eventController.deleteEvent
 );
 
@@ -68,6 +70,7 @@ router.delete(
 router.patch(
   "/:id/publish",
   authMiddleware,
+  roleMiddleware("admin"),
   eventController.publishEvent
 );
 
@@ -78,6 +81,7 @@ router.patch(
 router.patch(
   "/:id/cancel",
   authMiddleware,
+  roleMiddleware("organizer", "admin"),
   eventController.cancelEvent
 );
 
