@@ -1,5 +1,9 @@
 const {z} = require("zod")
 
+
+
+// REGISTERUSER SCHEMA****
+
 const registerUserSchema = z.object(
 
     {
@@ -40,6 +44,9 @@ const registerUserSchema = z.object(
     
     }
 )
+
+
+// REGESTER _ORGANIZWE SCHEMS****
 
 
 const registerOrganizerSchema = z.object
@@ -93,6 +100,7 @@ const registerOrganizerSchema = z.object
 })
 
 
+// LOGIN _SCHEMA***
 
 const loginSchema = z.object
 ({
@@ -111,6 +119,10 @@ const loginSchema = z.object
          }),
 })
 
+
+
+// FORGET_PASSWORD_SCHEMA*****
+
 const forgotPasswordSchema = z.object
 ({
   body: z.object(
@@ -122,6 +134,9 @@ const forgotPasswordSchema = z.object
             .toLowerCase(),
         }),
 });
+
+
+// RESET_PASSWORD_SCHEMA
 
 const resetPasswordSchema = z.object
 ({
@@ -145,6 +160,8 @@ const resetPasswordSchema = z.object
 })
 
 
+// CHANGE_PASSWORD SCHEMA*****
+
 const changePasswordSchema = z.object
 ({
       body: z.object(
@@ -161,6 +178,36 @@ const changePasswordSchema = z.object
 });
 
 
+
+//  VERIFY_MAIL_SCHEMA***
+
+const verifyEmailSchema = z.object({
+  body: z.object({
+    email: z
+      .string()
+      .trim()
+      .email("Invalid email address")
+      .toLowerCase(),
+
+    otp: z
+      .string()
+      .length(6, "OTP must be exactly 6 digits"),
+  }),
+});
+
+
+// RESEND_VARIFICATION_SCHEMA
+
+const resendVerificationOtpSchema = z.object({
+  body: z.object({
+    email: z
+      .string()
+      .trim()
+      .email("Invalid email address")
+      .toLowerCase(),
+  }),
+});
+
 module.exports=
 {
     registerUserSchema,
@@ -169,4 +216,6 @@ module.exports=
     forgotPasswordSchema,
     resetPasswordSchema,
     changePasswordSchema,
+      verifyEmailSchema,
+    resendVerificationOtpSchema,
 };

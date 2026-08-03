@@ -10,7 +10,10 @@ const {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
-  changePasswordSchema,} = require("../validations/auth.validation");
+  changePasswordSchema,
+  verifyEmailSchema,
+  resendVerificationOtpSchema, } = require("../validations/auth.validation");
+
 
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -76,5 +79,34 @@ router.patch(
   validateRequest(changePasswordSchema),
   authController.changePassword
 );
+
+
+
+// Send Verification OTP
+
+router.post(
+  "/send-verification-otp",
+  authMiddleware,
+  authController.sendVerificationOtp
+);
+
+
+// Verify Email
+
+router.post(
+  "/verify-email",
+  validateRequest(verifyEmailSchema),
+  authController.verifyEmail
+);
+
+
+// Resend Verification OTP
+
+router.post(
+  "/resend-verification-otp",
+  validateRequest(resendVerificationOtpSchema),
+  authController.resendVerificationOtp
+);
+
 
 module.exports = router;

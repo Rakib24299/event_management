@@ -133,16 +133,30 @@ const userSchema = new Schema(
       default: false,
     },
 
-    resetPasswordOtp: {
+    resetPasswordOtp: 
+    {
       type: String,
       default: null,
     },
 
-    resetPasswordOtpExpires: {
+emailVerificationOtp: 
+{
+  type: String,
+  default: null,
+},
+
+emailVerificationOtpExpires: 
+{
+  type: Date,
+  default: null,
+},
+resetPasswordOtpExpires:
+ {
       type: Date,
       default: null,
     },
   },
+  
   {
     timestamps: true,
   }

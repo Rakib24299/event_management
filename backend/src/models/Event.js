@@ -152,10 +152,10 @@ const eventSchema = new Schema(
             },
 
 
-        ticketPrice: 
+       ticketPrice: 
             {
             type: Number,
-            required: [true, "Ticket price is required"],
+            default: 0,
             min: 0,
             },
 

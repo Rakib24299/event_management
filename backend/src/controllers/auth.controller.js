@@ -1,6 +1,9 @@
 const authService = require("../services/auth.service");
 
-// Register User
+
+
+// ***Register User***
+
 const registerUser = async (req, res) => {
   try {
     const result = await authService.registerUser(req.body);
@@ -18,7 +21,11 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Register Organizer
+
+
+
+// ***Register Organizer***
+
 const registerOrganizer = async (req, res) => {
   try {
     const result = await authService.registerOrganizer(req.body);
@@ -108,6 +115,68 @@ const changePassword = async (req, res) => {
   }
 };
 
+// **** SEND VERIFICATION OTP ****
+
+const sendVerificationOtp = async (req, res) => {
+  try {
+    const result = await authService.sendVerificationOtp(
+      req.user.id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// **** VERIFY EMAIL ****
+
+const verifyEmail = async (req, res) => {
+  try {
+    const result = await authService.verifyEmail(
+      req.body
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// **** RESEND VERIFICATION OTP ****
+
+const resendVerificationOtp = async (req, res) => {
+  try {
+    const result =
+      await authService.resendVerificationOtp(
+        req.body
+      );
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   registerOrganizer,
@@ -115,4 +184,8 @@ module.exports = {
   forgotPassword,
   resetPassword,
   changePassword,
+  sendVerificationOtp,
+  verifyEmail,
+  resendVerificationOtp,
+
 };
