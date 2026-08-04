@@ -24,7 +24,6 @@ router.post(
   eventController.createEvent
 );
 
-
 // Get All Events
 
 router.get(
@@ -32,18 +31,32 @@ router.get(
   eventController.getAllEvents
 );
 
-
 // Get Single Event
-
 
 router.get(
   "/:id",
   eventController.getSingleEvent
 );
 
+// Publish Event
+
+router.patch(
+  "/:id/publish",
+  authMiddleware,
+  roleMiddleware("admin"),
+  eventController.publishEvent
+);
+
+// Cancel Event
+
+router.patch(
+  "/:id/cancel",
+  authMiddleware,
+  roleMiddleware("organizer", "admin"),
+  eventController.cancelEvent
+);
 
 // Update Event
-
 
 router.patch(
   "/:id",
@@ -54,7 +67,6 @@ router.patch(
 );
 
 // Delete Event
-
 
 router.delete(
   "/:id",

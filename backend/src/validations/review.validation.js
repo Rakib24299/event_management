@@ -2,58 +2,56 @@ const { z } = require("zod");
 const objectIdSchema = require("./objectId.validation");
 
 
-// const objectIdSchema = z
-//   .string()
-//   .regex(/^[0-9a-fA-F]{24}$/, "Invalid ID format");
+// create Review Schema***
+const createReviewSchema = z.object({
+  body: z
+    .object({
+      event: objectIdSchema,
 
+      rating: z
+        .number({
+          required_error: "Rating is required",
+        })
+        .int("Rating must be an integer")
+        .min(1, "Rating must be at least 1")
+        .max(5, "Rating cannot be greater than 5"),
 
-
-  const createReviewSchema = z.object(
-    {
-     body: z.object(
-      {
-          user: objectIdSchema,
-
-         event: objectIdSchema,
-
-         booking: objectIdSchema,
-
-        rating: z
-            .number()
-            .int()
-            .min(1, "Rating must be at least 1")
-            .max(5, "Rating cannot be greater than 5"),
-
-        review: z
-            .string()
-            .trim()
-            .min(5, "Review must be at least 5 characters")
-            .max(1000, "Review cannot exceed 1000 characters"),
-        }),
-});
-
-const updateReviewSchema = z.object(
- {
-    body: z.object(
-     {
-        rating: z
-        .number()
-        .int()
-        .min(1)
-        .max(5)
-        .optional(),
-
-        review: z
+      comment: z
         .string()
         .trim()
-        .min(5)
-        .max(1000)
+        .min(5, "Comment must be at least 5 characters")
+        .max(1000, "Comment cannot exceed 1000 characters"),
+    })
+    .strict(),
+});
+
+
+
+// update Review Schema
+const updateReviewSchema = z.object({
+  body: z
+    .object({
+      rating: z
+        .number()
+        .int("Rating must be an integer")
+        .min(1, "Rating must be at least 1")
+        .max(5, "Rating cannot be greater than 5")
         .optional(),
 
-        status: z
-        .enum(["pending", "approved", "rejected"])
+      comment: z
+        .string()
+        .trim()
+        .min(5, "Comment must be at least 5 characters")
+        .max(1000, "Comment cannot exceed 1000 characters")
         .optional(),
-    }),
+    })
+    .strict()
+    .refine(
+      (data) => Object.keys(data).length > 0,
+      {
+        message: "At least one field is required for update",
+      }
+    ),
 });
 
 module.exports = {

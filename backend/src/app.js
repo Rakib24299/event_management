@@ -11,6 +11,7 @@ const paymentRoute = require("./routes/payment.route");
 const reviewRoute = require("./routes/review.route");
 const notificationRoute = require("./routes/notification.route");
 const dashboardRoute = require("./routes/dashboard.route");
+const globalErrorHandler = require("./middlewares/globalErrorHandler");
 
 const app = express();
 
@@ -65,5 +66,11 @@ app.get("/", (req, res) => {
     message: "EventEase API Running Successfully",
   });
 });
+
+// Global Error Handler
+app.use(globalErrorHandler);
+
+
+
 
 module.exports = app;

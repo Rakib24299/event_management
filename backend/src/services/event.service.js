@@ -1,21 +1,20 @@
 const Event = require("../models/Event");
 const Category = require("../models/Category");
+const AppError = require("../utils/AppError");
 
 
 // Create Event
 
 
 const createEvent = async (payload, userId) => {
-  // Check Category
   const category = await Category.findById(payload.category);
 
-  if (!category) 
-    {
-    throw new Error("Category not found.");
+  if (!category || category.isDeleted)
+     {
+    throw new AppError("Category not found.",404);
   }
 
-  const event = await Event.create(
-    {
+  const event = await Event.create({
     ...payload,
     organizer: userId,
     availableSeats: payload.totalSeats,
@@ -29,10 +28,9 @@ const createEvent = async (payload, userId) => {
 
 
 const getAllEvents = async () => {
-  const events = await Event.find(
-    {
+  const events = await Event.find({
     isDeleted: false,
-    status :" Published",
+    status: "published",
   })
     .populate("organizer", "name email organizationName")
     .populate("category", "name");
@@ -50,8 +48,8 @@ const getSingleEvent = async (eventId) => {
     .populate("category", "name");
 
   if (!event || event.isDeleted) 
-    {
-    throw new Error("Event not found.");
+  {
+    throw new AppError("Event not found.",404);
   }
 
   return event;
@@ -61,22 +59,31 @@ const getSingleEvent = async (eventId) => {
 // Update Event
 
 
-const updateEvent = async (eventId, payload, userId) => {
+const updateEvent = async (eventId,payload,userId) => {
+
   const event = await Event.findById(eventId);
 
-  if (!event || event.isDeleted)
-     {
-    throw new Error("Event not found.");
+  if (!event || event.isDeleted) 
+  {
+    throw new AppError("Event not found.",404);
   }
 
-  if (event.organizer.toString() !== userId.toString()) 
-    {
-    throw new Error("You are not authorized to update this event.");
+  if (event.organizer.toString() !== userId.toString())
+  {
+    throw new AppError("You are not authorized to update this event.",403);
   }
 
-  const updatedEvent = await Event.findByIdAndUpdate(
-    eventId,
-    payload,
+  if (payload.category) 
+  {
+      const category = await Category.findById(payload.category);
+
+      if (!category || category.isDeleted) 
+      {
+        throw new AppError("Category not found.",404);
+      }
+  }
+
+  const updatedEvent = await Event.findByIdAndUpdate(eventId,payload,
     {
       new: true,
       runValidators: true,
@@ -89,17 +96,17 @@ const updateEvent = async (eventId, payload, userId) => {
 
 // Delete Event (Soft Delete)
 
-const deleteEvent = async (eventId, userId) => {
+const deleteEvent = async (eventId,userId) => {
   const event = await Event.findById(eventId);
 
   if (!event || event.isDeleted) 
     {
-    throw new Error("Event not found.");
+    throw new AppError("Event not found.",404);
   }
 
   if (event.organizer.toString() !== userId.toString()) 
-    {
-    throw new Error("You are not authorized to delete this event.");
+  {
+    throw new AppError("You are not authorized to delete this event.",403);
   }
 
   event.isDeleted = true;
@@ -108,7 +115,7 @@ const deleteEvent = async (eventId, userId) => {
 
   await event.save();
 
-  return {message: "Event deleted successfully."};
+  return {message: "Event deleted successfully.",};
 };
 
 
@@ -118,8 +125,9 @@ const deleteEvent = async (eventId, userId) => {
 const publishEvent = async (eventId) => {
   const event = await Event.findById(eventId);
 
-  if (!event || event.isDeleted) {
-    throw new Error("Event not found.");
+  if (!event || event.isDeleted) 
+  {
+    throw new AppError("Event not found.",404);
   }
 
   event.status = "published";
@@ -137,8 +145,8 @@ const cancelEvent = async (eventId) => {
   const event = await Event.findById(eventId);
 
   if (!event || event.isDeleted) 
-    {
-    throw new Error("Event not found.");
+  {
+    throw new AppError("Event not found.",404);
   }
 
   event.status = "cancelled";

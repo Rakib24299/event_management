@@ -2,47 +2,72 @@ const { z } = require("zod")
 const objectIdSchema = require("./objectId.validation");
 
 
-// const objectIdSchema = z
-//   .string()
-//   .regex(/^[0-9a-fA-F]{24}$/, "Invalid ID format");
+// create Payment Schema***
+ const createPaymentSchema = z.object({
+  body: z
+    .object({
+      booking: objectIdSchema,
 
+      amount: z
+        .number({
+          required_error: "Amount is required",
+        })
+        .min(0, "Amount cannot be negative"),
 
-  const createPaymentSchema = z.object(
-    {
-      body: z.object(
+      paymentMethod: z.enum(
+        [
+          "bkash",
+          "nagad",
+          "rocket",
+          "card",
+          "cash",
+        ],
         {
-          booking: objectIdSchema,
-
-          user: objectIdSchema,
-
-          amount: z
-          
-            .number()
-            .min(0, "Amount cannot be negative"),
-
-          paymentMethod: z
-          .enum(["bkash","nagad","rocket","card","cash",]),
-        }),
+          errorMap: () => ({
+            message: "Invalid payment method",
+          }),
+        }
+      ),
+    })
+    .strict(),
 });
 
 
 
-const updatePaymentStatusSchema = z.object(
-  {
-    body: z.object(
-      {
-        paymentStatus: z.enum(["pending","paid","failed","refunded",]),
-      }),
+// Update Payment Status Schema***
+
+const updatePaymentStatusSchema = z.object({
+  body: z
+    .object({
+      paymentStatus: z.enum(
+        [
+          "pending",
+          "paid",
+          "failed",
+          "cancelled",
+          "refunded",
+        ],
+        {
+          errorMap: () => ({
+            message: "Invalid payment status",
+          }),
+        }
+      ),
+    })
+    .strict(),
 });
 
-const refundPaymentSchema = z.object(
-{
-    body: z.object(
-      {
-        refundAmount: z
-          .number()
-          .min(0, "Refund amount cannot be negative"),
-      }),
+// Refund Payment Schema
+const refundPaymentSchema = z.object({
+  body: z
+    .object({
+      refundAmount: z
+        .number({
+          required_error: "Refund amount is required",
+        })
+        .positive("Refund amount must be greater than 0"),
+    })
+    .strict(),
 });
 
 module.exports = {

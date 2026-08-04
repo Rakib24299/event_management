@@ -1,185 +1,106 @@
 const eventService = require("../services/event.service");
-
+const catchAsync = require("../utils/catchAsync");
 
 // Create Event
 
-const createEvent = async (req, res) => {
-  try {
-      const result = await eventService.createEvent(
-      req.body,
-      req.user.id
-    );
+const createEvent = catchAsync(async (req, res) => {
+  const result = await eventService.createEvent(
+    req.body,
+    req.user.id
+  );
 
-    return res.status(201).json(
-        {
-        success: true,
-        message: "Event created successfully.",
-        data: result,
-        });
-  }
-  
-  catch (error)
-  {
-    return res.status(400).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
+  return res.status(201).json({
+    success: true,
+    message: "Event created successfully.",
+    data: result,
+  });
+});
 
 // Get All Events
 
-const getAllEvents = async (req, res) => {
-  try {
-    const result = await eventService.getAllEvents();
+const getAllEvents = catchAsync(async (req, res) => {
+  const result = await eventService.getAllEvents();
 
-    return res.status(200).json(
-    {
-      success: true,
-      data: result,
-    });
-  } 
-  catch (error)
-   {
-    return res.status(400).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return res.status(200).json({
+    success: true,
+    data: result,
+  });
+});
 
 
 // Get Single Event
 
-const getSingleEvent = async (req, res) => {
-  try {
-    const result = await eventService.getSingleEvent(
-      req.params.id
-    );
+const getSingleEvent = catchAsync(async (req, res) => {
+  const result = await eventService.getSingleEvent(
+    req.params.id
+  );
 
-    return res.status(200).json(
-    {
-      success: true,
-      data: result,
-    });
-  } 
-  catch (error) 
-  {
-    return res.status(404).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return res.status(200).json({
+    success: true,
+    data: result,
+  });
+});
 
 // Update Event
 
-const updateEvent = async (req, res) => {
-  try {
-    const result = await eventService.updateEvent(
-      req.params.id,
-      req.body,
-      req.user.id
-    );
+const updateEvent = catchAsync(async (req, res) => {
+  const result = await eventService.updateEvent(
+    req.params.id,
+    req.body,
+    req.user.id
+  );
 
-    return res.status(200).json(
-    {
-      success: true,
-      message: "Event updated successfully.",
-      data: result,
-    });
-  } 
-  catch (error)
-   {
-    return res.status(400).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
+  return res.status(200).json({
+    success: true,
+    message: "Event updated successfully.",
+    data: result,
+  });
+});
 
 // Delete Event
 
-const deleteEvent = async (req, res) => {
-  try {
-    const result = await eventService.deleteEvent(
-      req.params.id,
-      req.user.id
-    );
+const deleteEvent = catchAsync(async (req, res) => {
+  const result = await eventService.deleteEvent(
+    req.params.id,
+    req.user.id
+  );
 
-    return res.status(200).json(
-    {
-      success: true,
-      message: result.message,
-    });
-  } 
-  catch (error) 
-  {
-    return res.status(400).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
+  return res.status(200).json({
+    success: true,
+    message: result.message,
+  });
+});
 
 
 // Publish Event
 
-const publishEvent = async (req, res) => {
-  try {
-    const result = await eventService.publishEvent(
-      req.params.id
-    );
+const publishEvent = catchAsync(async (req, res) => {
+  const result = await eventService.publishEvent(
+    req.params.id
+  );
 
-    return res.status(200).json(
-    {
-      success: true,
-      message: "Event published successfully.",
-      data: result,
-    });
-  }
-   catch (error) 
-  {
-    return res.status(400).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return res.status(200).json({
+    success: true,
+    message: "Event published successfully.",
+    data: result,
+  });
+});
 
 
 // Cancel Event
 
 
-const cancelEvent = async (req, res) => {
-  try {
-    const result = await eventService.cancelEvent(
-      req.params.id
-    );
+const cancelEvent = catchAsync(async (req, res) => {
+  const result = await eventService.cancelEvent(
+    req.params.id
+  );
 
-    return res.status(200).json(
-    {
-      success: true,
-      message: "Event cancelled successfully.",
-      data: result,
-    });
-  } catch (error) {
-    return res.status(400).json(
-    {
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return res.status(200).json({
+    success: true,
+    message: "Event cancelled successfully.",
+    data: result,
+  });
+});
 
 module.exports = {
   createEvent,

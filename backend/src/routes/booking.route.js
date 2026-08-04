@@ -3,8 +3,8 @@ const express = require("express");
 const bookingController = require("../controllers/booking.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
-const validateRequest = require("../middlewares/validateRequest");
 const roleMiddleware = require("../middlewares/role.middleware");
+const validateRequest = require("../middlewares/validateRequest");
 
 const {
   createBookingSchema,
@@ -13,7 +13,6 @@ const {
 } = require("../validations/booking.validation");
 
 const router = express.Router();
-
 
 // Create Booking
 

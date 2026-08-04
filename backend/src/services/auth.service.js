@@ -1,10 +1,9 @@
 const bcrypt = require("bcryptjs");
-
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
-
 const generateOTP = require("../utils/generateOTP");
 const sendEmail = require("../utils/sendEmail");
+const AppError = require("../utils/AppError");
 
 
 
@@ -13,12 +12,13 @@ const sendEmail = require("../utils/sendEmail");
 
 const registerUser = async (payload) => {
   console.log("registerUser called with:", payload.email);
+
   const existingUser = await User.findOne({
     email: payload.email,
   });
 
   if (existingUser) {
-    throw new Error("User already exists with this email.");
+    throw new AppError("User already exists with this email.",409);
   }
 
   const hashedPassword = await bcrypt.hash(
@@ -31,36 +31,49 @@ const registerUser = async (payload) => {
     password: hashedPassword,
   });
 
-// Generate Email Verification OTP
-const otp = generateOTP();
 
-user.emailVerificationOtp = otp;
-user.emailVerificationOtpExpires = new Date(
-  Date.now() + 5 * 60 * 1000
-);
+
+// ****Generate Email Verification OTP***
+
+
+ const otp = generateOTP();
+
+  user.emailVerificationOtp = otp;
+
+  user.emailVerificationOtpExpires = new Date(
+    Date.now() + 10 * 60 * 1000
+  );
 
   await user.save();
 
   let emailSent = true;
+
   try {
     await sendEmail({
       to: user.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your email verification OTP is ${otp}. It is valid for 5 minutes.`,
+      text: `Your email verification OTP is ${otp}. It is valid for 10 minutes.`,
     });
   } catch (emailError) {
-    console.error("Failed to send verification email:", emailError);
+    console.error(
+      "Failed to send verification email:",
+      emailError
+    );
+
     emailSent = false;
   }
 
   const token = generateToken(user);
 
   const userResponse = user.toObject();
+
   delete userResponse.password;
 
   return {
     user: userResponse,
+
     token,
+
     message: emailSent
       ? "User registered successfully."
       : "User registered successfully, but verification email failed to send. Please request a new OTP.",
@@ -72,16 +85,16 @@ user.emailVerificationOtpExpires = new Date(
 // ****registerOrganizer****
 
 const registerOrganizer = async (payload) => {
+  const existingUser = await User.findOne({
+    email: payload.email,
+  });
 
-  const existingUser = await User.findOne(
-    {
-        email: payload.email,
-    });
-
-  if (existingUser) 
-    {
-        throw new Error("User already exists with this email.");
-    }
+  if (existingUser) {
+    throw new AppError(
+      "User already exists with this email.",
+      409
+    );
+  }
 
   const hashedPassword = await bcrypt.hash(
     payload.password,
@@ -98,27 +111,35 @@ const registerOrganizer = async (payload) => {
     approvalStatus: "pending",
   });
 
+
   
 
-// Generate Email Verification OTP
-const otp = generateOTP();
+// Generate Email Verification OTP****
 
-organizer.emailVerificationOtp = otp;
-organizer.emailVerificationOtpExpires = new Date(
-  Date.now() + 5 * 60 * 1000
-);
+ const otp = generateOTP();
+
+  organizer.emailVerificationOtp = otp;
+
+  organizer.emailVerificationOtpExpires = new Date(
+    Date.now() + 10 * 60 * 1000
+  );
 
   await organizer.save();
 
   let emailSent = true;
+
   try {
     await sendEmail({
       to: organizer.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your email verification OTP is ${otp}. It is valid for 5 minutes.`,
+      text: `Your email verification OTP is ${otp}. It is valid for 10 minutes.`,
     });
   } catch (emailError) {
-    console.error("Failed to send verification email:", emailError);
+    console.error(
+      "Failed to send verification email:",
+      emailError
+    );
+
     emailSent = false;
   }
 
@@ -141,47 +162,55 @@ organizer.emailVerificationOtpExpires = new Date(
 
 
 const loginUser = async (payload) => {
-  
-  const user = await User.findOne(
-        {
-        email: payload.email,
-        })
-    .select("+password");
+  const user = await User.findOne({
+    email: payload.email,
+  }).select("+password");
 
-  if (!user) 
-    {
-        throw new Error("Invalid email or password.");
-    }
+  if (!user) {
+    throw new AppError(
+      "Invalid email or password.",
+      401
+    );
+  }
 
- 
   const isPasswordMatched = await bcrypt.compare(
     payload.password,
     user.password
   );
 
-  if (!isPasswordMatched) 
-    {
-        throw new Error("Invalid email or password.");
-    }
+  if (!isPasswordMatched) {
+    throw new AppError(
+      "Invalid email or password.",
+      401
+    );
+  }
 
-    if (!user.isVerified) {
-    throw new Error("Please verify your email before logging in.");
-}
+  if (!user.isVerified) {
+    throw new AppError(
+      "Please verify your email before logging in.",
+      403
+    );
+  }
 
-  if (user.status === "blocked") 
-    {
-        throw new Error("Your account has been blocked. Please contact the admin.");
-    }
+  if (user.status === "blocked") {
+    throw new AppError(
+      "Your account has been blocked. Please contact the admin.",
+      403
+    );
+  }
 
-  
-  if (user.role === "organizer" && user.approvalStatus !== "approved") 
-    {
-        throw new Error("Your organizer account is pending admin approval.");
-     }
+  if (
+    user.role === "organizer" &&
+    user.approvalStatus !== "approved"
+  ) {
+    throw new AppError(
+      "Your organizer account is pending admin approval.",
+      403
+    );
+  }
 
   const token = generateToken(user);
 
- 
   const userResponse = user.toObject();
   delete userResponse.password;
 
@@ -189,7 +218,6 @@ const loginUser = async (payload) => {
     user: userResponse,
     token,
   };
-
 };
 
 
@@ -197,42 +225,49 @@ const loginUser = async (payload) => {
 // ****FORGOTPASSWORD****
 
 const forgotPassword = async (payload) => {
- 
-  const user = await User.findOne(
-    {
+  const user = await User.findOne({
     email: payload.email,
   });
 
-  if (!user) 
-    {
-        throw new Error("No account found with this email.");
-    }
+  if (!user) {
+    throw new AppError(
+      "No account found with this email.",
+      404
+    );
+  }
 
- 
   const otp = generateOTP();
 
-
   user.resetPasswordOtp = otp;
-  user.resetPasswordOtpExpires = new Date(Date.now() + 5 * 60 * 1000);
+
+  user.resetPasswordOtpExpires = new Date(
+    Date.now() + 10 * 60 * 1000
+  );
 
   await user.save();
 
   let emailSent = true;
+
   try {
-    await sendEmail(
-      {
+    await sendEmail({
       to: user.email,
       subject: "EventEase Password Reset OTP",
-      text: `Your OTP is ${otp}. It is valid for 5 minutes.`,
-      });
+      text: `Your password reset OTP is ${otp}. It is valid for 10 minutes.`,
+    });
   } catch (emailError) {
-    console.error("Failed to send password reset email:", emailError);
+    console.error(
+      "Failed to send password reset email:",
+      emailError
+    );
+
     emailSent = false;
   }
 
-  return {message: emailSent
+  return {
+    message: emailSent
       ? "Password reset OTP has been sent to your email."
-      : "Failed to send password reset email. Please try again later.",};
+      : "Failed to send password reset email. Please try again later.",
+  };
 };
 
 
@@ -241,42 +276,41 @@ const forgotPassword = async (payload) => {
 // ****RESET_PASSWORD***
 
 const resetPassword = async (payload) => {
-  const user = await User.findOne(
-    {
-     email: payload.email,
-    })
-    .select("+password");
+  const user = await User.findOne({
+    email: payload.email,
+  }).select("+password");
 
-  if (!user) 
-    {
-    throw new Error("No account found with this email.");
-    }
-
- 
-  if (user.resetPasswordOtp !== payload.otp) 
-    
-{
-    throw new Error("Invalid OTP.");
+  if (!user) {
+    throw new AppError(
+      "No account found with this email.",
+      404
+    );
   }
 
-  
+  if (user.resetPasswordOtp !== payload.otp) {
+    throw new AppError(
+      "Invalid OTP.",
+      400
+    );
+  }
+
   if (
     !user.resetPasswordOtpExpires ||
     user.resetPasswordOtpExpires < new Date()
   ) {
-    throw new Error("OTP has expired.");
+    throw new AppError(
+      "OTP has expired.",
+      400
+    );
   }
-
 
   const hashedPassword = await bcrypt.hash(
     payload.newPassword,
     Number(process.env.BCRYPT_SALT_ROUNDS || 10)
   );
 
-  
   user.password = hashedPassword;
 
-  
   user.resetPasswordOtp = null;
   user.resetPasswordOtpExpires = null;
 
@@ -294,7 +328,10 @@ const changePassword = async (userId, payload) => {
   const user = await User.findById(userId).select("+password");
 
   if (!user) {
-    throw new Error("User not found.");
+    throw new AppError(
+      "User not found.",
+      404
+    );
   }
 
   const isPasswordMatched = await bcrypt.compare(
@@ -303,7 +340,10 @@ const changePassword = async (userId, payload) => {
   );
 
   if (!isPasswordMatched) {
-    throw new Error("Current password is incorrect.");
+    throw new AppError(
+      "Current password is incorrect.",
+      401
+    );
   }
 
   const hashedPassword = await bcrypt.hash(
@@ -320,38 +360,49 @@ const changePassword = async (userId, payload) => {
   };
 };
 
-
 // **** SEND VERIFICATION OTP ****
 
 const sendVerificationOtp = async (userId) => {
   const user = await User.findById(userId);
 
   if (!user) {
-    throw new Error("User not found.");
+    throw new AppError(
+      "User not found.",
+      404
+    );
   }
 
   if (user.isVerified) {
-    throw new Error("Email is already verified.");
+    throw new AppError(
+      "Email is already verified.",
+      400
+    );
   }
 
   const otp = generateOTP();
 
   user.emailVerificationOtp = otp;
+
   user.emailVerificationOtpExpires = new Date(
-    Date.now() + 5 * 60 * 1000
+    Date.now() + 10 * 60 * 1000
   );
 
   await user.save();
 
   let emailSent = true;
+
   try {
     await sendEmail({
       to: user.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your email verification OTP is ${otp}. It is valid for 5 minutes.`,
+      text: `Your email verification OTP is ${otp}. It is valid for 10 minutes.`,
     });
   } catch (emailError) {
-    console.error("Failed to send verification email:", emailError);
+    console.error(
+      "Failed to send verification email:",
+      emailError
+    );
+
     emailSent = false;
   }
 
@@ -370,22 +421,34 @@ const verifyEmail = async (payload) => {
   });
 
   if (!user) {
-    throw new Error("User not found.");
+    throw new AppError(
+      "User not found.",
+      404
+    );
   }
 
   if (user.isVerified) {
-    throw new Error("Email is already verified.");
+    throw new AppError(
+      "Email is already verified.",
+      400
+    );
   }
 
   if (user.emailVerificationOtp !== payload.otp) {
-    throw new Error("Invalid OTP.");
+    throw new AppError(
+      "Invalid OTP.",
+      400
+    );
   }
 
   if (
     !user.emailVerificationOtpExpires ||
     user.emailVerificationOtpExpires < new Date()
   ) {
-    throw new Error("OTP has expired.");
+    throw new AppError(
+      "OTP has expired.",
+      400
+    );
   }
 
   user.isVerified = true;
@@ -408,31 +471,43 @@ const resendVerificationOtp = async (payload) => {
   });
 
   if (!user) {
-    throw new Error("User not found.");
+    throw new AppError(
+      "User not found.",
+      404
+    );
   }
 
   if (user.isVerified) {
-    throw new Error("Email is already verified.");
+    throw new AppError(
+      "Email is already verified.",
+      400
+    );
   }
 
   const otp = generateOTP();
 
   user.emailVerificationOtp = otp;
+
   user.emailVerificationOtpExpires = new Date(
-    Date.now() + 5 * 60 * 1000
+    Date.now() + 10 * 60 * 1000
   );
 
   await user.save();
 
   let emailSent = true;
+
   try {
     await sendEmail({
       to: user.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your new verification OTP is ${otp}. It is valid for 5 minutes.`,
+      text: `Your new email verification OTP is ${otp}. It is valid for 10 minutes.`,
     });
   } catch (emailError) {
-    console.error("Failed to resend verification email:", emailError);
+    console.error(
+      "Failed to resend verification email:",
+      emailError
+    );
+
     emailSent = false;
   }
 
@@ -452,7 +527,7 @@ module.exports = {
   changePassword,
   sendVerificationOtp,
   verifyEmail,
-  resendVerificationOtp
+  resendVerificationOtp,
 };
 
 

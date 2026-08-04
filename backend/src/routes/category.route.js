@@ -3,42 +3,67 @@ const express = require("express");
 const categoryController = require("../controllers/category.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
-const validateRequest = require("../middlewares/validateRequest");
 const roleMiddleware = require("../middlewares/role.middleware");
+const validateRequest = require("../middlewares/validateRequest");
 
-
-const {createCategorySchema,updateCategorySchema,} = require("../validations/category.validation");
+const {
+  createCategorySchema,
+  updateCategorySchema,
+} = require("../validations/category.validation");
 
 const router = express.Router();
 
 
-
-// Create Category
-
-authMiddleware,
-roleMiddleware("admin"),
+// Create Category****
 
 
+router.post(
+  "/",
+  authMiddleware,
+  roleMiddleware("admin"),
+  validateRequest(createCategorySchema),
+  categoryController.createCategory
+);
 
-// Get All Categories
 
-router.get("/",categoryController.getAllCategories);
+// Get All Categories***
+
+
+router.get(
+  "/",
+  categoryController.getAllCategories
+);
 
 
 // Get Single Category
-router.get("/:id",categoryController.getSingleCategory);
+
+
+router.get(
+  "/:id",
+  categoryController.getSingleCategory
+);
+
 
 // Update Category
 
-authMiddleware,
-roleMiddleware("admin"),
+
+router.patch(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("admin"),
+  validateRequest(updateCategorySchema),
+  categoryController.updateCategory
+);
+
 
 // Delete Category
 
-authMiddleware,
-roleMiddleware("admin"),
 
-
-
+router.delete(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("admin"),
+  categoryController.deleteCategory
+);
 
 module.exports = router;

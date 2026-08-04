@@ -13,7 +13,9 @@ const {
 
 const router = express.Router();
 
+// ======================================================
 // Create Payment
+// ======================================================
 
 router.post(
   "/",
@@ -22,7 +24,19 @@ router.post(
   paymentController.createPayment
 );
 
+// ======================================================
+// Get My Payments
+// ======================================================
+
+router.get(
+  "/my-payments",
+  authMiddleware,
+  paymentController.getMyPayments
+);
+
+// ======================================================
 // Verify Payment
+// ======================================================
 
 router.get(
   "/:id",
@@ -30,7 +44,9 @@ router.get(
   paymentController.verifyPayment
 );
 
+// ======================================================
 // Payment Success
+// ======================================================
 
 router.patch(
   "/:id/success",
@@ -39,7 +55,9 @@ router.patch(
   paymentController.paymentSuccess
 );
 
+// ======================================================
 // Payment Failed
+// ======================================================
 
 router.patch(
   "/:id/failed",
@@ -48,8 +66,9 @@ router.patch(
   paymentController.paymentFailed
 );
 
-
+// ======================================================
 // Payment Cancelled
+// ======================================================
 
 router.patch(
   "/:id/cancelled",
@@ -58,15 +77,9 @@ router.patch(
   paymentController.paymentCancelled
 );
 
-// Get My Payments
-
-router.get(
-  "/my-payments",
-  authMiddleware,
-  paymentController.getMyPayments
-);
-
+// ======================================================
 // Update Payment Status
+// ======================================================
 
 router.patch(
   "/:id/status",
