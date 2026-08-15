@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const app = require("./src/app");
 const connectDB = require("./src/config/db");
+const createDefaultAdmin = require("./src/seed/admin.seed");
 
 const PORT = process.env.PORT || 5000;
 
@@ -9,6 +10,9 @@ const startServer = async () => {
   try {
     // Connect to MongoDB
     await connectDB();
+
+    // Create Default Admin
+    await createDefaultAdmin();
 
     // Start Express Server
     app.listen(PORT, () => {

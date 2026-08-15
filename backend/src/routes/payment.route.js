@@ -89,4 +89,30 @@ router.patch(
   paymentController.updatePaymentStatus
 );
 
+// SSLCommerz Success Callback
+router.post(
+  "/success",
+  paymentController.sslPaymentSuccess
+);
+
+// SSLCommerz Fail Callback
+router.post(
+  "/fail",
+  paymentController.sslPaymentFail
+);
+
+// SSLCommerz Cancel Callback
+router.post(
+  "/cancel",
+  paymentController.sslPaymentCancel
+);
+
+// SSLCommerz IPN
+router.post(
+  "/ipn",
+  paymentController.sslPaymentIPN
+);
+
+
+
 module.exports = router;

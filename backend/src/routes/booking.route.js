@@ -43,6 +43,13 @@ router.patch("/:id/cancel",authMiddleware,
   bookingController.cancelBooking
 );
 
+// Generate Booking QR Code
+
+router.post(
+  "/:id/generate-qr",
+  authMiddleware,
+  bookingController.generateBookingQRCode
+);
 
 // Update Booking Status
 
@@ -53,5 +60,7 @@ router.patch(
   validateRequest(updateBookingStatusSchema),
   bookingController.updateBookingStatus
 );
+
+
 
 module.exports = router;

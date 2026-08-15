@@ -1,6 +1,10 @@
 const paymentService = require("../services/payment.service");
 const catchAsync = require("../utils/catchAsync");
 
+
+
+
+
 // Create Payment
 
 const createPayment = catchAsync(async (req, res) => {
@@ -12,7 +16,6 @@ const createPayment = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
 // Verify Payment
 
 const verifyPayment = catchAsync(async (req, res) => {
@@ -53,6 +56,52 @@ const paymentCancelled = catchAsync(async (req, res) => {
   return res.status(200).json({
     success: true,
     message: result.message,
+  });
+});
+
+// SSL Payment Success***
+
+const sslPaymentSuccess = catchAsync(async (req, res) => {
+  const result = await paymentService.sslPaymentSuccess(req.body);
+
+  return res.status(200).json({
+    success: true,
+    message: "Payment successful.",
+    data: result,
+  });
+});
+
+// SSL Payment Failed**
+const sslPaymentFail = catchAsync(async (req, res) => {
+  const result = await paymentService.sslPaymentFail(req.body);
+
+  return res.status(200).json({
+    success: true,
+    message: "Payment failed.",
+    data: result,
+  });
+});
+
+
+// SSL Payment Cancel***
+const sslPaymentCancel = catchAsync(async (req, res) => {
+  const result = await paymentService.sslPaymentCancel(req.body);
+
+  return res.status(200).json({
+    success: true,
+    message: "Payment cancelled.",
+    data: result,
+  });
+});
+
+
+// SSL Payment IPN****
+const sslPaymentIPN = catchAsync(async (req, res) => {
+  const result = await paymentService.sslPaymentIPN(req.body);
+
+  return res.status(200).json({
+    success: true,
+    data: result,
   });
 });
 
@@ -105,4 +154,9 @@ module.exports = {
   getPaymentById,
   getMyPayments,
   updatePaymentStatus,
+
+  sslPaymentSuccess,
+  sslPaymentFail,
+  sslPaymentCancel,
+  sslPaymentIPN,
 };

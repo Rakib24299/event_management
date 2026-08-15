@@ -116,6 +116,29 @@ const deleteNotification = async (notificationId,userId) => {
 };
 
 
+
+//DELETE NOTIFICATION****
+
+
+const createBulkNotifications = async ({users,title,message,type,}) => {
+
+  if (!users || users.length === 0) {
+    return [];
+  }
+
+  const notifications = users.map((userId) => ({
+    user: userId,
+    title,
+    message,
+    type: type || "system",
+    isRead: false,
+  }));
+
+  return await Notification.insertMany(
+    notifications
+  );
+};
+
 module.exports = {
   createNotification,
   getMyNotifications,
@@ -123,4 +146,5 @@ module.exports = {
   markAsRead,
   markAllAsRead,
   deleteNotification,
+  createBulkNotifications,
 };

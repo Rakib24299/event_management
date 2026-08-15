@@ -87,6 +87,21 @@ const updateBookingStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+// Generate Booking QR Code
+
+const generateBookingQRCode = catchAsync(async (req, res) => {
+
+  const result =
+    await bookingService.generateBookingQRCode(
+      req.params.id
+    );
+
+  return res.status(200).json({
+    success: true,
+    message: "Booking QR code generated successfully.",
+    data: result,
+  });
+});
 
 module.exports = {
   createBooking,
@@ -95,4 +110,5 @@ module.exports = {
   getMyBookings,
   getBookingById,
   updateBookingStatus,
+  generateBookingQRCode,
 };

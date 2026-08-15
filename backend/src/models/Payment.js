@@ -39,13 +39,35 @@ const paymentSchema = new Schema(
          default: null,
     },
 
+    bankTransactionId: {
+            type: String,
+            trim: true,
+            default: null,
+            },
 
-    paymentMethod:
-   {
-        type: String,
-        enum: ["bkash", "nagad", "rocket", "card", "cash"],
-        required: [true, "Payment method is required"],
-    },
+    valId: 
+{
+            type: String,
+            trim: true,
+            default: null,
+                },
+
+
+paymentMethod:
+{
+    type: String,
+    enum: [
+        "bkash",
+        "nagad",
+        "rocket",
+        "card",
+        "cash",
+        "sslcommerz"
+    ],
+    required: [true, "Payment method is required"],
+},
+
+
 
     currency:
     {
@@ -55,11 +77,18 @@ const paymentSchema = new Schema(
         trim: true,
     },
 
+    paymentGateway: {
+  type: String,
+  default: "SSLCommerz",
+},
+
+    
+
 
     paymentStatus:
      {
         type: String,
-        enum: ["pending", "paid", "failed", "refunded"],
+        enum: ["pending","processing","paid","failed","cancelled","refunded",],
          default: "pending",
     },
 
@@ -83,6 +112,15 @@ const paymentSchema = new Schema(
         type: Date,
         default: Date.now,
     },
+    gatewayResponse: {
+  type: Schema.Types.Mixed,
+  default: null,
+},
+
+paidAt: {
+  type: Date,
+  default: null,
+},
 
     },
 

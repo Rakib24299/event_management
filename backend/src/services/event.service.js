@@ -3,7 +3,12 @@ const Category = require("../models/Category");
 const AppError = require("../utils/AppError");
 
 
-// Create Event
+const User = require("../models/User");
+const {createBulkNotifications,} = require("./notification.service");
+
+
+
+// Create Event****
 
 
 const createEvent = async (payload, userId) => {
@@ -133,6 +138,25 @@ const publishEvent = async (eventId) => {
   event.status = "published";
 
   await event.save();
+  // Send notification to all active users
+
+const users = await User.find({
+  status: "active",
+}).select("_id");
+
+const userIds = users.map(
+  (user) => user._id
+);
+
+await createBulkNotifications({
+  users: userIds,
+
+  title: "New Event Published",
+
+  message: `${event.title} has been published. Check it out now.`,
+
+  type: "event",
+});
 
   return event;
 };

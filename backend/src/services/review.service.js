@@ -51,12 +51,13 @@ const createReview = async (userId, payload) => {
     throw new AppError("Event not found.",404);
   }
 
-  const booking = await Booking.findOne({
-    user: userId,
-    event: payload.event,
-    bookingStatus: "completed",
-  });
-
+ const booking = await Booking.findOne({
+  user: userId,
+  event: payload.event,
+  bookingStatus: "confirmed",
+  paymentStatus: "paid",
+  isAttended: true,
+});
   if (!booking) 
     {
     throw new AppError("You can review only events you have attended.",403);
@@ -72,12 +73,13 @@ const createReview = async (userId, payload) => {
     throw new AppError("You have already reviewed this event.",409);
   }
 
-  const review = await Review.create({
-    user: userId,
-    event: payload.event,
-    rating: payload.rating,
-    comment: payload.comment,
-  });
+ const review = await Review.create({
+  user: userId,
+  event: payload.event,
+  booking: booking._id,
+  rating: payload.rating,
+  review: payload.comment,
+});
 
   await updateEventRatingSummary(payload.event);
 

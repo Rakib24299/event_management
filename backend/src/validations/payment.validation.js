@@ -3,35 +3,13 @@ const objectIdSchema = require("./objectId.validation");
 
 
 // create Payment Schema***
- const createPaymentSchema = z.object({
+const createPaymentSchema = z.object({
   body: z
     .object({
-      booking: objectIdSchema,
-
-      amount: z
-        .number({
-          required_error: "Amount is required",
-        })
-        .min(0, "Amount cannot be negative"),
-
-      paymentMethod: z.enum(
-        [
-          "bkash",
-          "nagad",
-          "rocket",
-          "card",
-          "cash",
-        ],
-        {
-          errorMap: () => ({
-            message: "Invalid payment method",
-          }),
-        }
-      ),
+      bookingId: objectIdSchema,
     })
     .strict(),
 });
-
 
 
 // Update Payment Status Schema***

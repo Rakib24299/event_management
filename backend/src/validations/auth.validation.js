@@ -179,7 +179,7 @@ const changePasswordSchema = z.object
 
 
 
-//  VERIFY_MAIL_SCHEMA***
+//  VERIFY_EMAIL_SCHEMA***
 
 const verifyEmailSchema = z.object({
   body: z.object({
