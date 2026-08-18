@@ -3,15 +3,15 @@ const express = require("express");
 const paymentController = require("../controllers/payment.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
-const roleMiddleware = require("../middlewares/role.middleware");
+
 const validateRequest = require("../middlewares/validateRequest");
 
 const {
   createPaymentSchema,
-  updatePaymentStatusSchema,
 } = require("../validations/payment.validation");
 
 const router = express.Router();
+
 
 // ======================================================
 // Create Payment
@@ -24,95 +24,49 @@ router.post(
   paymentController.createPayment
 );
 
+
 // ======================================================
-// Get My Payments
+// Process Dummy Payment
+// ======================================================
+
+router.patch(
+  "/:id/process",
+  authMiddleware,
+  paymentController.processDummyPayment
+);
+
+
+// ======================================================
+// Get Payment By Booking
 // ======================================================
 
 router.get(
-  "/my-payments",
+  "/booking/:bookingId",
   authMiddleware,
-  paymentController.getMyPayments
+  paymentController.getPaymentByBooking
 );
 
+
 // ======================================================
-// Verify Payment
+// Get Payment By ID
 // ======================================================
 
 router.get(
   "/:id",
   authMiddleware,
-  paymentController.verifyPayment
+  paymentController.getPaymentById
 );
 
-// ======================================================
-// Payment Success
-// ======================================================
-
-router.patch(
-  "/:id/success",
-  authMiddleware,
-  roleMiddleware("admin"),
-  paymentController.paymentSuccess
-);
 
 // ======================================================
-// Payment Failed
+// Process Refund
 // ======================================================
 
 router.patch(
-  "/:id/failed",
+  "/:id/refund",
   authMiddleware,
-  roleMiddleware("admin"),
-  paymentController.paymentFailed
+  paymentController.processRefund
 );
-
-// ======================================================
-// Payment Cancelled
-// ======================================================
-
-router.patch(
-  "/:id/cancelled",
-  authMiddleware,
-  roleMiddleware("admin"),
-  paymentController.paymentCancelled
-);
-
-// ======================================================
-// Update Payment Status
-// ======================================================
-
-router.patch(
-  "/:id/status",
-  authMiddleware,
-  roleMiddleware("admin"),
-  validateRequest(updatePaymentStatusSchema),
-  paymentController.updatePaymentStatus
-);
-
-// SSLCommerz Success Callback
-router.post(
-  "/success",
-  paymentController.sslPaymentSuccess
-);
-
-// SSLCommerz Fail Callback
-router.post(
-  "/fail",
-  paymentController.sslPaymentFail
-);
-
-// SSLCommerz Cancel Callback
-router.post(
-  "/cancel",
-  paymentController.sslPaymentCancel
-);
-
-// SSLCommerz IPN
-router.post(
-  "/ipn",
-  paymentController.sslPaymentIPN
-);
-
 
 
 module.exports = router;

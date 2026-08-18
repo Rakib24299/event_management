@@ -61,8 +61,7 @@ const getSingleEvent = async (eventId) => {
 };
 
 
-// Update Event
-
+// Update Event****
 
 const updateEvent = async (eventId,payload,userId) => {
 
@@ -101,8 +100,7 @@ const updateEvent = async (eventId,payload,userId) => {
 
 // Delete Event (Soft Delete)
 
-const deleteEvent = async (eventId,userId) => {
-  const event = await Event.findById(eventId);
+const deleteEvent = async (eventId,userId) => {const event = await Event.findById(eventId);
 
   if (!event || event.isDeleted) 
     {
@@ -127,8 +125,7 @@ const deleteEvent = async (eventId,userId) => {
 // Publish Event
 
 
-const publishEvent = async (eventId) => {
-  const event = await Event.findById(eventId);
+const publishEvent = async (eventId) => {const event = await Event.findById(eventId);
 
   if (!event || event.isDeleted) 
   {
@@ -138,15 +135,13 @@ const publishEvent = async (eventId) => {
   event.status = "published";
 
   await event.save();
+
+
   // Send notification to all active users
 
-const users = await User.find({
-  status: "active",
-}).select("_id");
+const users = await User.find({status: "active",}).select("_id");
 
-const userIds = users.map(
-  (user) => user._id
-);
+const userIds = users.map((user) => user._id);
 
 await createBulkNotifications({
   users: userIds,
@@ -165,8 +160,7 @@ await createBulkNotifications({
 // Cancel Event
 
 
-const cancelEvent = async (eventId) => {
-  const event = await Event.findById(eventId);
+const cancelEvent = async (eventId) => {const event = await Event.findById(eventId);
 
   if (!event || event.isDeleted) 
   {

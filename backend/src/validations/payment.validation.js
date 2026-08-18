@@ -1,25 +1,82 @@
-const { z } = require("zod")
+const { z } = require("zod");
+
 const objectIdSchema = require("./objectId.validation");
 
 
-// create Payment Schema***
+// ======================================================
+// Create Payment Schema
+// ======================================================
+
 const createPaymentSchema = z.object({
+
   body: z
     .object({
-      bookingId: objectIdSchema,
+
+      booking: objectIdSchema,
+
+      paymentMethod: z.enum(
+        [
+          "bkash",
+          "nagad",
+          "rocket",
+          "card",
+        ],
+        {
+          errorMap: () => ({
+            message: "Invalid payment method.",
+          }),
+        }
+      ),
+
     })
     .strict(),
+
 });
 
 
-// Update Payment Status Schema***
 
-const updatePaymentStatusSchema = z.object({
+// ======================================================
+// Dummy Payment Process Schema
+// ======================================================
+
+const processDummyPaymentSchema = z.object({
+
   body: z
     .object({
+
+      paymentResult: z.enum(
+        [
+          "success",
+          "failed",
+        ],
+        {
+          errorMap: () => ({
+            message:
+              "Payment result must be success or failed.",
+          }),
+        }
+      ),
+
+    })
+    .strict(),
+
+});
+
+
+
+// ======================================================
+// Update Payment Status Schema
+// ======================================================
+
+const updatePaymentStatusSchema = z.object({
+
+  body: z
+    .object({
+
       paymentStatus: z.enum(
         [
           "pending",
+          "processing",
           "paid",
           "failed",
           "cancelled",
@@ -27,29 +84,54 @@ const updatePaymentStatusSchema = z.object({
         ],
         {
           errorMap: () => ({
-            message: "Invalid payment status",
+            message: "Invalid payment status.",
           }),
         }
       ),
+
     })
     .strict(),
+
 });
 
+
+
+// ======================================================
 // Refund Payment Schema
+// ======================================================
+
 const refundPaymentSchema = z.object({
+
   body: z
     .object({
+
       refundAmount: z
         .number({
-          required_error: "Refund amount is required",
+          required_error: "Refund amount is required.",
         })
-        .positive("Refund amount must be greater than 0"),
+        .positive(
+          "Refund amount must be greater than 0."
+        ),
+
     })
     .strict(),
+
 });
 
+
+
+// ======================================================
+// Export
+// ======================================================
+
 module.exports = {
-    createPaymentSchema,
-    updatePaymentStatusSchema,
-    refundPaymentSchema,
+
+  createPaymentSchema,
+
+  processDummyPaymentSchema,
+
+  updatePaymentStatusSchema,
+
+  refundPaymentSchema,
+
 };

@@ -522,71 +522,56 @@ const updateBookingStatus = async (
 // Generate QR Code for Confirmed Booking
 // ======================================================
 
-const generateBookingQRCode =
-  async (bookingId) => {
+const generateBookingQRCode = async (bookingId) => {
 
-    const booking =
-      await Booking.findById(
-        bookingId
-      )
-        .populate(
-          "event",
-          "title eventDate"
-        )
-        .populate(
-          "user",
-          "name email"
-        );
+  const booking = await Booking.findById(bookingId)
+    .populate("event", "title eventDate")
+    .populate("user", "name email");
 
+  if (!booking) {
+    throw new AppError(
+      "Booking not found.",
+      404
+    );
+  }
 
-    if (!booking) {
-      throw new AppError(
-        "Booking not found.",
-        404
-      );
-    }
+  if (booking.bookingStatus !== "confirmed") {
+    throw new AppError(
+      "QR code can only be generated for confirmed bookings.",
+      400
+    );
+  }
 
+  if (!booking.event) {
+    throw new AppError(
+      "Event associated with this booking was not found.",
+      404
+    );
+  }
 
-    if (
-      booking.bookingStatus !==
-      "confirmed"
-    ) {
-      throw new AppError(
-        "QR code can only be generated for confirmed bookings.",
-        400
-      );
-    }
+  if (!booking.user) {
+    throw new AppError(
+      "User associated with this booking was not found.",
+      404
+    );
+  }
 
+  const qrData = {
+    bookingId: booking._id.toString(),
 
-    const qrData = {
+    eventId: booking.event._id.toString(),
 
-      bookingId:
-        booking._id.toString(),
-
-      eventId:
-        booking.event._id.toString(),
-
-      userId:
-        booking.user._id.toString(),
-    };
-
-
-    const qrCode =
-      await generateQRCode(
-        qrData
-      );
-
-
-    booking.qrCode =
-      qrCode;
-
-
-    await booking.save();
-
-
-    return booking;
+    userId: booking.user._id.toString(),
   };
 
+  const qrCode = await generateQRCode(qrData);
+
+  booking.qrCode = qrCode;
+
+  await booking.save();
+
+  return booking;
+};
 
 
 module.exports = {

@@ -2,22 +2,27 @@ const Payment = require("../models/Payment");
 const Booking = require("../models/Booking");
 const AppError = require("../utils/AppError");
 
-const {createSSLSession,validateSSLPayment,} = require("./ssl.service");
 
-const {generateBookingQRCode,} = require("./booking.service");
+// Generate Dummy Transaction ID
+const generateTransactionId = () => {
+  const timestamp = Date.now();
+  const random = Math.random()
+    .toString(36)
+    .substring(2, 8)
+    .toUpperCase();
 
-const {createNotification,} = require("./notification.service");
+  return `DUMMY-TXN-${timestamp}-${random}`;
+};
 
 
-// Create Payment****
 
+// ======================================================
+// Create Payment
+// ======================================================
 
-const createPayment = async (bookingId) => {
+const createPayment = async (userId, payload) => {
 
-  const booking = await Booking.findById(bookingId)
-    .populate("user")
-    .populate("event");
-
+  const booking = await Booking.findById(payload.booking);
 
   if (!booking) {
     throw new AppError(
@@ -27,14 +32,19 @@ const createPayment = async (bookingId) => {
   }
 
 
-  if (booking.paymentStatus === "paid") {
+  // Check booking owner
+  if (
+    booking.user.toString() !==
+    userId.toString()
+  ) {
     throw new AppError(
-      "Payment already completed.",
-      409
+      "You are not authorized to make payment for this booking.",
+      403
     );
   }
 
 
+  // Cancelled booking cannot be paid
   if (booking.bookingStatus === "cancelled") {
     throw new AppError(
       "Cancelled booking cannot be paid.",
@@ -43,163 +53,45 @@ const createPayment = async (bookingId) => {
   }
 
 
-  // ======================================================
-  // Check Existing Payment
-  // ======================================================
+  // Already paid
+  if (booking.paymentStatus === "paid") {
+    throw new AppError(
+      "Payment has already been completed.",
+      400
+    );
+  }
 
+
+  // Check existing pending/processing payment
   const existingPayment = await Payment.findOne({
     booking: booking._id,
+    paymentStatus: {
+      $in: ["pending", "processing"],
+    },
   });
 
 
   if (existingPayment) {
-
-    // Already paid
-
-    if (
-      existingPayment.paymentStatus === "paid"
-    ) {
-      throw new AppError(
-        "Payment already completed.",
-        409
-      );
-    }
-
-
-    // Existing pending payment
-
-    if (
-      existingPayment.paymentStatus === "pending"
-    ) {
-
-      const sslSession =
-        await createSSLSession({
-          payment: existingPayment,
-          booking,
-        });
-
-
-      return {
-        payment: existingPayment,
-        gatewayUrl:
-          sslSession.GatewayPageURL,
-      };
-    }
-
-
-    // Failed or cancelled payment
-
-    if (
-      existingPayment.paymentStatus === "failed" ||
-      existingPayment.paymentStatus === "cancelled"
-    ) {
-
-      await Payment.findByIdAndDelete(
-        existingPayment._id
-      );
-    }
+    return existingPayment;
   }
 
 
-  // ======================================================
-  // Create Payment
-  // ======================================================
-
   const payment = await Payment.create({
-
     booking: booking._id,
-
-    user: booking.user,
-
+    user: userId,
     amount: booking.totalAmount,
-
-    paymentMethod: "sslcommerz",
-
+    paymentMethod: payload.paymentMethod,
+    currency: "BDT",
+    paymentGateway: "Dummy",
     paymentStatus: "pending",
-
-    transactionId:
-      `TXN-${Date.now()}`,
   });
 
 
-  // ======================================================
-  // Link Payment With Booking
-  // ======================================================
-
-  booking.payment =
-    payment._id;
+  // Connect payment with booking
+  booking.payment = payment._id;
+  booking.paymentStatus = "pending";
 
   await booking.save();
-
-
-  // ======================================================
-  // Create SSLCommerz Session
-  // ======================================================
-
-  let sslSession;
-
-
-  try {
-
-    sslSession =
-      await createSSLSession({
-        payment,
-        booking,
-      });
-
-  } catch (error) {
-
-    // Remove payment if SSL session creation fails
-
-    await Payment.findByIdAndDelete(
-      payment._id
-    );
-
-
-    // Remove payment reference from booking
-
-    booking.payment = null;
-
-    await booking.save();
-
-
-    throw error;
-  }
-
-
-  // ======================================================
-  // Return Payment + Gateway URL
-  // ======================================================
-
-  return {
-    payment,
-    gatewayUrl:
-      sslSession.GatewayPageURL,
-  };
-};
-
-
-
-// ======================================================
-// Verify Payment
-// ======================================================
-
-const verifyPayment = async (
-  paymentId
-) => {
-
-  const payment =
-    await Payment.findById(
-      paymentId
-    );
-
-
-  if (!payment) {
-    throw new AppError(
-      "Payment not found.",
-      404
-    );
-  }
 
 
   return payment;
@@ -208,18 +100,18 @@ const verifyPayment = async (
 
 
 // ======================================================
-// Payment Success
+// Process Dummy Payment
 // ======================================================
 
-const paymentSuccess = async (
-  paymentId
+const processDummyPayment = async (
+  paymentId,
+  userId,
+  payload
 ) => {
 
-  const payment =
-    await Payment.findById(
-      paymentId
-    );
-
+  const payment = await Payment.findById(
+    paymentId
+  );
 
   if (!payment) {
     throw new AppError(
@@ -229,42 +121,94 @@ const paymentSuccess = async (
   }
 
 
+  // Check payment owner
   if (
-    payment.paymentStatus === "paid"
+    payment.user.toString() !==
+    userId.toString()
   ) {
     throw new AppError(
-      "Payment is already completed.",
-      409
+      "You are not authorized to process this payment.",
+      403
     );
   }
 
 
-  // Update Payment
+  // Already paid
+  if (payment.paymentStatus === "paid") {
+    throw new AppError(
+      "Payment has already been completed.",
+      400
+    );
+  }
+
+
+  // Cancelled / refunded payment
+  if (
+    payment.paymentStatus === "cancelled" ||
+    payment.paymentStatus === "refunded"
+  ) {
+    throw new AppError(
+      "This payment cannot be processed.",
+      400
+    );
+  }
+
+
+  // Set processing
+  payment.paymentStatus = "processing";
+
+  await payment.save();
+
+
+  // Dummy payment decision
+  // payload.paymentResult should be:
+  // "success" or "failed"
+
+  if (payload.paymentResult === "failed") {
+
+    payment.paymentStatus = "failed";
+
+    await payment.save();
+
+
+    const booking = await Booking.findById(
+      payment.booking
+    );
+
+    if (booking) {
+      booking.paymentStatus = "failed";
+      await booking.save();
+    }
+
+
+    return {
+      payment,
+      message: "Dummy payment failed.",
+    };
+  }
+
+
+  // Successful Dummy Payment
 
   payment.paymentStatus = "paid";
 
+  payment.transactionId =
+    generateTransactionId();
+
   payment.paidAt = new Date();
+
+  payment.paymentDate = new Date();
 
   await payment.save();
 
 
   // Update Booking
 
-  const confirmedBooking =
-    await Booking.findByIdAndUpdate(
-      payment.booking,
-      {
-        paymentStatus: "paid",
-        bookingStatus: "confirmed",
-        payment: payment._id,
-      },
-      {
-        new: true,
-      }
-    );
+  const booking = await Booking.findById(
+    payment.booking
+  );
 
-
-  if (!confirmedBooking) {
+  if (!booking) {
     throw new AppError(
       "Booking not found.",
       404
@@ -272,167 +216,23 @@ const paymentSuccess = async (
   }
 
 
-  // Generate QR Code
+  booking.paymentStatus = "paid";
 
-  await generateBookingQRCode(
-    confirmedBooking._id
-  );
+  booking.bookingStatus = "confirmed";
 
+  booking.isOtpVerified = true;
 
-  // ======================================================
-  // Payment Success Notification
-  // ======================================================
+  booking.bookingOtp = null;
 
-  await createNotification({
+  booking.otpExpiresAt = null;
 
-    user: payment.user,
-
-    title: "Payment Successful",
-
-    message:
-      `Your payment of ${payment.amount} BDT was completed successfully.`,
-
-    type: "payment",
-  });
+  await booking.save();
 
 
   return {
-    message:
-      "Payment completed successfully.",
-  };
-};
-
-
-
-// ======================================================
-// Payment Failed
-// ======================================================
-
-const paymentFailed = async (
-  paymentId
-) => {
-
-  const payment =
-    await Payment.findById(
-      paymentId
-    );
-
-
-  if (!payment) {
-    throw new AppError(
-      "Payment not found.",
-      404
-    );
-  }
-
-
-  if (
-    payment.paymentStatus === "failed"
-  ) {
-    throw new AppError(
-      "Payment is already marked as failed.",
-      409
-    );
-  }
-
-
-  payment.paymentStatus =
-    "failed";
-
-  await payment.save();
-
-
-  // Payment failed notification
-
-  await createNotification({
-
-    user: payment.user,
-
-    title: "Payment Failed",
-
-    message:
-      `Your payment of ${payment.amount} BDT could not be completed.`,
-
-    type: "payment",
-  });
-
-
-  return {
-    message:
-      "Payment failed.",
-  };
-};
-
-
-
-// ======================================================
-// Payment Cancelled
-// ======================================================
-
-const paymentCancelled = async (
-  paymentId
-) => {
-
-  const payment =
-    await Payment.findById(
-      paymentId
-    );
-
-
-  if (!payment) {
-    throw new AppError(
-      "Payment not found.",
-      404
-    );
-  }
-
-
-  if (
-    payment.paymentStatus ===
-    "cancelled"
-  ) {
-    throw new AppError(
-      "Payment is already cancelled.",
-      409
-    );
-  }
-
-
-  payment.paymentStatus =
-    "cancelled";
-
-  await payment.save();
-
-
-  await Booking.findByIdAndUpdate(
-    payment.booking,
-    {
-      paymentStatus: "cancelled",
-    },
-    {
-      new: true,
-    }
-  );
-
-
-  // Payment cancelled notification
-
-  await createNotification({
-
-    user: payment.user,
-
-    title: "Payment Cancelled",
-
-    message:
-      `Your payment of ${payment.amount} BDT was cancelled.`,
-
-    type: "payment",
-  });
-
-
-  return {
-    message:
-      "Payment cancelled successfully.",
+    payment,
+    booking,
+    message: "Dummy payment successful.",
   };
 };
 
@@ -443,24 +243,38 @@ const paymentCancelled = async (
 // ======================================================
 
 const getPaymentById = async (
-  paymentId
+  paymentId,
+  userId
 ) => {
 
-  const payment =
-    await Payment.findById(
-      paymentId
+  const payment = await Payment.findById(
+    paymentId
+  )
+    .populate(
+      "booking"
     )
-      .populate("booking")
-      .populate(
-        "user",
-        "name email"
-      );
+    .populate(
+      "user",
+      "name email"
+    );
 
 
   if (!payment) {
     throw new AppError(
       "Payment not found.",
       404
+    );
+  }
+
+
+  // User can only see own payment
+  if (
+    payment.user._id.toString() !==
+    userId.toString()
+  ) {
+    throw new AppError(
+      "You are not authorized to access this payment.",
+      403
     );
   }
 
@@ -471,86 +285,56 @@ const getPaymentById = async (
 
 
 // ======================================================
-// Get My Payments
+// Get Payment By Booking
 // ======================================================
 
-const getMyPayments = async (
+const getPaymentByBooking = async (
+  bookingId,
   userId
 ) => {
 
-  const payments =
-    await Payment.find({
-      user: userId,
-    }).sort({
-      createdAt: -1,
-    });
+  const booking = await Booking.findById(
+    bookingId
+  );
 
 
-  return payments;
-};
-
-
-
-// ======================================================
-// Update Payment Status
-// ======================================================
-
-const updatePaymentStatus = async (
-  paymentId,
-  payload
-) => {
-
-  const payment =
-    await Payment.findById(
-      paymentId
-    );
-
-
-  if (!payment) {
+  if (!booking) {
     throw new AppError(
-      "Payment not found.",
+      "Booking not found.",
       404
     );
   }
 
 
-  const allowedStatus = [
-    "pending",
-    "paid",
-    "failed",
-    "cancelled",
-    "refunded",
-  ];
-
-
   if (
-    !allowedStatus.includes(
-      payload.paymentStatus
-    )
+    booking.user.toString() !==
+    userId.toString()
   ) {
     throw new AppError(
-      "Invalid payment status.",
-      400
+      "You are not authorized to access this booking.",
+      403
     );
   }
 
 
-  payment.paymentStatus =
-    payload.paymentStatus;
+  const payment = await Payment.findOne({
+    booking: bookingId,
+  })
+    .populate(
+      "booking"
+    )
+    .populate(
+      "user",
+      "name email"
+    );
 
 
-  await payment.save();
-
-
-  // Sync Booking Payment Status
-
-  await Booking.findByIdAndUpdate(
-    payment.booking,
-    {
-      paymentStatus:
-        payload.paymentStatus,
-    }
-  );
+  if (!payment) {
+    throw new AppError(
+      "Payment not found for this booking.",
+      404
+    );
+  }
 
 
   return payment;
@@ -564,13 +348,12 @@ const updatePaymentStatus = async (
 
 const processRefund = async (
   paymentId,
-  refundAmount
+  userId
 ) => {
 
-  const payment =
-    await Payment.findById(
-      paymentId
-    );
+  const payment = await Payment.findById(
+    paymentId
+  );
 
 
   if (!payment) {
@@ -581,9 +364,20 @@ const processRefund = async (
   }
 
 
+  // Check payment owner
   if (
-    payment.paymentStatus !== "paid"
+    payment.user.toString() !==
+    userId.toString()
   ) {
+    throw new AppError(
+      "You are not authorized to refund this payment.",
+      403
+    );
+  }
+
+
+  // Only paid payments can be refunded
+  if (payment.paymentStatus !== "paid") {
     throw new AppError(
       "Only paid payments can be refunded.",
       400
@@ -591,174 +385,12 @@ const processRefund = async (
   }
 
 
-  if (
-    payment.refundAmount > 0
-  ) {
-    throw new AppError(
-      "Refund has already been processed.",
-      409
-    );
-  }
+  const booking = await Booking.findById(
+    payment.booking
+  );
 
 
-  if (
-    refundAmount <= 0
-  ) {
-    throw new AppError(
-      "Refund amount must be greater than 0.",
-      400
-    );
-  }
-
-
-  if (
-    refundAmount > payment.amount
-  ) {
-    throw new AppError(
-      "Refund amount cannot exceed payment amount.",
-      400
-    );
-  }
-
-
-  // Update Payment
-
-  payment.refundAmount =
-    refundAmount;
-
-  payment.refundDate =
-    new Date();
-
-  payment.paymentStatus =
-    "refunded";
-
-  await payment.save();
-
-
-  // Update Booking
-
-  const booking =
-    await Booking.findById(
-      payment.booking
-    );
-
-
-  if (booking) {
-
-    booking.refundAmount =
-      refundAmount;
-
-    booking.refundStatus =
-      "refunded";
-
-    await booking.save();
-  }
-
-
-  // Refund notification
-
-  await createNotification({
-
-    user: payment.user,
-
-    title: "Refund Processed",
-
-    message:
-      `Your refund of ${refundAmount} BDT has been processed successfully.`,
-
-    type: "refund",
-  });
-
-
-  return {
-    payment,
-    booking,
-  };
-};
-
-
-
-// ======================================================
-// SSL Payment Success
-// ======================================================
-
-const sslPaymentSuccess = async (
-  payload
-) => {
-
-  const payment =
-    await Payment.findOne({
-      transactionId:
-        payload.tran_id,
-    });
-
-
-  if (!payment) {
-    throw new AppError(
-      "Payment not found.",
-      404
-    );
-  }
-
-
-  // Validate Payment With SSLCommerz
-
-  const validation =
-    await validateSSLPayment(
-      payload.val_id
-    );
-
-
-  if (
-    validation.status !==
-    "VALID"
-  ) {
-    throw new AppError(
-      "Payment validation failed.",
-      400
-    );
-  }
-
-
-  // Update Payment
-
-  payment.paymentStatus =
-    "paid";
-
-  payment.paidAt =
-    new Date();
-
-  payment.bankTransactionId =
-    validation.bank_tran_id ||
-    null;
-
-  payment.valId =
-    validation.val_id ||
-    null;
-
-  payment.gatewayResponse =
-    validation;
-
-  await payment.save();
-
-
-  // Update Booking
-
-  const confirmedBooking =
-    await Booking.findByIdAndUpdate(
-      payment.booking,
-      {
-        paymentStatus: "paid",
-        bookingStatus: "confirmed",
-        payment: payment._id,
-      },
-      {
-        new: true,
-      }
-    );
-
-
-  if (!confirmedBooking) {
+  if (!booking) {
     throw new AppError(
       "Booking not found.",
       404
@@ -766,165 +398,38 @@ const sslPaymentSuccess = async (
   }
 
 
-  // Generate QR Code
-
-  await generateBookingQRCode(
-    confirmedBooking._id
-  );
-
-
-  // ======================================================
-  // SSL Payment Success Notification
-  // ======================================================
-
-  await createNotification({
-
-    user: payment.user,
-
-    title: "Payment Successful",
-
-    message:
-      `Your payment of ${payment.amount} BDT was completed successfully.`,
-
-    type: "payment",
-  });
-
-
-  return payment;
-};
-
-
-
-// ======================================================
-// SSL Payment Failed
-// ======================================================
-
-const sslPaymentFail = async (
-  payload
-) => {
-
-  const payment =
-    await Payment.findOne({
-      transactionId:
-        payload.tran_id,
-    });
-
-
-  if (!payment) {
+  if (booking.refundStatus !== "pending") {
     throw new AppError(
-      "Payment not found.",
-      404
+      "This booking is not eligible for refund.",
+      400
     );
   }
 
 
-  payment.paymentStatus =
-    "failed";
+  // Dummy refund
 
-  payment.gatewayResponse =
-    payload;
+  payment.paymentStatus = "refunded";
 
-  await payment.save();
+  payment.refundAmount =
+    booking.refundAmount;
 
-
-  await Booking.findByIdAndUpdate(
-    payment.booking,
-    {
-      paymentStatus: "failed",
-    }
-  );
-
-
-  // SSL Payment Failed Notification
-
-  await createNotification({
-
-    user: payment.user,
-
-    title: "Payment Failed",
-
-    message:
-      `Your payment of ${payment.amount} BDT could not be completed.`,
-
-    type: "payment",
-  });
-
-
-  return payment;
-};
-
-
-
-// ======================================================
-// SSL Payment Cancel
-// ======================================================
-
-const sslPaymentCancel = async (
-  payload
-) => {
-
-  const payment =
-    await Payment.findOne({
-      transactionId:
-        payload.tran_id,
-    });
-
-
-  if (!payment) {
-    throw new AppError(
-      "Payment not found.",
-      404
-    );
-  }
-
-
-  payment.paymentStatus =
-    "cancelled";
-
-  payment.gatewayResponse =
-    payload;
+  payment.refundDate = new Date();
 
   await payment.save();
 
 
-  await Booking.findByIdAndUpdate(
-    payment.booking,
-    {
-      paymentStatus:
-        "cancelled",
-    }
-  );
+  // Update Booking
+
+  booking.refundStatus = "completed";
+
+  await booking.save();
 
 
-  // SSL Payment Cancel Notification
-
-  await createNotification({
-
-    user: payment.user,
-
-    title: "Payment Cancelled",
-
-    message:
-      `Your payment of ${payment.amount} BDT was cancelled.`,
-
-    type: "payment",
-  });
-
-
-  return payment;
-};
-
-
-
-// ======================================================
-// SSL Payment IPN
-// ======================================================
-
-const sslPaymentIPN = async (
-  payload
-) => {
-
-  return payload;
+  return {
+    payment,
+    booking,
+    message: "Dummy refund processed successfully.",
+  };
 };
 
 
@@ -934,31 +439,9 @@ const sslPaymentIPN = async (
 // ======================================================
 
 module.exports = {
-
   createPayment,
-
-  verifyPayment,
-
-  paymentSuccess,
-
-  paymentFailed,
-
-  paymentCancelled,
-
+  processDummyPayment,
   getPaymentById,
-
-  getMyPayments,
-
-  updatePaymentStatus,
-
+  getPaymentByBooking,
   processRefund,
-
-  sslPaymentSuccess,
-
-  sslPaymentFail,
-
-  sslPaymentCancel,
-
-  sslPaymentIPN,
-
 };
