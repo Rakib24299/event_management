@@ -1,0 +1,372 @@
+/* =========================================
+   EventEase Global Design System
+========================================= */
+
+/* ---------- Brand Colors ---------- */
+
+:root {
+    --primary: #31572c;
+    --primary-dark: #244522;
+    --primary-light: #4f772d;
+
+    --background: #f8faf7;
+    --surface: #ffffff;
+
+    --text-primary: #172017;
+    --text-secondary: #647064;
+
+    --border: #dce5d9;
+
+    --danger: #dc2626;
+    --warning: #d97706;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+}
+
+
+/* ---------- Global Reset ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ---------- Body ---------- */
+
+body {
+    min-height: 100vh;
+
+    background-color: var(--background);
+
+    color: var(--text-primary);
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+
+/* ---------- Links ---------- */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* ---------- Buttons ---------- */
+
+button {
+    font: inherit;
+}
+
+
+/* ---------- Inputs ---------- */
+
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+
+/* ---------- Images ---------- */
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* =========================================
+   Reusable Components
+========================================= */
+
+
+/* ---------- Primary Button ---------- */
+
+.btn-primary {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 46px;
+
+    padding: 0 20px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    background-color: var(--primary);
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(49, 87, 44, 0.18);
+}
+
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ---------- Secondary Button ---------- */
+
+.btn-secondary {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 46px;
+
+    padding: 0 20px;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-md);
+
+    background-color: white;
+
+    color: var(--primary);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.btn-secondary:hover {
+    background-color: #f3f7f1;
+
+    border-color: var(--primary-light);
+}
+
+
+/* ---------- Input ---------- */
+
+.form-input {
+    width: 100%;
+
+    height: 48px;
+
+    padding: 0 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-md);
+
+    background-color: #fafcf9;
+
+    color: var(--text-primary);
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.form-input::placeholder {
+    color: #9aa39a;
+}
+
+
+.form-input:focus {
+    border-color: var(--primary);
+
+    background-color: white;
+
+    box-shadow:
+        0 0 0 4px rgba(49, 87, 44, 0.10);
+}
+
+
+/* ---------- Card ---------- */
+
+.card {
+    background-color: var(--surface);
+
+    border: 1px solid #edf1eb;
+
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 10px 35px rgba(36, 69, 34, 0.06);
+}
+
+
+/* ---------- Container ---------- */
+
+.container-custom {
+    width: 100%;
+
+    max-width: 1280px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+@media (min-width: 640px) {
+
+    .container-custom {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+}
+
+
+@media (min-width: 1024px) {
+
+    .container-custom {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+
+}
+
+
+/* ---------- Section Spacing ---------- */
+
+.section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+}
+
+
+@media (max-width: 768px) {
+
+    .section {
+        padding-top: 48px;
+        padding-bottom: 48px;
+    }
+
+}
+
+
+/* ---------- Page Heading ---------- */
+
+.page-title {
+    color: var(--text-primary);
+
+    font-size: 32px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    letter-spacing: -0.02em;
+}
+
+
+.page-subtitle {
+    margin-top: 10px;
+
+    color: var(--text-secondary);
+
+    font-size: 15px;
+
+    line-height: 1.7;
+}
+
+
+/* ---------- Error Message ---------- */
+
+.form-error {
+    padding: 10px 14px;
+
+    border: 1px solid #fecaca;
+
+    border-radius: var(--radius-md);
+
+    background-color: #fef2f2;
+
+    color: var(--danger);
+
+    font-size: 13px;
+}
+
+
+/* ---------- Success Message ---------- */
+
+.form-success {
+    padding: 10px 14px;
+
+    border: 1px solid #bbf7d0;
+
+    border-radius: var(--radius-md);
+
+    background-color: #f0fdf4;
+
+    color: var(--primary);
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   Responsive Typography
+========================================= */
+
+@media (max-width: 640px) {
+
+    .page-title {
+        font-size: 26px;
+    }
+
+}

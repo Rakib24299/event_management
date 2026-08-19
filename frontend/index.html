@@ -1,13 +1,297 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ========================================
+         Tailwind Configuration
+    ========================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#244522",
+
+                        primaryLight: "#4f772d",
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- ========================================
+         Global CSS
+    ========================================= -->
+
+    <link
+        rel="stylesheet"
+        href="./css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ========================================
+         Navbar Component
+    ========================================= -->
+
+    <div id="navbar"></div>
+
+
+    <!-- ========================================
+         Main Content
+    ========================================= -->
+
+    <main
+        class="
+            flex
+            min-h-[calc(100vh-64px)]
+            items-center
+            justify-center
+            px-4
+            sm:px-6
+            lg:px-8
+        "
+    >
+
+        <div class="w-full max-w-2xl text-center">
+
+
+            <!-- Logo / Brand -->
+
+            <div
+                class="
+                    mx-auto
+                    flex
+                    h-16
+                    w-16
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    bg-primary
+                    text-2xl
+                    font-bold
+                    text-white
+                    shadow-lg
+                    shadow-green-900/10
+                "
+            >
+                E
+            </div>
+
+
+            <!-- Heading -->
+
+            <h1
+                class="
+                    mt-6
+                    text-3xl
+                    font-bold
+                    tracking-tight
+                    text-primary
+                    sm:text-4xl
+                    lg:text-5xl
+                "
+            >
+                Welcome to EventEase
+            </h1>
+
+
+            <!-- Description -->
+
+            <p
+                class="
+                    mx-auto
+                    mt-4
+                    max-w-xl
+                    text-sm
+                    leading-7
+                    text-gray-500
+                    sm:text-base
+                "
+            >
+                Smart Event Management System for discovering,
+                booking and managing events easily.
+            </p>
+
+
+            <!-- Buttons -->
+
+            <div
+                class="
+                    mt-8
+                    flex
+                    flex-col
+                    items-stretch
+                    justify-center
+                    gap-3
+                    sm:flex-row
+                    sm:items-center
+                "
+            >
+
+                <a
+                    href="./pages/login.html"
+                    class="
+                        inline-flex
+                        min-h-[48px]
+                        items-center
+                        justify-center
+                        rounded-xl
+                        bg-primary
+                        px-6
+                        text-sm
+                        font-semibold
+                        text-white
+                        transition
+                        hover:bg-primaryDark
+                        hover:shadow-lg
+                        hover:shadow-green-900/10
+                    "
+                >
+                    Login
+                </a>
+
+
+                <a
+                    href="./pages/register.html"
+                    class="
+                        inline-flex
+                        min-h-[48px]
+                        items-center
+                        justify-center
+                        rounded-xl
+                        border
+                        border-gray-200
+                        bg-white
+                        px-6
+                        text-sm
+                        font-semibold
+                        text-primary
+                        transition
+                        hover:border-primary
+                        hover:bg-green-50
+                    "
+                >
+                    Create Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ========================================
+         Component Loader
+    ========================================= -->
+
+    <script src="./js/components.js"></script>
+
+
+    <!-- ========================================
+         Load Navbar
+    ========================================= -->
+
+    <script>
+
+        loadComponent(
+            "navbar",
+            "./components/navbar.html"
+        ).then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src = "./js/navbar.js";
+
+            document.body.appendChild(script);
+
+        });
+
+    </script>
+        <!-- ========================================
+         Footer
+    ========================================= -->
+
+    <div id="footer"></div>
+
+
+    <!-- ========================================
+         Component Loader
+    ========================================= -->
+
+    <script src="./js/components.js"></script>
+
+
+    <!-- ========================================
+         Load Navbar & Footer
+    ========================================= -->
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "navbar",
+                "./components/navbar.html"
+            ),
+
+            loadComponent(
+                "footer",
+                "./components/footer.html"
+            )
+
+        ]).then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src = "./js/navbar.js";
+
+            document.body.appendChild(script);
+
+        });
+
+    </script>
+
+
+</body>
+
 </html>
