@@ -1,245 +1,558 @@
 const Payment = require("../models/Payment");
 const Booking = require("../models/Booking");
-const AppError = require("../utils/AppError");
+const Event = require("../models/Event");
+const sendEmail = require("../utils/sendEmail");
 
 
-// Generate Dummy Transaction ID
-const generateTransactionId = () => {
-  const timestamp = Date.now();
-  const random = Math.random()
-    .toString(36)
-    .substring(2, 8)
-    .toUpperCase();
+// ======================================================
+// ERROR HELPER
+// ======================================================
 
-  return `DUMMY-TXN-${timestamp}-${random}`;
+const createError = (message, statusCode) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
 };
 
 
+// ======================================================
+// GENERATE TRANSACTION ID
+// ======================================================
+
+const generateTransactionId = () => {
+  return `DUMMY-${Date.now()}-${Math.floor(
+    Math.random() * 100000
+  )}`;
+};
+
 
 // ======================================================
-// Create Payment
+// GENERATE BOOKING OTP
 // ======================================================
 
-const createPayment = async (userId, payload) => {
+const generateBookingOtp = () => {
+  return Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+};
 
-  const booking = await Booking.findById(payload.booking);
+
+// ======================================================
+// OTP EXPIRY
+// ======================================================
+
+const getOtpExpiry = () => {
+  return new Date(
+    Date.now() + 5 * 60 * 1000
+  );
+};
+
+
+// ======================================================
+// PLATFORM FEE
+// ======================================================
+
+const getPlatformFeePercentage = () => {
+  return Number(
+    process.env.PLATFORM_FEE_PERCENTAGE || 10
+  );
+};
+
+
+// ======================================================
+// CREATE PAYMENT
+// ======================================================
+// Creates a payment record for a pending booking
+// if one does not already exist.
+// ======================================================
+
+const createPayment = async (
+  userId,
+  paymentData
+) => {
+
+  const { booking } = paymentData || {};
 
   if (!booking) {
-    throw new AppError(
+    throw createError(
+      "Booking ID is required.",
+      400
+    );
+  }
+
+
+  const bookingData =
+    await Booking.findById(booking)
+      .populate("event");
+
+
+  if (!bookingData) {
+    throw createError(
       "Booking not found.",
       404
     );
   }
 
 
-  // Check booking owner
   if (
-    booking.user.toString() !==
+    bookingData.user.toString() !==
     userId.toString()
   ) {
-    throw new AppError(
-      "You are not authorized to make payment for this booking.",
+    throw createError(
+      "You are not authorized to create payment for this booking.",
       403
     );
   }
 
 
-  // Cancelled booking cannot be paid
-  if (booking.bookingStatus === "cancelled") {
-    throw new AppError(
-      "Cancelled booking cannot be paid.",
+  if (
+    bookingData.bookingStatus !==
+    "pending"
+  ) {
+    throw createError(
+      "Payment can only be created for a pending booking.",
       400
     );
   }
 
 
-  // Already paid
-  if (booking.paymentStatus === "paid") {
-    throw new AppError(
-      "Payment has already been completed.",
+  if (!bookingData.event) {
+    throw createError(
+      "Event not found.",
+      404
+    );
+  }
+
+
+  if (
+    bookingData.event.eventType ===
+    "free"
+  ) {
+    throw createError(
+      "Payment is not required for a free event.",
       400
     );
   }
 
 
-  // Check existing pending/processing payment
-  const existingPayment = await Payment.findOne({
-    booking: booking._id,
-    paymentStatus: {
-      $in: ["pending", "processing"],
-    },
-  });
+  let payment = null;
 
 
-  if (existingPayment) {
-    return existingPayment;
+  if (bookingData.payment) {
+    payment =
+      await Payment.findById(
+        bookingData.payment
+      );
   }
 
 
-  const payment = await Payment.create({
-    booking: booking._id,
-    user: userId,
-    amount: booking.totalAmount,
-    paymentMethod: payload.paymentMethod,
-    currency: "BDT",
-    paymentGateway: "Dummy",
-    paymentStatus: "pending",
-  });
+  if (!payment) {
+
+    const totalAmount =
+      Number(
+        bookingData.totalAmount || 0
+      );
+
+    const platformFeePercentage =
+      Number(
+        process.env.PLATFORM_FEE_PERCENTAGE ||
+          10
+      );
+
+    const platformFee =
+      Number(
+        (
+          totalAmount *
+          platformFeePercentage /
+          100
+        ).toFixed(2)
+      );
+
+    const organizerAmount =
+      Number(
+        (
+          totalAmount - platformFee
+        ).toFixed(2)
+      );
+
+    payment =
+      await Payment.create({
+        user: userId,
+
+        booking: bookingData._id,
+
+        event: bookingData.event._id,
+
+        organizer:
+          bookingData.event.organizer,
+
+        grossAmount: totalAmount,
+
+        platformFee,
+
+        organizerAmount,
+
+        paymentMethod: "dummy",
+
+        status: "pending",
+
+        refundAmount: 0,
+
+        refundStatus: "none",
+      });
 
 
-  // Connect payment with booking
-  booking.payment = payment._id;
-  booking.paymentStatus = "pending";
+    bookingData.payment =
+      payment._id;
 
-  await booking.save();
+    await bookingData.save();
+
+  }
+
+
+  if (!payment) {
+    throw createError(
+      "Payment record not found.",
+      404
+    );
+  }
 
 
   return payment;
+
 };
 
 
-
 // ======================================================
-// Process Dummy Payment
+// PROCESS DUMMY PAYMENT
+// ======================================================
+//
+// Payment pending
+//       ↓
+// User pays
+//       ↓
+// Payment paid
+//       ↓
+// Generate OTP
+//       ↓
+// Send OTP through Brevo
+//       ↓
+// User verifies OTP
 // ======================================================
 
 const processDummyPayment = async (
   paymentId,
   userId,
-  payload
+  paymentData
 ) => {
 
-  const payment = await Payment.findById(
-    paymentId
-  );
+  const {
+    paymentResult = "success",
+  } = paymentData || {};
+
+
+  // --------------------------------------------------
+  // FIND PAYMENT
+  // --------------------------------------------------
+
+  const payment =
+    await Payment.findById(
+      paymentId
+    );
+
 
   if (!payment) {
-    throw new AppError(
+    throw createError(
       "Payment not found.",
       404
     );
   }
 
 
-  // Check payment owner
+  // --------------------------------------------------
+  // OWNER CHECK
+  // --------------------------------------------------
+
   if (
     payment.user.toString() !==
     userId.toString()
   ) {
-    throw new AppError(
+    throw createError(
       "You are not authorized to process this payment.",
       403
     );
   }
 
 
-  // Already paid
-  if (payment.paymentStatus === "paid") {
-    throw new AppError(
+  // --------------------------------------------------
+  // PAYMENT METHOD
+  // --------------------------------------------------
+
+  if (
+    payment.paymentMethod !==
+    "dummy"
+  ) {
+    throw createError(
+      "This payment is not a dummy payment.",
+      400
+    );
+  }
+
+
+  // --------------------------------------------------
+  // ALREADY PAID
+  // --------------------------------------------------
+
+  if (
+    payment.status ===
+    "paid"
+  ) {
+    throw createError(
       "Payment has already been completed.",
       400
     );
   }
 
 
-  // Cancelled / refunded payment
-  if (
-    payment.paymentStatus === "cancelled" ||
-    payment.paymentStatus === "refunded"
-  ) {
-    throw new AppError(
-      "This payment cannot be processed.",
-      400
-    );
-  }
+  // --------------------------------------------------
+  // BOOKING
+  // --------------------------------------------------
 
-
-  // Set processing
-  payment.paymentStatus = "processing";
-
-  await payment.save();
-
-
-  // Dummy payment decision
-  // payload.paymentResult should be:
-  // "success" or "failed"
-
-  if (payload.paymentResult === "failed") {
-
-    payment.paymentStatus = "failed";
-
-    await payment.save();
-
-
-    const booking = await Booking.findById(
+  const booking =
+    await Booking.findById(
       payment.booking
     );
 
-    if (booking) {
-      booking.paymentStatus = "failed";
-      await booking.save();
-    }
-
-
-    return {
-      payment,
-      message: "Dummy payment failed.",
-    };
-  }
-
-
-  // Successful Dummy Payment
-
-  payment.paymentStatus = "paid";
-
-  payment.transactionId =
-    generateTransactionId();
-
-  payment.paidAt = new Date();
-
-  payment.paymentDate = new Date();
-
-  await payment.save();
-
-
-  // Update Booking
-
-  const booking = await Booking.findById(
-    payment.booking
-  );
 
   if (!booking) {
-    throw new AppError(
+    throw createError(
       "Booking not found.",
       404
     );
   }
 
 
-  booking.paymentStatus = "paid";
+  if (
+    booking.bookingStatus ===
+    "cancelled"
+  ) {
+    throw createError(
+      "This booking has already been cancelled.",
+      400
+    );
+  }
 
-  booking.bookingStatus = "confirmed";
 
-  booking.isOtpVerified = true;
+  // ==================================================
+  // FAILED PAYMENT
+  // ==================================================
 
-  booking.bookingOtp = null;
+  if (
+    paymentResult ===
+    "failed"
+  ) {
 
-  booking.otpExpiresAt = null;
+    payment.status =
+      "failed";
+
+    payment.gatewayResponse = {
+      type: "dummy",
+      result: "failed",
+      processedAt: new Date(),
+    };
+
+    await payment.save();
+
+
+    return {
+      message:
+        "Dummy payment failed.",
+
+      payment,
+
+      booking,
+
+      otp: null,
+
+      otpExpiresAt: null,
+    };
+  }
+
+
+  // ==================================================
+  // SUCCESSFUL PAYMENT
+  // ==================================================
+
+  const otp =
+    generateBookingOtp();
+
+  const otpExpiresAt =
+    getOtpExpiry();
+
+
+  // --------------------------------------------------
+  // UPDATE PAYMENT
+  // --------------------------------------------------
+
+  payment.status =
+    "paid";
+
+  payment.paymentMethod =
+    "dummy";
+
+  payment.transactionId =
+    generateTransactionId();
+
+  payment.paidAt =
+    new Date();
+
+  payment.gatewayResponse = {
+    type: "dummy",
+    result: "success",
+    processedAt: new Date(),
+  };
+
+  await payment.save();
+
+
+  // --------------------------------------------------
+  // UPDATE BOOKING
+  // --------------------------------------------------
+
+  booking.payment =
+    payment._id;
+
+  booking.bookingOtp =
+    otp;
+
+  booking.bookingOtpExpires =
+    otpExpiresAt;
+
+  booking.isOtpVerified =
+    false;
+
+  booking.bookingStatus =
+    "pending";
 
   await booking.save();
 
 
+  // ==================================================
+  // GET USER EMAIL
+  // ==================================================
+
+  const user =
+    await require("../models/User").findById(
+      userId
+    ).select(
+      "name email"
+    );
+
+
+  if (!user) {
+    throw createError(
+      "User not found.",
+      404
+    );
+  }
+
+
+  // ==================================================
+  // SEND OTP THROUGH BREVO
+  // ==================================================
+
+  if (user?.email) {
+    try {
+      await sendEmail({
+
+        to: user.email,
+
+        subject:
+          "EventEase Booking Verification OTP",
+
+        text:
+          `Your EventEase booking verification OTP is ${otp}. This OTP is valid for 5 minutes.`,
+
+        html: `
+          <div>
+            <h2>EventEase Booking Verification</h2>
+
+            <p>Hello ${user.name},</p>
+
+            <p>
+              Your payment was successful.
+              Please use the following OTP to confirm your booking:
+            </p>
+
+            <h1>${otp}</h1>
+
+            <p>
+              This OTP is valid for 5 minutes.
+            </p>
+
+            <p>
+              If you did not make this booking, please contact support.
+            </p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      console.error(
+        "Dummy payment OTP email failed:",
+        error.message
+      );
+    }
+  }
+
+
+  // ==================================================
+  // RETURN UPDATED BOOKING
+  // ==================================================
+
+  const updatedBooking =
+    await Booking.findById(
+      booking._id
+    )
+      .populate(
+        "user",
+        "name email profileImage"
+      )
+      .populate({
+        path: "event",
+        populate: [
+          {
+            path: "organizer",
+            select:
+              "name email organizationName organizationLogo",
+          },
+          {
+            path: "category",
+            select: "name",
+          },
+        ],
+      })
+      .populate("payment");
+
+
   return {
+
+    message:
+      "Dummy payment successful. OTP has been sent to your email.",
+
     payment,
-    booking,
-    message: "Dummy payment successful.",
+
+    booking:
+      updatedBooking,
+
+    otp,
+
+    otpExpiresAt,
   };
 };
 
 
-
 // ======================================================
-// Get Payment By ID
+// GET PAYMENT BY ID
 // ======================================================
 
 const getPaymentById = async (
@@ -247,45 +560,57 @@ const getPaymentById = async (
   userId
 ) => {
 
-  const payment = await Payment.findById(
-    paymentId
-  )
-    .populate(
-      "booking"
+  const payment =
+    await Payment.findById(
+      paymentId
     )
-    .populate(
-      "user",
-      "name email"
-    );
+      .populate(
+        "user",
+        "name email profileImage"
+      )
+      .populate("event")
+      .populate("booking")
+      .populate(
+        "organizer",
+        "name email organizationName organizationLogo"
+      );
 
 
   if (!payment) {
-    throw new AppError(
+    throw createError(
       "Payment not found.",
       404
     );
   }
 
 
-  // User can only see own payment
   if (
-    payment.user._id.toString() !==
+    payment.user &&
+    payment.user._id.toString() ===
     userId.toString()
   ) {
-    throw new AppError(
-      "You are not authorized to access this payment.",
-      403
-    );
+    return payment;
   }
 
 
-  return payment;
+  if (
+    payment.organizer &&
+    payment.organizer._id.toString() ===
+    userId.toString()
+  ) {
+    return payment;
+  }
+
+
+  throw createError(
+    "You are not authorized to view this payment.",
+    403
+  );
 };
 
 
-
 // ======================================================
-// Get Payment By Booking
+// GET PAYMENT BY BOOKING
 // ======================================================
 
 const getPaymentByBooking = async (
@@ -293,13 +618,14 @@ const getPaymentByBooking = async (
   userId
 ) => {
 
-  const booking = await Booking.findById(
-    bookingId
-  );
+  const booking =
+    await Booking.findById(
+      bookingId
+    );
 
 
   if (!booking) {
-    throw new AppError(
+    throw createError(
       "Booking not found.",
       404
     );
@@ -310,40 +636,32 @@ const getPaymentByBooking = async (
     booking.user.toString() !==
     userId.toString()
   ) {
-    throw new AppError(
-      "You are not authorized to access this booking.",
+    throw createError(
+      "You are not authorized to view this payment.",
       403
     );
   }
 
 
-  const payment = await Payment.findOne({
-    booking: bookingId,
-  })
-    .populate(
-      "booking"
-    )
-    .populate(
-      "user",
-      "name email"
-    );
-
-
-  if (!payment) {
-    throw new AppError(
-      "Payment not found for this booking.",
-      404
-    );
+  if (!booking.payment) {
+    return null;
   }
 
 
-  return payment;
+  return await Payment.findById(
+    booking.payment
+  )
+    .populate("event")
+    .populate("booking")
+    .populate(
+      "organizer",
+      "name email organizationName organizationLogo"
+    );
 };
 
 
-
 // ======================================================
-// Process Refund
+// PROCESS USER REFUND
 // ======================================================
 
 const processRefund = async (
@@ -351,97 +669,310 @@ const processRefund = async (
   userId
 ) => {
 
-  const payment = await Payment.findById(
-    paymentId
-  );
+  const payment =
+    await Payment.findById(
+      paymentId
+    );
 
 
   if (!payment) {
-    throw new AppError(
+    throw createError(
       "Payment not found.",
       404
     );
   }
 
 
-  // Check payment owner
   if (
     payment.user.toString() !==
     userId.toString()
   ) {
-    throw new AppError(
-      "You are not authorized to refund this payment.",
+    throw createError(
+      "You are not authorized to request this refund.",
       403
     );
   }
 
 
-  // Only paid payments can be refunded
-  if (payment.paymentStatus !== "paid") {
-    throw new AppError(
+  if (
+    payment.status !== "paid" &&
+    payment.status !== "partially_refunded"
+  ) {
+    throw createError(
       "Only paid payments can be refunded.",
       400
     );
   }
 
 
-  const booking = await Booking.findById(
-    payment.booking
-  );
+  if (
+    payment.refundStatus ===
+    "processed"
+  ) {
+    throw createError(
+      "This payment has already been refunded.",
+      400
+    );
+  }
+
+
+  const booking =
+    await Booking.findById(
+      payment.booking
+    );
 
 
   if (!booking) {
-    throw new AppError(
+    throw createError(
       "Booking not found.",
       404
     );
   }
 
 
-  if (booking.refundStatus !== "pending") {
-    throw new AppError(
-      "This booking is not eligible for refund.",
+  if (
+    booking.bookingStatus !==
+    "cancelled"
+  ) {
+    throw createError(
+      "Please cancel the booking before requesting a refund.",
       400
     );
   }
 
 
-  // Dummy refund
+  if (
+    Number(
+      booking.refundAmount
+    ) <= 0
+  ) {
+    throw createError(
+      "No refund is applicable for this booking.",
+      400
+    );
+  }
 
-  payment.paymentStatus = "refunded";
 
   payment.refundAmount =
-    booking.refundAmount;
+    Number(
+      booking.refundAmount
+    );
 
-  payment.refundDate = new Date();
+  payment.refundStatus =
+    "pending";
 
   await payment.save();
 
 
-  // Update Booking
-
-  booking.refundStatus = "completed";
+  booking.refundStatus =
+    "pending";
 
   await booking.save();
 
 
   return {
+
+    message:
+      "Refund request submitted successfully.",
+
     payment,
+
     booking,
-    message: "Dummy refund processed successfully.",
   };
 };
 
 
+// ======================================================
+// GET ORGANIZER PAYMENTS
+// ======================================================
+
+const getOrganizerPayments = async (
+  userId
+) => {
+
+  return await Payment.find({
+    organizer: userId,
+  })
+    .populate(
+      "user",
+      "name email profileImage"
+    )
+    .populate(
+      "event",
+      "title eventDate"
+    )
+    .populate("booking")
+    .sort({
+      createdAt: -1,
+    });
+};
+
 
 // ======================================================
-// Export
+// GET ADMIN PAYMENTS
+// ======================================================
+
+const getAdminPayments = async () => {
+
+  return await Payment.find()
+    .populate(
+      "user",
+      "name email profileImage"
+    )
+    .populate(
+      "organizer",
+      "name email organizationName organizationLogo"
+    )
+    .populate(
+      "event",
+      "title eventDate"
+    )
+    .populate("booking")
+    .sort({
+      createdAt: -1,
+    });
+};
+
+
+// ======================================================
+// GET PENDING REFUNDS
+// ======================================================
+
+const getPendingRefunds = async () => {
+
+  return await Payment.find({
+    refundStatus: "pending",
+  })
+    .populate(
+      "user",
+      "name email profileImage"
+    )
+    .populate(
+      "organizer",
+      "name email organizationName organizationLogo"
+    )
+    .populate(
+      "event",
+      "title eventDate"
+    )
+    .populate("booking")
+    .sort({
+      createdAt: -1,
+    });
+};
+
+
+// ======================================================
+// ADMIN PROCESS REFUND
+// ======================================================
+
+const adminProcessRefund = async (
+  paymentId
+) => {
+
+  const payment =
+    await Payment.findById(
+      paymentId
+    );
+
+
+  if (!payment) {
+    throw createError(
+      "Payment not found.",
+      404
+    );
+  }
+
+
+  if (
+    payment.refundStatus !==
+    "pending"
+  ) {
+    throw createError(
+      "This payment does not have a pending refund.",
+      400
+    );
+  }
+
+
+  const booking =
+    await Booking.findById(
+      payment.booking
+    );
+
+
+  if (!booking) {
+    throw createError(
+      "Booking not found.",
+      404
+    );
+  }
+
+
+  // --------------------------------------------------
+  // DUMMY REFUND
+  // --------------------------------------------------
+
+  payment.status =
+    payment.refundAmount >=
+    payment.grossAmount
+      ? "refunded"
+      : "partially_refunded";
+
+  payment.refundStatus =
+    "processed";
+
+  payment.refundedAt =
+    new Date();
+
+  await payment.save();
+
+
+  booking.refundStatus =
+    "processed";
+
+  await booking.save();
+
+
+  return {
+
+    message:
+      "Refund processed successfully.",
+
+    payment,
+
+    booking,
+
+    refundAmount:
+      payment.refundAmount,
+  };
+};
+
+
+// ======================================================
+// EXPORT
 // ======================================================
 
 module.exports = {
+
   createPayment,
+
   processDummyPayment,
+
   getPaymentById,
+
   getPaymentByBooking,
+
   processRefund,
+
+  getOrganizerPayments,
+
+  getAdminPayments,
+
+  getPendingRefunds,
+
+  adminProcessRefund,
+
+  getPlatformFeePercentage,
+
 };

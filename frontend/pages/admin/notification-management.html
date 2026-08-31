@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Notifications | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#457b9d",
+                        primaryDark: "#6D28D9",
+                        primaryLight: "#EDE9FE"
+                    }
+                }
+            }
+        };
+    </script>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="border-b border-gray-200 bg-white">
+
+        <div
+            class="flex items-center justify-between px-6 py-5 lg:px-8"
+        >
+
+            <!-- EventEase -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-extrabold tracking-tight text-primary"
+            >
+                <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+
+                <!-- My Account -->
+
+                <a
+                    href="./admin-profile.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
+                >
+                    My Account
+                </a>
+
+
+                <!-- Logout -->
+
+                <a
+                   href="./dashboard.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
+ >
+                    Dashbord
+            </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         MAIN
+    ========================================= -->
+
+    <main class="flex-1 px-6 py-8 lg:px-8">
+
+
+        <!-- ====================================
+              PAGE HEADER
+        ===================================== -->
+
+        <div
+            class="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
+        >
+
+            <div>
+
+                <p
+                    class="text-sm font-semibold uppercase tracking-wider text-primary"
+                >
+                    Admin Panel
+                </p>
+
+                <h1
+                    class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+                >
+                    Notification Management
+                </h1>
+
+                <p
+                    class="mt-3 max-w-2xl text-sm leading-6 text-gray-500"
+                >
+                    View and manage your latest notifications.
+                </p>
+
+            </div>
+
+
+            <!-- Actions -->
+
+            <div class="flex items-center gap-3">
+
+                <button
+                    id="refreshBtn"
+                    type="button"
+                    class="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+                >
+                    Refresh
+                </button>
+
+
+                <button
+                    id="markAllReadBtn"
+                    type="button"
+                    class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Mark All Read
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================
+             STATISTICS
+        ========================================= -->
+
+        <div class="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+
+            <!-- Total -->
+
+            <div
+                class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+            >
+
+                <p
+                    class="text-sm font-semibold text-gray-500"
+                >
+                    Total Notifications
+                </p>
+
+                <p
+                    id="totalNotifications"
+                    class="mt-2 text-3xl font-extrabold text-gray-900"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <!-- Unread -->
+
+            <div
+                class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+            >
+
+                <p
+                    class="text-sm font-semibold text-gray-500"
+                >
+                    Unread Notifications
+                </p>
+
+                <p
+                    id="unreadNotifications"
+                    class="mt-2 text-3xl font-extrabold text-primary"
+                >
+                    0
+                </p>
+
+            </div>
+
+
+            <!-- Read -->
+
+            <div
+                class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+            >
+
+                <p
+                    class="text-sm font-semibold text-gray-500"
+                >
+                    Read Notifications
+                </p>
+
+                <p
+                    id="readNotifications"
+                    class="mt-2 text-3xl font-extrabold text-green-600"
+                >
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================
+             FILTER
+        ========================================= -->
+
+        <div
+            class="mb-6 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+        >
+
+            <div
+                class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+            >
+
+                <div class="flex-1">
+
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Search notifications..."
+                        class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primaryLight"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <select
+                        id="typeFilter"
+                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 outline-none focus:border-primary md:w-48"
+                    >
+
+                        <option value="all">
+                            All Types
+                        </option>
+
+                        <option value="event">
+                            Event
+                        </option>
+
+                        <option value="booking">
+                            Booking
+                        </option>
+
+                        <option value="payment">
+                            Payment
+                        </option>
+
+                        <option value="refund">
+                            Refund
+                        </option>
+
+                        <option value="approval">
+                            Approval
+                        </option>
+
+                        <option value="system">
+                            System
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    id="clearFiltersBtn"
+                    type="button"
+                    class="rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-600 hover:bg-gray-50"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================
+             LOADING
+        ========================================= -->
+
+        <div
+            id="loadingState"
+            class="rounded-2xl border border-gray-100 bg-white p-12 text-center shadow-sm"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+            <p class="mt-4 text-sm font-medium text-gray-500">
+                Loading notifications...
+            </p>
+
+        </div>
+
+
+
+        <!-- ========================================
+             ERROR
+        ========================================= -->
+
+        <div
+            id="errorState"
+            class="hidden rounded-2xl border border-red-100 bg-red-50 p-8 text-center"
+        >
+
+            <p
+                class="text-lg font-bold text-red-700"
+            >
+                Failed to load notifications
+            </p>
+
+            <p
+                id="errorMessage"
+                class="mt-2 text-sm text-red-600"
+            >
+                Something went wrong.
+            </p>
+
+            <button
+                id="retryBtn"
+                type="button"
+                class="mt-5 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+
+
+        <!-- ========================================
+             EMPTY
+        ========================================= -->
+
+        <div
+            id="emptyState"
+            class="hidden rounded-2xl border border-gray-100 bg-white p-12 text-center shadow-sm"
+        >
+
+            <div class="text-5xl">
+                🔔
+            </div>
+
+            <h2
+                class="mt-4 text-xl font-bold text-gray-900"
+            >
+                No Notifications
+            </h2>
+
+            <p
+                class="mt-2 text-sm text-gray-500"
+            >
+                You don't have any notifications yet.
+            </p>
+
+        </div>
+
+
+
+        <!-- ========================================
+             NOTIFICATIONS
+        ========================================= -->
+
+        <div
+            id="notificationsSection"
+            class="hidden"
+        >
+
+            <div
+                class="mb-4 flex items-center justify-between"
+            >
+
+                <h2
+                    class="text-lg font-bold text-gray-900"
+                >
+                    Notifications
+                </h2>
+
+                <p
+                    id="notificationCountText"
+                    class="text-sm text-gray-500"
+                >
+                    0 notifications
+                </p>
+
+            </div>
+
+
+            <div
+                id="notificationsContainer"
+                class="space-y-4"
+            >
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ========================================
+         NOTIFICATION MODAL
+    ========================================= -->
+
+    <div
+        id="notificationModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-5"
+    >
+
+        <div
+            class="w-full max-w-lg rounded-2xl bg-white shadow-2xl"
+        >
+
+            <div
+                class="flex items-center justify-between border-b border-gray-100 px-6 py-5"
+            >
+
+                <h2
+                    id="modalTitle"
+                    class="text-lg font-bold text-gray-900"
+                >
+                    Notification
+                </h2>
+
+                <button
+                    id="closeModalBtn"
+                    type="button"
+                    class="text-2xl text-gray-400 hover:text-gray-700"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+
+            <div
+                id="modalContent"
+                class="p-6"
+            >
+            </div>
+
+
+            <div
+                class="border-t border-gray-100 px-6 py-4 text-right"
+            >
+
+                <button
+                    id="closeModalFooterBtn"
+                    type="button"
+                    class="rounded-xl bg-gray-100 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================
+         JAVASCRIPT
+    ========================================= -->
+
+    <script src="../../js/admin/admin-notification-management.js"></script>
+
+
+    <footer
+        class="mt-10 border-t border-gray-200 bg-white"
+    >
+
+        <div
+            class="flex flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p>
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <div>
+                    Developed By
+                    <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

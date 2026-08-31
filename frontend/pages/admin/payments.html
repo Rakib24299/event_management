@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Payments | EventEase</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4"
+                    }
+                }
+            }
+        };
+    </script>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <nav class="border-b border-gray-200 bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4"
+        >
+
+            <!-- Logo -->
+
+            <div>
+
+                <a
+                    href="../home.html"
+                    class="text-2xl font-bold text-[#e76f51]"
+                >
+                    EventEase
+                </a>
+
+                <p class="text-sm text-gray-500">
+                    Admin Panel
+                </p>
+
+            </div>
+
+
+            <!-- Dashboard -->
+
+            <a
+                href="./dashboard.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-[#e76f51] transition hover:bg-[#fce9e4]"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="mx-auto flex-1 max-w-7xl px-6 py-10">
+
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <div class="mb-8">
+
+            <p
+                class="text-sm font-semibold uppercase tracking-wide text-[#e76f51]"
+            >
+                Administration
+            </p>
+
+            <h1
+                class="mt-1 text-3xl font-bold text-gray-900"
+            >
+                Payment Management
+            </h1>
+
+            <p class="mt-2 text-gray-500">
+                View and monitor all payment transactions across EventEase.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SUMMARY CARDS
+        ================================================== -->
+
+        <div
+            class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        >
+
+            <!-- Total Payments -->
+
+            <div
+                class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+            >
+
+                <div class="flex items-start justify-between">
+
+                    <div>
+
+                        <p class="text-sm font-medium text-gray-500">
+                            Total Payments
+                        </p>
+
+                        <h2
+                            id="totalPayments"
+                            class="mt-2 text-3xl font-bold text-gray-900"
+                        >
+                            0
+                        </h2>
+
+                    </div>
+
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#fce9e4] text-xl"
+                    >
+                        💳
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Successful Payments -->
+
+            <div
+                class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+            >
+
+                <div class="flex items-start justify-between">
+
+                    <div>
+
+                        <p class="text-sm font-medium text-gray-500">
+                            Successful Payments
+                        </p>
+
+                        <h2
+                            id="successfulPayments"
+                            class="mt-2 text-3xl font-bold text-green-600"
+                        >
+                            0
+                        </h2>
+
+                    </div>
+
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-xl"
+                    >
+                        ✓
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Total Revenue -->
+
+            <div
+                class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+            >
+
+                <div class="flex items-start justify-between">
+
+                    <div>
+
+                        <p class="text-sm font-medium text-gray-500">
+                            Total Revenue
+                        </p>
+
+                        <h2
+                            id="totalRevenue"
+                            class="mt-2 text-3xl font-bold text-gray-900"
+                        >
+                            ৳0.00
+                        </h2>
+
+                    </div>
+
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-xl"
+                    >
+                        ৳
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Platform Revenue -->
+
+            <div
+                class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+            >
+
+                <div class="flex items-start justify-between">
+
+                    <div>
+
+                        <p class="text-sm font-medium text-gray-500">
+                            Platform Revenue
+                        </p>
+
+                        <h2
+                            id="platformRevenue"
+                            class="mt-2 text-3xl font-bold text-[#e76f51]"
+                        >
+                            ৳0.00
+                        </h2>
+
+                    </div>
+
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#fce9e4] text-xl"
+                    >
+                        📈
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             LOADING
+        ================================================== -->
+
+        <div
+            id="loading"
+            class="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-sm"
+        >
+
+            <div class="mb-4 flex justify-center">
+
+                <div
+                    class="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-[#e76f51]"
+                ></div>
+
+            </div>
+
+            <p class="text-gray-500">
+                Loading payment information...
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ERROR
+        ================================================== -->
+
+        <div
+            id="errorMessage"
+            class="mb-6 hidden rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+        ></div>
+
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div
+            id="emptyState"
+            class="hidden rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-sm"
+        >
+
+            <div class="mb-4 text-5xl">
+                💳
+            </div>
+
+            <h3 class="text-xl font-bold text-gray-900">
+                No Payments Found
+            </h3>
+
+            <p class="mt-2 text-gray-500">
+                There are currently no payment transactions in the system.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PAYMENT TABLE
+        ================================================== -->
+
+        <section
+            id="paymentSection"
+            class="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+        >
+
+            <!-- Table Header -->
+
+            <div class="border-b border-gray-200 px-6 py-5">
+
+                <div
+                    class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <div>
+
+                        <h2 class="text-xl font-bold text-gray-900">
+                            Payment Transactions
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            All customer payment transactions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Responsive Table -->
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full min-w-[1500px]">
+
+                    <thead class="bg-gray-50">
+
+                        <tr>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Transaction
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Customer
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Organizer
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Event
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Gross Amount
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Platform Fee
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Organizer Amount
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Method
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Status
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Date
+                            </th>
+
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                        id="paymentTableBody"
+                        class="divide-y divide-gray-100"
+                    >
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../../js/admin/payments.js"></script>
+
+
+    <footer
+        class="mt-10 border-t border-gray-200 bg-white"
+    >
+
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p>
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <div>
+                    Developed By
+                    <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

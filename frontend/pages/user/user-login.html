@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>User Login | EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ========================================
+         Tailwind Configuration
+    ========================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#244522",
+
+                        primaryLight: "#4f772d",
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- ========================================
+         Global CSS
+    ========================================= -->
+
+    <link
+        rel="stylesheet"
+        href="../../css/style.css"
+    >
+
+</head>
+
+
+<body class="bg-gray-50">
+
+
+    <!-- ========================================
+         Navbar
+    ========================================= -->
+
+    <div id="navbar"></div>
+
+
+    <!-- ========================================
+         Login Section
+    ========================================= -->
+
+    <main
+        class="
+            flex
+            min-h-[calc(100vh-64px)]
+            items-center
+            justify-center
+            px-4
+            py-10
+            sm:px-6
+            sm:py-14
+            lg:px-8
+            lg:py-16
+        "
+    >
+
+        <div
+            class="
+                w-full
+                max-w-6xl
+                overflow-hidden
+                rounded-2xl
+                bg-white
+                shadow-xl
+                shadow-gray-200/60
+                lg:grid
+                lg:grid-cols-2
+            "
+        >
+
+
+            <!-- ========================================
+                 Login Form Section
+            ========================================= -->
+
+            <div
+                class="
+                    flex
+                    items-center
+                    justify-center
+                    px-6
+                    py-10
+                    sm:px-10
+                    sm:py-12
+                    lg:px-14
+                    lg:py-16
+                    xl:px-20
+                "
+            >
+
+                <div class="w-full max-w-md">
+
+
+                    <!-- Logo -->
+
+                    <div
+                        class="
+                            mb-8
+                            flex
+                            items-center
+                            gap-3
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                h-11
+                                w-11
+                                items-center
+                                justify-center
+                                rounded-xl
+                                bg-primary
+                                text-lg
+                                font-bold
+                                text-white
+                            "
+                        >
+                            E
+                        </div>
+
+
+                        <div>
+
+                            <h1
+                                class="
+                                    text-xl
+                                    font-bold
+                                    tracking-tight
+                                    text-primary
+                                "
+                            >
+                                EventEase
+                            </h1>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-400
+                                "
+                            >
+                                Smart Event Management
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Heading -->
+
+                    <div class="mb-8">
+
+                        <div
+                            class="
+                                mb-3
+                                inline-flex
+                                items-center
+                                rounded-full
+                                bg-green-50
+                                px-3
+                                py-1
+                                text-xs
+                                font-semibold
+                                text-primary
+                            "
+                        >
+                            User Login
+                        </div>
+
+
+                        <h2
+                            class="
+                                text-3xl
+                                font-bold
+                                tracking-tight
+                                text-gray-900
+                                sm:text-4xl
+                            "
+                        >
+                            Welcome Back!
+                        </h2>
+
+
+                        <p
+                            class="
+                                mt-3
+                                text-sm
+                                leading-6
+                                text-gray-500
+                                sm:text-base
+                            "
+                        >
+                            Sign in to your user account and
+                            continue your EventEase journey.
+                        </p>
+
+                    </div>
+
+
+                    <!-- ========================================
+                         Login Error
+                    ========================================= -->
+
+                    <div
+                        id="loginError"
+                        class="
+                            mb-5
+                            hidden
+                            rounded-xl
+                            border
+                            border-red-200
+                            bg-red-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-red-600
+                        "
+                    >
+                    </div>
+
+
+                    <!-- ========================================
+                         Login Success
+                    ========================================= -->
+
+                    <div
+                        id="loginSuccess"
+                        class="
+                            mb-5
+                            hidden
+                            rounded-xl
+                            border
+                            border-green-200
+                            bg-green-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-green-700
+                        "
+                    >
+                    </div>
+
+
+                    <!-- ========================================
+                         Login Form
+                    ========================================= -->
+
+                    <form
+                        id="loginForm"
+                        class="space-y-5"
+                    >
+
+
+                        <!-- Email -->
+
+                        <div>
+
+                            <label
+                                for="email"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Email Address
+                            </label>
+
+
+                            <div class="relative">
+
+                                <div
+                                    class="
+                                        pointer-events-none
+                                        absolute
+                                        inset-y-0
+                                        left-0
+                                        flex
+                                        items-center
+                                        pl-4
+                                        text-gray-400
+                                    "
+                                >
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.7"
+                                        stroke="currentColor"
+                                        class="h-5 w-5"
+                                    >
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25H4.5a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0l-7.5-4.615A2.25 2.25 0 0 1 2.25 6.993V6.75"
+                                        />
+
+                                    </svg>
+
+                                </div>
+
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Enter your email"
+                                    autocomplete="email"
+                                    required
+                                    class="
+                                        h-12
+                                        w-full
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        bg-white
+                                        pl-12
+                                        pr-4
+                                        text-sm
+                                        text-gray-900
+                                        outline-none
+                                        transition
+                                        placeholder:text-gray-400
+                                        focus:border-primary
+                                        focus:ring-4
+                                        focus:ring-green-900/10
+                                    "
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Password -->
+
+                        <div>
+
+                            <div
+                                class="
+                                    mb-2
+                                    flex
+                                    items-center
+                                    justify-between
+                                "
+                            >
+
+                                <label
+                                    for="password"
+                                    class="
+                                        block
+                                        text-sm
+                                        font-medium
+                                        text-gray-800
+                                    "
+                                >
+                                    Password
+                                </label>
+
+
+                                <a
+                                    href="./forgot-password.html"
+                                    class="
+                                        text-xs
+                                        font-semibold
+                                        text-primary
+                                        transition
+                                        hover:text-primaryDark
+                                        sm:text-sm
+                                    "
+                                >
+                                    Forgot Password?
+                                </a>
+
+                            </div>
+
+
+                            <div class="relative">
+
+                                <!-- Lock Icon -->
+
+                                <div
+                                    class="
+                                        pointer-events-none
+                                        absolute
+                                        inset-y-0
+                                        left-0
+                                        flex
+                                        items-center
+                                        pl-4
+                                        text-gray-400
+                                    "
+                                >
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.7"
+                                        stroke="currentColor"
+                                        class="h-5 w-5"
+                                    >
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M16.5 10.5V7.875a4.5 4.5 0 0 0-9 0V10.5m-.75 0h10.5A1.5 1.5 0 0 1 18.75 12v7.125a1.5 1.5 0 0 1-1.5 1.5h-10.5a1.5 1.5 0 0 1-1.5-1.5V12a1.5 1.5 0 0 1 1.5-1.5Z"
+                                        />
+
+                                    </svg>
+
+                                </div>
+
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                    required
+                                    class="
+                                        h-12
+                                        w-full
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        bg-white
+                                        pl-12
+                                        pr-12
+                                        text-sm
+                                        text-gray-900
+                                        outline-none
+                                        transition
+                                        placeholder:text-gray-400
+                                        focus:border-primary
+                                        focus:ring-4
+                                        focus:ring-green-900/10
+                                    "
+                                >
+
+
+                                <!-- Show / Hide Password -->
+
+                                <button
+                                    type="button"
+                                    id="togglePassword"
+                                    aria-label="Show password"
+                                    class="
+                                        absolute
+                                        inset-y-0
+                                        right-0
+                                        flex
+                                        items-center
+                                        px-4
+                                        text-gray-400
+                                        transition
+                                        hover:text-primary
+                                    "
+                                >
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.7"
+                                        stroke="currentColor"
+                                        class="h-5 w-5"
+                                    >
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.423 7.51 7.36 4.5 12 4.5c4.64 0 8.577 3.01 9.964 7.178.07.21.07.434 0 .644C20.577 16.49 16.64 19.5 12 19.5c-4.64 0-8.577-3.01-9.964-7.178Z"
+                                        />
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                        />
+
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Remember Me -->
+
+                        <div class="flex items-center">
+
+                            <label
+                                class="
+                                    flex
+                                    cursor-pointer
+                                    items-center
+                                    gap-2
+                                "
+                            >
+
+                                <input
+                                    type="checkbox"
+                                    id="rememberMe"
+                                    class="
+                                        h-4
+                                        w-4
+                                        rounded
+                                        border-gray-300
+                                        text-primary
+                                        focus:ring-primary
+                                    "
+                                >
+
+                                <span
+                                    class="
+                                        text-sm
+                                        text-gray-500
+                                    "
+                                >
+                                    Remember me
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+                        <!-- Login Button -->
+
+                        <button
+                            type="submit"
+                            id="loginButton"
+                            class="
+                                flex
+                                h-12
+                                w-full
+                                items-center
+                                justify-center
+                                rounded-xl
+                                bg-primary
+                                px-5
+                                text-sm
+                                font-semibold
+                                text-white
+                                transition
+                                hover:bg-primaryDark
+                                hover:shadow-lg
+                                hover:shadow-green-900/10
+                                focus:outline-none
+                                focus:ring-4
+                                focus:ring-green-900/20
+                                disabled:cursor-not-allowed
+                                disabled:opacity-60
+                            "
+                        >
+                            Sign In
+                        </button>
+
+                    </form>
+
+
+                    <!-- ========================================
+                         Register
+                    ========================================= -->
+
+                    <p
+                        class="
+                            mt-7
+                            text-center
+                            text-sm
+                            text-gray-500
+                        "
+                    >
+
+                        Don't have an account?
+
+                        <a
+                            href="../register.html"
+                            class="
+                                font-semibold
+                                text-primary
+                                transition
+                                hover:text-primaryDark
+                            "
+                        >
+                            Create Account
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================
+                 Right Branding Section
+            ========================================= -->
+
+            <div
+                class="
+                    relative
+                    hidden
+                    overflow-hidden
+                    bg-primary
+                    lg:flex
+                    lg:min-h-[680px]
+                    lg:items-center
+                    lg:justify-center
+                    lg:p-12
+                    xl:p-16
+                "
+            >
+
+                <!-- Decorative Circle -->
+
+                <div
+                    class="
+                        absolute
+                        -right-24
+                        -top-24
+                        h-72
+                        w-72
+                        rounded-full
+                        bg-white/10
+                    "
+                ></div>
+
+
+                <div
+                    class="
+                        absolute
+                        -bottom-32
+                        -left-20
+                        h-80
+                        w-80
+                        rounded-full
+                        bg-white/5
+                    "
+                ></div>
+
+
+                <div
+                    class="
+                        relative
+                        z-10
+                        max-w-lg
+                        text-white
+                    "
+                >
+
+                    <!-- Small Badge -->
+
+                    <div
+                        class="
+                            inline-flex
+                            items-center
+                            gap-2
+                            rounded-full
+                            border
+                            border-white/20
+                            bg-white/10
+                            px-4
+                            py-2
+                            text-xs
+                            font-medium
+                            text-white/90
+                        "
+                    >
+
+                        <span
+                            class="
+                                h-2
+                                w-2
+                                rounded-full
+                                bg-white
+                            "
+                        ></span>
+
+                        User Account
+
+                    </div>
+
+
+                    <!-- Heading -->
+
+                    <h2
+                        class="
+                            mt-7
+                            text-4xl
+                            font-bold
+                            leading-tight
+                            xl:text-5xl
+                        "
+                    >
+                        Discover.
+                        <br>
+                        Book.
+                        <br>
+                        Experience.
+                    </h2>
+
+
+                    <!-- Description -->
+
+                    <p
+                        class="
+                            mt-6
+                            max-w-md
+                            text-sm
+                            leading-7
+                            text-white/75
+                            xl:text-base
+                        "
+                    >
+                        Find exciting events, reserve your
+                        tickets and manage your bookings
+                        easily from one place.
+                    </p>
+
+
+                    <!-- Feature List -->
+
+                    <div class="mt-8 space-y-4">
+
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/10
+                                "
+                            >
+                                ✓
+                            </div>
+
+                            <span
+                                class="
+                                    text-sm
+                                    text-white/85
+                                "
+                            >
+                                Discover upcoming events
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/10
+                                "
+                            >
+                                ✓
+                            </div>
+
+                            <span
+                                class="
+                                    text-sm
+                                    text-white/85
+                                "
+                            >
+                                Book tickets securely
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/10
+                                "
+                            >
+                                ✓
+                            </div>
+
+                            <span
+                                class="
+                                    text-sm
+                                    text-white/85
+                                "
+                            >
+                                Manage your bookings easily
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Quote -->
+
+                    <div
+                        class="
+                            mt-10
+                            border-l-2
+                            border-white/30
+                            pl-5
+                        "
+                    >
+
+                        <p
+                            class="
+                                text-sm
+                                italic
+                                leading-6
+                                text-white/70
+                            "
+                        >
+                            "Everything you need to
+                            experience better events."
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ========================================
+         Footer
+    ========================================= -->
+
+    <div id="footer"></div>
+
+
+    <!-- ========================================
+         Component Loader
+    ========================================= -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <!-- ========================================
+         Load Navbar & Footer
+    ========================================= -->
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "navbar",
+                "../../components/navbar.html"
+            ),
+
+            loadComponent(
+                "footer",
+                "../../components/footer.html"
+            )
+
+        ])
+        .then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src = "../../js/navbar.js";
+
+            document.body.appendChild(script);
+
+        });
+
+    </script>
+
+
+    <!-- ========================================
+         User Login JavaScript
+    ========================================= -->
+
+    <script src="../../js/user/user-login.js"></script>
+
+
+</body>
+
+</html>

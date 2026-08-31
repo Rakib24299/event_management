@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard | EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ========================================
+         Tailwind Configuration
+    ========================================= -->
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#457b9d",
+
+                        primaryDark: "#35627d",
+
+                        primaryLight: "#6b9bb8",
+
+                    },
+
+                    boxShadow: {
+
+                        soft:
+                            "0 10px 30px rgba(0, 0, 0, 0.06)",
+
+                    },
+
+                },
+
+            },
+
+        };
+
+    </script>
+
+
+    <!-- ========================================
+         Google Font
+    ========================================= -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ========================================
+         Custom Style
+    ========================================= -->
+    <style>
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="border-b border-gray-200 bg-white">
+
+        <div
+            class="flex items-center justify-between px-6 py-5 lg:px-8"
+        >
+
+            <!-- EventEase -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-extrabold tracking-tight text-primary" > 
+                 <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+
+                <!-- Notification -->
+
+                <a
+                    href="./notification-management.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
+                    title="Notifications"  >
+
+                    🔔
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- My Account -->
+
+                <a
+                    href="./admin-profile.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
+                >
+                    My Account
+                </a>
+
+
+                <!-- Logout -->
+
+                <button
+                    id="logoutBtn"
+                    type="button"
+                    class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         MAIN
+    ========================================= -->
+
+    <main class="flex-1 px-6 py-10 lg:px-8">
+
+
+        <!-- ====================================
+             PAGE HEADER
+        ===================================== -->
+
+        <div class="mb-8">
+
+            <p
+                class="text-sm font-semibold uppercase tracking-wider text-primary"
+            >
+                Admin Panel
+            </p>
+
+
+            <h1
+                class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+            >
+                Admin Dashboard
+            </h1>
+
+
+            <p
+                class="mt-3 max-w-2xl text-sm leading-6 text-gray-500"
+            >
+                Manage organizers, users, events, bookings, categories
+                and the EventEase platform.
+            </p>
+
+        </div>
+
+
+
+        <!-- ====================================
+             LOADING STATE
+        ===================================== -->
+
+        <div
+            id="loadingState"
+            class="rounded-3xl bg-white p-10 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+
+            <p
+                class="mt-4 text-sm text-gray-500"
+            >
+                Loading dashboard...
+            </p>
+
+        </div>
+
+
+
+        <!-- ====================================
+             DASHBOARD CONTENT
+        ===================================== -->
+
+        <div
+            id="dashboardContent"
+            class="hidden"
+        >
+
+
+            <!-- ==================================
+                 STATISTICS
+            =================================== -->
+
+            <section
+                class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            >
+
+
+                <!-- TOTAL USERS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight/20 text-2xl"
+                        >
+                            👥
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Users
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="totalUsers"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Total registered users
+                    </p>
+
+                </div>
+
+
+
+                <!-- TOTAL ORGANIZERS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight/20 text-2xl"
+                        >
+                            🧑‍💼
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Organizers
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="totalOrganizers"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Total organizers
+                    </p>
+
+                </div>
+
+
+
+                <!-- PENDING ORGANIZERS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-2xl"
+                        >
+                            ⏳
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Approval
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="pendingOrganizerCount"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Pending organizer approvals
+                    </p>
+
+                </div>
+
+
+
+                <!-- ACTIVE EVENTS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight/20 text-2xl"
+                        >
+                            📅
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Events
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="activeEvents"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Active events
+                    </p>
+
+                </div>
+
+
+
+                <!-- COMPLETED EVENTS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-2xl"
+                        >
+                            ✅
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Completed
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="completedEvents"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Completed events
+                    </p>
+
+                </div>
+
+
+
+                <!-- TOTAL BOOKINGS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-2xl"
+                        >
+                            📋
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Bookings
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="totalBookings"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Total bookings
+                    </p>
+
+                </div>
+
+
+
+                <!-- CONFIRMED BOOKINGS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-2xl"
+                        >
+                            ✔️
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Confirmed
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="confirmedBookings"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Confirmed bookings
+                    </p>
+
+                </div>
+
+
+
+                <!-- TOTAL TICKETS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-2xl"
+                        >
+                            🎟️
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Tickets
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="totalTickets"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Tickets sold
+                    </p>
+
+                </div>
+
+
+
+                <!-- TOTAL REVENUE -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-2xl"
+                        >
+                            ৳
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Revenue
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="totalRevenue"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        ৳0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Total revenue
+                    </p>
+
+                </div>
+
+
+
+                <!-- TOTAL EVENTS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight/20 text-2xl"
+                        >
+                            📊
+                        </div>
+
+                        <span
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Overview
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        id="totalEvents"
+                        class="mt-6 text-3xl font-extrabold text-gray-900"
+                    >
+                        0
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Total events
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================
+                 QUICK ACTIONS
+            =================================== -->
+
+            <section class="mt-10">
+
+                <div class="mb-5">
+
+                    <h2
+                        class="text-xl font-bold text-gray-900"
+                    >
+                        Quick Actions
+                    </h2>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Quickly access the main admin sections.
+                    </p>
+
+                </div>
+
+
+                <!-- IMPORTANT:
+                     Categories card is inside this grid
+                -->
+
+                <div
+                    class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                >
+
+
+                    <!-- ORGANIZER APPROVAL -->
+
+                    <a
+                        href="./organizer-approval.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-2xl"
+                        >
+                            ⏳
+                        </div>
+
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Organizer Approval
+                        </h3>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            Review and approve pending organizer registrations.
+                        </p>
+
+                    </a>
+
+
+
+                    <!-- USERS -->
+
+                    <a
+                        href="./users.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight/20 text-2xl"
+                        >
+                            👥
+                        </div>
+
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Manage Users
+                        </h3>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            View and manage registered users.
+                        </p>
+
+                    </a>
+
+
+
+                    <!-- EVENTS -->
+
+                    <a
+                        href="./events.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-2xl"
+                        >
+                            📅
+                        </div>
+
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Manage Events
+                        </h3>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            Review and manage platform events.
+                        </p>
+
+                    </a>
+
+
+
+                    <!-- BOOKINGS -->
+
+                    <a
+                        href="./bookings.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-2xl"
+                        >
+                            🎟️
+                        </div>
+
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Manage Bookings
+                        </h3>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            View booking and ticket information.
+                        </p>
+
+                    </a>
+
+
+
+                    <!-- REVENUE HISTORY -->
+
+                    <a
+                        href="./revenue-history.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-2xl"
+                        >
+                            📊
+                        </div>
+
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Revenue History
+                        </h3>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            View platform payment and revenue information.
+                        </p>
+
+                    </a>
+
+
+                    <!-- ==================================
+                         CATEGORIES
+                    =================================== -->
+
+                    <a
+                        href="./categories.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-2xl"
+                        >
+                            🏷️
+                        </div>
+
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Manage Categories
+                        </h3>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            Create, update and manage event categories.
+                        </p>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================
+                 RECENT EVENTS + PENDING APPROVAL
+            =================================== -->
+
+            <section
+                class="mt-10 grid gap-6 lg:grid-cols-2"
+            >
+
+
+                <!-- RECENT EVENTS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div>
+
+                            <h2
+                                class="text-xl font-bold text-gray-900"
+                            >
+                                Recent Events
+                            </h2>
+
+
+                            <p
+                                class="mt-1 text-sm text-gray-500"
+                            >
+                                Latest events on the platform.
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="./events.html"
+                            class="text-sm font-semibold text-primary transition hover:text-primaryDark"
+                        >
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        id="recentEvents"
+                        class="mt-6 space-y-3"
+                    >
+
+                        <div
+                            class="rounded-2xl bg-gray-50 p-6 text-center"
+                        >
+
+                            <p
+                                class="text-sm text-gray-500"
+                            >
+                                Recent event information will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PENDING ORGANIZERS -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div>
+
+                            <h2
+                                class="text-xl font-bold text-gray-900"
+                            >
+                                Pending Approvals
+                            </h2>
+
+
+                            <p
+                                class="mt-1 text-sm text-gray-500"
+                            >
+                                Organizers waiting for approval.
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="./organizer-approval.html"
+                            class="text-sm font-semibold text-primary transition hover:text-primaryDark"
+                        >
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        id="pendingOrganizerList"
+                        class="mt-6 space-y-3"
+                    >
+
+                        <div
+                            class="rounded-2xl bg-gray-50 p-6 text-center"
+                        >
+
+                            <p
+                                class="text-sm text-gray-500"
+                            >
+                                Loading pending organizers...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================
+                 ERROR STATE
+            =================================== -->
+
+            <div
+                id="errorState"
+                class="mt-8 hidden rounded-3xl bg-white p-8 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-2xl"
+                >
+                    ⚠️
+                </div>
+
+
+                <h3
+                    class="mt-4 font-bold text-gray-900"
+                >
+                    Failed to Load Dashboard
+                </h3>
+
+
+                <p
+                    id="errorMessage"
+                    class="mt-2 text-sm text-gray-500"
+                >
+                    Please try again later.
+                </p>
+
+
+                <button
+                    id="retryBtn"
+                    type="button"
+                    class="mt-5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
+    <footer
+        class="mt-10 border-t border-gray-200 bg-white"
+    >
+
+        <div
+            class="flex flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p>
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <div>
+                    Developed By
+                    <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- ========================================
+         JavaScript
+    ========================================= -->
+
+    <script src="../../js/components.js"></script>
+
+    <script src="../../js/admin/dashboard.js"></script>
+
+</body>
+
+</html>

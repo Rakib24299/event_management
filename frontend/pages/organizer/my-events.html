@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Events | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4",
+                    },
+
+                    boxShadow: {
+                        soft:
+                            "0 10px 30px rgba(0,0,0,0.07)"
+                    }
+
+                }
+            }
+        };
+    </script>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-bold text-primary"
+            >
+                <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <a
+                href="./organizer-profile.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+            >
+                My Account
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main class="flex-1">
+        <div
+            class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8"
+        >
+
+
+        <!-- ======================================
+             PAGE HEADER
+        ======================================= -->
+
+        <div
+            class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"
+        >
+
+            <div>
+
+                <a
+                    href="./dashboard.html"
+                    class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-primary"
+                >
+                    <span class="text-lg">←</span>
+                    Dashboard
+                </a>
+
+                <h1
+                    class="mt-4 text-3xl font-bold text-gray-900 sm:text-4xl"
+                >
+                    My Events
+                </h1>
+
+                <p
+                    class="mt-2 text-sm leading-6 text-gray-500 sm:text-base"
+                >
+                    Manage all the events created by your organization.
+                </p>
+
+            </div>
+
+
+            <!-- Create Event -->
+
+            <a
+                href="./create-event.html"
+                class="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primaryDark focus:outline-none focus:ring-4 focus:ring-primary/20"
+            >
+                + Create Event
+            </a>
+
+        </div>
+
+
+        <!-- ======================================
+             FILTER / SEARCH
+        ======================================= -->
+
+        <section
+            class="rounded-3xl bg-white p-5 shadow-soft sm:p-6"
+        >
+
+            <div
+                class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+            >
+
+
+                <!-- Search -->
+
+                <div class="w-full lg:max-w-md">
+
+                    <label
+                        for="eventSearch"
+                        class="text-sm font-semibold text-gray-700"
+                    >
+                        Search Events
+                    </label>
+
+                    <div class="relative mt-2">
+
+                        <span
+                            class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                        >
+                            🔍
+                        </span>
+
+                        <input
+                            id="eventSearch"
+                            type="text"
+                            placeholder="Search by event name..."
+                            class="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm text-gray-700 outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="w-full lg:max-w-xs">
+
+                    <label
+                        for="statusFilter"
+                        class="text-sm font-semibold text-gray-700"
+                    >
+                        Event Status
+                    </label>
+
+                    <select
+                        id="statusFilter"
+                        class="mt-2 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
+                    >
+
+                        <option value="all">
+                            All Events
+                        </option>
+
+                        <option value="published">
+                            Published
+                        </option>
+
+                        <option value="draft">
+                            Draft
+                        </option>
+
+                        <option value="completed">
+                            Completed
+                        </option>
+
+                        <option value="cancelled">
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             LOADING
+        ======================================= -->
+
+        <div
+            id="eventsLoading"
+            class="mt-8 rounded-3xl bg-white p-12 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+            <p
+                class="mt-4 text-sm text-gray-500"
+            >
+                Loading your events...
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             ERROR
+        ======================================= -->
+
+        <div
+            id="eventsError"
+            class="mt-8 hidden rounded-3xl bg-white p-8 text-center shadow-soft"
+        >
+
+            <div class="text-5xl">
+                ⚠️
+            </div>
+
+            <h2
+                class="mt-4 text-xl font-bold text-gray-900"
+            >
+                Unable to Load Events
+            </h2>
+
+            <p
+                id="eventsErrorMessage"
+                class="mt-2 text-sm leading-6 text-gray-500"
+            >
+                Something went wrong while loading your events.
+            </p>
+
+            <button
+                id="retryEventsButton"
+                type="button"
+                class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             EMPTY
+        ======================================= -->
+
+        <div
+            id="eventsEmpty"
+            class="mt-8 hidden rounded-3xl border border-dashed border-gray-200 bg-white p-10 text-center shadow-soft"
+        >
+
+            <div class="text-6xl">
+                📅
+            </div>
+
+            <h2
+                class="mt-5 text-xl font-bold text-gray-900"
+            >
+                No Events Found
+            </h2>
+
+            <p
+                id="emptyMessage"
+                class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500"
+            >
+                You haven't created any events yet.
+            </p>
+
+            <a
+                href="./create-event.html"
+                class="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Create Your First Event
+            </a>
+
+        </div>
+
+
+        <!-- ======================================
+             EVENTS CONTENT
+        ======================================= -->
+
+        <section
+            id="eventsContent"
+            class="mt-8 hidden"
+        >
+
+            <div
+                id="eventsList"
+                class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+            ></div>
+
+        </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer
+        class="border-t border-gray-100 bg-white"
+    >
+
+        <div
+            class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+        >
+
+            <div
+                class="flex flex-col items-center justify-between gap-4 sm:flex-row"
+            >
+
+                <p class="text-sm text-gray-500">
+                    © 2026 EventEase. All rights reserved.
+                </p>
+
+                <p class="text-sm text-gray-500">
+                    Developed by <span class="font-bold text-primary">Rakib</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ======================================
+         MY EVENTS JS
+    ======================================= -->
+
+    <script src="../../js/organizer/my-events.js"></script>
+
+
+</body>
+
+</html>

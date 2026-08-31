@@ -370,3 +370,24 @@ img {
     }
 
 }
+
+
+/* =========================================
+   Hero Image Slider
+======================================== */
+
+.hero-slider-track {
+    transition: transform 0.7s ease-in-out;
+}
+
+.hero-slide {
+    aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 1023px) {
+
+    .hero-slide {
+        aspect-ratio: 16 / 9;
+    }
+
+}

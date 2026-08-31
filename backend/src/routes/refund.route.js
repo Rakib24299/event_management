@@ -1,24 +1,65 @@
 const express = require("express");
 
-const refundController = require("../controllers/refund.controller");
+const refundController =
+  require("../controllers/refund.controller");
 
-const authMiddleware = require("../middlewares/auth.middleware");
-const roleMiddleware = require("../middlewares/role.middleware");
-const validateRequest = require("../middlewares/validateRequest");
+const authMiddleware =
+  require("../middlewares/auth.middleware");
 
-const {refundPaymentSchema,} = require("../validations/payment.validation");
+const roleMiddleware =
+  require("../middlewares/role.middleware");
+
 
 const router = express.Router();
 
 
+// ======================================================
+// Get Refund Information For Booking
+// USER ONLY
+// ======================================================
 
-// Process Refund***
+router.get(
 
-router.patch("/:paymentId",
+  "/booking/:bookingId",
+
   authMiddleware,
+
+  refundController.getRefundInformation
+
+);
+
+
+// ======================================================
+// Get My Refunds
+// USER ONLY
+// ======================================================
+
+router.get(
+
+  "/my-refunds",
+
+  authMiddleware,
+
+  refundController.getMyRefunds
+
+);
+
+
+// ======================================================
+// Process Refund
+// ADMIN ONLY
+// ======================================================
+
+router.patch(
+
+  "/:paymentId",
+
+  authMiddleware,
+
   roleMiddleware("admin"),
-  validateRequest(refundPaymentSchema),
+
   refundController.processRefund
+
 );
 
 

@@ -56,6 +56,18 @@ const categorySchema = new Schema(
             default: "active",
         },
 
+        isDeleted :
+        {
+            type : Boolean,
+            default : false,
+        },
+
+        deletedAt :
+        {
+            type : Date,
+            default : null,
+        },
+
     },
 
     {

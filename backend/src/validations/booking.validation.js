@@ -1,66 +1,89 @@
-const { z } = require("zod");
-const objectIdSchema = require("./objectId.validation");
+const Joi = require("joi");
 
+// ======================================================
+// CREATE BOOKING
+// ======================================================
 
-// const objectIdSchema = z
-//   .string()
-//   .regex(/^[0-9a-fA-F]{24}$/, "Invalid ID format");
+const createBookingSchema = Joi.object({
+  eventId: Joi.string()
+    .required()
+    .messages({
+      "string.empty": "Event ID is required.",
+      "any.required": "Event ID is required.",
+    }),
 
-
-const createBookingSchema = z.object(
-    {
-        body: z.object(
-         {
-           event: objectIdSchema,
-
-            ticketQuantity: z
-            .number()
-            .int()
-            .min(1, "At least 1 ticket is required"),
-
-            bookingOtp: z
-            .string()
-            .length(6, "OTP must be exactly 6 digits")
-            .optional(),
-        }),
+  ticketQuantity: Joi.number()
+    .integer()
+    .min(1)
+    .max(10)
+    .required()
+    .messages({
+      "number.base": "Ticket quantity must be a number.",
+      "number.integer":
+        "Ticket quantity must be a whole number.",
+      "number.min":
+        "At least 1 ticket is required.",
+      "number.max":
+        "You cannot buy more than 10 tickets at once.",
+      "any.required":
+        "Ticket quantity is required.",
+    }),
 });
 
-const verifyBookingOtpSchema = z.object(
-{
-        body: z.object(
-        {
-            bookingId: z
-            .string()
-            .min(1, "Booking ID is required"),
+// ======================================================
+// VERIFY BOOKING OTP
+// ======================================================
 
-            otp: z
-            .string()
-            .length(6, "OTP must be exactly 6 digits"),
-        }),
+const verifyBookingOtpSchema = Joi.object({
+  bookingId: Joi.string()
+    .required()
+    .messages({
+      "string.empty":
+        "Booking ID is required.",
+      "any.required":
+        "Booking ID is required.",
+    }),
+
+  otp: Joi.string()
+    .pattern(/^\d{6}$/)
+    .required()
+    .messages({
+      "string.empty":
+        "OTP is required.",
+      "string.pattern.base":
+        "OTP must be a 6-digit number.",
+      "any.required":
+        "OTP is required.",
+    }),
 });
 
+// ======================================================
+// UPDATE BOOKING STATUS
+// ======================================================
 
-const cancelBookingSchema = z.object(
-    {
-        body: z.object(
-        {
-            bookingId: z
-            .string()
-            .min(1, "Booking ID is required"),
-        }),
+const updateBookingStatusSchema = Joi.object({
+  status: Joi.string()
+    .valid(
+      "pending",
+      "confirmed",
+      "cancelled",
+      "completed"
+    )
+    .required()
+    .messages({
+      "any.only":
+        "Invalid booking status.",
+      "any.required":
+        "Booking status is required.",
+    }),
 });
 
-const updateBookingStatusSchema = z.object(
-    {
-        body: z.object(
-        {
-            bookingStatus: z.enum(["pending","confirmed","cancelled","completed",]),
-        }),
-});
+// ======================================================
+// EXPORT
+// ======================================================
 
 module.exports = {
-        createBookingSchema,
-        verifyBookingOtpSchema,
-        cancelBookingSchema,
-        updateBookingStatusSchema,
+  createBookingSchema,
+  verifyBookingOtpSchema,
+  updateBookingStatusSchema,
 };

@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Payment Details | EventEase</title>
+
+
+    <!-- =========================================
+         Tailwind CSS
+    ========================================== -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- =========================================
+         Tailwind Configuration
+    ========================================== -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#e76f51",
+
+                        primaryDark: "#c9553b",
+
+                        primaryLight: "#fce9e4",
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- =========================================
+         Header
+    ========================================== -->
+
+    <header class="border-b border-gray-200 bg-white">
+
+        <div
+            class="
+                mx-auto
+                flex
+                max-w-7xl
+                items-center
+                justify-between
+                px-6
+                py-4
+            "
+        >
+
+            <!-- Logo -->
+
+            <div>
+
+                <a
+                    href="../home.html"
+                    class="
+                        text-2xl
+                        font-bold
+                        text-[#e76f51]
+                    "
+                >
+                    EventEase
+                </a>
+
+                <p class="text-sm text-gray-500">
+                    Admin Panel
+                </p>
+
+            </div>
+
+
+            <!-- Dashboard -->
+
+            <a
+                href="./dashboard.html"
+                class="
+                    rounded-xl
+                    px-4
+                    py-2
+                    text-sm
+                    font-semibold
+                    text-[#e76f51]
+                    transition
+                    hover:bg-[#fce9e4]
+                "
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================
+         Main
+    ========================================== -->
+
+    <main
+        class="
+            mx-auto
+            flex-1
+            max-w-5xl
+            px-6
+            py-10
+        "
+    >
+
+
+        <!-- =====================================
+             Back Button
+        ====================================== -->
+
+        <div class="mb-6">
+
+            <a
+                href="./payments.html"
+                class="
+                    inline-flex
+                    items-center
+                    gap-2
+                    rounded-xl
+                    px-3
+                    py-2
+                    text-sm
+                    font-semibold
+                    text-gray-600
+                    transition
+                    hover:bg-[#fce9e4]
+                    hover:text-[#e76f51]
+                "
+            >
+
+                <span class="text-lg">
+                    ←
+                </span>
+
+                Back to Payments
+
+            </a>
+
+        </div>
+
+
+
+        <!-- =====================================
+             Page Heading
+        ====================================== -->
+
+        <div class="mb-8">
+
+            <p
+                class="
+                    text-sm
+                    font-semibold
+                    uppercase
+                    tracking-wide
+                    text-[#e76f51]
+                "
+            >
+                Administration
+            </p>
+
+            <h1
+                class="
+                    mt-1
+                    text-3xl
+                    font-bold
+                    text-gray-900
+                "
+            >
+                Payment Details
+            </h1>
+
+            <p class="mt-2 text-gray-500">
+
+                View complete information about
+                this payment transaction.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- =====================================
+             Loading
+        ====================================== -->
+
+        <div
+            id="loading"
+            class="
+                rounded-2xl
+                border
+                border-gray-200
+                bg-white
+                p-12
+                text-center
+                shadow-sm
+            "
+        >
+
+            <div class="mb-4 flex justify-center">
+
+                <div
+                    class="
+                        h-10
+                        w-10
+                        animate-spin
+                        rounded-full
+                        border-4
+                        border-gray-200
+                        border-t-[#e76f51]
+                    "
+                ></div>
+
+            </div>
+
+            <p class="text-gray-500">
+
+                Loading payment details...
+
+            </p>
+
+        </div>
+
+
+
+        <!-- =====================================
+             Error
+        ====================================== -->
+
+        <div
+            id="errorMessage"
+            class="
+                mb-6
+                hidden
+                rounded-xl
+                border
+                border-red-200
+                bg-red-50
+                px-5
+                py-4
+                text-sm
+                text-red-700
+            "
+        ></div>
+
+
+
+        <!-- =====================================
+             Payment Content
+        ====================================== -->
+
+        <section
+            id="paymentContent"
+            class="
+                hidden
+                overflow-hidden
+                rounded-2xl
+                border
+                border-gray-200
+                bg-white
+                shadow-sm
+            "
+        >
+
+
+            <!-- =================================
+                 Transaction Header
+            ================================== -->
+
+            <div
+                class="
+                    border-b
+                    border-gray-200
+                    bg-[#fce9e4]
+                    px-6
+                    py-6
+                    sm:px-8
+                "
+            >
+
+                <div
+                    class="
+                        flex
+                        flex-col
+                        gap-4
+                        sm:flex-row
+                        sm:items-center
+                        sm:justify-between
+                    "
+                >
+
+                    <div>
+
+                        <p
+                            class="
+                                text-sm
+                                font-medium
+                                text-gray-500
+                            "
+                        >
+                            Transaction ID
+                        </p>
+
+                        <h2
+                            id="transactionId"
+                            class="
+                                mt-1
+                                break-all
+                                text-lg
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            --
+                        </h2>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div
+                        id="paymentStatus"
+                        class="w-fit"
+                    >
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 Main Content
+            ================================== -->
+
+            <div class="p-6 sm:p-8">
+
+
+                <!-- =================================
+                     Financial Summary
+                ================================== -->
+
+                <div>
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Financial Summary
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Complete financial breakdown
+                            of this transaction.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                            lg:grid-cols-3
+                        "
+                    >
+
+
+                        <!-- Gross Amount -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-5
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Gross Amount
+                            </p>
+
+                            <p
+                                id="grossAmount"
+                                class="
+                                    mt-2
+                                    text-2xl
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                ৳0.00
+                            </p>
+
+                        </div>
+
+
+                        <!-- Platform Fee -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-5
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Platform Fee
+                            </p>
+
+                            <p
+                                id="platformFee"
+                                class="
+                                    mt-2
+                                    text-2xl
+                                    font-bold
+                                    text-[#e76f51]
+                                "
+                            >
+                                ৳0.00
+                            </p>
+
+                        </div>
+
+
+                        <!-- Organizer Amount -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-5
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Organizer Amount
+                            </p>
+
+                            <p
+                                id="organizerAmount"
+                                class="
+                                    mt-2
+                                    text-2xl
+                                    font-bold
+                                    text-green-600
+                                "
+                            >
+                                ৳0.00
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Payment Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Payment Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Basic information about
+                            the payment.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                        "
+                    >
+
+
+                        <!-- Payment Method -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Payment Method
+                            </p>
+
+                            <p
+                                id="paymentMethod"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    capitalize
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Paid At -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Paid At
+                            </p>
+
+                            <p
+                                id="paidAt"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Created At -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Created At
+                            </p>
+
+                            <p
+                                id="createdAt"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Updated At -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Updated At
+                            </p>
+
+                            <p
+                                id="updatedAt"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Session Key -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Session Key
+                            </p>
+
+                            <p
+                                id="sessionKey"
+                                class="
+                                    mt-2
+                                    break-all
+                                    text-sm
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Validation ID -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Validation ID
+                            </p>
+
+                            <p
+                                id="validationId"
+                                class="
+                                    mt-2
+                                    break-all
+                                    text-sm
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Customer Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Customer Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Customer who made
+                            this payment.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                        "
+                    >
+
+                        <!-- Customer Name -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Customer Name
+                            </p>
+
+                            <p
+                                id="customerName"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Customer Email -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Customer Email
+                            </p>
+
+                            <p
+                                id="customerEmail"
+                                class="
+                                    mt-2
+                                    break-all
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Organizer Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Organizer Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Organizer associated
+                            with this payment.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                        "
+                    >
+
+                        <!-- Organizer Name -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Organizer Name
+                            </p>
+
+                            <p
+                                id="organizerName"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Organizer Email -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Organizer Email
+                            </p>
+
+                            <p
+                                id="organizerEmail"
+                                class="
+                                    mt-2
+                                    break-all
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Event Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Event Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Event associated with
+                            this payment.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                        "
+                    >
+
+                        <!-- Event Name -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Event Name
+                            </p>
+
+                            <p
+                                id="eventName"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Event Date -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Event Date
+                            </p>
+
+                            <p
+                                id="eventDate"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Event Venue -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                                sm:col-span-2
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Venue
+                            </p>
+
+                            <p
+                                id="eventVenue"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Booking Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Booking Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Booking associated
+                            with this payment.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                        "
+                    >
+
+                        <!-- Booking ID -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Booking ID
+                            </p>
+
+                            <p
+                                id="bookingId"
+                                class="
+                                    mt-2
+                                    break-all
+                                    text-sm
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Ticket Quantity -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Ticket Quantity
+                            </p>
+
+                            <p
+                                id="ticketQuantity"
+                                class="
+                                    mt-2
+                                    text-lg
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+
+                        <!-- Booking Status -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Booking Status
+                            </p>
+
+                            <p
+                                id="bookingStatus"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    capitalize
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Refund Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Refund Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Refund status and
+                            refund amount.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            grid
+                            gap-5
+                            sm:grid-cols-2
+                            lg:grid-cols-3
+                        "
+                    >
+
+                        <!-- Refund Amount -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Refund Amount
+                            </p>
+
+                            <p
+                                id="refundAmount"
+                                class="
+                                    mt-2
+                                    text-xl
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                ৳0.00
+                            </p>
+
+                        </div>
+
+
+                        <!-- Refund Status -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Refund Status
+                            </p>
+
+                            <div
+                                id="refundStatus"
+                                class="mt-2"
+                            >
+                            </div>
+
+                        </div>
+
+
+                        <!-- Refunded At -->
+
+                        <div
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-gray-50
+                                p-4
+                            "
+                        >
+
+                            <p
+                                class="
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Refunded At
+                            </p>
+
+                            <p
+                                id="refundedAt"
+                                class="
+                                    mt-2
+                                    font-semibold
+                                    text-gray-900
+                                "
+                            >
+                                --
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Gateway Information
+                ================================== -->
+
+                <div class="mt-10">
+
+                    <div class="mb-6">
+
+                        <h3
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Gateway Information
+                        </h3>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            SSLCommerz transaction
+                            information.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            rounded-xl
+                            border
+                            border-gray-200
+                            bg-gray-50
+                            p-5
+                        "
+                    >
+
+                        <p
+                            class="
+                                text-xs
+                                font-semibold
+                                uppercase
+                                tracking-wide
+                                text-gray-500
+                            "
+                        >
+                            Gateway Response
+                        </p>
+
+                        <pre
+                            id="gatewayResponse"
+                            class="
+                                mt-3
+                                max-h-80
+                                overflow-auto
+                                whitespace-pre-wrap
+                                break-all
+                                rounded-lg
+                                bg-gray-900
+                                p-4
+                                text-xs
+                                text-gray-100
+                            "
+                        >No gateway response available.</pre>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     Back Button
+                ================================== -->
+
+                <div
+                    class="
+                        mt-10
+                        flex
+                        justify-end
+                    "
+                >
+
+                    <a
+                        href="./payments.html"
+                        class="
+                            rounded-xl
+                            bg-[#e76f51]
+                            px-5
+                            py-3
+                            text-sm
+                            font-semibold
+                            text-white
+                            transition
+                            hover:bg-[#c9553b]
+                        "
+                    >
+                        Back to Payments
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         JavaScript
+    ========================================== -->
+
+    <script src="../../js/admin/payment-details.js"></script>
+
+
+    <footer
+        class="mt-10 border-t border-gray-200 bg-white"
+    >
+
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p>
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <div>
+                    Developed By
+                    <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+</body>
+
+</html>

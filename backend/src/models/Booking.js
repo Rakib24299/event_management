@@ -1,130 +1,213 @@
-const mongoose   = require("mongoose");
-const {Schema} = mongoose;
+const mongoose = require("mongoose");
+
+const { Schema } = mongoose;
+
+// ======================================================
+// BOOKING SCHEMA
+// ======================================================
 
 const bookingSchema = new Schema(
   {
-    user :
-    {
-        type : Schema.Types.ObjectId,
-        ref :"User",
-        required : [true , "User is required"],
+    // ==================================================
+    // USER
+    // ==================================================
 
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User is required"],
     },
 
+    // ==================================================
+    // EVENT
+    // ==================================================
 
-    event :
-    {
-        type : Schema.Types.ObjectId,
-        ref :"Event",
-        required : [true , "Event is required"],
-  
+    event: {
+      type: Schema.Types.ObjectId,
+      ref: "Event",
+      required: [true, "Event is required"],
     },
 
-    ticketQuantity :
-    {
-        type  : Number ,
-        required :[true , "Ticket quantity is required"],
-        min :1,
-        max :[10, "You cannot buy more than 10 tickets at once"]
+    // ==================================================
+    // TICKET QUANTITY
+    // ==================================================
+
+    ticketQuantity: {
+      type: Number,
+
+      required: [
+        true,
+        "Ticket quantity is required",
+      ],
+
+      min: [
+        1,
+        "At least 1 ticket is required.",
+      ],
+
+      max: [
+        10,
+        "You cannot buy more than 10 tickets at once.",
+      ],
     },
 
-    totalAmount :
-    {
-        type : Number,
-        required : [true , "Total amount is required"],
-        min : 0 ,
+    // ==================================================
+    // TOTAL AMOUNT
+    // ==================================================
+
+    totalAmount: {
+      type: Number,
+
+      required: [
+        true,
+        "Total amount is required",
+      ],
+
+      min: [
+        0,
+        "Total amount cannot be negative.",
+      ],
     },
 
+    // ==================================================
+    // BOOKING STATUS
+    // ==================================================
 
-    bookingStatus :
-    {
-        type :String,
-        enum: ["pending", "confirmed", "cancelled", "completed"],
-        default : "pending",
+    bookingStatus: {
+      type: String,
+
+      enum: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+      ],
+
+      default: "pending",
     },
 
-        bookingOtp: 
-    {
-        type: String,
-         default: null,
+    // ==================================================
+    // BOOKING OTP
+    // ==================================================
+
+    bookingOtp: {
+      type: String,
+      default: null,
     },
 
-    bookingOtpExpires: 
-    {
-        type: Date,
-        default: null,
+    // ==================================================
+    // BOOKING OTP EXPIRY
+    // ==================================================
+
+    bookingOtpExpires: {
+      type: Date,
+      default: null,
     },
 
-    isOtpVerified: 
-    {
-         type: Boolean,
-         default: false,
+    // ==================================================
+    // OTP VERIFIED
+    // ==================================================
+
+    isOtpVerified: {
+      type: Boolean,
+      default: false,
     },
 
-    qrCode:
-     {
-        type: String,
-        default: "",
+    // ==================================================
+    // ATTENDANCE
+    // ==================================================
+
+    isAttended: {
+      type: Boolean,
+      default: false,
     },
 
-    isAttended: 
-    {
-        type: Boolean,
-        default: false,
+    // ==================================================
+    // ATTENDANCE TIME
+    // ==================================================
+
+    attendanceTime: {
+      type: Date,
+      default: null,
     },
 
-    attendanceTime: 
-    {
-        type: Date,
-        default: null,
+    // ==================================================
+    // REFUND PERCENTAGE
+    // ==================================================
+
+    refundPercentage: {
+      type: Number,
+
+      default: 0,
+
+      min: 0,
+
+      max: 100,
     },
 
-    refundPercentage:
-     {
-        type: Number,
-        default: 0,
+    // ==================================================
+    // REFUND AMOUNT
+    // ==================================================
+
+    refundAmount: {
+      type: Number,
+
+      default: 0,
+
+      min: 0,
     },
 
-    refundAmount:
-     {
-        type: Number,
-        default: 0,
+    // ==================================================
+    // REFUND STATUS
+    // ==================================================
+
+    refundStatus: {
+      type: String,
+
+      enum: [
+        "none",
+        "pending",
+        "processed",
+        "failed",
+      ],
+
+      default: "none",
     },
 
-    refundStatus: 
-    {
-        type: String,
-        enum: ["none", "pending", "processed"],
-        default: "none",
+    // ==================================================
+    // CANCELLED AT
+    // ==================================================
+
+    cancelledAt: {
+      type: Date,
+      default: null,
     },
 
-    cancelledAt:
-     {
-        type: Date,
-        default: null,
-    },
+    // ==================================================
+    // PAYMENT
+    // ==================================================
 
-    payment :
-    {
-         type: Schema.Types.ObjectId,
-        ref: "Payment",
-        default: null,
-    
-    },
+    payment: {
+      type: Schema.Types.ObjectId,
 
-    
-    
+      ref: "Payment",
+
+      default: null,
+    },
   },
-  {
-    timestamps : true,
-  }
-    
 
+  {
+    timestamps: true,
+  }
 );
 
+// ======================================================
+// MODEL
+// ======================================================
 
+const Booking = mongoose.model(
+  "Booking",
+  bookingSchema
+);
 
-const Booking = mongoose.model("Booking", bookingSchema);
-
-
-module.exports= Booking;
+module.exports = Booking;

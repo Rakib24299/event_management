@@ -1,7 +1,6 @@
 const express = require("express");
 
 const categoryController = require("../controllers/category.controller");
-
 const authMiddleware = require("../middlewares/auth.middleware");
 const roleMiddleware = require("../middlewares/role.middleware");
 const validateRequest = require("../middlewares/validateRequest");
@@ -13,9 +12,10 @@ const {
 
 const router = express.Router();
 
-
-// Create Category****
-
+// ========================================
+// Create Category
+// Admin Only
+// ========================================
 
 router.post(
   "/",
@@ -25,27 +25,30 @@ router.post(
   categoryController.createCategory
 );
 
-
-// Get All Categories***
-
+// ========================================
+// Get All Categories
+// Public
+// Organizer will use this API
+// ========================================
 
 router.get(
   "/",
   categoryController.getAllCategories
 );
 
-
+// ========================================
 // Get Single Category
-
+// ========================================
 
 router.get(
   "/:id",
   categoryController.getSingleCategory
 );
 
-
+// ========================================
 // Update Category
-
+// Admin Only
+// ========================================
 
 router.patch(
   "/:id",
@@ -55,9 +58,10 @@ router.patch(
   categoryController.updateCategory
 );
 
-
+// ========================================
 // Delete Category
-
+// Admin Only
+// ========================================
 
 router.delete(
   "/:id",

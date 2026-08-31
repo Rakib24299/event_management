@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Organizer Dashboard | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4",
+                    },
+
+                    boxShadow: {
+                        soft: "0 10px 30px rgba(0,0,0,0.07)"
+                    }
+
+                }
+            }
+        };
+    </script>
+
+</head>
+
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <!-- Logo -->
+
+            <a href="./dashboard.html"
+               class="text-2xl font-bold text-primary" >
+              
+                 <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Account -->
+
+            <a
+                href="./organizer-profile.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+            >
+                My Account
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main
+        class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8"
+    >
+
+
+        <!-- ======================================
+             PAGE HEADER
+        ======================================= -->
+
+        <div class="mb-8">
+
+            <p class="text-sm font-semibold text-primary">
+                Organizer Panel
+            </p>
+
+            <h1
+                class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl"
+            >
+                Organizer Dashboard
+            </h1>
+
+            <p
+                class="mt-2 text-sm leading-6 text-gray-500 sm:text-base"
+            >
+                Manage your events, bookings, attendees and revenue
+                from one place.
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             LOADING
+        ======================================= -->
+
+        <div
+            id="dashboardLoading"
+            class="rounded-3xl bg-white p-10 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+            <p class="mt-4 text-sm text-gray-500">
+                Loading dashboard...
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             ERROR
+        ======================================= -->
+
+        <div
+            id="dashboardError"
+            class="hidden rounded-3xl bg-white p-8 text-center shadow-soft"
+        >
+
+            <div class="text-5xl">
+                ⚠️
+            </div>
+
+            <h2
+                class="mt-4 text-xl font-bold text-gray-900"
+            >
+                Unable to Load Dashboard
+            </h2>
+
+            <p
+                id="dashboardErrorMessage"
+                class="mt-2 text-sm leading-6 text-gray-500"
+            >
+                Something went wrong.
+            </p>
+
+            <button
+                id="retryDashboardButton"
+                type="button"
+                class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             DASHBOARD CONTENT
+        ======================================= -->
+
+        <div
+            id="dashboardContent"
+            class="hidden"
+        >
+
+
+            <!-- ==================================
+                 WELCOME CARD
+            =================================== -->
+
+            <section
+                class="rounded-3xl bg-primary p-6 text-white shadow-soft sm:p-8"
+            >
+
+                <div
+                    class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <div class="flex items-center gap-5">
+
+                        <img
+                            id="organizerLogo"
+                            src=""
+                            alt="Organizer Logo"
+                            class="h-16 w-16 rounded-full border-2 border-white/30 object-cover"
+                        >
+
+                        <div>
+
+                            <p
+                                class="text-sm font-medium text-white/80"
+                            >
+                                Welcome back
+                            </p>
+
+                            <h2
+                                id="organizerName"
+                                class="mt-1 text-2xl font-bold sm:text-3xl"
+                            >
+                                Organizer
+                            </h2>
+
+                            <p
+                                id="organizationName"
+                                class="mt-2 text-sm text-white/80"
+                            >
+                                Manage your organization and events.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Create Event -->
+
+                    <a
+                        href="./create-event.html"
+                        class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-bold text-primary transition hover:bg-primaryLight"
+                    >
+                        + Create Event
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 STATISTICS
+            =================================== -->
+
+            <section
+                class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            >
+
+
+                <!-- Total Events -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            🎫
+                        </div>
+
+                    </div>
+
+                    <p
+                        class="mt-5 text-sm text-gray-500"
+                    >
+                        Total Events
+                    </p>
+
+                    <p
+                        id="totalEvents"
+                        class="mt-1 text-3xl font-bold text-gray-900"
+                    >
+                        0
+                    </p>
+
+                </div>
+
+
+                <!-- Published Events -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            📢
+                        </div>
+
+                    </div>
+
+                    <p
+                        class="mt-5 text-sm text-gray-500"
+                    >
+                        Published Events
+                    </p>
+
+                    <p
+                        id="publishedEvents"
+                        class="mt-1 text-3xl font-bold text-gray-900"
+                    >
+                        0
+                    </p>
+
+                </div>
+
+
+                <!-- Tickets Sold -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            🎟️
+                        </div>
+
+                    </div>
+
+                    <p
+                        class="mt-5 text-sm text-gray-500"
+                    >
+                        Tickets Sold
+                    </p>
+
+                    <p
+                        id="ticketsSold"
+                        class="mt-1 text-3xl font-bold text-gray-900"
+                    >
+                        0
+                    </p>
+
+                </div>
+
+
+                <!-- Total Revenue -->
+
+                <div
+                    class="rounded-3xl bg-white p-6 shadow-soft"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            💰
+                        </div>
+
+                    </div>
+
+                    <p
+                        class="mt-5 text-sm text-gray-500"
+                    >
+                        Total Revenue
+                    </p>
+
+                    <p
+                        id="totalRevenue"
+                        class="mt-1 text-3xl font-bold text-gray-900"
+                    >
+                        ৳0
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 QUICK ACTIONS
+            =================================== -->
+
+            <section class="mt-8">
+
+                <div class="mb-4">
+
+                    <h2
+                        class="text-xl font-bold text-gray-900"
+                    >
+                        Quick Actions
+                    </h2>
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Quickly access your organizer tools.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5"
+                >
+
+
+                    <!-- My Events -->
+
+                    <a
+                        href="./my-events.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            📅
+                        </div>
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            My Events
+                        </h3>
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            View and manage all your events.
+                        </p>
+
+                    </a>
+
+
+                    <!-- Create Event -->
+
+                    <a
+                        href="./create-event.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            ➕
+                        </div>
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Create Event
+                        </h3>
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            Create and publish a new event.
+                        </p>
+
+                    </a>
+
+
+                    <!-- Bookings -->
+
+                    <a
+                        href="./bookings.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            🎟️
+                        </div>
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Bookings
+                        </h3>
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            Check tickets and attendee bookings.
+                        </p>
+
+                    </a>
+
+
+                    <!-- ==================================
+                         PAYMENTS
+                    =================================== -->
+
+                    <a
+                        href="./payments.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            💳
+                        </div>
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            Payments
+                        </h3>
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            View ticket payments and revenue.
+                        </p>
+
+                    </a>
+
+
+                    <!-- Profile -->
+
+                    <a
+                        href="./organizer-profile.html"
+                        class="group rounded-3xl bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lg"
+                    >
+
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primaryLight text-2xl"
+                        >
+                            👤
+                        </div>
+
+                        <h3
+                            class="mt-5 font-bold text-gray-900 group-hover:text-primary"
+                        >
+                            My Profile
+                        </h3>
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500"
+                        >
+                            Manage your organizer profile.
+                        </p>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 RECENT EVENTS
+            =================================== -->
+
+            <section class="mt-10">
+
+                <div
+                    class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <div>
+
+                        <h2
+                            class="text-xl font-bold text-gray-900"
+                        >
+                            Recent Events
+                        </h2>
+
+                        <p
+                            class="mt-1 text-sm text-gray-500"
+                        >
+                            Your recently created events.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="./my-events.html"
+                        class="text-sm font-semibold text-primary hover:text-primaryDark"
+                    >
+                        View All →
+                    </a>
+
+                </div>
+
+
+                <!-- Events -->
+
+                <div
+                    id="recentEvents"
+                    class="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+                >
+                </div>
+
+
+                <!-- Empty Events -->
+
+                <div
+                    id="recentEventsEmpty"
+                    class="mt-5 hidden rounded-3xl border border-dashed border-gray-200 bg-white p-10 text-center"
+                >
+
+                    <div class="text-5xl">
+                        📅
+                    </div>
+
+                    <h3
+                        class="mt-4 font-bold text-gray-900"
+                    >
+                        No Events Yet
+                    </h3>
+
+                    <p
+                        class="mt-2 text-sm text-gray-500"
+                    >
+                        Create your first event to get started.
+                    </p>
+
+                    <a
+                        href="./create-event.html"
+                        class="mt-5 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                    >
+                        Create Event
+                    </a>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer class="mt-10 border-t border-gray-200 bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p class="transition hover:text-primary">
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <p class="transition hover:text-primary">
+                    developed by <span class="font-bold text-primary">Rakib</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ======================================
+         ORGANIZER DASHBOARD JS
+    ======================================= -->
+
+    <script src="../../js/organizer/dashboard.js"></script>
+
+
+    
+    
+<!-- AI -->
+     <script src="../../js/components/ai-chatbot.js"></script>
+
+
+</body>
+
+</html>

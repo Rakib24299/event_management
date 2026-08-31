@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Event | EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ========================================
+         Tailwind Configuration
+    ========================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#e76f51",
+
+                        primaryDark: "#e88b3d",
+
+                        primaryLight: "#fdbb7d",
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- ========================================
+         Global CSS
+    ========================================= -->
+
+    <link
+        rel="stylesheet"
+        href="../../css/style.css"
+    >
+
+</head>
+
+
+<body class="bg-gray-50">
+
+
+     <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-bold text-primary"
+            >
+                <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <a
+                href="./dashboard.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+            >
+                Dashbord
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- ========================================
+         Main Content
+    ========================================= -->
+
+    <main
+        class="
+            min-h-[calc(100vh-64px)]
+            px-4
+            py-8
+            sm:px-6
+            lg:px-8
+        "
+    >
+
+        <div class="mx-auto w-full max-w-5xl">
+
+
+            <!-- ====================================
+                 Page Header
+            ===================================== -->
+
+            <div class="mb-8">
+
+                <a
+                    href="./my-events.html"
+                    class="
+                        inline-flex
+                        items-center
+                        gap-2
+                        text-sm
+                        font-medium
+                        text-gray-500
+                        transition
+                        hover:text-primary
+                    "
+                >
+
+                    <span>
+                        ←
+                    </span>
+
+                    Back to My Events
+
+                </a>
+
+
+                <h1
+                    class="
+                        mt-5
+                        text-3xl
+                        font-bold
+                        tracking-tight
+                        text-gray-900
+                        sm:text-4xl
+                    "
+                >
+                    Create New Event
+                </h1>
+
+
+                <p
+                    class="
+                        mt-2
+                        max-w-2xl
+                        text-sm
+                        leading-6
+                        text-gray-500
+                    "
+                >
+                    Create and publish an event for your
+                    audience with all the necessary details.
+                </p>
+
+            </div>
+
+
+            <!-- ====================================
+                 Error Message
+            ===================================== -->
+
+            <div
+                id="eventError"
+                class="
+                    mb-6
+                    hidden
+                    rounded-2xl
+                    border
+                    border-red-200
+                    bg-red-50
+                    px-5
+                    py-4
+                    text-sm
+                    text-red-600
+                "
+            ></div>
+
+
+            <!-- ====================================
+                 Success Message
+            ===================================== -->
+
+            <div
+                id="eventSuccess"
+                class="
+                    mb-6
+                    hidden
+                    rounded-2xl
+                    border
+                    border-green-200
+                    bg-green-50
+                    px-5
+                    py-4
+                    text-sm
+                    text-green-700
+                "
+            ></div>
+
+
+            <!-- ====================================
+                 Create Event Form
+            ===================================== -->
+
+            <form
+                id="createEventForm"
+                class="space-y-6"
+            >
+
+
+                <!-- ==================================
+                     Basic Information
+                =================================== -->
+
+                <div
+                    class="
+                        rounded-3xl
+                        bg-white
+                        p-6
+                        shadow-soft
+                        sm:p-8
+                    "
+                >
+
+                    <div class="mb-6">
+
+                        <h2
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Basic Information
+                        </h2>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Add the basic information about
+                            your event.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid gap-5 md:grid-cols-2">
+
+
+                        <!-- Event Title -->
+
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="title"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Event Title
+                            </label>
+
+                            <input
+                                id="title"
+                                name="title"
+                                type="text"
+                                placeholder="Enter event title"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Slug -->
+
+                        <div>
+
+                            <label
+                                for="slug"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Event Slug
+                            </label>
+
+                            <input
+                                id="slug"
+                                name="slug"
+                                type="text"
+                                placeholder="event-name"
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                            <p
+                                class="
+                                    mt-2
+                                    text-xs
+                                    text-gray-400
+                                "
+                            >
+                                Use lowercase letters,
+                                numbers and hyphens.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Category -->
+
+                        <div>
+
+                            <label
+                                for="category"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Category
+                            </label>
+
+                            <select
+                                id="category"
+                                name="category"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-700
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                                <option value="">
+                                    Select Category
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Description -->
+
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="description"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Description
+                            </label>
+
+                            <textarea
+                                id="description"
+                                name="description"
+                                rows="6"
+                                placeholder="Describe your event..."
+                                required
+                                class="
+                                    w-full
+                                    resize-none
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================
+                     Venue Information
+                =================================== -->
+
+                <div
+                    class="
+                        rounded-3xl
+                        bg-white
+                        p-6
+                        shadow-soft
+                        sm:p-8
+                    "
+                >
+
+                    <div class="mb-6">
+
+                        <h2
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Venue Information
+                        </h2>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Tell your attendees where the
+                            event will take place.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid gap-5 md:grid-cols-2">
+
+
+                        <!-- Venue Name -->
+
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="venueName"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Venue Name
+                            </label>
+
+                            <input
+                                id="venueName"
+                                name="venueName"
+                                type="text"
+                                placeholder="Enter venue name"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Street -->
+
+                        <div>
+
+                            <label
+                                for="street"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Street
+                            </label>
+
+                            <input
+                                id="street"
+                                name="street"
+                                type="text"
+                                placeholder="Enter street address"
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- City -->
+
+                        <div>
+
+                            <label
+                                for="city"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                City
+                            </label>
+
+                            <input
+                                id="city"
+                                name="city"
+                                type="text"
+                                placeholder="Enter city"
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Country -->
+
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="country"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Country
+                            </label>
+
+                            <input
+                                id="country"
+                                name="country"
+                                type="text"
+                                value="Bangladesh"
+                                placeholder="Enter country"
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================
+                     Date & Time
+                =================================== -->
+
+                <div
+                    class="
+                        rounded-3xl
+                        bg-white
+                        p-6
+                        shadow-soft
+                        sm:p-8
+                    "
+                >
+
+                    <div class="mb-6">
+
+                        <h2
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Date & Time
+                        </h2>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Set the date and time of your event.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid gap-5 md:grid-cols-3">
+
+
+                        <!-- Event Date -->
+
+                        <div>
+
+                            <label
+                                for="eventDate"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Event Date
+                            </label>
+
+                            <input
+                                id="eventDate"
+                                name="eventDate"
+                                type="date"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Start Time -->
+
+                        <div>
+
+                            <label
+                                for="startTime"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Start Time
+                            </label>
+
+                            <input
+                                id="startTime"
+                                name="startTime"
+                                type="time"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- End Time -->
+
+                        <div>
+
+                            <label
+                                for="endTime"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                End Time
+                            </label>
+
+                            <input
+                                id="endTime"
+                                name="endTime"
+                                type="time"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================
+                     Ticket Information
+                =================================== -->
+
+                <div
+                    class="
+                        rounded-3xl
+                        bg-white
+                        p-6
+                        shadow-soft
+                        sm:p-8
+                    "
+                >
+
+                    <div class="mb-6">
+
+                        <h2
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Ticket Information
+                        </h2>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Configure your event tickets and
+                            seat availability.
+                        </p>
+
+                    </div>
+
+
+                    <div class="grid gap-5 md:grid-cols-2">
+
+
+                        <!-- Event Type -->
+
+                        <div>
+
+                            <label
+                                for="eventType"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Event Type
+                            </label>
+
+                            <select
+                                id="eventType"
+                                name="eventType"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-700
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                                <option value="paid">
+                                    Paid Event
+                                </option>
+
+                                <option value="free">
+                                    Free Event
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Ticket Price -->
+
+                        <div>
+
+                            <label
+                                for="ticketPrice"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Ticket Price
+                            </label>
+
+                            <input
+                                id="ticketPrice"
+                                name="ticketPrice"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value="0"
+                                placeholder="0"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                            <p
+                                class="
+                                    mt-2
+                                    text-xs
+                                    text-gray-400
+                                "
+                            >
+                                Free events must have a price
+                                of 0.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Total Seats -->
+
+                        <div>
+
+                            <label
+                                for="totalSeats"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Total Seats
+                            </label>
+
+                            <input
+                                id="totalSeats"
+                                name="totalSeats"
+                                type="number"
+                                min="1"
+                                step="1"
+                                placeholder="100"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Maximum Tickets -->
+
+                        <div>
+
+                            <label
+                                for="maxTicketsPerUser"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Maximum Tickets Per User
+                            </label>
+
+                            <input
+                                id="maxTicketsPerUser"
+                                name="maxTicketsPerUser"
+                                type="number"
+                                min="1"
+                                max="20"
+                                step="1"
+                                value="5"
+                                required
+                                class="
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-900
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-2
+                                    focus:ring-primary/10
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================
+                     Event Images
+                =================================== -->
+
+                <div
+                    class="
+                        rounded-3xl
+                        bg-white
+                        p-6
+                        shadow-soft
+                        sm:p-8
+                    "
+                >
+
+                    <div class="mb-6">
+
+                        <h2
+                            class="
+                                text-xl
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Event Images
+                        </h2>
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Add a banner and gallery images
+                            for your event.
+                        </p>
+
+                    </div>
+
+
+                    <div class="space-y-5">
+
+
+                        <!-- Banner Image -->
+
+                        <div>
+
+                            <label
+                                for="bannerImage"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Banner Image
+                            </label>
+
+                            <input
+                                id="bannerImage"
+                                name="bannerImage"
+                                type="file"
+                                accept="image/*"
+                                class="
+                                    block
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-600
+                                    file:mr-4
+                                    file:rounded-lg
+                                    file:border-0
+                                    file:bg-orange-50
+                                    file:px-4
+                                    file:py-2
+                                    file:text-sm
+                                    file:font-semibold
+                                    file:text-primary
+                                    hover:file:bg-orange-100
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Gallery Images -->
+
+                        <div>
+
+                            <label
+                                for="galleryImages"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-semibold
+                                    text-gray-700
+                                "
+                            >
+                                Gallery Images
+                            </label>
+
+                            <input
+                                id="galleryImages"
+                                name="galleryImages"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                class="
+                                    block
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    text-gray-600
+                                    file:mr-4
+                                    file:rounded-lg
+                                    file:border-0
+                                    file:bg-orange-50
+                                    file:px-4
+                                    file:py-2
+                                    file:text-sm
+                                    file:font-semibold
+                                    file:text-primary
+                                    hover:file:bg-orange-100
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================
+                     Form Actions
+                =================================== -->
+
+                <div
+                    class="
+                        flex
+                        flex-col
+                        gap-3
+                        sm:flex-row
+                        sm:justify-end
+                    "
+                >
+
+                    <a
+                        href="./my-events.html"
+                        class="
+                            inline-flex
+                            min-h-[48px]
+                            items-center
+                            justify-center
+                            rounded-xl
+                            border
+                            border-gray-200
+                            bg-white
+                            px-6
+                            text-sm
+                            font-semibold
+                            text-gray-700
+                            transition
+                            hover:border-primary
+                            hover:bg-orange-50
+                            hover:text-primary
+                        "
+                    >
+                        Cancel
+                    </a>
+
+
+                    <button
+                        id="createEventButton"
+                        type="submit"
+                        class="
+                            inline-flex
+                            min-h-[48px]
+                            items-center
+                            justify-center
+                            rounded-xl
+                            bg-primary
+                            px-7
+                            text-sm
+                            font-semibold
+                            text-white
+                            transition
+                            hover:bg-primaryDark
+                            hover:shadow-lg
+                            hover:shadow-orange-900/10
+                            disabled:cursor-not-allowed
+                            disabled:opacity-60
+                        "
+                    >
+                        Create Event
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+    <!-- ========================================
+         Component Loader
+    ========================================= -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <!-- ========================================
+         Load Navbar
+    ========================================= -->
+
+    <script>
+
+        loadComponent(
+            "navbar",
+            "../../components/navbar.html"
+        ).then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src =
+                "../../js/navbar.js";
+
+            document.body.appendChild(
+                script
+            );
+
+        });
+
+    </script>
+
+     <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer
+        class="border-t border-gray-100 bg-white"
+    >
+
+        <div
+            class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+        >
+
+            <div
+                class="flex flex-col items-center justify-between gap-4 sm:flex-row"
+            >
+
+                <p class="text-sm text-gray-500">
+                    © 2026 EventEase. All rights reserved.
+                </p>
+
+                <p class="text-sm text-gray-500">
+                    Developed by <span class="font-bold text-primary">Rakib</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ========================================
+         Create Event JS
+    ========================================= -->
+
+    <script
+        src="../../js/organizer/create-event.js"
+    ></script>
+
+
+</body>
+
+</html>

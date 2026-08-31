@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Organizer Bookings | EventEase</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#fc9e4f",
+                        primaryDark: "#244522",
+                        primaryLight: "#4f772d",
+                    },
+
+                    boxShadow: {
+                        soft:
+                            "0 10px 30px rgba(0,0,0,0.06)",
+                    },
+                },
+            },
+        };
+    </script>
+
+</head>
+
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ========================================
+         Header
+    ========================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5"
+        >
+
+            <!-- Brand -->
+
+            <a
+                href="./organizer-dashboard.html"
+                class="text-2xl font-extrabold text-primary"
+            >
+                EventEase
+            </a>
+
+
+            <!-- My Account -->
+
+            <a
+                href="./organizer-profile.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+            >
+                My Account
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         Main
+    ========================================= -->
+
+    <main
+        class="mx-auto max-w-7xl px-6 py-10"
+    >
+
+
+        <!-- Page Heading -->
+
+        <div class="mb-8">
+
+            <p
+                class="text-sm font-semibold uppercase tracking-wider text-primary"
+            >
+                Organizer Panel
+            </p>
+
+            <h1
+                class="mt-2 text-3xl font-extrabold text-gray-900"
+            >
+                Bookings
+            </h1>
+
+            <p
+                class="mt-2 text-gray-500"
+            >
+                View and manage bookings for your events.
+            </p>
+
+        </div>
+
+
+
+        <!-- ========================================
+             Statistics
+        ========================================= -->
+
+        <section
+            class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        >
+
+
+            <!-- Total Bookings -->
+
+            <div
+                class="rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-xl"
+                >
+                    📋
+                </div>
+
+                <p
+                    class="mt-5 text-sm font-medium text-gray-500"
+                >
+                    Total Bookings
+                </p>
+
+                <h2
+                    id="totalBookings"
+                    class="mt-1 text-3xl font-extrabold text-gray-900"
+                >
+                    0
+                </h2>
+
+            </div>
+
+
+
+            <!-- Confirmed -->
+
+            <div
+                class="rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-xl"
+                >
+                    ✓
+                </div>
+
+                <p
+                    class="mt-5 text-sm font-medium text-gray-500"
+                >
+                    Confirmed Bookings
+                </p>
+
+                <h2
+                    id="confirmedBookings"
+                    class="mt-1 text-3xl font-extrabold text-primary"
+                >
+                    0
+                </h2>
+
+            </div>
+
+
+
+            <!-- Pending -->
+
+            <div
+                class="rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-100 text-xl"
+                >
+                    ⏳
+                </div>
+
+                <p
+                    class="mt-5 text-sm font-medium text-gray-500"
+                >
+                    Pending Bookings
+                </p>
+
+                <h2
+                    id="pendingBookings"
+                    class="mt-1 text-3xl font-extrabold text-yellow-600"
+                >
+                    0
+                </h2>
+
+            </div>
+
+
+
+            <!-- Cancelled -->
+
+            <div
+                class="rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-xl"
+                >
+                    ✕
+                </div>
+
+                <p
+                    class="mt-5 text-sm font-medium text-gray-500"
+                >
+                    Cancelled Bookings
+                </p>
+
+                <h2
+                    id="cancelledBookings"
+                    class="mt-1 text-3xl font-extrabold text-red-600"
+                >
+                    0
+                </h2>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================
+             Booking Section
+        ========================================= -->
+
+        <section class="mt-10">
+
+
+            <!-- Section Header -->
+
+            <div
+                class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+
+                <div>
+
+                    <h2
+                        class="text-xl font-bold text-gray-900"
+                    >
+                        All Bookings
+                    </h2>
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Bookings made for your events.
+                    </p>
+
+                </div>
+
+
+                <!-- Search -->
+
+                <div class="relative">
+
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Search customer or event..."
+                        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 sm:w-80"
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 Loading
+            ========================================= -->
+
+            <div
+                id="loadingState"
+                class="rounded-3xl bg-white p-10 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+                ></div>
+
+                <p
+                    class="mt-4 text-sm text-gray-500"
+                >
+                    Loading bookings...
+                </p>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 Empty State
+            ========================================= -->
+
+            <div
+                id="emptyState"
+                class="hidden rounded-3xl bg-white p-12 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-2xl"
+                >
+                    📋
+                </div>
+
+                <h3
+                    class="mt-5 text-lg font-bold text-gray-900"
+                >
+                    No Bookings Found
+                </h3>
+
+                <p
+                    class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500"
+                >
+                    There are currently no bookings for your events.
+                </p>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 Booking Table
+            ========================================= -->
+
+            <div
+                id="bookingContainer"
+                class="hidden overflow-hidden rounded-3xl bg-white shadow-soft"
+            >
+
+                <div class="overflow-x-auto">
+
+                    <table class="min-w-full">
+
+                        <thead class="border-b bg-gray-50">
+
+                            <tr>
+
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Customer
+                                </th>
+
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Event
+                                </th>
+
+                                <th
+                                    class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Tickets
+                                </th>
+
+                                <th
+                                    class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Amount
+                                </th>
+
+                                <th
+                                    class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Booking Status
+                                </th>
+
+                                <th
+                                    class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Payment
+                                </th>
+
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-500"
+                                >
+                                    Date
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="bookingList"
+                            class="divide-y divide-gray-100"
+                        ></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 Error State
+            ========================================= -->
+
+            <div
+                id="errorState"
+                class="hidden rounded-3xl bg-white p-10 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-2xl"
+                >
+                    ⚠️
+                </div>
+
+                <h3
+                    class="mt-4 font-bold text-gray-900"
+                >
+                    Failed to Load Bookings
+                </h3>
+
+                <p
+                    id="errorMessage"
+                    class="mt-2 text-sm text-gray-500"
+                >
+                    Something went wrong.
+                </p>
+
+                <button
+                    id="retryBtn"
+                    type="button"
+                    class="mt-5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ========================================
+         Footer
+    ========================================= -->
+
+    <footer
+        class="mt-16 border-t bg-white"
+    >
+
+        <div
+            class="mx-auto max-w-7xl px-6 py-8 text-center"
+        >
+
+            <p
+                class="text-sm text-gray-500"
+            >
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/organizer/organizer-bookings.js"></script>
+
+</body>
+
+</html>

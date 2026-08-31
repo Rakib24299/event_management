@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Account | EventEase</title>
+
+
+    <!-- Tailwind CSS -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- Tailwind Configuration -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#244522",
+
+                        primaryLight: "#4f772d"
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- Global CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body class="bg-gray-50">
+
+
+    <!-- Navbar -->
+
+    <div id="navbar"></div>
+
+
+    <!-- =========================================
+         Registration Section
+    ========================================== -->
+
+    <main
+        class="
+            min-h-[calc(100vh-64px)]
+            px-4
+            py-10
+            sm:px-6
+            sm:py-14
+            lg:px-8
+            lg:py-16
+        "
+    >
+
+        <div
+            class="
+                mx-auto
+                w-full
+                max-w-6xl
+                overflow-hidden
+                rounded-2xl
+                bg-white
+                shadow-xl
+                shadow-gray-200/60
+                lg:grid
+                lg:grid-cols-2
+            "
+        >
+
+
+            <!-- =================================
+                 Left Registration Form
+            ================================== -->
+
+            <div
+                class="
+                    px-6
+                    py-10
+                    sm:px-10
+                    sm:py-12
+                    lg:px-12
+                    lg:py-14
+                    xl:px-16
+                "
+            >
+
+                <div class="mx-auto w-full max-w-lg">
+
+
+                    <!-- Logo -->
+
+                    <div
+                        class="
+                            mb-7
+                            flex
+                            items-center
+                            gap-3
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                h-11
+                                w-11
+                                items-center
+                                justify-center
+                                rounded-xl
+                                bg-primary
+                                text-lg
+                                font-bold
+                                text-white
+                            "
+                        >
+                            E
+                        </div>
+
+
+                        <div>
+
+                            <h1
+                                class="
+                                    text-xl
+                                    font-bold
+                                    text-primary
+                                "
+                            >
+                                EventEase
+                            </h1>
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-400
+                                "
+                            >
+                                Smart Event Management
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Heading -->
+
+                    <div class="mb-7">
+
+                        <h2
+                            class="
+                                text-3xl
+                                font-bold
+                                tracking-tight
+                                text-gray-900
+                                sm:text-4xl
+                            "
+                        >
+                            Create Your Account
+                        </h2>
+
+
+                        <p
+                            class="
+                                mt-2
+                                text-sm
+                                leading-6
+                                text-gray-500
+                            "
+                        >
+                            Join EventEase and start
+                            discovering amazing events.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Error -->
+
+                    <div
+                        id="registerError"
+                        class="
+                            mb-5
+                            hidden
+                            rounded-xl
+                            border
+                            border-red-200
+                            bg-red-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-red-600
+                        "
+                    >
+                    </div>
+
+
+                    <!-- Success -->
+
+                    <div
+                        id="registerSuccess"
+                        class="
+                            mb-5
+                            hidden
+                            rounded-xl
+                            border
+                            border-green-200
+                            bg-green-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-green-700
+                        "
+                    >
+                    </div>
+
+
+                    <!-- =================================
+                         Account Type
+                    ================================== -->
+
+                    <div class="mb-7">
+
+                        <p
+                            class="
+                                mb-3
+                                text-sm
+                                font-medium
+                                text-gray-800
+                            "
+                        >
+                            Account Type
+                        </p>
+
+
+                        <div
+                            class="
+                                grid
+                                grid-cols-2
+                                gap-3
+                            "
+                        >
+
+
+                            <!-- User -->
+
+                            <label
+                                class="
+                                    cursor-pointer
+                                "
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value="user"
+                                    checked
+                                    class="peer sr-only"
+                                >
+
+
+                                <div
+                                    class="
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        px-4
+                                        py-4
+                                        transition
+                                        peer-checked:border-primary
+                                        peer-checked:bg-green-50
+                                        peer-checked:ring-2
+                                        peer-checked:ring-primary/10
+                                        hover:border-primary/50
+                                    "
+                                >
+
+                                    <div
+                                        class="
+                                            mb-2
+                                            flex
+                                            h-9
+                                            w-9
+                                            items-center
+                                            justify-center
+                                            rounded-lg
+                                            bg-gray-100
+                                            text-primary
+                                        "
+                                    >
+                                        👤
+                                    </div>
+
+
+                                    <h3
+                                        class="
+                                            text-sm
+                                            font-semibold
+                                            text-gray-900
+                                        "
+                                    >
+                                        User
+                                    </h3>
+
+
+                                    <p
+                                        class="
+                                            mt-1
+                                            text-xs
+                                            text-gray-500
+                                        "
+                                    >
+                                        Book and manage events
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+
+                            <!-- Organizer -->
+
+                            <label
+                                class="
+                                    cursor-pointer
+                                "
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value="organizer"
+                                    class="peer sr-only"
+                                >
+
+
+                                <div
+                                    class="
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        px-4
+                                        py-4
+                                        transition
+                                        peer-checked:border-primary
+                                        peer-checked:bg-green-50
+                                        peer-checked:ring-2
+                                        peer-checked:ring-primary/10
+                                        hover:border-primary/50
+                                    "
+                                >
+
+                                    <div
+                                        class="
+                                            mb-2
+                                            flex
+                                            h-9
+                                            w-9
+                                            items-center
+                                            justify-center
+                                            rounded-lg
+                                            bg-gray-100
+                                            text-primary
+                                        "
+                                    >
+                                        🏢
+                                    </div>
+
+
+                                    <h3
+                                        class="
+                                            text-sm
+                                            font-semibold
+                                            text-gray-900
+                                        "
+                                    >
+                                        Organizer
+                                    </h3>
+
+
+                                    <p
+                                        class="
+                                            mt-1
+                                            text-xs
+                                            text-gray-500
+                                        "
+                                    >
+                                        Create and manage events
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================
+                         Registration Form
+                    ================================== -->
+
+                    <form
+                        id="registerForm"
+                        class="space-y-5"
+                    >
+
+
+                        <!-- Name -->
+
+                        <div>
+
+                            <label
+                                for="name"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Full Name
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="Enter your full name"
+                                required
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div>
+
+                            <label
+                                for="email"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Email Address
+                            </label>
+
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                required
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div>
+
+                            <label
+                                for="phone"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Phone Number
+                            </label>
+
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="01XXXXXXXXX"
+                                required
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Address -->
+
+                        <div>
+
+                            <label
+                                for="address"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Address
+                                <span
+                                    class="font-normal text-gray-400"
+                                >
+                                    (Optional)
+                                </span>
+                            </label>
+
+
+                            <textarea
+                                id="address"
+                                name="address"
+                                rows="3"
+                                placeholder="Enter your address"
+                                class="
+                                    w-full
+                                    resize-none
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    py-3
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- =================================
+                             Organizer Fields
+                        ================================== -->
+
+                        <div
+                            id="organizerFields"
+                            class="hidden space-y-5"
+                        >
+
+
+                            <!-- Organization Name -->
+
+                            <div>
+
+                                <label
+                                    for="organizationName"
+                                    class="
+                                        mb-2
+                                        block
+                                        text-sm
+                                        font-medium
+                                        text-gray-800
+                                    "
+                                >
+                                    Organization Name
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    id="organizationName"
+                                    name="organizationName"
+                                    placeholder="Enter organization name"
+                                    class="
+                                        h-12
+                                        w-full
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        px-4
+                                        text-sm
+                                        outline-none
+                                        transition
+                                        placeholder:text-gray-400
+                                        focus:border-primary
+                                        focus:ring-4
+                                        focus:ring-green-900/10
+                                    "
+                                >
+
+                            </div>
+
+
+                            <!-- Trade License -->
+
+                            <div>
+
+                                <label
+                                    for="tradeLicense"
+                                    class="
+                                        mb-2
+                                        block
+                                        text-sm
+                                        font-medium
+                                        text-gray-800
+                                    "
+                                >
+                                    Trade License
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    id="tradeLicense"
+                                    name="tradeLicense"
+                                    placeholder="Enter trade license number"
+                                    class="
+                                        h-12
+                                        w-full
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        px-4
+                                        text-sm
+                                        outline-none
+                                        transition
+                                        placeholder:text-gray-400
+                                        focus:border-primary
+                                        focus:ring-4
+                                        focus:ring-green-900/10
+                                    "
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Password -->
+
+                        <div>
+
+                            <label
+                                for="password"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Password
+                            </label>
+
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Minimum 8 characters"
+                                required
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Confirm Password -->
+
+                        <div>
+
+                            <label
+                                for="confirmPassword"
+                                class="
+                                    mb-2
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-800
+                                "
+                            >
+                                Confirm Password
+                            </label>
+
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Re-enter your password"
+                                required
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- Terms -->
+
+                        <label
+                            class="
+                                flex
+                                cursor-pointer
+                                items-start
+                                gap-3
+                            "
+                        >
+
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                required
+                                class="
+                                    mt-1
+                                    h-4
+                                    w-4
+                                    rounded
+                                    border-gray-300
+                                    text-primary
+                                    focus:ring-primary
+                                "
+                            >
+
+
+                            <span
+                                class="
+                                    text-xs
+                                    leading-5
+                                    text-gray-500
+                                "
+                            >
+                                I agree to the EventEase
+                                <a
+                                    href="#"
+                                    class="
+                                        font-semibold
+                                        text-primary
+                                    "
+                                >
+                                    Terms & Conditions
+                                </a>
+                                and
+                                <a
+                                    href="#"
+                                    class="
+                                        font-semibold
+                                        text-primary
+                                    "
+                                >
+                                    Privacy Policy
+                                </a>.
+                            </span>
+
+                        </label>
+
+
+                        <!-- Submit -->
+
+                        <button
+                            type="submit"
+                            id="registerButton"
+                            class="
+                                flex
+                                h-12
+                                w-full
+                                items-center
+                                justify-center
+                                rounded-xl
+                                bg-primary
+                                px-5
+                                text-sm
+                                font-semibold
+                                text-white
+                                transition
+                                hover:bg-primaryDark
+                                hover:shadow-lg
+                                hover:shadow-green-900/10
+                                focus:outline-none
+                                focus:ring-4
+                                focus:ring-green-900/20
+                                disabled:cursor-not-allowed
+                                disabled:opacity-60
+                            "
+                        >
+                            Create Account
+                        </button>
+
+                    </form>
+
+
+                    <!-- Login -->
+
+                    <p
+                        class="
+                            mt-7
+                            text-center
+                            text-sm
+                            text-gray-500
+                        "
+                    >
+
+                        Already have an account?
+
+                        <a
+                            href="./login.html"
+                            class="
+                                font-semibold
+                                text-primary
+                                hover:text-primaryDark
+                            "
+                        >
+                            Sign In
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 Right Branding
+            ================================== -->
+
+            <div
+                class="
+                    relative
+                    hidden
+                    overflow-hidden
+                    bg-primary
+                    lg:flex
+                    lg:min-h-[850px]
+                    lg:items-center
+                    lg:justify-center
+                    lg:p-14
+                "
+            >
+
+                <div
+                    class="
+                        absolute
+                        -right-24
+                        -top-24
+                        h-80
+                        w-80
+                        rounded-full
+                        bg-white/10
+                    "
+                ></div>
+
+
+                <div
+                    class="
+                        absolute
+                        -bottom-32
+                        -left-24
+                        h-96
+                        w-96
+                        rounded-full
+                        bg-white/5
+                    "
+                ></div>
+
+
+                <div
+                    class="
+                        relative
+                        z-10
+                        max-w-lg
+                        text-white
+                    "
+                >
+
+                    <div
+                        class="
+                            inline-flex
+                            items-center
+                            gap-2
+                            rounded-full
+                            border
+                            border-white/20
+                            bg-white/10
+                            px-4
+                            py-2
+                            text-xs
+                            font-medium
+                        "
+                    >
+
+                        <span
+                            class="
+                                h-2
+                                w-2
+                                rounded-full
+                                bg-white
+                            "
+                        ></span>
+
+                        Welcome to EventEase
+
+                    </div>
+
+
+                    <h2
+                        class="
+                            mt-7
+                            text-4xl
+                            font-bold
+                            leading-tight
+                            xl:text-5xl
+                        "
+                    >
+                        Your Events.
+                        <br>
+                        Your Experience.
+                        <br>
+                        Your Ease.
+                    </h2>
+
+
+                    <p
+                        class="
+                            mt-6
+                            text-sm
+                            leading-7
+                            text-white/75
+                            xl:text-base
+                        "
+                    >
+                        Whether you want to attend exciting
+                        events or organize your own, EventEase
+                        gives you everything you need in one
+                        simple platform.
+                    </p>
+
+
+                    <div class="mt-9 space-y-4">
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    h-9
+                                    w-9
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/10
+                                "
+                            >
+                                ✓
+                            </div>
+
+                            <span class="text-sm text-white/85">
+                                Discover amazing events
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    h-9
+                                    w-9
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/10
+                                "
+                            >
+                                ✓
+                            </div>
+
+                            <span class="text-sm text-white/85">
+                                Book tickets with ease
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    h-9
+                                    w-9
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/10
+                                "
+                            >
+                                ✓
+                            </div>
+
+                            <span class="text-sm text-white/85">
+                                Organize your own events
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <div id="footer"></div>
+
+
+    <!-- Component Loader -->
+
+    <script src="../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "navbar",
+                "../components/navbar.html"
+            ),
+
+            loadComponent(
+                "footer",
+                "../components/footer.html"
+            )
+
+        ]).then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src = "../js/navbar.js";
+
+            document.body.appendChild(script);
+
+        });
+
+    </script>
+
+
+    <!-- Registration JS -->
+
+    <script src="../js/register.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Event Details | EventEase</title>
+
+
+    <!-- Tailwind CSS -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#254521",
+
+                        primaryLight: "#eaf2e8"
+
+                    },
+
+                    boxShadow: {
+
+                        soft:
+                            "0 10px 30px rgba(0,0,0,0.07)"
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ======================================
+         HEADER
+    ======================================= -->
+
+    <div id="user-header"></div>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main>
+
+
+        <!-- ==================================
+             BACK TO EVENTS
+        =================================== -->
+
+        <div
+            class="mx-auto max-w-7xl px-4 pt-5 sm:px-6 lg:px-8"
+        >
+
+            <a
+                href="./events.html"
+                class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+            >
+
+                <span class="text-lg">←</span>
+
+                Back to Events
+
+            </a>
+
+        </div>
+
+
+
+        <!-- ==================================
+             EVENT CONTENT
+        =================================== -->
+
+        <section
+            class="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8"
+        >
+
+
+            <!-- ==================================
+                 LOADING
+            =================================== -->
+
+            <div
+                id="eventLoading"
+                class="flex min-h-[400px] items-center justify-center"
+            >
+
+                <div class="text-center">
+
+                    <div
+                        class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+                    ></div>
+
+                    <p class="mt-4 text-sm text-gray-500">
+                        Loading event details...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 EVENT CONTENT
+            =================================== -->
+
+            <div
+                id="eventContent"
+                class="hidden"
+            >
+
+
+                <!-- ==================================
+                     EVENT MAIN GRID
+                =================================== -->
+
+                <div class="grid gap-7 lg:grid-cols-3">
+
+
+                    <!-- ==================================
+                         LEFT SIDE
+                    =================================== -->
+
+                    <div class="lg:col-span-2">
+
+
+                        <!-- ==================================
+                             EVENT CARD
+                        =================================== -->
+
+                        <div
+                            class="overflow-hidden rounded-3xl bg-white shadow-soft"
+                        >
+
+
+                            <!-- Event Image -->
+
+                            <div
+                                class="relative h-60 sm:h-72 lg:h-[390px]"
+                            >
+
+                                <img
+                                    id="eventImage"
+                                    src=""
+                                    alt="Event"
+                                    class="h-full w-full object-cover"
+                                >
+
+
+                                <!-- Category -->
+
+                                <div
+                                    id="eventCategory"
+                                    class="absolute left-5 top-5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary shadow"
+                                >
+                                    Event
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- ==================================
+                                 EVENT INFORMATION
+                            =================================== -->
+
+                            <div class="p-5 sm:p-7">
+
+
+                                <!-- Title -->
+
+                                <h1
+                                    id="eventTitle"
+                                    class="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl lg:text-4xl"
+                                >
+                                    Event Title
+                                </h1>
+
+
+
+                                <!-- ==================================
+                                     EVENT META
+                                =================================== -->
+
+                                <div
+                                    class="mt-5 grid gap-3 sm:grid-cols-2"
+                                >
+
+
+                                    <!-- Date -->
+
+                                    <div
+                                        class="flex items-start gap-3 rounded-2xl bg-primaryLight p-3.5"
+                                    >
+
+                                        <div
+                                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-base"
+                                        >
+                                            📅
+                                        </div>
+
+                                        <div>
+
+                                            <p
+                                                class="text-xs font-medium text-gray-500"
+                                            >
+                                                Date
+                                            </p>
+
+                                            <p
+                                                id="eventDate"
+                                                class="mt-1 text-sm font-semibold text-gray-900"
+                                            >
+                                                --
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <!-- Location -->
+
+                                    <div
+                                        class="flex items-start gap-3 rounded-2xl bg-primaryLight p-3.5"
+                                    >
+
+                                        <div
+                                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-base"
+                                        >
+                                            📍
+                                        </div>
+
+                                        <div>
+
+                                            <p
+                                                class="text-xs font-medium text-gray-500"
+                                            >
+                                                Location
+                                            </p>
+
+                                            <p
+                                                id="eventLocation"
+                                                class="mt-1 text-sm font-semibold text-gray-900"
+                                            >
+                                                --
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- ==================================
+                                     DESCRIPTION
+                                =================================== -->
+
+                                <div class="mt-7">
+
+                                    <h2
+                                        class="text-lg font-bold text-gray-900"
+                                    >
+                                        About This Event
+                                    </h2>
+
+                                    <p
+                                        id="eventDescription"
+                                        class="mt-2 whitespace-pre-line text-sm leading-6 text-gray-600"
+                                    >
+                                        --
+                                    </p>
+
+                                </div>
+
+
+
+                                <!-- ==================================
+                                     ORGANIZER
+                                =================================== -->
+
+                                <div
+                                    class="mt-7 border-t border-gray-100 pt-7"
+                                >
+
+                                    <h2
+                                        class="text-lg font-bold text-gray-900"
+                                    >
+                                        Organized By
+                                    </h2>
+
+
+                                    <div
+                                        class="mt-3 flex items-center gap-3 rounded-2xl bg-gray-50 p-3.5"
+                                    >
+
+                                        <div
+                                            id="organizerInitial"
+                                            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-white"
+                                        >
+                                            O
+                                        </div>
+
+
+                                        <div>
+
+                                            <p
+                                                id="organizerName"
+                                                class="text-sm font-bold text-gray-900"
+                                            >
+                                                --
+                                            </p>
+
+                                            <p
+                                                id="organizerOrganization"
+                                                class="mt-0.5 text-xs text-gray-500"
+                                            >
+                                                --
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ==================================
+                         RIGHT SIDE
+                    =================================== -->
+
+                    <aside>
+
+                        <div
+                            class="sticky top-6 rounded-3xl bg-white p-5 shadow-soft"
+                        >
+
+
+                            <!-- Ticket Price -->
+
+                            <div>
+
+                                <p class="text-sm text-gray-500">
+                                    Ticket Price
+                                </p>
+
+                                <div
+                                    class="mt-1 flex items-end gap-2"
+                                >
+
+                                    <span
+                                        id="eventPrice"
+                                        class="text-3xl font-bold text-primary"
+                                    >
+                                        Free
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Divider -->
+
+                            <div
+                                class="my-5 border-t border-gray-100"
+                            ></div>
+
+
+
+                            <!-- Available Seats -->
+
+                            <div>
+
+                                <div
+                                    class="flex items-center justify-between"
+                                >
+
+                                    <span
+                                        class="text-sm text-gray-500"
+                                    >
+                                        Available Seats
+                                    </span>
+
+                                    <span
+                                        id="availableSeats"
+                                        class="text-sm font-bold text-gray-900"
+                                    >
+                                        --
+                                    </span>
+
+                                </div>
+
+
+                                <div
+                                    class="mt-3 h-2 overflow-hidden rounded-full bg-gray-100"
+                                >
+
+                                    <div
+                                        id="seatProgress"
+                                        class="h-full rounded-full bg-primary"
+                                        style="width: 0%"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Book Button -->
+
+                            <button
+                                id="bookEventButton"
+                                type="button"
+                            
+                                class="mt-6 w-full rounded-2xl bg-primary px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-primaryDark focus:outline-none focus:ring-4 focus:ring-primary/20" >
+                                Book This Event
+                            </button>
+
+
+                            <p
+                                class="mt-3 text-center text-xs leading-5 text-gray-400"
+                            >
+                                Secure your seat before tickets run out.
+                            </p>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     COMPACT REVIEWS & RATINGS
+                ================================================== -->
+
+                <section
+                    class="mt-7 rounded-3xl bg-white p-4 shadow-soft sm:p-5"
+                >
+
+
+                    <!-- ==================================
+                         REVIEW HEADER
+                    =================================== -->
+
+                    <div
+                        class="flex items-center justify-between gap-4"
+                    >
+
+                        <div>
+
+                            <h2
+                                class="text-lg font-bold text-gray-900"
+                            >
+                                Reviews & Ratings
+                            </h2>
+
+                            <p
+                                class="mt-0.5 text-xs text-gray-500"
+                            >
+                                See what attendees say about this event.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Rating Summary -->
+
+                        <div
+                            class="flex shrink-0 items-center gap-3 rounded-xl bg-primaryLight px-4 py-2.5"
+                        >
+
+                            <div class="text-center">
+
+                                <div
+                                    id="averageRating"
+                                    class="text-lg font-bold leading-none text-primary"
+                                >
+                                    0.0
+                                </div>
+
+                                <div
+                                    id="averageStars"
+                                    class="mt-1 text-xs tracking-wide text-primary"
+                                >
+                                    ☆☆☆☆☆
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="h-7 w-px bg-primary/10"
+                            ></div>
+
+
+                            <p
+                                id="totalReviews"
+                                class="text-[10px] text-gray-500"
+                            >
+                                0 Reviews
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ==================================
+                         WRITE REVIEW
+                    =================================== -->
+
+                    <div
+                        id="reviewFormSection"
+                        class="mt-4 hidden rounded-xl border border-gray-100 bg-gray-50 p-3.5"
+                    >
+
+                        <div
+                            class="flex flex-col gap-3"
+                        >
+
+                            <div>
+
+                                <h3
+                                    class="text-sm font-bold text-gray-900"
+                                >
+                                    Write a Review
+                                </h3>
+
+                                <p
+                                    class="mt-0.5 text-[11px] text-gray-500"
+                                >
+                                    Share your experience with this event.
+                                </p>
+
+                            </div>
+
+
+                            <!-- Rating -->
+
+                            <div>
+
+                                <label
+                                    class="text-xs font-semibold text-gray-700"
+                                >
+                                    Your Rating
+                                </label>
+
+
+                                <div
+                                    id="ratingStars"
+                                    class="mt-1 flex gap-1"
+                                >
+
+                                    <button
+                                        type="button"
+                                        data-rating="1"
+                                        class="rating-star text-xl leading-none text-gray-300 transition hover:scale-110"
+                                    >
+                                        ★
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-rating="2"
+                                        class="rating-star text-xl leading-none text-gray-300 transition hover:scale-110"
+                                    >
+                                        ★
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-rating="3"
+                                        class="rating-star text-xl leading-none text-gray-300 transition hover:scale-110"
+                                    >
+                                        ★
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-rating="4"
+                                        class="rating-star text-xl leading-none text-gray-300 transition hover:scale-110"
+                                    >
+                                        ★
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-rating="5"
+                                        class="rating-star text-xl leading-none text-gray-300 transition hover:scale-110"
+                                    >
+                                        ★
+                                    </button>
+
+                                </div>
+
+
+                                <p
+                                    id="ratingError"
+                                    class="mt-1 hidden text-xs text-red-500"
+                                ></p>
+
+                            </div>
+
+
+
+                            <!-- Comment -->
+
+                            <div>
+
+                                <label
+                                    for="reviewComment"
+                                    class="text-xs font-semibold text-gray-700"
+                                >
+                                    Your Comment
+                                </label>
+
+
+                                <textarea
+                                    id="reviewComment"
+                                    rows="3"
+                                    maxlength="1000"
+                                    placeholder="Write your experience..."
+                                    class="mt-1.5 w-full resize-none rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs text-gray-700 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
+                                ></textarea>
+
+
+                                <p
+                                    id="commentError"
+                                    class="mt-1 hidden text-xs text-red-500"
+                                ></p>
+
+                            </div>
+
+
+
+                            <!-- Review Message -->
+
+                            <div
+                                id="reviewMessage"
+                                class="hidden rounded-lg px-3 py-2 text-xs"
+                            ></div>
+
+
+
+                            <!-- Submit -->
+
+                            <button
+                                id="submitReviewButton"
+                                type="button"
+                                class="w-fit rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white transition hover:bg-primaryDark focus:outline-none focus:ring-4 focus:ring-primary/20"
+                            >
+                                Submit Review
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ==================================
+                         LOGIN MESSAGE
+                    =================================== -->
+
+                    <div
+                        id="reviewLoginMessage"
+                        class="mt-3 hidden rounded-xl bg-primaryLight px-3 py-2.5 text-xs text-primary"
+                    >
+                        Please login to write a review.
+                    </div>
+
+
+
+                    <!-- ==================================
+                         REVIEWS LOADING
+                    =================================== -->
+
+                    <div
+                        id="reviewsLoading"
+                        class="mt-4 py-5 text-center text-xs text-gray-500"
+                    >
+                        Loading reviews...
+                    </div>
+
+
+
+                    <!-- ==================================
+                         NO REVIEWS
+                    =================================== -->
+
+                    <div
+                        id="reviewsEmpty"
+                        class="mt-4 hidden rounded-xl border border-dashed border-gray-200 px-4 py-5 text-center"
+                    >
+
+                        <div class="text-2xl">
+                            ⭐
+                        </div>
+
+                        <h3
+                            class="mt-1.5 text-sm font-bold text-gray-900"
+                        >
+                            No Reviews Yet
+                        </h3>
+
+                        <p
+                            class="mt-0.5 text-[11px] text-gray-500"
+                        >
+                            Be the first person to review this event.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- ==================================
+                         REVIEWS LIST
+                    =================================== -->
+
+                    <div
+                        id="reviewsList"
+                        class="mt-4 space-y-3"
+                    ></div>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 EVENT ERROR
+            =================================== -->
+
+            <div
+                id="eventError"
+                class="hidden min-h-[400px] items-center justify-center"
+            >
+
+                <div
+                    class="max-w-md rounded-3xl bg-white p-8 text-center shadow-soft"
+                >
+
+                    <div class="text-5xl">
+                        ⚠️
+                    </div>
+
+
+                    <h2
+                        class="mt-4 text-xl font-bold text-gray-900"
+                    >
+                        Event Not Found
+                    </h2>
+
+
+                    <p
+                        id="eventErrorMessage"
+                        class="mt-2 text-sm leading-6 text-gray-500"
+                    >
+                        We couldn't load this event.
+                    </p>
+
+
+                    <a
+                        href="./events.html"
+                        class="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                    >
+                        Back to Events
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <div id="user-footer"></div>
+
+
+
+    <!-- ======================================
+         COMPONENTS
+    ======================================= -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "user-header",
+                "../../components/user-header.html"
+            ),
+
+            loadComponent(
+                "user-footer",
+                "../../components/user-footer.html"
+            )
+
+        ]);
+
+    </script>
+
+
+
+    <!-- ======================================
+         EVENT DETAILS JS
+    ======================================= -->
+
+    <script src="../../js/user/event-details.js"></script>
+
+
+</body>
+
+</html>

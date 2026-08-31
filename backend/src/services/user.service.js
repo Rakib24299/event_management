@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const AppError = require("../utils/AppError");
 const uploadToCloudinary = require("../utils/uploadToCloudinary");
+
+
+
 // const cloudinary = require("../config/cloudinary");
 const deleteFromCloudinary = require("../utils/deleteFromCloudinary");
 
@@ -14,6 +17,8 @@ const getMyProfile = async (userId) => {
 
   return user;
 };
+
+
 
 // Update My Profile
 const updateMyProfile = async (userId, payload) => {
@@ -33,6 +38,8 @@ const updateMyProfile = async (userId, payload) => {
 };
 
 
+
+
 // Upload Profile Image
 
 const uploadProfileImage = async (userId, file) => {
@@ -46,6 +53,9 @@ const uploadProfileImage = async (userId, file) => {
     throw new AppError("Please upload an image.", 400);
   }
 
+
+
+  
   // Delete old image if exists
   if (user.profileImage?.publicId) {
     await deleteFromCloudinary(user.profileImage.publicId);

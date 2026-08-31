@@ -67,14 +67,14 @@ const getAdminDashboard = async () => {
     Payment.aggregate([
       {
         $match: {
-          paymentStatus: "paid",
+          status: "paid",
         },
       },
       {
         $group: {
           _id: null,
           totalRevenue: {
-            $sum: "$amount",
+            $sum: "$grossAmount",
           },
         },
       },
@@ -142,69 +142,91 @@ const getOrganizerDashboard = async (organizerId) => {
 
   const eventIds = myEvents.map((event) => event._id);
 
-  const [
-    totalEvents,
-    publishedEvents,
-    completedEvents,
-    cancelledEvents,
-    draftEvents,
-    totalBookings,
-    recentReviews,
-  ] = await Promise.all([
-    Event.countDocuments({
-      organizer: organizerId,
-      isDeleted: false,
-    }),
+    const [
+     totalEvents,
+     publishedEvents,
+     completedEvents,
+     cancelledEvents,
+     draftEvents,
+     ticketsSold,
+     recentEvents,
+     recentReviews,
+    ] = await Promise.all([
+      Event.countDocuments({
+        organizer: organizerId,
+        isDeleted: false,
+      }),
 
-    Event.countDocuments({
-      organizer: organizerId,
-      isDeleted: false,
-      status: "published",
-    }),
+      Event.countDocuments({
+        organizer: organizerId,
+        isDeleted: false,
+        status: "published",
+      }),
 
-    Event.countDocuments({
-      organizer: organizerId,
-      isDeleted: false,
-      status: "completed",
-    }),
+      Event.countDocuments({
+        organizer: organizerId,
+        isDeleted: false,
+        status: "completed",
+      }),
 
-    Event.countDocuments({
-      organizer: organizerId,
-      isDeleted: false,
-      status: "cancelled",
-    }),
+      Event.countDocuments({
+        organizer: organizerId,
+        isDeleted: false,
+        status: "cancelled",
+      }),
 
-    Event.countDocuments({
-      organizer: organizerId,
-      isDeleted: false,
-      status: "draft",
-    }),
+      Event.countDocuments({
+        organizer: organizerId,
+        isDeleted: false,
+        status: "draft",
+      }),
 
-    Booking.countDocuments({
-      event: {
-        $in: eventIds,
-      },
-      bookingStatus: {
-        $ne: "cancelled",
-      },
-    }),
+      Booking.aggregate([
+        {
+          $match: {
+            event: {
+              $in: eventIds,
+            },
+            bookingStatus: {
+              $ne: "cancelled",
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            ticketsSold: {
+              $sum: "$ticketQuantity",
+            },
+          },
+        },
+      ]),
 
-    Review.find({
-      event: {
-        $in: eventIds,
-      },
-    })
-      .populate("user", "name")
-      .sort({
-        createdAt: -1,
+      Event.find({
+        organizer: organizerId,
+        isDeleted: false,
       })
-      .limit(5),
-  ]);
+        .sort({
+          createdAt: -1,
+        })
+        .limit(5),
+
+      Review.find({
+        event: {
+          $in: eventIds,
+        },
+      })
+        .populate("user", "name")
+        .sort({
+          createdAt: -1,
+        })
+        .limit(5),
+    ]);
 
   const totalRevenue = await Payment.aggregate([
     {
       $match: {
-        paymentStatus: "paid",
+        status: "paid",
       },
     },
     {
@@ -229,7 +251,7 @@ const getOrganizerDashboard = async (organizerId) => {
       $group: {
         _id: null,
         totalRevenue: {
-          $sum: "$amount",
+          $sum: "$grossAmount",
         },
       },
     },
@@ -241,12 +263,14 @@ const getOrganizerDashboard = async (organizerId) => {
     completedEvents,
     cancelledEvents,
     draftEvents,
-    totalBookings,
+    ticketsSold: ticketsSold.length > 0 ? ticketsSold[0].ticketsSold : 0,
 
     totalRevenue:
       totalRevenue.length > 0
         ? totalRevenue[0].totalRevenue
         : 0,
+
+    recentEvents,
 
     recentReviews,
   };
@@ -302,14 +326,14 @@ const getUserDashboard = async (userId) => {
       {
         $match: {
           user: userId,
-          paymentStatus: "paid",
+          status: "paid",
         },
       },
       {
         $group: {
           _id: null,
           totalSpent: {
-            $sum: "$amount",
+            $sum: "$grossAmount",
           },
         },
       },

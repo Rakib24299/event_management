@@ -1,294 +1,178 @@
-<nav class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
+<header class="relative z-50 border-b border-gray-200 bg-white">
 
-    <div class="container-custom">
+    <div
+        class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8"
+    >
 
-        <div class="flex h-16 items-center justify-between">
+        <!-- EventEase -->
 
-            <!-- Logo -->
+        <a
+            href="./index.html"
+            class="text-2xl font-extrabold tracking-tight text-primary"
+        >
+            <span class="text-black">Event</span>Ease
+        </a>
 
-            <a
-                href="../index.html"
-                class="flex items-center gap-2"
-            >
+        <!-- Desktop Right Side -->
 
-                <!-- <div
-                    class="
-                        flex
-                        h-9
-                        w-9
-                        items-center
-                        justify-center
-                        rounded-xl
-                        bg-primary
-                        text-lg
-                        font-bold
-                        text-white
-                    "
-                >
-                    E
-                </div> -->
+        <div class="hidden items-center gap-3 md:flex">
 
-                <span
-                    class="
-                        text-xl
-                        font-bold
-                        tracking-tight
-                        text-primary
-                    "
-                >
-                    EventEase
-                </span>
+            <!-- Login Dropdown -->
 
-            </a>
+            <div class="relative">
 
-
-            <!-- Desktop Navigation -->
-
-            <div class="hidden items-center gap-8 md:flex">
-
-                <a
-                    href="../index.html"
-                    class="
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        transition
-                        hover:text-primary
-                    "
-                >
-                    Home
-                </a>
-
-                <a
-                    href="../pages/events.html"
-                    class="
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        transition
-                        hover:text-primary
-                    "
-                >
-                    Events
-                </a>
-
-                <a
-                    href="#"
-                    class="
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        transition
-                        hover:text-primary
-                    "
-                >
-                    About
-                </a>
-
-                <a
-                    href="#"
-                    class="
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        transition
-                        hover:text-primary
-                    "
-                >
-                    Contact
-                </a>
-
-            </div>
-
-
-            <!-- Desktop Auth Buttons -->
-
-            <div class="hidden items-center gap-3 md:flex">
-
-                <a
-                    href="../pages/login.html"
-                    class="
-                        rounded-lg
-                        px-4
-                        py-2.5
-                        text-sm
-                        font-semibold
-                        text-primary
-                        transition
-                        hover:bg-green-50
-                    "
+                <button
+                    id="loginDropdownButton"
+                    type="button"
+                    class="rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
                 >
                     Login
-                </a>
-
-                <a
-                    href="../pages/register.html"
-                    class="btn-primary"
-                >
-                    Get Started
-                </a>
-
-            </div>
-
-
-            <!-- Mobile Menu Button -->
-
-            <button
-                id="mobileMenuButton"
-                type="button"
-                aria-label="Open navigation menu"
-                class="
-                    flex
-                    h-10
-                    w-10
-                    items-center
-                    justify-center
-                    rounded-lg
-                    border
-                    border-gray-200
-                    text-gray-700
-                    transition
-                    hover:border-primary
-                    hover:text-primary
-                    md:hidden
-                "
-            >
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    class="h-5 w-5"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"
-                    />
-                </svg>
-
-            </button>
-
-        </div>
-
-
-        <!-- Mobile Menu -->
-
-        <div
-            id="mobileMenu"
-            class="hidden border-t border-gray-100 py-4 md:hidden"
-        >
-
-            <div class="flex flex-col gap-1">
-
-                <a
-                    href="../index.html"
-                    class="
-                        rounded-lg
-                        px-4
-                        py-3
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        hover:bg-green-50
-                        hover:text-primary
-                    "
-                >
-                    Home
-                </a>
-
-                <a
-                    href="../pages/events.html"
-                    class="
-                        rounded-lg
-                        px-4
-                        py-3
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        hover:bg-green-50
-                        hover:text-primary
-                    "
-                >
-                    Events
-                </a>
-
-                <a
-                    href="#"
-                    class="
-                        rounded-lg
-                        px-4
-                        py-3
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        hover:bg-green-50
-                        hover:text-primary
-                    "
-                >
-                    About
-                </a>
-
-                <a
-                    href="#"
-                    class="
-                        rounded-lg
-                        px-4
-                        py-3
-                        text-sm
-                        font-medium
-                        text-gray-700
-                        hover:bg-green-50
-                        hover:text-primary
-                    "
-                >
-                    Contact
-                </a>
-
+                </button>
 
                 <div
-                    class="
-                        mt-3
-                        flex
-                        flex-col
-                        gap-2
-                        border-t
-                        border-gray-100
-                        pt-3
-                    "
+                    id="loginDropdown"
+                    class="hidden absolute right-0 top-full mt-2 z-50 w-40 rounded-xl border border-gray-200 bg-white py-2 shadow-lg"
                 >
 
                     <a
-                        href="../pages/login.html"
-                        class="
-                            rounded-lg
-                            px-4
-                            py-3
-                            text-center
-                            text-sm
-                            font-semibold
-                            text-primary
-                            hover:bg-green-50
-                        "
+                        href="./pages/user/user-login.html"
+                        class="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-primary"
                     >
-                        Login
+                        User
                     </a>
 
                     <a
-                        href="../pages/register.html"
-                        class="btn-primary w-full"
+                        href="./pages/organizer/organizer-login.html"
+                        class="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-primary"
                     >
-                        Get Started
+                        Organizer
+                    </a>
+
+                    <a
+                        href="./pages/admin/admin-login.html"
+                        class="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-primary"
+                    >
+                        Admin
                     </a>
 
                 </div>
 
             </div>
 
+            <!-- Get Started -->
+
+            <a
+                href="./pages/register.html"
+                class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Get Started
+            </a>
+
         </div>
+
+        <!-- Mobile Menu Button -->
+
+        <button
+            id="mobileMenuButton"
+            type="button"
+            class="rounded-xl p-2 text-gray-700 transition hover:bg-gray-100 md:hidden"
+        >
+
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                />
+
+            </svg>
+
+        </button>
 
     </div>
 
-</nav>
+    <!-- Mobile Menu -->
+
+    <div
+        id="mobileMenu"
+        class="hidden border-t border-gray-200 bg-white px-6 py-4 md:hidden"
+    >
+
+        <!-- Mobile Login Dropdown -->
+
+        <div class="mb-4">
+
+            <button
+                id="mobileLoginButton"
+                type="button"
+                class="flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+            >
+                Login
+
+                <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                    />
+
+                </svg>
+
+            </button>
+
+            <div
+                id="mobileLoginOptions"
+                class="hidden z-50 mt-2 space-y-1 pl-4"
+            >
+
+                <a
+                    href="./pages/user/user-login.html"
+                    class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-primary"
+                >
+                    User
+                </a>
+
+                <a
+                    href="./pages/organizer/organizer-login.html"
+                    class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-primary"
+                >
+                    Organizer
+                </a>
+
+                <a
+                    href="./pages/admin/admin-login.html"
+                    class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-primary"
+                >
+                    Admin
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Mobile Get Started -->
+
+        <a
+            href="./pages/register.html"
+            class="block rounded-xl bg-primary px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-primaryDark"
+        >
+            Get Started
+        </a>
+
+    </div>
+
+</header>

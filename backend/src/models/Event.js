@@ -1,242 +1,361 @@
-const mongoose = require ("mongoose")
-const {Schema} = mongoose;
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 
-const bannerImageSchema = new Schema (
+// ========================================
+// Banner Image Schema
+// ========================================
 
+const bannerImageSchema = new Schema(
     {
-        url :
-        {
-            type : String,
-            default :"",
-        },
-        publicId :
-        {
-            type : String,
-            default :"",
+        url: {
+            type: String,
+            default: "",
         },
 
+        publicId: {
+            type: String,
+            default: "",
+        },
     },
-    {_id : false}
+    {
+        _id: false,
+    }
 );
+
+
+// ========================================
+// Gallery Image Schema
+// ========================================
 
 const galleryImageSchema = new Schema(
-
     {
-        url :
-        {
-            type : String,
-            default:"",
+        url: {
+            type: String,
+            default: "",
         },
 
-
-        publicId:
-        {
-            type : String,
-            default:"",
+        publicId: {
+            type: String,
+            default: "",
         },
     },
-
-    {_id : false}
+    {
+        _id: false,
+    }
 );
 
+
+// ========================================
+// Venue Schema
+// ========================================
 
 const venueSchema = new Schema(
     {
-        venueName :
-        {
+        venueName: {
             type: String,
             required: [true, "Venue name is required"],
             trim: true,
         },
 
-
-        street :
-        {
-            type: String,
-             trim: true,
-             default:"",
-        },
-
-        city :
-        {
+        street: {
             type: String,
             trim: true,
-            default:"",
+            default: "",
         },
 
-        country :
-        {
+        city: {
             type: String,
             trim: true,
-            default:"Bangladesh",
+            default: "",
         },
 
-
+        country: {
+            type: String,
+            trim: true,
+            default: "Bangladesh",
+        },
     },
-
-    {_id: false}
-
-
+    {
+        _id: false,
+    }
 );
+
+
+// ========================================
+// Event Schema
+// ========================================
 
 const eventSchema = new Schema(
     {
-        title:
-        {
+        // ====================================
+        // Event Title
+        // ====================================
+
+        title: {
             type: String,
-            required: [true ,"Event title is required"],
-            trim : true,
+            required: [true, "Event title is required"],
+            trim: true,
         },
 
-        slug :
-        {
+
+        // ====================================
+        // Event Slug
+        // ====================================
+
+        slug: {
             type: String,
-            required: [true ,"Event slug is required"],
-            unique : true ,
-            lowercase :true,
-            trim : true,
+            required: [true, "Event slug is required"],
+            unique: true,
+            lowercase: true,
+            trim: true,
         },
 
-         organizer: 
-         {
+
+        // ====================================
+        // Organizer
+        // ====================================
+
+        organizer: {
             type: Schema.Types.ObjectId,
             ref: "User",
             required: [true, "Organizer is required"],
-         },
+        },
 
-         category: 
-        {
+
+        // ====================================
+        // Category
+        // ====================================
+
+        category: {
             type: Schema.Types.ObjectId,
             ref: "Category",
             required: [true, "Category is required"],
         },
 
-       
-         description: 
-        {
+
+        // ====================================
+        // Description
+        // ====================================
+
+        description: {
             type: String,
             required: [true, "Description is required"],
             trim: true,
         },
-         venue: 
-           {
+
+
+        // ====================================
+        // Venue
+        // ====================================
+
+        venue: {
             type: venueSchema,
             required: true,
             default: () => ({}),
-             },
+        },
 
-        eventDate:
-            {
+
+        // ====================================
+        // Event Date
+        // ====================================
+
+        eventDate: {
             type: Date,
             required: [true, "Event date is required"],
-            },
+        },
 
-         startTime: 
-            {
+
+        // ====================================
+        // Start Time
+        // ====================================
+
+        startTime: {
             type: String,
             required: [true, "Start time is required"],
-            },
+        },
 
-        endTime: 
-            {
+
+        // ====================================
+        // End Time
+        // ====================================
+
+        endTime: {
             type: String,
             required: [true, "End time is required"],
-            },
+        },
 
-        eventType: 
-            {
+
+        // ====================================
+        // Event Type
+        // ====================================
+
+        eventType: {
             type: String,
             enum: ["free", "paid"],
             default: "paid",
-            },
+        },
 
 
-       ticketPrice: 
-            {
+        // ====================================
+        // Ticket Price
+        // ====================================
+
+        ticketPrice: {
             type: Number,
             default: 0,
             min: 0,
-            },
+        },
 
-         totalSeats:
-            {
+
+        // ====================================
+        // Total Seats
+        // ====================================
+
+        totalSeats: {
             type: Number,
             required: [true, "Total seats are required"],
             min: 1,
-            },
+        },
 
-         availableSeats: 
-            {
+
+        // ====================================
+        // Available Seats
+        // ====================================
+
+        availableSeats: {
             type: Number,
             required: [true, "Available seats are required"],
             min: 0,
-            },
+        },
 
-         maxTicketsPerUser:
-            {
+
+        // ====================================
+        // Maximum Tickets Per User
+        // ====================================
+
+        maxTicketsPerUser: {
             type: Number,
             default: 5,
             min: 1,
-            },
+        },
 
-         bannerImage:
-            {
+
+        // ====================================
+        // Banner Image
+        // ====================================
+
+        bannerImage: {
             type: bannerImageSchema,
             default: () => ({}),
-            },
+        },
 
-         galleryImages: 
-            {
+
+        // ====================================
+        // Gallery Images
+        // ====================================
+
+        galleryImages: {
             type: [galleryImageSchema],
             default: [],
-            },
+        },
 
-        status: 
-            {
+
+        // ========================================
+        // Event Status
+        // ========================================
+        //
+        // draft
+        // published
+        // completed
+        // cancelled
+        // rejected
+        //
+        // ========================================
+
+        status: {
             type: String,
-            enum: ["draft", "published", "completed", "cancelled"],
-            default: "draft",
-            },
 
-        averageRating:
-            {
+            enum: [
+                "draft",
+                "published",
+                "completed",
+                "cancelled",
+                "rejected",
+            ],
+
+            default: "draft",
+        },
+
+
+        // ====================================
+        // Average Rating
+        // ====================================
+
+        averageRating: {
             type: Number,
             default: 0,
             min: 0,
             max: 5,
-            },
+        },
 
-         totalReviews:
-            {
+
+        // ====================================
+        // Total Reviews
+        // ====================================
+
+        totalReviews: {
             type: Number,
             default: 0,
             min: 0,
-            },
+        },
 
-        isDeleted:
-            {
+
+        // ====================================
+        // Soft Delete
+        // ====================================
+
+        isDeleted: {
             type: Boolean,
             default: false,
-            },
+        },
 
-        deletedAt: 
-            {
+
+        // ====================================
+        // Deleted At
+        // ====================================
+
+        deletedAt: {
             type: Date,
             default: null,
-            },
+        },
 
-         deletedBy: 
-            {
+
+        // ====================================
+        // Deleted By
+        // ====================================
+
+        deletedBy: {
             type: Schema.Types.ObjectId,
             ref: "User",
             default: null,
-            },
-
+        },
     },
-    {timestamps:true }
-)
 
-const Event = mongoose.model("Event", eventSchema);
+    {
+        timestamps: true,
+    }
+);
+
+
+// ========================================
+// Event Model
+// ========================================
+
+const Event = mongoose.model(
+    "Event",
+    eventSchema
+);
+
 
 module.exports = Event;

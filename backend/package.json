@@ -13,6 +13,7 @@
   "type": "commonjs",
   "dependencies": {
     "@getbrevo/brevo": "^6.0.2",
+    "@google/genai": "^2.19.0",
     "axios": "^1.19.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
@@ -25,7 +26,10 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.24.2",
     "multer": "^2.2.0",
+    "node-cron": "^4.6.0",
     "nodemailer": "^9.0.3",
+    "openai": "^7.8.0",
+    "pdfkit": "^0.20.1",
     "qrcode": "^1.5.4",
     "slugify": "^1.6.9",
     "sslcommerz-lts": "^1.2.0",

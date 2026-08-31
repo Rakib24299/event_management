@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Manage Events | EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ========================================
+         Tailwind Configuration
+    ========================================= -->
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#457b9d",
+
+                        primaryDark: "#35627d",
+
+                        primaryLight: "#6b9bb8",
+
+                    },
+
+                    boxShadow: {
+
+                        soft:
+                            "0 10px 30px rgba(0, 0, 0, 0.06)",
+
+                    },
+
+                },
+
+            },
+
+        };
+
+    </script>
+
+
+    <!-- ========================================
+         Google Font
+    ========================================= -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ========================================
+         Custom Style
+    ========================================= -->
+    <style>
+
+        .scrollbar-thin::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 999px;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="border-b border-gray-200 bg-white">
+
+        <div
+            class="flex items-center justify-between px-6 py-5 lg:px-8"
+        >
+
+            <!-- EventEase -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-extrabold tracking-tight text-primary"  >
+                <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Dashboard -->
+
+                <a
+                    href="./dashboard.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
+                >
+                    Dashboard
+                </a>
+
+
+                <!-- Organizer Approval -->
+
+                <a
+                    href="./organizer-approval.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 md:block"
+                >
+                    Organizer Approval
+                </a>
+
+
+                <!-- Users -->
+
+                <!-- <a
+                    href="./users.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 lg:block"
+                >
+                    Users
+                </a> -->
+
+
+                <!-- Logout -->
+
+                <!-- <button
+                    id="logoutBtn"
+                    type="button"
+                    class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Logout
+                </button> -->
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         MAIN
+    ========================================= -->
+
+    <main class="flex-1 px-6 py-10 lg:px-8">
+
+
+        <!-- ====================================
+              BREADCRUMB
+        ===================================== -->
+
+        <div class="mb-6 flex items-center gap-2 text-sm">
+
+            <a
+                href="./dashboard.html"
+                class="font-medium text-gray-500 transition hover:text-primary"
+            >
+                Dashboard
+            </a>
+
+            <span class="text-gray-300">
+                /
+            </span>
+
+            <span class="font-semibold text-gray-800">
+                Manage Events
+            </span>
+
+        </div>
+
+
+
+        <!-- ====================================
+              PAGE HEADER
+        ===================================== -->
+
+        <div
+            class="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
+        >
+
+            <div>
+
+                <p
+                    class="text-sm font-semibold uppercase tracking-wider text-primary"
+                >
+                    Admin Panel
+                </p>
+
+                <h1
+                    class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+                >
+                    Manage Events
+                </h1>
+
+                <p
+                    class="mt-3 max-w-2xl text-sm leading-6 text-gray-500"
+                >
+                    View, monitor, and manage all events available on the EventEase platform.
+                </p>
+
+            </div>
+
+
+            <!-- Total Events -->
+
+            <div
+                class="inline-flex w-fit items-center gap-2 rounded-2xl bg-primaryLight/10 px-4 py-3"
+            >
+
+                <span class="text-lg">
+                    🎫
+                </span>
+
+                <span
+                    id="eventCount"
+                    class="font-bold text-primary"
+                >
+                    0 Events
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================
+             FILTER / SEARCH
+        ===================================== -->
+
+        <section
+            class="mb-6 rounded-3xl bg-white p-6 shadow-soft"
+        >
+
+            <div
+                class="grid gap-4 md:grid-cols-[1fr_auto_auto]"
+            >
+
+                <!-- Search -->
+
+                <div>
+
+                    <label
+                        for="searchInput"
+                        class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-400"
+                    >
+                        Search Events
+                    </label>
+
+
+                    <div class="relative">
+
+                        <span
+                            class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                        >
+                            🔎
+                        </span>
+
+
+                        <input
+                            id="searchInput"
+                            type="text"
+                            placeholder="Search by title, organizer, or category..."
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status Filter -->
+
+                <div>
+
+                    <label
+                        for="statusFilter"
+                        class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-400"
+                    >
+                        Status
+                    </label>
+
+
+                    <select
+                        id="statusFilter"
+                        class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-primary focus:bg-white"
+                    >
+
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="draft">
+                            Draft
+                        </option>
+
+                        <option value="published">
+                            Published
+                        </option>
+
+                        <option value="completed">
+                            Completed
+                        </option>
+
+                        <option value="cancelled">
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Event Type Filter -->
+
+                <div>
+
+                    <label
+                        for="typeFilter"
+                        class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-400"
+                    >
+                        Type
+                    </label>
+
+
+                    <select
+                        id="typeFilter"
+                        class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-primary focus:bg-white"
+                    >
+
+                        <option value="all">
+                            All Types
+                        </option>
+
+                        <option value="free">
+                            Free
+                        </option>
+
+                        <option value="paid">
+                            Paid
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ====================================
+             LOADING STATE
+        ===================================== -->
+
+        <div
+            id="loadingState"
+            class="rounded-3xl bg-white p-12 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+
+            <p
+                class="mt-4 text-sm text-gray-500"
+            >
+                Loading events...
+            </p>
+
+        </div>
+
+
+        <!-- ====================================
+             ERROR STATE
+        ===================================== -->
+
+        <div
+            id="errorState"
+            class="mt-6 hidden rounded-3xl bg-white p-10 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-2xl"
+            >
+                ⚠️
+            </div>
+
+
+            <h3
+                class="mt-4 font-bold text-gray-900"
+            >
+                Failed to Load Events
+            </h3>
+
+
+            <p
+                id="errorMessage"
+                class="mt-2 text-sm text-gray-500"
+            >
+                Please try again later.
+            </p>
+
+
+            <button
+                id="retryBtn"
+                type="button"
+                class="mt-5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+        <!-- ====================================
+              CONTENT
+        ===================================== -->
+
+        <section
+            id="content"
+            class="hidden overflow-hidden rounded-3xl bg-white shadow-soft"
+        >
+
+
+            <!-- ==================================
+                  CARD HEADER
+            =================================== -->
+
+            <div
+                class="flex flex-col gap-3 border-b border-gray-100 px-6 py-5 sm:flex-row sm:items-center sm:justify-between"
+            >
+
+                <div>
+
+                    <h2
+                        class="text-lg font-bold text-gray-900"
+                    >
+                        Event List
+                    </h2>
+
+                    <p
+                        id="eventCountText"
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        0 events found
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================
+                  EVENT LIST
+            =================================== -->
+
+            <div
+                id="eventList"
+                class="space-y-4 p-6"
+            >
+            </div>
+
+
+            <!-- ==================================
+                  EMPTY STATE
+            =================================== -->
+
+            <div
+                id="emptyState"
+                class="hidden px-6 py-14 text-center"
+            >
+
+                <div
+                    class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-3xl"
+                >
+                    🎫
+                </div>
+
+                <h3
+                    class="mt-5 text-lg font-bold text-gray-900"
+                >
+                    No Events Found
+                </h3>
+
+                <p
+                    class="mt-2 text-sm text-gray-500"
+                >
+                    No events match the current search or filter.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
+    <footer
+        class="mt-10 border-t border-gray-200 bg-white"
+    >
+
+        <div
+            class="flex flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p>
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <div>
+                    Developed By
+                    <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ========================================
+         JavaScript
+    ========================================= -->
+
+    <script src="../../js/admin/events.js"></script>
+
+</body>
+
+</html>

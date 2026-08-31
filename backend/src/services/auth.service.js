@@ -4,6 +4,7 @@ const generateToken = require("../utils/generateToken");
 const generateOTP = require("../utils/generateOTP");
 const sendEmail = require("../utils/sendEmail");
 const AppError = require("../utils/AppError");
+const { createBulkNotifications } = require("./notification.service");
 
 
 
@@ -123,11 +124,30 @@ const registerOrganizer = async (payload) => {
   organizer.emailVerificationOtpExpires = new Date(
     Date.now() + 10 * 60 * 1000
   );
-
   await organizer.save();
 
-  let emailSent = true;
 
+  const admins = await User.find({ role: "admin" }).select("_id");
+
+
+  if (admins.length > 0) {
+
+    await createBulkNotifications({
+
+      users: admins.map((admin) => admin._id),
+
+      title: "New Organizer Registration",
+
+      message: `A new organizer "${organizer.name}" (${organizer.email}) has registered and is pending approval.`,
+
+      type: "approval",
+
+    });
+
+  }
+
+
+  let emailSent = true;
   try {
     await sendEmail({
       to: organizer.email,

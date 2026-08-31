@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Payment & Refund Management | EventEase</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body class="min-h-screen flex flex-col bg-gray-100 text-gray-800">
+
+
+    <div class="min-h-screen flex flex-col">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="border-b border-gray-200 bg-white">
+
+            <div
+                class="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8"
+            >
+
+                <div
+                    class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+                >
+
+                    <div>
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-600"
+                            >
+
+                                <i class="fa-solid fa-money-check-dollar"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl font-bold text-gray-900"
+                                >
+                                    Payment & Refund Management
+                                </h1>
+
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Manage payments and process customer refunds.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Back Button -->
+
+                    <button
+                        id="backButton"
+                        type="button"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-white transition hover:bg-gray-800"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Back to Dashboard
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main
+            class="mx-auto flex-1 max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+        >
+
+
+            <!-- =================================================
+                 LOADING
+            ================================================== -->
+
+            <section
+                id="loadingState"
+                class="rounded-xl border border-gray-200 bg-white p-10 text-center"
+            >
+
+                <div
+                    class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600"
+                >
+
+                    <i class="fa-solid fa-spinner fa-spin text-xl"></i>
+
+                </div>
+
+                <h2 class="font-semibold text-gray-800">
+                    Loading payments...
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-500">
+                    Please wait.
+                </p>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            <section
+                id="errorState"
+                class="mb-6 hidden rounded-xl border border-red-200 bg-red-50 p-6"
+            >
+
+                <div class="flex items-start gap-4">
+
+                    <div
+                        class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600"
+                    >
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                    </div>
+
+                    <div class="flex-1">
+
+                        <h3 class="font-semibold text-red-800">
+                            Failed to load payments
+                        </h3>
+
+                        <p
+                            id="errorMessage"
+                            class="mt-1 text-sm text-red-700"
+                        >
+                            Something went wrong.
+                        </p>
+
+                        <button
+                            id="retryButton"
+                            type="button"
+                            class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm text-white transition hover:bg-red-700"
+                        >
+
+                            <i class="fa-solid fa-rotate-right mr-2"></i>
+
+                            Retry
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CONTENT
+            ================================================== -->
+
+            <section
+                id="paymentSection"
+                class="hidden"
+            >
+
+
+                <!-- =================================================
+                     STATISTICS
+                ================================================== -->
+
+                <div
+                    class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                >
+
+                    <!-- Total -->
+
+                    <div
+                        class="rounded-xl border border-gray-200 bg-white p-5"
+                    >
+
+                        <div class="flex items-center justify-between">
+
+                            <div>
+
+                                <p class="text-sm text-gray-500">
+                                    Total Payments
+                                </p>
+
+                                <h2
+                                    id="totalPayments"
+                                    class="mt-1 text-2xl font-bold text-gray-900"
+                                >
+                                    0
+                                </h2>
+
+                            </div>
+
+                            <div
+                                class="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-100 text-blue-600"
+                            >
+                                <i class="fa-solid fa-credit-card"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Paid -->
+
+                    <div
+                        class="rounded-xl border border-gray-200 bg-white p-5"
+                    >
+
+                        <div class="flex items-center justify-between">
+
+                            <div>
+
+                                <p class="text-sm text-gray-500">
+                                    Paid
+                                </p>
+
+                                <h2
+                                    id="paidPayments"
+                                    class="mt-1 text-2xl font-bold text-green-600"
+                                >
+                                    0
+                                </h2>
+
+                            </div>
+
+                            <div
+                                class="flex h-11 w-11 items-center justify-center rounded-lg bg-green-100 text-green-600"
+                            >
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Pending -->
+
+                    <div
+                        class="rounded-xl border border-gray-200 bg-white p-5"
+                    >
+
+                        <div class="flex items-center justify-between">
+
+                            <div>
+
+                                <p class="text-sm text-gray-500">
+                                    Pending
+                                </p>
+
+                                <h2
+                                    id="pendingPayments"
+                                    class="mt-1 text-2xl font-bold text-yellow-600"
+                                >
+                                    0
+                                </h2>
+
+                            </div>
+
+                            <div
+                                class="flex h-11 w-11 items-center justify-center rounded-lg bg-yellow-100 text-yellow-600"
+                            >
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Refunded -->
+
+                    <div
+                        class="rounded-xl border border-gray-200 bg-white p-5"
+                    >
+
+                        <div class="flex items-center justify-between">
+
+                            <div>
+
+                                <p class="text-sm text-gray-500">
+                                    Refunded
+                                </p>
+
+                                <h2
+                                    id="refundedPayments"
+                                    class="mt-1 text-2xl font-bold text-purple-600"
+                                >
+                                    0
+                                </h2>
+
+                            </div>
+
+                            <div
+                                class="flex h-11 w-11 items-center justify-center rounded-lg bg-purple-100 text-purple-600"
+                            >
+                                <i class="fa-solid fa-money-bill-transfer"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     SEARCH + FILTER
+                ================================================== -->
+
+                <div
+                    class="mb-6 rounded-xl border border-gray-200 bg-white p-5"
+                >
+
+                    <div
+                        class="flex flex-col gap-4 lg:flex-row"
+                    >
+
+                        <!-- Search -->
+
+                        <div class="relative flex-1">
+
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                            ></i>
+
+                            <input
+                                id="searchInput"
+                                type="text"
+                                placeholder="Search by user, email, event or transaction ID..."
+                                class="w-full rounded-lg border border-gray-300 py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+
+                        </div>
+
+
+
+                        <!-- Status -->
+
+                        <select
+                            id="statusFilter"
+                            class="rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-52"
+                        >
+
+                            <option value="all">
+                                All Status
+                            </option>
+
+                            <option value="pending">
+                                Pending
+                            </option>
+
+                            <option value="processing">
+                                Processing
+                            </option>
+
+                            <option value="paid">
+                                Paid
+                            </option>
+
+                            <option value="failed">
+                                Failed
+                            </option>
+
+                            <option value="cancelled">
+                                Cancelled
+                            </option>
+
+                            <option value="refunded">
+                                Refunded
+                            </option>
+
+                            <option value="partially_refunded">
+                                Partially Refunded
+                            </option>
+
+                        </select>
+
+
+
+                        <!-- Refresh -->
+
+                        <button
+                            id="refreshButton"
+                            type="button"
+                            class="rounded-lg bg-gray-900 px-5 py-3 text-white transition hover:bg-gray-800"
+                        >
+
+                            <i class="fa-solid fa-rotate-right mr-2"></i>
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PAYMENT TABLE
+                ================================================== -->
+
+                <div
+                    class="overflow-hidden rounded-xl border border-gray-200 bg-white"
+                >
+
+                    <div
+                        class="flex flex-col gap-2 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+
+                        <div>
+
+                            <h2 class="text-lg font-semibold text-gray-900">
+                                Payment Records
+                            </h2>
+
+                            <p
+                                id="paymentCountText"
+                                class="mt-1 text-sm text-gray-500"
+                            >
+                                0 payments found
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="overflow-x-auto">
+
+                        <table class="min-w-full">
+
+                            <thead class="bg-gray-50">
+
+                                <tr>
+
+                                    <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        User
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        Event
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        Amount
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        Method
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        Status
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        Refund
+                                    </th>
+
+                                    <th class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody
+                                id="paymentTableBody"
+                                class="divide-y divide-gray-200"
+                            ></tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+                    <!-- Empty State -->
+
+                    <div
+                        id="emptyState"
+                        class="hidden py-16 text-center"
+                    >
+
+                        <div
+                            class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400"
+                        >
+
+                            <i class="fa-solid fa-receipt text-xl"></i>
+
+                        </div>
+
+                        <h3 class="mt-4 font-semibold text-gray-800">
+                            No payments found
+                        </h3>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            There are no payment records matching your search.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <footer
+            class="mt-10 border-t border-gray-200 bg-white"
+        >
+
+            <div
+                class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+            >
+
+                <p>
+                    © 2026 EventEase. All rights reserved.
+                </p>
+
+                <div class="flex gap-5">
+
+                    <div>
+                        Developed By
+                        <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PAYMENT DETAILS MODAL
+    ====================================================== -->
+
+    <div
+        id="paymentModal"
+        class="fixed inset-0 z-50 hidden"
+    >
+
+        <div
+            id="modalOverlay"
+            class="absolute inset-0 bg-black/50"
+        ></div>
+
+
+        <div
+            class="relative flex min-h-screen items-center justify-center p-4"
+        >
+
+            <div
+                class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl"
+            >
+
+                <!-- Modal Header -->
+
+                <div
+                    class="flex items-center justify-between border-b border-gray-200 px-6 py-5"
+                >
+
+                    <div>
+
+                        <h2 class="text-xl font-bold text-gray-900">
+                            Payment Details
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            Complete payment information
+                        </p>
+
+                    </div>
+
+                    <button
+                        id="closeModalButton"
+                        type="button"
+                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    >
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- Modal Body -->
+
+                <div
+                    id="paymentDetails"
+                    class="p-6"
+                ></div>
+
+
+
+                <!-- Modal Footer -->
+
+                <div
+                    class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4"
+                >
+
+                    <button
+                        id="modalRefundButton"
+                        type="button"
+                        class="hidden rounded-lg bg-purple-600 px-5 py-2.5 text-white transition hover:bg-purple-700"
+                    >
+
+                        <i class="fa-solid fa-money-bill-transfer mr-2"></i>
+
+                        Process Refund
+
+                    </button>
+
+                    <button
+                        id="modalCloseButton"
+                        type="button"
+                        class="rounded-lg bg-gray-200 px-5 py-2.5 text-gray-800 hover:bg-gray-300"
+                    >
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../../js/admin/payment-refund.js"></script>
+
+</body>
+
+</html>

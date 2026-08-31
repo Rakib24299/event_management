@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Edit Event | EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        organizer:
+                            "#fc9e4f",
+
+                    },
+
+                },
+
+            },
+
+        };
+
+    </script>
+
+</head>
+
+
+<body class="bg-gray-50 text-gray-800">
+
+
+     <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <!-- Logo -->
+
+            <a href="./dashboard.html"
+               class="text-2xl font-bold text-primary" >
+              
+                 Event<span class="text-[#e76f51]">Ease</span>
+            </a>
+
+
+            <!-- Account -->
+
+            <a
+                href="./dashboard.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-[#e76f51]" >
+                Dashbord
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         Main Content
+    ========================================= -->
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+
+
+        <!-- ====================================
+             Loading
+        ===================================== -->
+
+        <div
+            id="pageLoading"
+            class="text-center py-12"
+        >
+
+            <p class="text-gray-500">
+                Loading event...
+            </p>
+
+        </div>
+
+
+
+        <!-- ====================================
+             Error
+        ===================================== -->
+
+        <div
+            id="pageError"
+            class="hidden mb-6
+                   p-4 rounded-lg
+                   bg-red-50
+                   border border-red-200
+                   text-red-700"
+        >
+        </div>
+
+
+
+        <!-- ====================================
+             Success
+        ===================================== -->
+
+        <div
+            id="pageSuccess"
+            class="hidden mb-6
+                   p-4 rounded-lg
+                   bg-green-50
+                   border border-green-200
+                   text-green-700"
+        >
+        </div>
+
+
+
+        <!-- ====================================
+             Edit Form
+        ===================================== -->
+
+        <form
+            id="editEventForm"
+            class="hidden bg-white
+                   rounded-2xl shadow-sm
+                   border p-8 space-y-8"
+        >
+
+
+            <!-- =================================
+                 Basic Information
+            ================================== -->
+
+            <div>
+
+                <h2
+                    class="text-xl font-semibold mb-6"
+                >
+                    Basic Information
+                </h2>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                    <!-- Event Title -->
+
+                    <div class="md:col-span-2">
+
+                        <label
+                            for="title"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Event Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                            placeholder="Enter event title"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Slug -->
+
+                    <div class="md:col-span-2">
+
+                        <label
+                            for="slug"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Event Slug
+                        </label>
+
+                        <input
+                            type="text"
+                            id="slug"
+                            name="slug"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                            placeholder="event-slug"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Category -->
+
+                    <div>
+
+                        <label
+                            for="category"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Category
+                        </label>
+
+                        <select
+                            id="category"
+                            name="category"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   bg-white
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Event Type -->
+
+                    <div>
+
+                        <label
+                            for="eventType"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Event Type
+                        </label>
+
+                        <select
+                            id="eventType"
+                            name="eventType"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   bg-white
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                            <option value="">
+                                Select Event Type
+                            </option>
+
+                            <option value="free">
+                                Free
+                            </option>
+
+                            <option value="paid">
+                                Paid
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Description -->
+
+                    <div class="md:col-span-2">
+
+                        <label
+                            for="description"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="6"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   resize-none
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                            placeholder="Describe your event"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 Venue
+            ================================== -->
+
+            <div>
+
+                <h2
+                    class="text-xl font-semibold mb-6"
+                >
+                    Venue Information
+                </h2>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                    <!-- Venue Name -->
+
+                    <div class="md:col-span-2">
+
+                        <label
+                            for="venueName"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Venue Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="venueName"
+                            name="venueName"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Street -->
+
+                    <div>
+
+                        <label
+                            for="street"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Street
+                        </label>
+
+                        <input
+                            type="text"
+                            id="street"
+                            name="street"
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- City -->
+
+                    <div>
+
+                        <label
+                            for="city"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            City
+                        </label>
+
+                        <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Country -->
+
+                    <div>
+
+                        <label
+                            for="country"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Country
+                        </label>
+
+                        <input
+                            type="text"
+                            id="country"
+                            name="country"
+                            value="Bangladesh"
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 Date & Time
+            ================================== -->
+
+            <div>
+
+                <h2
+                    class="text-xl font-semibold mb-6"
+                >
+                    Date & Time
+                </h2>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+
+                    <!-- Event Date -->
+
+                    <div>
+
+                        <label
+                            for="eventDate"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Event Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="eventDate"
+                            name="eventDate"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Start Time -->
+
+                    <div>
+
+                        <label
+                            for="startTime"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Start Time
+                        </label>
+
+                        <input
+                            type="time"
+                            id="startTime"
+                            name="startTime"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- End Time -->
+
+                    <div>
+
+                        <label
+                            for="endTime"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            End Time
+                        </label>
+
+                        <input
+                            type="time"
+                            id="endTime"
+                            name="endTime"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 Ticket Information
+            ================================== -->
+
+            <div>
+
+                <h2
+                    class="text-xl font-semibold mb-6"
+                >
+                    Ticket Information
+                </h2>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+
+                    <!-- Ticket Price -->
+
+                    <div>
+
+                        <label
+                            for="ticketPrice"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Ticket Price
+                        </label>
+
+                        <input
+                            type="number"
+                            id="ticketPrice"
+                            name="ticketPrice"
+                            min="0"
+                            step="0.01"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Total Seats -->
+
+                    <div>
+
+                        <label
+                            for="totalSeats"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Total Seats
+                        </label>
+
+                        <input
+                            type="number"
+                            id="totalSeats"
+                            name="totalSeats"
+                            min="1"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Max Tickets -->
+
+                    <div>
+
+                        <label
+                            for="maxTicketsPerUser"
+                            class="block text-sm
+                                   font-medium mb-2"
+                        >
+                            Max Tickets Per User
+                        </label>
+
+                        <input
+                            type="number"
+                            id="maxTicketsPerUser"
+                            name="maxTicketsPerUser"
+                            min="1"
+                            max="20"
+                            required
+                            class="w-full px-4 py-3
+                                   border rounded-lg
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-orange-300"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 Status
+            ================================== -->
+
+            <div>
+
+                <label
+                    for="status"
+                    class="block text-sm
+                           font-medium mb-2"
+                >
+                    Event Status
+                </label>
+
+                <select
+                    id="status"
+                    name="status"
+                    class="w-full px-4 py-3
+                           border rounded-lg
+                           bg-white
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-orange-300"
+                >
+
+                    <option value="draft">
+                        Draft
+                    </option>
+
+                    <option value="published">
+                        Published
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                    <option value="cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =================================
+                 Buttons
+            ================================== -->
+
+            <div
+                class="flex flex-col sm:flex-row
+                       gap-4 pt-4
+                       border-t"
+            >
+
+                <button
+                    type="submit"
+                    id="saveButton"
+                    class="flex-1
+                           py-3 px-6
+                           rounded-lg
+                           text-white
+                           font-semibold
+                           hover:opacity-90
+                           transition"
+                    style="background-color:#fc9e4f;"
+                >
+                    Save Changes
+                </button>
+
+
+                <a
+                    href="./my-events.html"
+                    class="flex-1
+                           py-3 px-6
+                           rounded-lg
+                           text-center
+                           border
+                           border-gray-300
+                           font-semibold
+                           hover:bg-gray-100"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </main>
+
+
+
+    <!-- ========================================
+         JavaScript
+    ========================================= -->
+
+    <script src="../../js/organizer/edit-event.js"></script>
+
+</body>
+
+</html>

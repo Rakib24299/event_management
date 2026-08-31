@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Notifications | EventEase</title>
+
+
+    <!-- ========================================
+         Tailwind CSS
+    ========================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ========================================
+         Tailwind Configuration
+    ========================================= -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#244522",
+
+                        primaryLight: "#4f772d",
+
+                    },
+
+                    boxShadow: {
+
+                        soft:
+                            "0 10px 30px rgba(0, 0, 0, 0.06)",
+
+                    },
+
+                },
+
+            },
+
+        };
+
+    </script>
+
+</head>
+
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <div id="user-header"></div>
+
+
+
+    <!-- ========================================
+         Main Content
+    ========================================= -->
+
+    <main
+        class="mx-auto min-h-[calc(100vh-220px)] max-w-5xl px-6 py-10"
+    >
+
+
+        <!-- ====================================
+             Page Heading
+        ===================================== -->
+
+        <div class="mb-8">
+
+            <h1
+                class="text-3xl font-bold text-gray-900"
+            >
+                Notifications
+            </h1>
+
+            <p
+                class="mt-2 text-sm text-gray-500"
+            >
+                Stay updated with your bookings and events.
+            </p>
+
+        </div>
+
+
+
+        <!-- ====================================
+             Notification Header Card
+        ===================================== -->
+
+        <section
+            class="mb-6 flex flex-col gap-4 rounded-3xl bg-white p-6 shadow-soft sm:flex-row sm:items-center sm:justify-between"
+        >
+
+            <div>
+
+                <h2
+                    class="text-xl font-bold text-gray-900"
+                >
+                    Your Notifications
+                </h2>
+
+                <p
+                    class="mt-1 text-sm text-gray-500"
+                >
+                    View your latest notifications and updates.
+                </p>
+
+            </div>
+
+
+            <button
+                id="markAllReadBtn"
+                type="button"
+                class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Mark All as Read
+            </button>
+
+        </section>
+
+
+
+        <!-- ====================================
+             Notification List
+        ===================================== -->
+
+        <section
+            id="notificationList"
+            class="space-y-4"
+        >
+
+
+            <!-- Loading State -->
+
+            <div
+                id="loadingState"
+                class="rounded-3xl bg-white p-10 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+                ></div>
+
+                <p
+                    class="mt-4 text-sm text-gray-500"
+                >
+                    Loading notifications...
+                </p>
+
+            </div>
+
+
+
+            <!-- Empty State -->
+
+            <div
+                id="emptyState"
+                class="hidden rounded-3xl bg-white p-10 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primaryLight text-3xl"
+                >
+                    🔔
+                </div>
+
+                <h3
+                    class="mt-5 text-lg font-bold text-gray-900"
+                >
+                    No Notifications
+                </h3>
+
+                <p
+                    class="mt-2 text-sm text-gray-500"
+                >
+                    You don't have any notifications yet.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
+    <div id="user-footer"></div>
+
+
+    <!-- ========================================
+         Components
+    ========================================= -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "user-header",
+                "../../components/user-header.html"
+            ),
+
+            loadComponent(
+                "user-footer",
+                "../../components/user-footer.html"
+            )
+
+        ]);
+
+    </script>
+
+
+    <!-- ========================================
+         JavaScript
+    ========================================= -->
+
+
+    <script src="../../js/user/notifications.js"></script>
+
+
+    <!-- AI -->
+     <script src="../../js/components/ai-chatbot.js"></script>
+
+</body>
+
+</html>

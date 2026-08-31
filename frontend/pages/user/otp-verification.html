@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Verify OTP | EventEase</title>
+
+
+    <!-- ======================================================
+         TAILWIND CSS
+    ======================================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#244522",
+
+                        primaryLight: "#4f772d"
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body
+    class="
+        min-h-screen
+        bg-gray-50
+        text-gray-900
+    "
+>
+
+
+    <!-- ======================================================
+         HEADER
+    ======================================================= -->
+
+    <div id="user-header"></div>
+
+
+
+    <!-- ======================================================
+         MAIN
+    ======================================================= -->
+
+    <main
+        class="
+            flex
+            min-h-[calc(100vh-73px)]
+            items-center
+            justify-center
+            px-5
+            py-10
+        "
+    >
+
+        <div class="w-full max-w-md">
+
+
+            <!-- ==================================================
+                 OTP CARD
+            =================================================== -->
+
+            <div
+                class="
+                    rounded-2xl
+                    border
+                    border-gray-100
+                    bg-white
+                    p-6
+                    shadow-sm
+                    sm:p-8
+                "
+            >
+
+
+                <!-- Icon -->
+
+                <div class="flex justify-center">
+
+                    <div
+                        class="
+                            flex
+                            h-16
+                            w-16
+                            items-center
+                            justify-center
+                            rounded-full
+                            bg-primaryLight/10
+                            text-3xl
+                        "
+                    >
+                        🔐
+                    </div>
+
+                </div>
+
+
+                <!-- Heading -->
+
+                <div class="mt-5 text-center">
+
+                    <p
+                        class="
+                            text-sm
+                            font-semibold
+                            text-primary
+                        "
+                    >
+                        BOOKING VERIFICATION
+                    </p>
+
+
+                    <h1
+                        class="
+                            mt-1
+                            text-2xl
+                            font-extrabold
+                            tracking-tight
+                            text-gray-900
+                        "
+                    >
+                        Verify Your OTP
+                    </h1>
+
+
+                    <p
+                        class="
+                            mt-3
+                            text-sm
+                            leading-6
+                            text-gray-500
+                        "
+                    >
+                        We have sent a 6-digit OTP to your
+                        registered email address.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     BOOKING INFORMATION
+                =================================================== -->
+
+                <div
+                    class="
+                        mt-6
+                        rounded-xl
+                        border
+                        border-gray-100
+                        bg-gray-50
+                        p-4
+                    "
+                >
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                text-xs
+                                font-medium
+                                text-gray-500
+                            "
+                        >
+                            Booking ID
+                        </span>
+
+
+                        <span
+                            id="bookingIdDisplay"
+                            class="
+                                max-w-[220px]
+                                truncate
+                                text-xs
+                                font-semibold
+                                text-gray-700
+                            "
+                        >
+                            Loading...
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            mt-3
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                text-xs
+                                font-medium
+                                text-gray-500
+                            "
+                        >
+                            Payment
+                        </span>
+
+
+                        <span
+                            class="
+                                rounded-full
+                                bg-gray-100
+                                px-3
+                                py-1
+                                text-xs
+                                font-bold
+                                text-gray-600
+                            "
+                        >
+                            Dummy Payment
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     ERROR MESSAGE
+                =================================================== -->
+
+                <div
+                    id="otpError"
+                    class="
+                        mt-5
+                        hidden
+                        rounded-xl
+                        border
+                        border-red-100
+                        bg-red-50
+                        px-4
+                        py-3
+                    "
+                >
+
+                    <p
+                        id="otpErrorMessage"
+                        class="
+                            text-sm
+                            leading-5
+                            text-red-700
+                        "
+                    >
+                        Invalid OTP.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     SUCCESS MESSAGE
+                =================================================== -->
+
+                <div
+                    id="otpSuccess"
+                    class="
+                        mt-5
+                        hidden
+                        rounded-xl
+                        border
+                        border-green-100
+                        bg-green-50
+                        px-4
+                        py-3
+                    "
+                >
+
+                    <p
+                        id="otpSuccessMessage"
+                        class="
+                            text-sm
+                            leading-5
+                            text-green-700
+                        "
+                    >
+                        OTP verified successfully.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     OTP INPUT
+                =================================================== -->
+
+                <div class="mt-6">
+
+                    <label
+                        for="otpInput"
+                        class="
+                            block
+                            text-sm
+                            font-semibold
+                            text-gray-700
+                        "
+                    >
+                        Enter OTP
+                    </label>
+
+
+                    <input
+                        id="otpInput"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                        placeholder="Enter 6-digit OTP"
+                        class="
+                            mt-2
+                            w-full
+                            rounded-xl
+                            border
+                            border-gray-200
+                            bg-white
+                            px-4
+                            py-4
+                            text-center
+                            text-2xl
+                            font-bold
+                            tracking-[0.5em]
+                            text-gray-900
+                            outline-none
+                            transition
+                            placeholder:text-sm
+                            placeholder:font-normal
+                            placeholder:tracking-normal
+                            focus:border-primary
+                            focus:ring-2
+                            focus:ring-primary/20
+                        "
+                    >
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     OTP TIMER
+                =================================================== -->
+
+                <div
+                    class="
+                        mt-4
+                        text-center
+                    "
+                >
+
+                    <p
+                        id="otpTimer"
+                        class="
+                            text-sm
+                            text-gray-500
+                        "
+                    >
+                        OTP expires in
+                        <span
+                            id="countdown"
+                            class="
+                                font-bold
+                                text-primary
+                            "
+                        >
+                            05:00
+                        </span>
+                    </p>
+
+
+                    <p
+                        id="otpExpiredMessage"
+                        class="
+                            hidden
+                            text-sm
+                            font-semibold
+                            text-red-600
+                        "
+                    >
+                        OTP has expired.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ==================================================
+                     VERIFY BUTTON
+                =================================================== -->
+
+                <button
+                    id="verifyOtpButton"
+                    type="button"
+                    class="  mt-6 w-full  rounded-xl  bg-primary
+                        px-5
+                        py-3.5
+                        text-sm
+                        font-bold
+                        text-white
+                        transition
+                        hover:bg-primaryDark
+                        disabled:cursor-not-allowed
+                        disabled:bg-gray-400
+                    "
+                >
+                    Verify OTP
+                </button>
+
+
+
+                <!-- ==================================================
+                     RESEND OTP
+                =================================================== -->
+
+                <button
+                    id="resendOtpButton"
+                    type="button"
+                    disabled
+                    class="
+                        mt-3
+                        w-full
+                        rounded-xl
+                        border
+                        border-gray-200
+                        bg-white
+                        px-5
+                        py-3
+                        text-sm
+                        font-semibold
+                        text-gray-500
+                        transition
+                        hover:bg-gray-50
+                        disabled:cursor-not-allowed
+                        disabled:opacity-50
+                    "
+                >
+                    Resend OTP
+                </button>
+
+
+
+                <!-- ==================================================
+                     INFO
+                =================================================== -->
+
+                <p
+                    class="
+                        mt-5
+                        text-center
+                        text-xs
+                        leading-5
+                        text-gray-400
+                    "
+                >
+                    Enter the OTP sent to your registered
+                    email to confirm your booking.
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================================
+         FOOTER
+    ======================================================= -->
+
+    <div id="user-footer"></div>
+
+
+    <!-- ======================================================
+         COMPONENTS
+    ======================================================= -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "user-header",
+                "../../components/user-header.html"
+            ),
+
+            loadComponent(
+                "user-footer",
+                "../../components/user-footer.html"
+            )
+
+        ]);
+
+    </script>
+
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script src="../../js/user/otp-verification.js"></script>
+
+</body>
+
+</html>

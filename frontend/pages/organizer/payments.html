@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Organizer Payments | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#e76f51",
+
+                        primaryDark: "#c9553b",
+
+                        primaryLight: "#fce9e4",
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body class="flex min-h-screen flex-col bg-gray-50">
+
+
+    <!-- ============================= -->
+    <!-- Navbar -->
+    <!-- ============================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="
+                mx-auto
+                flex
+                max-w-7xl
+                items-center
+                justify-between
+                px-6
+                py-4
+            "
+        >
+
+            <div>
+
+                <h1 class="text-2xl font-bold text-primary">
+                     <span class="text-black">Event</span>Ease
+                </h1>
+
+                <!-- <p class="text-sm text-gray-500">
+                    Organizer Panel
+                </p> -->
+
+            </div>
+
+
+            <a
+                href="./dashboard.html"
+                class="
+                    rounded-lg
+                    px-4
+                    py-2
+                    text-sm
+                    font-semibold
+                    transition
+                    hover:bg-primaryLight
+                "
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ============================= -->
+    <!-- Main -->
+    <!-- ============================= -->
+
+    <main
+        class="
+            flex-1
+            mx-auto
+            max-w-7xl
+            px-6
+            py-8
+        "
+    >
+
+
+        <!-- ============================= -->
+        <!-- Page Header -->
+        <!-- ============================= -->
+
+        <div class="mb-8">
+
+            <p
+                class="
+                    text-sm
+                    font-semibold
+                    uppercase
+                    tracking-wide
+                    text-primary
+                "
+            >
+                Organizer Account
+            </p>
+
+            <h2
+                class="
+                    mt-1
+                    text-3xl
+                    font-bold
+                    text-gray-900
+                "
+            >
+                Payment Information
+            </h2>
+
+            <p class="mt-2 text-gray-500">
+
+                View payments received for your events
+                and check individual payment details.
+
+            </p>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- Revenue Summary Button -->
+        <!-- ============================= -->
+
+        <div class="mb-6">
+
+            <a
+                href="./revenue-summary.html"
+                class="
+                    inline-flex
+                    items-center
+                    rounded-xl
+                    bg-primary
+                    px-5
+                    py-3
+                    text-sm
+                    font-semibold
+                    text-white
+                    transition
+                    hover:bg-primaryDark
+                "
+            >
+                Revenue Summary
+            </a>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- Summary Cards -->
+        <!-- ============================= -->
+
+        <div
+            class="
+                mb-8
+                grid
+                grid-cols-1
+                gap-5
+                md:grid-cols-3
+            "
+        >
+
+
+            <!-- Total Payments -->
+
+            <div
+                class="
+                    rounded-2xl
+                    border
+                    border-gray-200
+                    bg-white
+                    p-6
+                    shadow-sm
+                "
+            >
+
+                <p class="text-sm text-gray-500">
+                    Total Payments
+                </p>
+
+                <h3
+                    id="totalPayments"
+                    class="
+                        mt-2
+                        text-3xl
+                        font-bold
+                        text-gray-900
+                    "
+                >
+                    0
+                </h3>
+
+            </div>
+
+
+
+            <!-- Successful Payments -->
+
+            <div
+                class="
+                    rounded-2xl
+                    border
+                    border-gray-200
+                    bg-white
+                    p-6
+                    shadow-sm
+                "
+            >
+
+                <p class="text-sm text-gray-500">
+                    Successful Payments
+                </p>
+
+                <h3
+                    id="successfulPayments"
+                    class="
+                        mt-2
+                        text-3xl
+                        font-bold
+                        text-green-600
+                    "
+                >
+                    0
+                </h3>
+
+            </div>
+
+
+
+            <!-- Total Revenue -->
+
+            <div
+                class="
+                    rounded-2xl
+                    border
+                    border-gray-200
+                    bg-white
+                    p-6
+                    shadow-sm
+                "
+            >
+
+                <p class="text-sm text-gray-500">
+                    Total Revenue
+                </p>
+
+                <h3
+                    id="totalRevenue"
+                    class="
+                        mt-2
+                        text-3xl
+                        font-bold
+                        text-primary
+                    "
+                >
+                    ৳0
+                </h3>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- Loading -->
+        <!-- ============================= -->
+
+        <div
+            id="loading"
+            class="
+                rounded-2xl
+                border
+                border-gray-200
+                bg-white
+                p-10
+                text-center
+                shadow-sm
+            "
+        >
+
+            <div class="mb-4 flex justify-center">
+
+                <div
+                    class="
+                        h-10
+                        w-10
+                        animate-spin
+                        rounded-full
+                        border-4
+                        border-gray-200
+                        border-t-primary
+                    "
+                ></div>
+
+            </div>
+
+            <p class="text-gray-500">
+                Loading payment information...
+            </p>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- Error -->
+        <!-- ============================= -->
+
+        <div
+            id="errorMessage"
+            class="
+                mb-6
+                hidden
+                rounded-xl
+                border
+                border-red-200
+                bg-red-50
+                p-5
+                text-red-700
+            "
+        ></div>
+
+
+
+        <!-- ============================= -->
+        <!-- Empty State -->
+        <!-- ============================= -->
+
+        <div
+            id="emptyState"
+            class="
+                hidden
+                rounded-2xl
+                border
+                border-gray-200
+                bg-white
+                p-12
+                text-center
+                shadow-sm
+            "
+        >
+
+            <div class="mb-4 text-5xl">
+                💳
+            </div>
+
+            <h3
+                class="
+                    text-xl
+                    font-semibold
+                    text-gray-800
+                "
+            >
+                No Payments Found
+            </h3>
+
+            <p class="mt-2 text-gray-500">
+
+                There are currently no payments
+                for your events.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- Payment Table -->
+        <!-- ============================= -->
+
+        <div
+            id="paymentSection"
+            class="
+                hidden
+                overflow-hidden
+                rounded-2xl
+                border
+                border-gray-200
+                bg-white
+                shadow-sm
+            "
+        >
+
+
+            <!-- Table Header -->
+
+            <div class="border-b px-6 py-5">
+
+                <h3
+                    class="
+                        text-xl
+                        font-semibold
+                        text-gray-900
+                    "
+                >
+                    Payment History
+                </h3>
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    Click "View Details" to see
+                    complete payment information.
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Table -->
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full min-w-[1100px]">
+
+                    <thead class="bg-gray-50">
+
+                        <tr>
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Transaction
+                            </th>
+
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Customer
+                            </th>
+
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Event
+                            </th>
+
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Amount
+                            </th>
+
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Method
+                            </th>
+
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Status
+                            </th>
+
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Date
+                            </th>
+
+
+                            <!-- NEW -->
+
+                            <th
+                                class="
+                                    px-6
+                                    py-4
+                                    text-left
+                                    text-xs
+                                    font-semibold
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                "
+                            >
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- JS will generate rows here -->
+
+                    <tbody
+                        id="paymentTableBody"
+                        class="divide-y divide-gray-100"
+                    >
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer class="border-t border-gray-200 bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p class="transition hover:text-primary">
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <p class="transition hover:text-primary">
+                    developed by <span class="font-bold text-primary">Rakib</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- ============================= -->
+    <!-- JavaScript -->
+    <!-- ============================= -->
+
+    <script src="../../js/organizer/payments.js"></script>
+
+</body>
+
+</html>

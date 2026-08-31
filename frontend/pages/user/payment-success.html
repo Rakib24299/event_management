@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Booking Confirmed | EventEase
+    </title>
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary:
+                            "#31572c",
+
+                        primaryDark:
+                            "#24451f",
+
+                        primaryLight:
+                            "#eaf2e8"
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+</head>
+
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- HEADER -->
+
+    <div id="user-header"></div>
+
+
+
+    <!-- MAIN -->
+
+    <main
+        class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8"
+    >
+
+
+        <!-- SUCCESS -->
+
+        <section class="text-center">
+
+            <div
+                class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primaryLight"
+            >
+
+                <div
+                    class="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-3xl text-white"
+                >
+                    ✓
+                </div>
+
+            </div>
+
+
+            <p
+                class="mt-6 text-sm font-semibold uppercase tracking-wider text-primary"
+            >
+                EventEase
+            </p>
+
+
+            <h1
+                class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl"
+            >
+                Dummy Payment Successful
+            </h1>
+
+
+            <p
+                class="mx-auto mt-3 max-w-xl text-sm leading-6 text-gray-500 sm:text-base"
+            >
+                Your dummy payment has been successfully processed.
+                Please verify your booking using the OTP below.
+            </p>
+
+        </section>
+
+
+
+        <!-- BOOKING CARD -->
+
+        <section
+            class="mt-10 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+        >
+
+
+            <!-- HEADER -->
+
+            <div
+                class="border-b border-gray-100 bg-primaryLight px-5 py-5 sm:px-6"
+            >
+
+                <div
+                    class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-xs font-semibold uppercase tracking-wider text-primary"
+                        >
+                            Booking Confirmation
+                        </p>
+
+
+                        <h2
+                            class="mt-1 text-lg font-bold text-gray-900"
+                        >
+                            Your Ticket Details
+                        </h2>
+
+                    </div>
+
+
+                    <span
+                        id="bookingStatus"
+                        class="w-fit rounded-full bg-yellow-500 px-3 py-1 text-xs font-semibold text-white"
+                    >
+                        PENDING OTP
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- EVENT -->
+
+            <div class="p-5 sm:p-6">
+
+                <div class="flex flex-col gap-5 sm:flex-row">
+
+
+                    <!-- IMAGE -->
+
+                    <div
+                        class="h-48 w-full overflow-hidden rounded-xl bg-gray-100 sm:h-36 sm:w-52 sm:flex-shrink-0"
+                    >
+
+                        <img
+                            id="successEventImage"
+                            src="https://via.placeholder.com/600x400?text=EventEase"
+                            alt="Event"
+                            class="h-full w-full object-cover"
+                        >
+
+                    </div>
+
+
+
+                    <!-- EVENT DETAILS -->
+
+                    <div class="flex-1">
+
+                        <p
+                            id="successEventCategory"
+                            class="text-xs font-semibold uppercase tracking-wider text-primary"
+                        >
+                            Event
+                        </p>
+
+
+                        <h3
+                            id="successEventTitle"
+                            class="mt-1 text-xl font-bold text-gray-900"
+                        >
+                            Loading event...
+                        </h3>
+
+
+                        <div
+                            class="mt-4 space-y-2 text-sm text-gray-500"
+                        >
+
+                            <p class="flex items-start gap-2">
+
+                                <span>📅</span>
+
+                                <span id="successEventDate">
+                                    Loading date...
+                                </span>
+
+                            </p>
+
+
+                            <p class="flex items-start gap-2">
+
+                                <span>📍</span>
+
+                                <span id="successEventLocation">
+                                    Loading location...
+                                </span>
+
+                            </p>
+
+
+                            <p class="flex items-start gap-2">
+
+                                <span>🎫</span>
+
+                                <span>
+
+                                    Available Seats:
+
+                                    <strong
+                                        id="successAvailableSeats"
+                                    >
+                                        --
+                                    </strong>
+
+                                </span>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BOOKING INFORMATION -->
+
+                <div
+                    class="mt-7 grid grid-cols-1 gap-3 border-t border-gray-100 pt-6 sm:grid-cols-2 lg:grid-cols-4"
+                >
+
+
+                    <!-- BOOKING ID -->
+
+                    <div
+                        class="rounded-xl bg-gray-50 p-4"
+                    >
+
+                        <p
+                            class="text-xs font-medium text-gray-500"
+                        >
+                            Booking ID
+                        </p>
+
+
+                        <p
+                            id="successBookingId"
+                            class="mt-1 break-all text-sm font-bold text-gray-900"
+                        >
+                            --
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- TICKETS -->
+
+                    <div
+                        class="rounded-xl bg-gray-50 p-4"
+                    >
+
+                        <p
+                            class="text-xs font-medium text-gray-500"
+                        >
+                            Tickets
+                        </p>
+
+
+                        <p
+                            id="successTicketQuantity"
+                            class="mt-1 text-sm font-bold text-gray-900"
+                        >
+                            0
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- PAYMENT METHOD -->
+
+                    <div
+                        class="rounded-xl bg-gray-50 p-4"
+                    >
+
+                        <p
+                            class="text-xs font-medium text-gray-500"
+                        >
+                            Payment Method
+                        </p>
+
+
+                        <p
+                            id="successPaymentMethod"
+                            class="mt-1 text-sm font-bold text-gray-900"
+                        >
+                            Dummy Payment
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- TOTAL -->
+
+                    <div
+                        class="rounded-xl bg-primaryLight p-4"
+                    >
+
+                        <p
+                            class="text-xs font-medium text-primary"
+                        >
+                            Total Amount
+                        </p>
+
+
+                        <p
+                            id="successTotalAmount"
+                            class="mt-1 text-sm font-bold text-primary"
+                        >
+                            ৳0
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- OTP SECTION -->
+
+        <!-- <section
+            class="mt-6 rounded-2xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm sm:p-6"
+        >
+
+            <div class="flex items-start gap-4">
+
+                <div
+                    class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-yellow-100 text-2xl"
+                >
+                    🔐
+                </div>
+
+
+                <div class="flex-1">
+
+                    <h2
+                        class="text-lg font-bold text-gray-900"
+                    >
+                        Booking OTP Verification
+                    </h2>
+
+
+                    <p
+                        class="mt-1 text-sm text-gray-600"
+                    >
+                        Your payment is successful.
+                        Use this OTP to confirm your booking.
+                        The OTP is valid for 5 minutes.
+                    </p>
+
+                </div>
+
+            </div> -->
+
+
+
+            <!-- OTP -->
+
+            <!-- <div
+                class="mt-5 rounded-xl border border-yellow-200 bg-white p-6 text-center"
+            >
+
+                <p
+                    class="text-xs font-semibold uppercase tracking-wider text-gray-500"
+                >
+                    Booking OTP
+                </p>
+
+
+                <p
+                    id="bookingOtp"
+                    class="mt-3 text-4xl font-extrabold tracking-[0.5em] text-primary"
+                >
+                    ------
+                </p>
+
+
+                <p
+                    id="otpExpiry"
+                    class="mt-3 text-xs text-gray-500"
+                >
+                    Valid for 5 minutes
+                </p>
+
+
+                <p
+                    id="otpMessage"
+                    class="mt-3 text-sm font-medium text-gray-600"
+                >
+                </p>
+
+
+                <a
+                    id="verifyOtpButton"
+                    href="./otp-verification.html"
+                    class="mt-5 inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white hover:bg-primaryDark"
+                >
+                    Verify Booking OTP
+                </a>
+
+            </div>
+
+        </section> -->
+
+
+
+        <!-- PAYMENT INFORMATION -->
+
+        <section
+            class="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6"
+        >
+
+            <h2
+                class="text-lg font-bold text-gray-900"
+            >
+                Payment Information
+            </h2>
+
+
+            <p
+                class="mt-1 text-sm text-gray-500"
+            >
+                Keep this information for your records.
+            </p>
+
+
+            <div class="mt-5 space-y-4">
+
+
+                <!-- PAYMENT ID -->
+
+                <div
+                    class="flex flex-col gap-1 border-b border-gray-100 pb-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <span
+                        class="text-sm text-gray-500"
+                    >
+                        Payment ID
+                    </span>
+
+
+                    <span
+                        id="successPaymentId"
+                        class="break-all text-sm font-semibold text-gray-900 sm:text-right"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+
+                <!-- TRANSACTION -->
+
+                <div
+                    class="flex flex-col gap-1 border-b border-gray-100 pb-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <span
+                        class="text-sm text-gray-500"
+                    >
+                        Transaction ID
+                    </span>
+
+
+                    <span
+                        id="successTransactionId"
+                        class="break-all text-sm font-semibold text-gray-900 sm:text-right"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+
+                <!-- PAYMENT STATUS -->
+
+                <div
+                    class="flex items-center justify-between border-b border-gray-100 pb-4"
+                >
+
+                    <span
+                        class="text-sm text-gray-500"
+                    >
+                        Payment Status
+                    </span>
+
+
+                    <span
+                        id="successPaymentStatus"
+                        class="rounded-full bg-primaryLight px-3 py-1 text-xs font-semibold text-primary"
+                    >
+                        PAID
+                    </span>
+
+                </div>
+
+
+
+                <!-- BOOKING STATUS -->
+
+                <div
+                    class="flex items-center justify-between"
+                >
+
+                    <span
+                        class="text-sm text-gray-500"
+                    >
+                        Booking Status
+                    </span>
+
+
+                    <span
+                        id="successBookingStatus"
+                        class="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700"
+                    >
+                        PENDING
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- BUTTONS -->
+
+        <section
+            class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
+        >
+
+            <a
+                href="./my-bookings.html"
+                class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-700"
+            >
+                View My Bookings
+            </a>
+
+
+            <a
+                href="../../index.html"
+                class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white"
+            >
+                Back to Home
+            </a>
+
+        </section>
+
+
+
+        <!-- NOTICE -->
+
+        <!-- <div
+            class="mt-6 rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-4"
+        >
+
+            <div class="flex items-start gap-3">
+
+                <span class="text-lg">
+                    ℹ️
+                </span>
+
+
+                <p
+                    class="text-xs leading-5 text-yellow-800 sm:text-sm"
+                >
+                    Please verify your booking using the OTP
+                    within 5 minutes. After successful verification,
+                    your booking status will become Confirmed.
+                </p>
+
+            </div>
+
+        </div> -->
+
+    </main>
+
+
+
+    <footer class="mt-10 border-t border-gray-200 bg-white">
+
+    <div
+        class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+    >
+
+        <p class="transition hover:text-primary">
+            © 2026 EventEase. All rights reserved.
+        </p>
+
+        <div class="flex gap-5">
+
+            <p class="transition hover:text-primary">
+                developed by <span class="font-bold text-primary">Rakib</span>
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+    <!-- ========================================
+         COMPONENTS
+    ======================================== -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "user-header",
+                "../../components/user-header.html"
+            ),
+
+            loadComponent(
+                "user-footer",
+                "../../components/user-footer.html"
+            )
+
+        ]);
+
+    </script>
+
+
+    <script
+        src="../../js/user/booking-success.js"
+    ></script>
+
+</body>
+
+</html>

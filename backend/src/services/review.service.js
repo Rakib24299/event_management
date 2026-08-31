@@ -121,27 +121,68 @@ const getReviewById = async (reviewId) => {
 
 // Update Review****
 
-const updateReview = async (reviewId,userId,payload) => {
+const updateReview = async (
+  reviewId,
+  userId,
+  payload
+) => {
 
   const review = await Review.findById(reviewId);
 
-  if (!review) 
-    {
-    throw new AppError("Review not found.",404);
+  if (!review) {
+
+    throw new AppError(
+      "Review not found.",
+      404
+    );
+
   }
 
-  if (review.user.toString() !== userId.toString()) 
-    {
-    throw new AppError("You are not authorized to update this review.",403);
+
+  // Check ownership
+
+  if (
+    review.user.toString() !==
+    userId.toString()
+  ) {
+
+    throw new AppError(
+      "You are not authorized to update this review.",
+      403
+    );
+
   }
 
-  review.rating = payload.rating ?? review.rating;
 
-  review.comment = payload.comment ?? review.comment;
+  // Update rating
+
+  if (payload.rating !== undefined) {
+
+    review.rating =
+      payload.rating;
+
+  }
+
+
+  // Update review comment
+
+  if (payload.comment !== undefined) {
+
+    review.review =
+      payload.comment;
+
+  }
+
 
   await review.save();
 
-  await updateEventRatingSummary(review.event);
+
+  // Update event rating summary
+
+  await updateEventRatingSummary(
+    review.event
+  );
+
 
   return review;
 };

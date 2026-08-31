@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Booking Successful | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#4F46E5",
+                        primaryLight: "#EEF2FF"
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+
+<body class="min-h-screen bg-gray-50">
+
+
+    <!-- ========================================
+         Header
+    ========================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4"
+        >
+
+            <a
+                href="../index.html"
+                class="text-2xl font-bold text-primary"
+            >
+                EventEase
+            </a>
+
+
+            <a
+                href="./my-bookings.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+            >
+                My Bookings
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         Main
+    ========================================= -->
+
+    <main class="mx-auto max-w-4xl px-6 py-10">
+
+
+        <!-- ====================================
+             Success Message
+        ===================================== -->
+
+        <section
+            class="rounded-3xl bg-white p-8 text-center shadow-sm"
+        >
+
+            <!-- Success Icon -->
+
+            <div
+                class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100"
+            >
+
+                <span
+                    class="text-4xl text-green-600"
+                >
+                    ✓
+                </span>
+
+            </div>
+
+
+            <h1
+                class="mt-6 text-3xl font-bold text-gray-900"
+            >
+                Booking Confirmed!
+            </h1>
+
+
+            <p
+                id="successMessage"
+                class="mx-auto mt-3 max-w-xl text-gray-500"
+            >
+                Your booking has been successfully confirmed.
+            </p>
+
+        </section>
+
+
+
+        <!-- ====================================
+             Event Information
+        ===================================== -->
+
+        <section
+            class="mt-6 rounded-3xl bg-white p-6 shadow-sm"
+        >
+
+            <div
+                class="mb-5 border-b pb-4"
+            >
+
+                <h2
+                    class="text-xl font-bold text-gray-900"
+                >
+                    Event Details
+                </h2>
+
+            </div>
+
+
+            <div
+                class="grid gap-5 md:grid-cols-2"
+            >
+
+                <!-- Event Name -->
+
+                <div>
+
+                    <p
+                        class="text-sm text-gray-500"
+                    >
+                        Event
+                    </p>
+
+                    <p
+                        id="eventTitle"
+                        class="mt-1 font-semibold text-gray-900"
+                    >
+                        --
+                    </p>
+
+                </div>
+
+
+                <!-- Event Date -->
+
+                <div>
+
+                    <p
+                        class="text-sm text-gray-500"
+                    >
+                        Date
+                    </p>
+
+                    <p
+                        id="eventDate"
+                        class="mt-1 font-semibold text-gray-900"
+                    >
+                        --
+                    </p>
+
+                </div>
+
+
+                <!-- Location -->
+
+                <div>
+
+                    <p
+                        class="text-sm text-gray-500"
+                    >
+                        Location
+                    </p>
+
+                    <p
+                        id="eventLocation"
+                        class="mt-1 font-semibold text-gray-900"
+                    >
+                        --
+                    </p>
+
+                </div>
+
+
+                <!-- Ticket Quantity -->
+
+                <div>
+
+                    <p
+                        class="text-sm text-gray-500"
+                    >
+                        Tickets
+                    </p>
+
+                    <p
+                        id="ticketQuantity"
+                        class="mt-1 font-semibold text-gray-900"
+                    >
+                        --
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================
+             Booking Information
+        ===================================== -->
+
+        <section
+            class="mt-6 rounded-3xl bg-white p-6 shadow-sm"
+        >
+
+            <div
+                class="mb-5 border-b pb-4"
+            >
+
+                <h2
+                    class="text-xl font-bold text-gray-900"
+                >
+                    Booking Information
+                </h2>
+
+            </div>
+
+
+            <div class="space-y-4">
+
+
+                <!-- Booking ID -->
+
+                <div
+                    class="flex items-center justify-between gap-4"
+                >
+
+                    <span class="text-gray-500">
+                        Booking ID
+                    </span>
+
+                    <span
+                        id="bookingId"
+                        class="break-all text-right text-sm font-semibold text-gray-900"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+                <!-- Payment Status -->
+
+                <div
+                    class="flex items-center justify-between"
+                >
+
+                    <span class="text-gray-500">
+                        Payment Status
+                    </span>
+
+                    <span
+                        id="paymentStatus"
+                        class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                    >
+                        Paid
+                    </span>
+
+                </div>
+
+
+                <!-- Transaction ID -->
+
+                <div
+                    class="flex items-center justify-between gap-4"
+                >
+
+                    <span class="text-gray-500">
+                        Transaction ID
+                    </span>
+
+                    <span
+                        id="transactionId"
+                        class="break-all text-right text-sm font-semibold text-gray-900"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+                <!-- Total Amount -->
+
+                <div
+                    class="flex items-center justify-between border-t pt-4"
+                >
+
+                    <span
+                        class="font-semibold text-gray-700"
+                    >
+                        Total Paid
+                    </span>
+
+                    <span
+                        id="totalAmount"
+                        class="text-xl font-bold text-primary"
+                    >
+                        ৳0
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================
+             QR Ticket
+        ===================================== -->
+
+        <section
+            class="mt-6 rounded-3xl bg-white p-6 text-center shadow-sm"
+        >
+
+            <h2
+                class="text-xl font-bold text-gray-900"
+            >
+                Your Ticket
+            </h2>
+
+
+            <p
+                class="mt-2 text-sm text-gray-500"
+            >
+                Use your QR ticket for event entry.
+            </p>
+
+
+            <div
+                class="mx-auto mt-6 flex h-48 w-48 items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50"
+            >
+
+                <div>
+
+                    <div
+                        class="text-5xl"
+                    >
+                        ▦
+                    </div>
+
+                    <p
+                        class="mt-2 text-xs text-gray-400"
+                    >
+                        QR Code
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <p
+                id="qrMessage"
+                class="mt-4 text-sm text-gray-500"
+            >
+                Your QR ticket will be available from your booking details.
+            </p>
+
+        </section>
+
+
+
+        <!-- ====================================
+             Action Buttons
+        ===================================== -->
+
+        <section
+            class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center"
+        >
+
+            <a
+                href="./my-bookings.html"
+                class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-white transition hover:opacity-90"
+            >
+                View My Bookings
+            </a>
+
+
+            <a
+                href="./events.html"
+                class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
+            >
+                Browse More Events
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- ========================================
+         JavaScript
+    ========================================= -->
+
+    <script src="../js/booking-success.js"></script>
+
+</body>
+
+</html>

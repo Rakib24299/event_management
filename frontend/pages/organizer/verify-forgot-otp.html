@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Verify OTP | EventEase</title>
+
+
+    <!-- Tailwind CSS -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- Tailwind Configuration -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#e76f51",
+
+                        primaryDark: "#c9553b",
+
+                        primaryLight: "#fce9e4",
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+
+    <!-- Global CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../../css/style.css"
+    >
+
+</head>
+
+
+
+<body class="bg-gray-50">
+
+
+
+    <!-- =========================================
+         Navbar
+    ========================================== -->
+
+    <div id="navbar"></div>
+
+
+
+    <!-- =========================================
+         Main
+    ========================================== -->
+
+    <main
+        class="
+            flex
+            min-h-[calc(100vh-64px)]
+            items-center
+            justify-center
+            px-4
+            py-10
+            sm:px-6
+            lg:px-8
+        "
+    >
+
+        <div
+            class="
+                w-full
+                max-w-md
+                rounded-2xl
+                bg-white
+                p-6
+                shadow-xl
+                shadow-gray-200/60
+                sm:p-10
+            "
+        >
+
+
+
+            <!-- =====================================
+                 Logo
+            ====================================== -->
+
+            <div
+                class="
+                    mb-8
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                "
+            >
+
+                <div
+                    class="
+                        flex
+                        h-11
+                        w-11
+                        items-center
+                        justify-center
+                        rounded-xl
+                        bg-primary
+                        text-lg
+                        font-bold
+                        text-white
+                    "
+                >
+                    E
+                </div>
+
+
+
+                <div>
+
+                    <h1
+                        class="
+                            text-xl
+                            font-bold
+                            tracking-tight
+                            text-primary
+                        "
+                    >
+                        EventEase
+                    </h1>
+
+
+                    <p
+                        class="
+                            text-xs
+                            text-gray-400
+                        "
+                    >
+                        Smart Event Management
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 Heading
+            ====================================== -->
+
+            <div class="mb-7 text-center">
+
+                <h2
+                    class="
+                        text-3xl
+                        font-bold
+                        tracking-tight
+                        text-gray-900
+                    "
+                >
+                    Verify OTP
+                </h2>
+
+
+                <p
+                    class="
+                        mt-3
+                        text-sm
+                        leading-6
+                        text-gray-500
+                    "
+                >
+                    Enter the 6-digit OTP sent to your
+                    email and create a new password.
+                </p>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 Error Message
+            ====================================== -->
+
+            <div
+                id="verifyOtpError"
+                class="
+                    mb-5
+                    hidden
+                    rounded-xl
+                    border
+                    border-red-200
+                    bg-red-50
+                    px-4
+                    py-3
+                    text-sm
+                    text-red-600
+                "
+            >
+            </div>
+
+
+
+            <!-- =====================================
+                 Success Message
+            ====================================== -->
+
+            <div
+                id="verifyOtpSuccess"
+                class="
+                    mb-5
+                    hidden
+                    rounded-xl
+                    border
+                    border-green-200
+                    bg-green-50
+                    px-4
+                    py-3
+                    text-sm
+                    text-green-700
+                "
+            >
+            </div>
+
+
+
+            <!-- =====================================
+                 Email
+            ====================================== -->
+
+            <div class="mb-5">
+
+                <label
+                    for="email"
+                    class="
+                        mb-2
+                        block
+                        text-sm
+                        font-medium
+                        text-gray-800
+                    "
+                >
+                    Email Address
+                </label>
+
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    readonly
+                    class="
+                        h-12
+                        w-full
+                        rounded-xl
+                        border
+                        border-gray-200
+                        bg-gray-50
+                        px-4
+                        text-sm
+                        text-gray-600
+                        outline-none
+                    "
+                >
+
+            </div>
+
+
+
+            <!-- =====================================
+                 OTP
+            ====================================== -->
+
+            <div class="mb-5">
+
+                <label
+                    for="otp"
+                    class="
+                        mb-2
+                        block
+                        text-sm
+                        font-medium
+                        text-gray-800
+                    "
+                >
+                    Verification OTP
+                </label>
+
+
+                <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    maxlength="6"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    placeholder="Enter 6-digit OTP"
+                    required
+                    class="
+                        h-12
+                        w-full
+                        rounded-xl
+                        border
+                        border-gray-200
+                        bg-white
+                        px-4
+                        text-center
+                        text-lg
+                        font-semibold
+                        tracking-[0.4em]
+                        text-gray-900
+                        outline-none
+                        transition
+                        placeholder:text-gray-400
+                        placeholder:tracking-normal
+                        focus:border-primary
+                        focus:ring-4
+                        focus:ring-[#e76f51]/10
+                    "
+                >
+
+            </div>
+
+
+
+            <!-- =====================================
+                 New Password
+            ====================================== -->
+
+            <div class="mb-5">
+
+                <label
+                    for="newPassword"
+                    class="
+                        mb-2
+                        block
+                        text-sm
+                        font-medium
+                        text-gray-800
+                    "
+                >
+                    New Password
+                </label>
+
+
+                <input
+                    type="password"
+                    id="newPassword"
+                    name="newPassword"
+                    placeholder="Enter new password"
+                    autocomplete="new-password"
+                    required
+                    class="
+                        h-12
+                        w-full
+                        rounded-xl
+                        border
+                        border-gray-200
+                        bg-white
+                        px-4
+                        text-sm
+                        text-gray-900
+                        outline-none
+                        transition
+                        placeholder:text-gray-400
+                        focus:border-primary
+                        focus:ring-4
+                        focus:ring-[#e76f51]/10
+                    "
+                >
+
+            </div>
+
+
+
+            <!-- =====================================
+                 Confirm Password
+            ====================================== -->
+
+            <div class="mb-6">
+
+                <label
+                    for="confirmPassword"
+                    class="
+                        mb-2
+                        block
+                        text-sm
+                        font-medium
+                        text-gray-800
+                    "
+                >
+                    Confirm New Password
+                </label>
+
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm new password"
+                    autocomplete="new-password"
+                    required
+                    class="
+                        h-12
+                        w-full
+                        rounded-xl
+                        border
+                        border-gray-200
+                        bg-white
+                        px-4
+                        text-sm
+                        text-gray-900
+                        outline-none
+                        transition
+                        placeholder:text-gray-400
+                        focus:border-primary
+                        focus:ring-4
+                        focus:ring-[#e76f51]/10
+                    "
+                >
+
+            </div>
+
+
+
+            <!-- =====================================
+                 Reset Password Button
+            ====================================== -->
+
+            <button
+                type="button"
+                id="resetPasswordButton"
+                class="
+                    flex
+                    h-12
+                    w-full
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-primary
+                    px-5
+                    text-sm
+                    font-semibold
+                    text-white
+                    transition
+                    hover:bg-primaryDark
+                    hover:shadow-lg
+                    hover:shadow-[#e76f51]/10
+                    focus:outline-none
+                    focus:ring-4
+                    focus:ring-[#e76f51]/20
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
+                "
+            >
+                Reset Password
+            </button>
+
+
+
+            <!-- =====================================
+                 Back to Login
+            ====================================== -->
+
+            <p
+                class="
+                    mt-7
+                    text-center
+                    text-sm
+                    text-gray-500
+                "
+            >
+
+                Remember your password?
+
+                <a
+                    href="./organizer-login.html"
+                    class="
+                        font-semibold
+                        text-primary
+                        transition
+                        hover:text-primaryDark
+                    "
+                >
+                    Back to Login
+                </a>
+
+            </p>
+
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =========================================
+         Footer
+    ========================================== -->
+
+    <div id="footer"></div>
+
+
+
+    <!-- =========================================
+         Component Loader
+    ========================================== -->
+
+    <script src="../../js/components.js"></script>
+
+
+
+    <!-- =========================================
+         Load Navbar & Footer
+    ========================================== -->
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "navbar",
+                "../../components/navbar.html"
+            ),
+
+            loadComponent(
+                "footer",
+                "../../components/footer.html"
+            )
+
+        ])
+        .then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src =
+                "../../js/navbar.js";
+
+            document.body.appendChild(script);
+
+        });
+
+    </script>
+
+
+
+    <!-- =========================================
+         Organizer Verify Forgot OTP JS
+    ========================================== -->
+
+    <script src="../../js/organizer/verify-forgot-otp.js"></script>
+
+
+</body>
+
+</html>

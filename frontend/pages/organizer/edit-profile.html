@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Edit Profile | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4",
+                    },
+
+                    boxShadow: {
+                        soft: "0 10px 30px rgba(0,0,0,0.07)"
+                    }
+
+                }
+            }
+        };
+    </script>
+
+</head>
+
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ============================= -->
+    <!-- Navbar -->
+    <!-- ============================= -->
+
+    <nav class="bg-white shadow-sm border-b">
+
+        <div
+            class="
+                max-w-7xl
+                mx-auto
+                px-6
+                py-4
+                flex
+                justify-between
+                items-center
+            "
+        >
+
+            <!-- Logo / Panel Name -->
+
+            <div>
+
+                <a href="./dashboard.html"
+                 class="text-2xl font-bold text-gray-800">
+                    Event<span class=text-[#e76f51]>Ease</span>
+                </a>
+
+            </div>
+
+
+            <!-- Navigation Actions -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Dashboard -->
+
+                <a
+                    href="../organizer/dashboard.html"
+                    class="
+                        rounded-lg
+                        border
+                        border-gray-200
+                        px-4
+                        py-2
+                        text-sm
+                        font-semibold
+                        text-gray-700
+                        transition
+                        hover:bg-gray-50
+                    "
+                >
+                    Dashboard
+                </a>
+
+
+                <!-- Cancel / Back to Profile -->
+
+                <!-- <a
+                    href="./organizer-profile.html"
+                    class="
+                        rounded-lg
+                        border
+                        border-gray-200
+                        px-4
+                        py-2
+                        text-sm
+                        font-semibold
+                        text-gray-700
+                        transition
+                        hover:bg-gray-50
+                    "
+                >
+                    Cancel
+                </a> -->
+
+
+                <!-- Logout -->
+
+                <button 
+                    id="logoutButton"
+                    type="button"
+                    class=" rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700" >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main
+        class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8"
+    >
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="mb-8">
+
+                <a
+                    href="./organizer-profile.html"
+                    class="
+                        inline-flex
+                        items-center
+                        gap-2
+                        text-sm
+                        font-medium
+                        text-gray-500
+                        transition
+                        hover:text-primary
+                    "
+                >
+
+                    <span>
+                        ←
+                    </span>
+
+                    Back to Profile
+
+                </a>
+
+            <p class="text-sm font-semibold text-primary">
+                Organizer Panel
+            </p>
+
+            <h1
+                class="mt-2 text-3xl font-bold text-gray-900"
+            >
+                Edit Profile
+            </h1>
+
+            <p
+                class="mt-2 text-sm text-gray-500"
+            >
+                Update your personal and organization information.
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             LOADING
+        ======================================= -->
+
+        <div
+            id="profileLoading"
+            class="rounded-3xl bg-white p-10 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+            <p class="mt-4 text-sm text-gray-500">
+                Loading profile...
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             ERROR
+        ======================================= -->
+
+        <div
+            id="profileError"
+            class="hidden rounded-3xl bg-white p-8 text-center shadow-soft"
+        >
+
+            <div class="text-5xl">
+                ⚠️
+            </div>
+
+            <h2
+                class="mt-4 text-xl font-bold text-gray-900"
+            >
+                Unable to Load Profile
+            </h2>
+
+            <p
+                id="profileErrorMessage"
+                class="mt-2 text-sm text-gray-500"
+            >
+                Something went wrong.
+            </p>
+
+            <button
+                id="retryProfileButton"
+                type="button"
+                class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white hover:bg-primaryDark"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             EDIT FORM
+        ======================================= -->
+
+        <div
+            id="profileContent"
+            class="hidden"
+        >
+
+
+            <!-- ==================================
+                 PROFILE IMAGE CARD
+            =================================== -->
+
+            <section
+                class="mb-6 rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div class="text-center">
+
+                    <!-- Profile Image -->
+
+                    <div
+                        class="relative mx-auto h-32 w-32"
+                    >
+
+                        <img
+                            id="profileImage"
+                            src=""
+                            alt="Profile Image"
+                            class="h-32 w-32 rounded-full border-4 border-primaryLight object-cover"
+                        >
+
+                    </div>
+
+
+                    <!-- Upload Profile Image -->
+
+                    <div class="mt-6">
+
+                        <label
+                            for="profileImageInput"
+                            class="inline-flex cursor-pointer rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                        >
+                            Change Profile Image
+                        </label>
+
+                        <input
+                            id="profileImageInput"
+                            type="file"
+                            accept="image/*"
+                            class="hidden"
+                        >
+
+                    </div>
+
+
+                    <!-- Delete Image -->
+
+                    <button
+                        id="deleteProfileImageButton"
+                        type="button"
+                        class="mt-3 hidden text-sm font-semibold text-red-500 hover:text-red-700"
+                    >
+                        Remove Profile Image
+                    </button>
+
+
+                    <!-- Profile Image Status -->
+
+                    <p
+                        id="profileImageStatus"
+                        class="mt-3 text-xs text-gray-500"
+                    ></p>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 EDIT FORM CARD
+            =================================== -->
+
+            <section
+                class="rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div
+                    class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <div>
+
+                        <h2
+                            class="text-xl font-bold text-gray-900"
+                        >
+                            Personal Information
+                        </h2>
+
+                        <p
+                            class="mt-1 text-sm text-gray-500"
+                        >
+                            Update your basic account information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Form -->
+
+                <form
+                    id="profileForm"
+                    class="mt-6 space-y-5"
+                >
+
+
+                    <!-- Name -->
+
+                    <div>
+
+                        <label
+                            for="name"
+                            class="mb-2 block text-sm font-semibold text-gray-700"
+                        >
+                            Full Name
+                        </label>
+
+                        <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            required
+                            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primaryLight"
+                            placeholder="Enter your name"
+                        >
+
+                        <p
+                            id="nameError"
+                            class="mt-1 hidden text-sm text-red-500"
+                        ></p>
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div>
+
+                        <label
+                            for="email"
+                            class="mb-2 block text-sm font-semibold text-gray-700"
+                        >
+                            Email Address
+                        </label>
+
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            readonly
+                            class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
+                        >
+
+                        <p class="mt-2 text-xs text-gray-400">
+                            Email address cannot be changed from this page.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Phone -->
+
+                    <div>
+
+                        <label
+                            for="phone"
+                            class="mb-2 block text-sm font-semibold text-gray-700"
+                        >
+                            Phone Number
+                        </label>
+
+                        <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primaryLight"
+                            placeholder="Enter your phone number"
+                        >
+
+                        <p
+                            id="phoneError"
+                            class="mt-1 hidden text-sm text-red-500"
+                        ></p>
+
+                    </div>
+
+
+                    <!-- Address -->
+
+                    <div>
+
+                        <label
+                            for="address"
+                            class="mb-2 block text-sm font-semibold text-gray-700"
+                        >
+                            Address
+                        </label>
+
+                        <textarea
+                            id="address"
+                            name="address"
+                            rows="3"
+                            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primaryLight"
+                            placeholder="Enter your address"
+                        ></textarea>
+
+                        <p
+                            id="addressError"
+                            class="mt-1 hidden text-sm text-red-500"
+                        ></p>
+
+                    </div>
+
+
+                    <!-- Organization Name -->
+
+                    <div>
+
+                        <label
+                            for="organizationName"
+                            class="mb-2 block text-sm font-semibold text-gray-700"
+                        >
+                            Organization Name
+                        </label>
+
+                        <input
+                            id="organizationName"
+                            name="organizationName"
+                            type="text"
+                            readonly
+                            class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
+                        >
+
+                        <p class="mt-2 text-xs text-gray-400">
+                            Organization name is managed by the organizer account.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+
+                    <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
+
+                        <a
+                            href="./organizer-profile.html"
+                            class="rounded-xl border border-gray-300 px-5 py-3 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+                        >
+                            Cancel
+                        </a>
+
+                        <button
+                            id="saveProfileButton"
+                            type="submit"
+                            class="rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primaryDark disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            Save Changes
+                        </button>
+
+                    </div>
+
+
+                    <!-- Form Message -->
+
+                    <div
+                        id="profileMessage"
+                        class="hidden rounded-xl px-4 py-3 text-sm"
+                    ></div>
+
+                </form>
+
+            </section>
+
+
+            <!-- ==================================
+                 ORGANIZATION CARD
+            =================================== -->
+
+            <section
+                class="mt-6 rounded-3xl bg-white p-6 shadow-soft"
+            >
+
+                <div>
+
+                    <h2
+                        class="text-xl font-bold text-gray-900"
+                    >
+                        Organization
+                    </h2>
+
+                    <p
+                        class="mt-1 text-sm text-gray-500"
+                    >
+                        Manage your organization logo.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="mt-6 grid gap-6 md:grid-cols-2"
+                >
+
+
+                    <!-- Organization Logo -->
+
+                    <div
+                        class="rounded-2xl border border-gray-100 bg-gray-50 p-6"
+                    >
+
+                        <p
+                            class="text-sm font-semibold text-gray-700"
+                        >
+                            Organization Logo
+                        </p>
+
+
+                        <div
+                            class="mt-5 flex items-center gap-5"
+                        >
+
+                            <div
+                                class="h-24 w-24 overflow-hidden rounded-2xl border border-gray-200 bg-white"
+                            >
+
+                                <img
+                                    id="organizationLogo"
+                                    src=""
+                                    alt="Organization Logo"
+                                    class="h-full w-full object-cover"
+                                >
+
+                            </div>
+
+
+                            <div>
+
+                                <label
+                                    for="organizationLogoInput"
+                                    class="inline-flex cursor-pointer rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                                >
+                                    Upload Logo
+                                </label>
+
+                                <input
+                                    id="organizationLogoInput"
+                                    type="file"
+                                    accept="image/*"
+                                    class="hidden"
+                                >
+
+                                <p
+                                    id="organizationLogoStatus"
+                                    class="mt-2 text-xs text-gray-500"
+                                ></p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Account Status -->
+
+                    <div
+                        class="rounded-2xl border border-gray-100 bg-gray-50 p-6"
+                    >
+
+                        <p
+                            class="text-sm font-semibold text-gray-700"
+                        >
+                            Account Information
+                        </p>
+
+
+                        <div class="mt-5 space-y-4">
+
+                            <div>
+
+                                <p class="text-xs text-gray-400">
+                                    Account Role
+                                </p>
+
+                                <p
+                                    id="accountRole"
+                                    class="mt-1 font-semibold text-gray-900"
+                                >
+                                    Organizer
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs text-gray-400">
+                                    Account Status
+                                </p>
+
+                                <p
+                                    id="accountStatus"
+                                    class="mt-1 font-semibold text-gray-900"
+                                >
+                                    -
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer class="mt-10 border-t border-gray-200 bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p class="transition hover:text-primary">
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <p class="transition hover:text-primary">
+                    developed by <span class="font-bold text-primary">Rakib</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ======================================
+         EDIT PROFILE JS
+    ======================================= -->
+
+    <script src="../../js/organizer/edit-profile.js"></script>
+
+</body>
+
+</html>

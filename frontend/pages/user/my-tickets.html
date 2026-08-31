@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Tickets | EventEase</title>
+
+    <!-- ======================================
+         TAILWIND CSS
+    ======================================= -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+
+                    colors: {
+                        primary: "#31572c",
+                        primaryDark: "#244522",
+                        primaryLight: "#eaf2e8",
+                    },
+
+                    boxShadow: {
+                        soft:
+                            "0 10px 30px rgba(0,0,0,0.07)"
+                    }
+
+                }
+            }
+        };
+    </script>
+
+
+    <!-- ======================================
+         PDF LIBRARIES
+    ======================================= -->
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    ></script>
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    ></script>
+
+</head>
+
+
+<!-- ======================================
+     BODY
+======================================= -->
+
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
+
+
+    <!-- ======================================
+         HEADER
+    ======================================= -->
+
+    <div id="user-header"></div>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main
+        class="flex-1"
+    >
+
+        <div
+            class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8"
+        >
+
+
+            <!-- ======================================
+                 PAGE HEADER
+            ======================================= -->
+
+            <div class="mb-8">
+
+
+                <!-- Back to My Bookings -->
+
+                <a
+                    href="./my-bookings.html"
+                    class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-primary"
+                >
+
+                    <span class="text-lg">
+                        ←
+                    </span>
+
+                    My Bookings
+
+                </a>
+
+
+                <!-- Page Title -->
+
+                <div class="mt-5">
+
+                    <h1
+                        class="text-3xl font-bold text-gray-900 sm:text-4xl"
+                    >
+                        My Tickets
+                    </h1>
+
+                    <p
+                        class="mt-2 text-sm leading-6 text-gray-500 sm:text-base"
+                    >
+                        View and download your confirmed event tickets.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ======================================
+                 LOADING
+            ======================================= -->
+
+            <div
+                id="ticketsLoading"
+                class="rounded-3xl bg-white p-10 text-center shadow-soft"
+            >
+
+                <div
+                    class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+                ></div>
+
+                <p class="mt-4 text-sm text-gray-500">
+                    Loading your tickets...
+                </p>
+
+            </div>
+
+
+            <!-- ======================================
+                 ERROR
+            ======================================= -->
+
+            <div
+                id="ticketsError"
+                class="hidden rounded-3xl bg-white p-8 text-center shadow-soft"
+            >
+
+                <div class="text-5xl">
+                    ⚠️
+                </div>
+
+
+                <h2
+                    class="mt-4 text-xl font-bold text-gray-900"
+                >
+                    Unable to Load Tickets
+                </h2>
+
+
+                <p
+                    id="ticketsErrorMessage"
+                    class="mt-2 text-sm leading-6 text-gray-500"
+                >
+                    Something went wrong.
+                </p>
+
+
+                <button
+                    id="retryTicketsButton"
+                    type="button"
+                    class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+
+            <!-- ======================================
+                 EMPTY
+            ======================================= -->
+
+            <div
+                id="ticketsEmpty"
+                class="hidden rounded-3xl border border-dashed border-gray-200 bg-white p-10 text-center shadow-soft"
+            >
+
+                <div class="text-6xl">
+                    🎫
+                </div>
+
+
+                <h2
+                    class="mt-5 text-xl font-bold text-gray-900"
+                >
+                    No Tickets Yet
+                </h2>
+
+
+                <p
+                    class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500"
+                >
+                    You don't have any confirmed tickets yet.
+                    Book an event and complete the payment to get your ticket.
+                </p>
+
+
+                <a
+                    href="./events.html"
+                    class="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Browse Events
+                </a>
+
+            </div>
+
+
+            <!-- ======================================
+                 TICKETS CONTENT
+            ======================================= -->
+
+            <div
+                id="ticketsContent"
+                class="hidden"
+            >
+
+                <div
+                    id="ticketsList"
+                    class="grid gap-6 lg:grid-cols-2"
+                ></div>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <div id="user-footer"></div>
+
+
+    <!-- ======================================
+         COMPONENTS JS
+    ======================================= -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <!-- ======================================
+         LOAD COMPONENTS
+    ======================================= -->
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "user-header",
+                "../../components/user-header.html"
+            ),
+
+            loadComponent(
+                "user-footer",
+                "../../components/user-footer.html"
+            )
+
+        ]);
+
+    </script>
+
+
+    <!-- ======================================
+         MY TICKETS JS
+    ======================================= -->
+
+    <script src="../../js/user/my-tickets.js"></script>
+
+    <!-- AI -->
+     <script src="../../js/components/ai-chatbot.js"></script>
+
+
+</body>
+
+</html>

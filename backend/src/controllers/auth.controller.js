@@ -16,7 +16,6 @@ const registerUser = catchAsync(async (req, res) => {
 
 
 
-
 // ***Register Organizer***
 
 const registerOrganizer = catchAsync(async (req, res) => {

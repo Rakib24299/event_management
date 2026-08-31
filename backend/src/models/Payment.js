@@ -2,30 +2,104 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
+// ======================================================
+// PAYMENT SCHEMA
+// ======================================================
+
 const paymentSchema = new Schema(
   {
-    // Booking Reference
-    booking: {
-      type: Schema.Types.ObjectId,
-      ref: "Booking",
-      required: [true, "Booking is required"],
-    },
+    // ==================================================
+    // USER
+    // ==================================================
 
-    // User Reference
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User is required"],
     },
 
-    // Payment Amount
-    amount: {
+    // ==================================================
+    // BOOKING
+    // ==================================================
+
+    booking: {
+      type: Schema.Types.ObjectId,
+      ref: "Booking",
+      required: [true, "Booking is required"],
+      unique: true,
+    },
+
+    // ==================================================
+    // EVENT
+    // ==================================================
+
+    event: {
+      type: Schema.Types.ObjectId,
+      ref: "Event",
+      required: [true, "Event is required"],
+    },
+
+    // ==================================================
+    // ORGANIZER
+    // ==================================================
+
+    organizer: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Organizer is required"],
+    },
+
+    // ==================================================
+    // GROSS AMOUNT
+    // ==================================================
+
+    grossAmount: {
       type: Number,
-      required: [true, "Payment amount is required"],
+      required: [true, "Gross amount is required"],
       min: 0,
     },
 
-    // Dummy Transaction ID
+    // ==================================================
+    // PLATFORM FEE
+    // ==================================================
+
+    platformFee: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+
+    // ==================================================
+    // ORGANIZER AMOUNT
+    // ==================================================
+
+    organizerAmount: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+
+    // ==================================================
+    // PAYMENT METHOD
+    // ==================================================
+
+    paymentMethod: {
+      type: String,
+
+      enum: [
+        "sslcommerz",
+        "dummy",
+      ],
+
+      default: "dummy",
+    },
+
+    // ==================================================
+    // TRANSACTION ID
+    // ==================================================
+
     transactionId: {
       type: String,
       unique: true,
@@ -34,76 +108,112 @@ const paymentSchema = new Schema(
       default: null,
     },
 
-    // Dummy Payment Method
-    paymentMethod: {
-      type: String,
-      enum: [
-        "bkash",
-        "nagad",
-        "rocket",
-        "card",
-      ],
-      required: [true, "Payment method is required"],
-    },
+    // ==================================================
+    // SSL SESSION KEY
+    // ==================================================
 
-    // Currency
-    currency: {
+    sessionKey: {
       type: String,
-      default: "BDT",
-      uppercase: true,
+      default: null,
       trim: true,
     },
 
-    // Payment Gateway
-    paymentGateway: {
+    // ==================================================
+    // SSL VALIDATION ID
+    // ==================================================
+
+    validationId: {
       type: String,
-      default: "Dummy",
+      default: null,
       trim: true,
     },
 
-    // Payment Status
-    paymentStatus: {
+    // ==================================================
+    // PAYMENT STATUS
+    // ==================================================
+
+    status: {
       type: String,
+
       enum: [
         "pending",
-        "processing",
         "paid",
         "failed",
         "cancelled",
         "refunded",
+        "partially_refunded",
       ],
+
       default: "pending",
     },
 
-    // Refund Information
+    // ==================================================
+    // PAID AT
+    // ==================================================
+
+    paidAt: {
+      type: Date,
+      default: null,
+    },
+
+    // ==================================================
+    // REFUND AMOUNT
+    // ==================================================
+
     refundAmount: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    refundDate: {
+    // ==================================================
+    // REFUND STATUS
+    // ==================================================
+
+    refundStatus: {
+      type: String,
+
+      enum: [
+        "none",
+        "pending",
+        "processed",
+        "failed",
+      ],
+
+      default: "none",
+    },
+
+    // ==================================================
+    // REFUNDED AT
+    // ==================================================
+
+    refundedAt: {
       type: Date,
       default: null,
     },
 
-    // Payment Date
-    paymentDate: {
-      type: Date,
-      default: Date.now,
-    },
+    // ==================================================
+    // GATEWAY RESPONSE
+    // ==================================================
 
-    // Successful Payment Time
-    paidAt: {
-      type: Date,
+    gatewayResponse: {
+      type: Schema.Types.Mixed,
       default: null,
     },
   },
+
   {
     timestamps: true,
   }
 );
 
-const Payment = mongoose.model("Payment", paymentSchema);
+// ======================================================
+// MODEL
+// ======================================================
+
+const Payment = mongoose.model(
+  "Payment",
+  paymentSchema
+);
 
 module.exports = Payment;

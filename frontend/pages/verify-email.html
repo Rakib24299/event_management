@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Verify Email | EventEase</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#31572c",
+
+                        primaryDark: "#244522",
+
+                        primaryLight: "#4f772d"
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+    <!-- Global CSS -->
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body class="bg-gray-50">
+
+
+    <!-- Navbar -->
+
+    <div id="navbar"></div>
+
+
+    <!-- =========================================
+         Verification Section
+    ========================================== -->
+
+    <main
+        class="
+            flex
+            min-h-[calc(100vh-64px)]
+            items-center
+            justify-center
+            px-4
+            py-12
+            sm:px-6
+            lg:px-8
+        "
+    >
+
+        <div
+            class="
+                w-full
+                max-w-md
+            "
+        >
+
+            <!-- Card -->
+
+            <div
+                class="
+                    rounded-2xl
+                    bg-white
+                    px-6
+                    py-9
+                    shadow-xl
+                    shadow-gray-200/60
+                    sm:px-8
+                    sm:py-10
+                "
+            >
+
+
+                <!-- Icon -->
+
+                <div class="flex justify-center">
+
+                    <div
+                        class="
+                            flex
+                            h-16
+                            w-16
+                            items-center
+                            justify-center
+                            rounded-2xl
+                            bg-green-50
+                            text-2xl
+                        "
+                    >
+                        ✉️
+                    </div>
+
+                </div>
+
+
+                <!-- Heading -->
+
+                <div
+                    class="
+                        mt-6
+                        text-center
+                    "
+                >
+
+                    <h1
+                        class="
+                            text-2xl
+                            font-bold
+                            tracking-tight
+                            text-gray-900
+                            sm:text-3xl
+                        "
+                    >
+                        Verify Your Email
+                    </h1>
+
+
+                    <p
+                        class="
+                            mx-auto
+                            mt-3
+                            max-w-sm
+                            text-sm
+                            leading-6
+                            text-gray-500
+                        "
+                    >
+                        We have sent a 6-digit verification
+                        code to your email address.
+                    </p>
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div
+                    class="
+                        mt-6
+                        rounded-xl
+                        bg-gray-50
+                        px-4
+                        py-3
+                        text-center
+                    "
+                >
+
+                    <p
+                        class="
+                            text-xs
+                            text-gray-400
+                        "
+                    >
+                        Verification email sent to
+                    </p>
+
+                    <p
+                        id="emailDisplay"
+                        class="
+                            mt-1
+                            break-all
+                            text-sm
+                            font-semibold
+                            text-primary
+                        "
+                    >
+                        Loading...
+                    </p>
+
+                </div>
+
+
+                <!-- Error -->
+
+                <div
+                    id="verifyError"
+                    class="
+                        mt-5
+                        hidden
+                        rounded-xl
+                        border
+                        border-red-200
+                        bg-red-50
+                        px-4
+                        py-3
+                        text-sm
+                        text-red-600
+                    "
+                >
+                </div>
+
+
+                <!-- Success -->
+
+                <div
+                    id="verifySuccess"
+                    class="
+                        mt-5
+                        hidden
+                        rounded-xl
+                        border
+                        border-green-200
+                        bg-green-50
+                        px-4
+                        py-3
+                        text-sm
+                        text-green-700
+                    "
+                >
+                </div>
+
+
+                <!-- =================================
+                     OTP Form
+                ================================== -->
+
+                <form
+                    id="verifyForm"
+                    class="mt-6"
+                >
+
+                    <label
+                        for="otp"
+                        class="
+                            mb-2
+                            block
+                            text-center
+                            text-sm
+                            font-medium
+                            text-gray-800
+                        "
+                    >
+                        Enter Verification Code
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        maxlength="6"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        placeholder="000000"
+                        required
+                        class="
+                            h-14
+                            w-full
+                            rounded-xl
+                            border
+                            border-gray-200
+                            text-center
+                            text-2xl
+                            font-bold
+                            tracking-[0.5em]
+                            text-gray-900
+                            outline-none
+                            transition
+                            placeholder:text-gray-300
+                            placeholder:tracking-[0.5em]
+                            focus:border-primary
+                            focus:ring-4
+                            focus:ring-green-900/10
+                        "
+                    >
+
+
+                    <p
+                        class="
+                            mt-2
+                            text-center
+                            text-xs
+                            text-gray-400
+                        "
+                    >
+                        Enter the 6-digit code from your email.
+                    </p>
+
+
+                    <!-- Verify Button -->
+
+                    <button
+                        type="submit"
+                        id="verifyButton"
+                        class="
+                            mt-6
+                            flex
+                            h-12
+                            w-full
+                            items-center
+                            justify-center
+                            rounded-xl
+                            bg-primary
+                            px-5
+                            text-sm
+                            font-semibold
+                            text-white
+                            transition
+                            hover:bg-primaryDark
+                            hover:shadow-lg
+                            hover:shadow-green-900/10
+                            focus:outline-none
+                            focus:ring-4
+                            focus:ring-green-900/20
+                            disabled:cursor-not-allowed
+                            disabled:opacity-60
+                        "
+                    >
+                        Verify Email
+                    </button>
+
+                </form>
+
+
+                <!-- =================================
+                     Resend OTP
+                ================================== -->
+
+                <div
+                    class="
+                        mt-7
+                        text-center
+                    "
+                >
+
+                    <p
+                        class="
+                            text-sm
+                            text-gray-500
+                        "
+                    >
+                        Didn't receive the code?
+                    </p>
+
+
+                    <button
+                        type="button"
+                        id="resendButton"
+                        class="
+                            mt-2
+                            text-sm
+                            font-semibold
+                            text-primary
+                            hover:text-primaryDark
+                        "
+                    >
+                        Resend Verification Code
+                    </button>
+
+
+                    <p
+                        id="resendTimer"
+                        class="
+                            mt-2
+                            hidden
+                            text-xs
+                            text-gray-400
+                        "
+                    >
+                        Please wait
+                        <span id="countdown">60</span>
+                        seconds.
+                    </p>
+
+                </div>
+
+
+                <!-- Login -->
+
+                <div
+                    class="
+                        mt-8
+                        border-t
+                        border-gray-100
+                        pt-6
+                        text-center
+                    "
+                >
+
+                    <a
+                        href="./login.html"
+                        class="
+                            text-sm
+                            font-semibold
+                            text-primary
+                            hover:text-primaryDark
+                        "
+                    >
+                        Back to Sign In
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <div id="footer"></div>
+
+
+    <!-- Components -->
+
+    <script src="../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "navbar",
+                "../components/navbar.html"
+            ),
+
+            loadComponent(
+                "footer",
+                "../components/footer.html"
+            )
+
+        ]).then(() => {
+
+            const script =
+                document.createElement("script");
+
+            script.src = "../js/navbar.js";
+
+            document.body.appendChild(script);
+
+        });
+
+    </script>
+
+
+    <!-- Verification JS -->
+
+    <script src="../js/verify-email.js"></script>
+
+</body>
+
+</html>

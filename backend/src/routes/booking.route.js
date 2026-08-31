@@ -1,66 +1,190 @@
 const express = require("express");
 
-const bookingController = require("../controllers/booking.controller");
+const bookingController =
+  require("../controllers/booking.controller");
 
-const authMiddleware = require("../middlewares/auth.middleware");
-const roleMiddleware = require("../middlewares/role.middleware");
-const validateRequest = require("../middlewares/validateRequest");
+const authMiddleware =
+  require("../middlewares/auth.middleware");
+
+const roleMiddleware =
+  require("../middlewares/role.middleware");
+
+const validateRequest =
+  require("../middlewares/validateRequest");
 
 const {
   createBookingSchema,
   verifyBookingOtpSchema,
   updateBookingStatusSchema,
-} = require("../validations/booking.validation");
+} =
+  require("../validations/booking.validation");
 
-const router = express.Router();
 
-// Create Booking
+const router =
+  express.Router();
 
-router.post("/",authMiddleware,validateRequest(createBookingSchema),
+
+// ======================================================
+// USER
+// ======================================================
+
+
+// ------------------------------------------------------
+// CREATE BOOKING
+// POST /api/v1/bookings
+// ------------------------------------------------------
+
+router.post(
+  "/",
+  authMiddleware,
+  validateRequest(createBookingSchema),
   bookingController.createBooking
 );
 
-// Verify Booking OTP
 
-router.post("/verify-otp",authMiddleware,validateRequest(verifyBookingOtpSchema),
+// ------------------------------------------------------
+// VERIFY BOOKING OTP
+// POST /api/v1/bookings/verify-otp
+// ------------------------------------------------------
+
+router.post(
+  "/verify-otp",
+  authMiddleware,
+  validateRequest(verifyBookingOtpSchema),
   bookingController.verifyBookingOtp
 );
 
-// Get My Bookings
 
-router.get( "/my-bookings",authMiddleware,
-    bookingController.getMyBookings
+// ------------------------------------------------------
+// GET MY BOOKINGS
+// GET /api/v1/bookings/my
+// ------------------------------------------------------
+
+router.get(
+  "/my",
+  authMiddleware,
+  bookingController.getMyBookings
 );
 
-// Get Booking By ID
 
-router.get("/:id",authMiddleware,
-  bookingController.getBookingById
-);
+// ------------------------------------------------------
+// CANCEL BOOKING
+// PATCH /api/v1/bookings/:id/cancel
+// ------------------------------------------------------
 
-// Cancel Booking
-router.patch("/:id/cancel",authMiddleware,
+router.patch(
+  "/:id/cancel",
+  authMiddleware,
   bookingController.cancelBooking
 );
 
-// Generate Booking QR Code
 
-router.post(
-  "/:id/generate-qr",
+// ======================================================
+// ORGANIZER
+// ======================================================
+
+
+// ------------------------------------------------------
+// GET ORGANIZER BOOKINGS
+// GET /api/v1/bookings/organizer
+// ------------------------------------------------------
+
+router.get(
+  "/organizer",
   authMiddleware,
-  bookingController.generateBookingQRCode
+  roleMiddleware("organizer"),
+  bookingController.getOrganizerBookings
 );
 
-// Update Booking Status
+
+// ------------------------------------------------------
+// GET EVENT BOOKINGS
+// GET /api/v1/bookings/event/:eventId
+// ------------------------------------------------------
+
+router.get(
+  "/event/:eventId",
+  authMiddleware,
+  roleMiddleware("organizer", "admin"),
+  bookingController.getEventBookings
+);
+
+
+// ======================================================
+// ADMIN
+// ======================================================
+
+
+// ------------------------------------------------------
+// GET ALL BOOKINGS
+// GET /api/v1/bookings/admin
+// ------------------------------------------------------
+
+router.get(
+  "/admin",
+  authMiddleware,
+  roleMiddleware("admin"),
+  bookingController.getOrganizerBookings
+);
+
+
+// ======================================================
+// UPDATE BOOKING STATUS
+// ======================================================
+
+
+// PATCH /api/v1/bookings/:id/status
 
 router.patch(
   "/:id/status",
   authMiddleware,
-  roleMiddleware("admin", "organizer"),
+  roleMiddleware("organizer", "admin"),
   validateRequest(updateBookingStatusSchema),
   bookingController.updateBookingStatus
 );
 
 
+// ======================================================
+// DOWNLOAD TICKET PDF
+// GET /api/v1/bookings/:id/ticket/pdf
+// ======================================================
+
+router.get(
+  "/:id/ticket/pdf",
+  authMiddleware,
+  bookingController.downloadTicketPdf
+);
+
+
+// ======================================================
+// GET BOOKING HISTORY
+// GET /api/v1/bookings/history
+// ======================================================
+
+router.get(
+  "/history",
+  authMiddleware,
+  bookingController.getBookingHistory
+);
+
+
+// ======================================================
+// GET BOOKING BY ID
+// MUST BE LAST
+// ======================================================
+
+
+// GET /api/v1/bookings/:id
+
+router.get(
+  "/:id",
+  authMiddleware,
+  bookingController.getBookingById
+);
+
+
+// ======================================================
+// EXPORT
+// ======================================================
 
 module.exports = router;

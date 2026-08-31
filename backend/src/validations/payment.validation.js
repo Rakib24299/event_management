@@ -1,137 +1,43 @@
-const { z } = require("zod");
-
-const objectIdSchema = require("./objectId.validation");
-
+const Joi = require("joi");
 
 // ======================================================
-// Create Payment Schema
+// CREATE PAYMENT
 // ======================================================
 
-const createPaymentSchema = z.object({
+const createPaymentSchema = Joi.object({
+  booking: Joi.string()
+    .required()
+    .messages({
+      "string.empty":
+        "Booking ID is required.",
+      "any.required":
+        "Booking ID is required.",
+    }),
 
-  body: z
-    .object({
-
-      booking: objectIdSchema,
-
-      paymentMethod: z.enum(
-        [
-          "bkash",
-          "nagad",
-          "rocket",
-          "card",
-        ],
-        {
-          errorMap: () => ({
-            message: "Invalid payment method.",
-          }),
-        }
-      ),
-
-    })
-    .strict(),
-
+  paymentMethod: Joi.string()
+    .valid("dummy")
+    .default("dummy"),
 });
 
-
-
 // ======================================================
-// Dummy Payment Process Schema
+// PROCESS DUMMY PAYMENT
 // ======================================================
 
-const processDummyPaymentSchema = z.object({
-
-  body: z
-    .object({
-
-      paymentResult: z.enum(
-        [
-          "success",
-          "failed",
-        ],
-        {
-          errorMap: () => ({
-            message:
-              "Payment result must be success or failed.",
-          }),
-        }
-      ),
-
-    })
-    .strict(),
-
+const processDummyPaymentSchema = Joi.object({
+  paymentResult: Joi.string()
+    .valid("success", "failed")
+    .default("success")
+    .messages({
+      "any.only":
+        "Payment result must be success or failed.",
+    }),
 });
 
-
-
 // ======================================================
-// Update Payment Status Schema
-// ======================================================
-
-const updatePaymentStatusSchema = z.object({
-
-  body: z
-    .object({
-
-      paymentStatus: z.enum(
-        [
-          "pending",
-          "processing",
-          "paid",
-          "failed",
-          "cancelled",
-          "refunded",
-        ],
-        {
-          errorMap: () => ({
-            message: "Invalid payment status.",
-          }),
-        }
-      ),
-
-    })
-    .strict(),
-
-});
-
-
-
-// ======================================================
-// Refund Payment Schema
-// ======================================================
-
-const refundPaymentSchema = z.object({
-
-  body: z
-    .object({
-
-      refundAmount: z
-        .number({
-          required_error: "Refund amount is required.",
-        })
-        .positive(
-          "Refund amount must be greater than 0."
-        ),
-
-    })
-    .strict(),
-
-});
-
-
-
-// ======================================================
-// Export
+// EXPORT
 // ======================================================
 
 module.exports = {
-
   createPaymentSchema,
-
   processDummyPaymentSchema,
-
-  updatePaymentStatusSchema,
-
-  refundPaymentSchema,
-
 };

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Write a Review | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#31572c",
+                        primaryDark: "#244522",
+                        primaryLight: "#4f772d"
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 text-gray-800">
+
+    <!-- ======================================== -->
+    <!-- Header -->
+    <!-- ======================================== -->
+
+    <div id="user-header"></div>
+
+
+    <!-- ======================================== -->
+    <!-- Main -->
+    <!-- ======================================== -->
+
+    <main class="mx-auto max-w-3xl px-6 py-10">
+
+        <!-- Back -->
+
+        <a
+            href="./my-bookings.html"
+            class="mb-6 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-green-50 hover:text-primary"
+        >
+            <span class="text-lg">←</span>
+            Back to My Bookings
+        </a>
+
+
+        <!-- ======================================== -->
+        <!-- Page Heading -->
+        <!-- ======================================== -->
+
+        <div class="mb-8">
+
+            <p class="text-sm font-semibold uppercase tracking-wide text-primary">
+                Event Review
+            </p>
+
+            <h1 class="mt-1 text-3xl font-bold text-gray-900">
+                Write a Review
+            </h1>
+
+            <p class="mt-2 text-gray-500">
+                Share your experience with this event.
+            </p>
+
+        </div>
+
+
+        <!-- ======================================== -->
+        <!-- Loading -->
+        <!-- ======================================== -->
+
+        <div
+            id="loadingState"
+            class="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm"
+        >
+
+            <div class="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"></div>
+
+            <p class="font-medium text-gray-600">
+                Loading event information...
+            </p>
+
+        </div>
+
+
+        <!-- ======================================== -->
+        <!-- Error -->
+        <!-- ======================================== -->
+
+        <div
+            id="reviewError"
+            class="mb-6 hidden rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700"
+        ></div>
+
+
+        <!-- ======================================== -->
+        <!-- Success -->
+        <!-- ======================================== -->
+
+        <div
+            id="reviewSuccess"
+            class="mb-6 hidden rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-primary"
+        ></div>
+
+
+        <!-- ======================================== -->
+        <!-- Review Content -->
+        <!-- ======================================== -->
+
+        <div
+            id="reviewContent"
+            class="hidden"
+        >
+
+            <!-- ======================================== -->
+            <!-- Event Information -->
+            <!-- ======================================== -->
+
+            <section class="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+                <div class="flex flex-col sm:flex-row">
+
+                    <img
+                        id="reviewEventImage"
+                        src="https://via.placeholder.com/400x250?text=EventEase"
+                        alt="Event"
+                        class="h-52 w-full object-cover sm:h-40 sm:w-52"
+                    >
+
+                    <div class="flex-1 p-5">
+
+                        <span
+                            id="reviewEventCategory"
+                            class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-primary"
+                        >
+                            Event
+                        </span>
+
+                        <h2
+                            id="reviewEventTitle"
+                            class="mt-2 text-xl font-bold text-gray-900"
+                        >
+                            Event
+                        </h2>
+
+                        <p
+                            id="reviewEventDate"
+                            class="mt-2 text-sm text-gray-500"
+                        >
+                            --
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ======================================== -->
+            <!-- Review Form -->
+            <!-- ======================================== -->
+
+            <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+
+                <form id="reviewForm">
+
+                    <!-- Rating -->
+
+                    <div>
+
+                        <label class="block text-sm font-semibold text-gray-900">
+                            Your Rating
+                        </label>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            How would you rate your experience?
+                        </p>
+
+
+                        <div
+                            id="ratingContainer"
+                            class="mt-4 flex gap-2"
+                        >
+
+                            <button
+                                type="button"
+                                class="rating-star text-4xl leading-none text-gray-300 transition hover:scale-110"
+                                data-rating="1"
+                            >
+                                ★
+                            </button>
+
+                            <button
+                                type="button"
+                                class="rating-star text-4xl leading-none text-gray-300 transition hover:scale-110"
+                                data-rating="2"
+                            >
+                                ★
+                            </button>
+
+                            <button
+                                type="button"
+                                class="rating-star text-4xl leading-none text-gray-300 transition hover:scale-110"
+                                data-rating="3"
+                            >
+                                ★
+                            </button>
+
+                            <button
+                                type="button"
+                                class="rating-star text-4xl leading-none text-gray-300 transition hover:scale-110"
+                                data-rating="4"
+                            >
+                                ★
+                            </button>
+
+                            <button
+                                type="button"
+                                class="rating-star text-4xl leading-none text-gray-300 transition hover:scale-110"
+                                data-rating="5"
+                            >
+                                ★
+                            </button>
+
+                        </div>
+
+                        <p
+                            id="ratingText"
+                            class="mt-2 text-sm font-medium text-primary"
+                        >
+                            Select a rating
+                        </p>
+
+                        <p
+                            id="ratingError"
+                            class="mt-2 hidden text-sm text-red-600"
+                        ></p>
+
+                    </div>
+
+
+                    <!-- Review -->
+
+                    <div class="mt-7">
+
+                        <label
+                            for="reviewComment"
+                            class="block text-sm font-semibold text-gray-900"
+                        >
+                            Your Review
+                        </label>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            Tell us about your experience.
+                        </p>
+
+                        <textarea
+                            id="reviewComment"
+                            name="comment"
+                            rows="6"
+                            maxlength="1000"
+                            placeholder="Write your review here..."
+                            class="mt-4 w-full resize-none rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        ></textarea>
+
+                        <div class="mt-2 flex justify-between">
+
+                            <p
+                                id="commentError"
+                                class="hidden text-sm text-red-600"
+                            ></p>
+
+                            <p
+                                id="characterCount"
+                                class="ml-auto text-xs text-gray-400"
+                            >
+                                0 / 1000
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+
+                        <button
+                            type="submit"
+                            id="submitReviewButton"
+                            class="flex-1 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primaryDark disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            Submit Review
+                        </button>
+
+                        <a
+                            href="./my-bookings.html"
+                            class="rounded-xl border border-gray-300 px-6 py-3 text-center font-semibold text-gray-700 transition hover:bg-gray-50"
+                        >
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================== -->
+    <!-- Footer -->
+    <!-- ======================================== -->
+
+    <div id="user-footer"></div>
+
+
+    <!-- ======================================== -->
+    <!-- Components -->
+    <!-- ======================================== -->
+
+    <script src="../../js/components.js"></script>
+
+
+    <script>
+
+        Promise.all([
+
+            loadComponent(
+                "user-header",
+                "../../components/user-header.html"
+            ),
+
+            loadComponent(
+                "user-footer",
+                "../../components/user-footer.html"
+            )
+
+        ]);
+
+    </script>
+
+
+    <!-- ======================================== -->
+    <!-- JavaScript -->
+    <!-- ======================================== -->
+
+    <script src="../../js/user/review.js"></script>
+
+</body>
+</html>

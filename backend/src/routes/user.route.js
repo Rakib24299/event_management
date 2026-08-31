@@ -1,7 +1,6 @@
 const express = require("express");
 
 const userController = require("../controllers/user.controller");
-
 const authMiddleware = require("../middlewares/auth.middleware");
 const validateRequest = require("../middlewares/validateRequest");
 const upload = require("../middlewares/upload.middleware");
@@ -14,7 +13,9 @@ const {
 const router = express.Router();
 
 
+// ========================================
 // Get My Profile
+// ========================================
 
 router.get(
   "/me",
@@ -22,7 +23,10 @@ router.get(
   userController.getMyProfile
 );
 
+
+// ========================================
 // Update My Profile
+// ========================================
 
 router.patch(
   "/update-profile",
@@ -32,7 +36,10 @@ router.patch(
 );
 
 
-// upload profile
+// ========================================
+// Upload Profile Image
+// ========================================
+
 router.patch(
   "/profile-image",
   authMiddleware,
@@ -40,7 +47,10 @@ router.patch(
   userController.uploadProfileImage
 );
 
+
+// ========================================
 // Delete Profile Image
+// ========================================
 
 router.delete(
   "/profile-image",
@@ -48,14 +58,11 @@ router.delete(
   userController.deleteProfileImage
 );
 
-router.patch(
-  "/organization-logo",
-  authMiddleware,
-  upload.single("organizationLogo"),
-  userController.uploadOrganizationLogo
-);
 
+// ========================================
 // Upload Organization Logo
+// Organizer Only
+// ========================================
 
 router.patch(
   "/organization-logo",
@@ -65,14 +72,5 @@ router.patch(
   userController.uploadOrganizationLogo
 );
 
-// Upload Organization Logo
-
-router.patch(
-  "/organization-logo",
-  authMiddleware,
-  roleMiddleware("organizer"),
-  upload.single("organizationLogo"),
-  userController.uploadOrganizationLogo
-);
 
 module.exports = router;

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Profile | EventEase</title>
+
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- Tailwind Configuration -->
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: "#457b9d",
+
+                        primaryDark: "#35627d",
+
+                        primaryLight: "#6b9bb8",
+
+                    },
+
+                    boxShadow: {
+
+                        soft:
+                            "0 10px 30px rgba(0, 0, 0, 0.06)",
+
+                    },
+
+                },
+
+            },
+
+        };
+
+    </script>
+
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="border-b border-gray-200 bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8"
+        >
+
+            <!-- Logo -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-extrabold tracking-tight text-primary"
+            >
+                <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Navigation -->
+
+            <div class="flex items-center gap-3">
+
+                <a
+                    href="./dashboard.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
+                >
+                    Dashboard
+                </a>
+
+
+                <button
+                    id="logoutBtn"
+                    type="button"
+                    class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         MAIN
+    ========================================= -->
+
+    <main
+        class="mx-auto flex-1 max-w-4xl px-6 py-10 lg:px-8"
+    >
+
+
+        <!-- Page Header -->
+
+        <div class="mb-8">
+
+            <p
+                class="text-sm font-semibold uppercase tracking-wider text-primary"
+            >
+                Account Settings
+            </p>
+
+
+            <h1
+                class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+            >
+                Admin Profile
+            </h1>
+
+
+            <p class="mt-3 text-sm leading-6 text-gray-500">
+                View and manage your EventEase administrator profile.
+            </p>
+
+        </div>
+
+
+
+        <!-- ========================================
+             LOADING
+        ========================================= -->
+
+        <div
+            id="loadingState"
+            class="rounded-3xl bg-white p-12 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+
+            <p class="mt-4 text-sm text-gray-500">
+                Loading profile...
+            </p>
+
+        </div>
+
+
+
+        <!-- ========================================
+             ERROR
+        ========================================= -->
+
+        <div
+            id="errorState"
+            class="hidden rounded-3xl bg-white p-10 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-2xl"
+            >
+                ⚠️
+            </div>
+
+
+            <h3
+                class="mt-4 font-bold text-gray-900"
+            >
+                Failed to Load Profile
+            </h3>
+
+
+            <p
+                id="errorMessage"
+                class="mt-2 text-sm text-gray-500"
+            >
+                Something went wrong.
+            </p>
+
+
+            <button
+                id="retryBtn"
+                type="button"
+                class="mt-5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+
+
+        <!-- ========================================
+             PROFILE CONTENT
+        ========================================= -->
+
+        <div
+            id="profileContent"
+            class="hidden"
+        >
+
+
+            <!-- Profile Card -->
+
+            <section
+                class="rounded-3xl bg-white p-8 shadow-soft"
+            >
+
+                <!-- Profile Image -->
+
+                <div
+                    class="flex flex-col items-center border-b border-gray-100 pb-8"
+                >
+
+                    <div
+                        id="profileImageContainer"
+                        class="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-primaryLight/20"
+                    >
+
+                        <span
+                            id="profileInitial"
+                            class="text-4xl font-bold text-primary"
+                        >
+                            A
+                        </span>
+
+                    </div>
+
+
+                    <h2
+                        id="profileName"
+                        class="mt-5 text-2xl font-bold text-gray-900"
+                    >
+                        Admin
+                    </h2>
+
+
+                    <span
+                        class="mt-2 rounded-full bg-primaryLight/20 px-4 py-1.5 text-xs font-semibold text-primary"
+                    >
+                        Administrator
+                    </span>
+
+                </div>
+
+
+
+                <!-- Information -->
+
+                <div class="mt-8 grid gap-6 sm:grid-cols-2">
+
+
+                    <!-- Name -->
+
+                    <div>
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Full Name
+                        </label>
+
+                        <p
+                            id="name"
+                            class="mt-2 font-semibold text-gray-900"
+                        >
+                            -
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Email -->
+
+                    <div>
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Email
+                        </label>
+
+                        <p
+                            id="email"
+                            class="mt-2 break-all font-semibold text-gray-900"
+                        >
+                            -
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Phone -->
+
+                    <div>
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Phone
+                        </label>
+
+                        <p
+                            id="phone"
+                            class="mt-2 font-semibold text-gray-900"
+                        >
+                            -
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Role -->
+
+                    <div>
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Role
+                        </label>
+
+                        <p
+                            id="role"
+                            class="mt-2 font-semibold capitalize text-gray-900"
+                        >
+                            -
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Address -->
+
+                    <div class="sm:col-span-2">
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Address
+                        </label>
+
+                        <p
+                            id="address"
+                            class="mt-2 font-semibold text-gray-900"
+                        >
+                            -
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Account Status -->
+
+                    <div>
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Account Status
+                        </label>
+
+                        <p class="mt-2">
+
+                            <span
+                                id="status"
+                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+                            >
+                                Active
+                            </span>
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Created -->
+
+                    <div>
+
+                        <label
+                            class="text-xs font-semibold uppercase tracking-wide text-gray-400"
+                        >
+                            Account Created
+                        </label>
+
+                        <p
+                            id="createdAt"
+                            class="mt-2 font-semibold text-gray-900"
+                        >
+                            -
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
+    <footer
+        class="mt-10 border-t border-gray-200 bg-white"
+    >
+
+        <div
+            class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+        >
+
+            <p>
+                © 2026 EventEase. All rights reserved.
+            </p>
+
+            <div class="flex gap-5">
+
+                <div>
+                    Developed By
+                    <span class="text-[#457b9d] font-semibold">RAKIB</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/admin/admin-profile.js"></script>
+
+</body>
+
+</html>

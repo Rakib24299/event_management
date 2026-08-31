@@ -14,14 +14,14 @@
 
 
     <!-- ========================================
-         Tailwind CSS
+          Tailwind CSS
     ========================================= -->
 
     <script src="https://cdn.tailwindcss.com"></script>
 
 
     <!-- ========================================
-         Tailwind Configuration
+          Tailwind Configuration
     ========================================= -->
 
     <script>
@@ -40,6 +40,8 @@
 
                         primaryLight: "#4f772d",
 
+                        softGreen: "#f1f7ef"
+
                     }
 
                 }
@@ -52,7 +54,7 @@
 
 
     <!-- ========================================
-         Global CSS
+          Global CSS
     ========================================= -->
 
     <link
@@ -63,205 +65,788 @@
 </head>
 
 
-<body>
+<body class="bg-gray-50">
 
 
     <!-- ========================================
-         Navbar Component
+          Navbar
     ========================================= -->
 
     <div id="navbar"></div>
 
 
     <!-- ========================================
-         Main Content
+          Main Content
     ========================================= -->
 
-    <main
-        class="
-            flex
-            min-h-[calc(100vh-64px)]
-            items-center
-            justify-center
-            px-4
-            sm:px-6
-            lg:px-8
-        "
-    >
-
-        <div class="w-full max-w-2xl text-center">
+    <main>
 
 
-            <!-- Logo / Brand -->
+        <!-- ============================= -->
+        <!-- Hero Section -->
+        <!-- ============================= -->
 
-            <div
-                class="
-                    mx-auto
-                    flex
-                    h-16
-                    w-16
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    bg-primary
-                    text-2xl
-                    font-bold
-                    text-white
-                    shadow-lg
-                    shadow-green-900/10
-                "
-            >
-                E
+        <section class="relative min-h-[420px] overflow-hidden bg-cover bg-center bg-no-repeat text-white" style="background-image: url('./assets/images/1.jpg');">
+
+            <div class="absolute inset-0 bg-black/10" aria-hidden="true"></div>
+
+            <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 flex items-center justify-center lg:justify-start">
+
+                <div class="w-full max-w-2xl rounded-lg border border-white/30 bg-black/30 p-8 backdrop-blur-sm shadow-2xl sm:p-10">
+
+                    <span class="inline-flex items-center rounded-full bg-[#31572c] px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white">
+
+                        Discover & Experience
+
+                    </span>
+
+                    <h1
+                        class="
+                            mt-6
+                            text-4xl
+                            font-bold
+                            tracking-tight
+                            text-white
+                            sm:text-5xl
+                            lg:text-6xl
+                        "
+                    >
+
+                        Discover Events.<br>Create Memories.
+
+                    </h1>
+
+                    <p
+                        class="
+                            mt-6
+                            text-base
+                            leading-relaxed
+                            text-white/90
+                            sm:text-lg
+                        "
+                    >
+
+                        Find and book amazing events happening
+                        around you with EventEase. From concerts
+                        to conferences, we bring the best
+                        experiences to your fingertips.
+
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap gap-4">
+
+                        <a
+                            href="./pages/user/user-login.html"
+                            class="
+                                inline-flex
+                                items-center
+                                gap-2
+                                rounded-xl
+                                border
+                                border-white/30
+                                px-6
+                                py-3.5
+                                text-sm
+                                font-bold
+                                text-white
+                                bg-[#31572c]
+                                transition
+                                hover:bg-white/10
+                            "   >
+
+                            Explore Events
+
+                            <svg
+                                class="h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                />
+
+                            </svg>
+
+                        </a>
+
+                        <a
+                            href="./pages/organizer/organizer-login.html"
+                            class="
+                                inline-flex
+                                items-center
+                                gap-2
+                                rounded-xl
+                                border
+                                border-white/30
+                                px-6
+                                py-3.5
+                                text-sm
+                                font-bold
+                                text-white
+                                bg-[#31572c]
+                                transition
+                                hover:bg-white/10
+                            "
+                        >
+
+                            Create Event
+
+                        </a>
+
+                    </div>
+
+                </div>
+
             </div>
 
-
-            <!-- Heading -->
-
-            <h1
-                class="
-                    mt-6
-                    text-3xl
-                    font-bold
-                    tracking-tight
-                    text-primary
-                    sm:text-4xl
-                    lg:text-5xl
-                "
-            >
-                Welcome to EventEase
-            </h1>
+        </section>
 
 
-            <!-- Description -->
+        <!-- ============================= -->
+        <!-- Search Events Section -->
+        <!-- ============================= -->
 
-            <p
-                class="
-                    mx-auto
-                    mt-4
-                    max-w-xl
-                    text-sm
-                    leading-7
-                    text-gray-500
-                    sm:text-base
-                "
-            >
-                Smart Event Management System for discovering,
-                booking and managing events easily.
-            </p>
+        <section id="events" class="py-12">
 
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-            <!-- Buttons -->
-
-            <div
-                class="
-                    mt-8
-                    flex
-                    flex-col
-                    items-stretch
-                    justify-center
-                    gap-3
-                    sm:flex-row
-                    sm:items-center
-                "
-            >
-
-                <a
-                    href="./pages/login.html"
+                <div
                     class="
-                        inline-flex
-                        min-h-[48px]
-                        items-center
-                        justify-center
-                        rounded-xl
-                        bg-primary
-                        px-6
-                        text-sm
-                        font-semibold
-                        text-white
-                        transition
-                        hover:bg-primaryDark
-                        hover:shadow-lg
-                        hover:shadow-green-900/10
-                    "
-                >
-                    Login
-                </a>
-
-
-                <a
-                    href="./pages/register.html"
-                    class="
-                        inline-flex
-                        min-h-[48px]
-                        items-center
-                        justify-center
-                        rounded-xl
-                        border
-                        border-gray-200
+                        rounded-2xl
                         bg-white
-                        px-6
-                        text-sm
-                        font-semibold
-                        text-primary
-                        transition
-                        hover:border-primary
-                        hover:bg-green-50
+                        p-6
+                        shadow-sm
+                        ring-1
+                        ring-gray-900/5
+                        sm:p-8
                     "
                 >
-                    Create Account
-                </a>
+
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+
+                        <div>
+
+                            <h2 class="text-2xl font-bold text-gray-900">
+
+                                Find Your Next Event
+
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-500">
+
+                                Search by name, category, location or date.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+
+                        <div class="lg:col-span-2">
+
+                            <div class="relative">
+
+                                <svg
+                                    class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+
+                                </svg>
+
+                                <input
+                                    type="text"
+                                    id="searchInput"
+                                    placeholder="Search events..."
+                                    class="
+                                        h-12
+                                        w-full
+                                        rounded-xl
+                                        border
+                                        border-gray-200
+                                        pl-10
+                                        pr-4
+                                        text-sm
+                                        outline-none
+                                        transition
+                                        placeholder:text-gray-400
+                                        focus:border-primary
+                                        focus:ring-4
+                                        focus:ring-green-900/10
+                                    "
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <select
+                                id="categoryFilter"
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                                <option value="">All Categories</option>
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <input
+                                type="text"
+                                id="locationFilter"
+                                placeholder="Location"
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    placeholder:text-gray-400
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <input
+                                type="date"
+                                id="dateFilter"
+                                class="
+                                    h-12
+                                    w-full
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    px-4
+                                    text-sm
+                                    outline-none
+                                    transition
+                                    focus:border-primary
+                                    focus:ring-4
+                                    focus:ring-green-900/10
+                                "
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-end">
+
+                        <button
+                            id="clearFilters"
+                            type="button"
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                px-5
+                                py-3
+                                text-sm
+                                font-semibold
+                                text-gray-600
+                                transition
+                                hover:bg-gray-50
+                            "
+                        >
+
+                            Clear Filters
+
+                        </button>
+
+                        <button
+                            id="searchButton"
+                            type="button"
+                            class="
+                                rounded-xl
+                                bg-primary
+                                px-6
+                                py-3
+                                text-sm
+                                font-semibold
+                                text-white
+                                transition
+                                hover:bg-primaryDark
+                            "
+                        >
+
+                            Search Events
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- Featured Events Section -->
+        <!-- ============================= -->
+
+        <section class="py-16">
+
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+
+                    <div>
+
+                        <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+
+                            Featured Events
+
+                        </h2>
+
+                        <p class="mt-2 text-sm text-gray-500">
+
+                            Discover some of the most exciting upcoming events.
+
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="./pages/user/events.html"
+                        class="
+                            text-sm
+                            font-semibold
+                            text-primary
+                            transition
+                            hover:text-primaryDark
+                        "
+                    >
+
+                        View all events →
+
+                    </a>
+
+                </div>
+
+                <div
+                    id="featuredEvents"
+                    class="
+                        mt-10
+                        grid
+                        grid-cols-1
+                        gap-6
+                        sm:grid-cols-2
+                        lg:grid-cols-3
+                        xl:grid-cols-4
+                    "
+                >
+
+                    <!-- Dynamically loaded -->
+
+                </div>
+
+                <div id="eventsLoading" class="mt-10 flex justify-center">
+
+                    <div
+                        class="
+                            h-10
+                            w-10
+                            animate-spin
+                            rounded-full
+                            border-4
+                            border-gray-200
+                            border-t-primary
+                        "
+                    ></div>
+
+                </div>
+
+                <div id="eventsError" class="hidden mt-10">
+
+                    <div
+                        class="
+                            rounded-2xl
+                            border
+                            border-red-100
+                            bg-red-50
+                            p-8
+                            text-center
+                        "
+                    >
+
+                        <div class="text-4xl">⚠️</div>
+
+                        <h3 class="mt-4 text-lg font-bold text-gray-900">
+
+                            Unable to load events
+
+                        </h3>
+
+                        <p
+                            class="
+                                mx-auto
+                                mt-2
+                                max-w-md
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+
+                            Something went wrong. Please try again later.
+
+                        </p>
+
+                        <button
+                            id="retryEvents"
+                            type="button"
+                            class="
+                                mt-5
+                                rounded-xl
+                                bg-primary
+                                px-5
+                                py-3
+                                text-sm
+                                font-semibold
+                                text-white
+                                transition
+                                hover:bg-primaryDark
+                            "
+                        >
+
+                            Try Again
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- Categories Section -->
+        <!-- ============================= -->
+
+        <section class="bg-white py-16">
+
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                <div class="text-center">
+
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+
+                        Explore Categories
+
+                    </h2>
+
+                    <p class="mt-2 text-sm text-gray-500">
+
+                        Browse events by your favorite categories.
+
+                    </p>
+
+                </div>
+
+                <div
+                    id="categoriesContainer"
+                    class="
+                        mt-10
+                        grid
+                        grid-cols-2
+                        gap-4
+                        sm:grid-cols-3
+                        lg:grid-cols-6
+                    "
+                >
+
+                    <!-- Dynamically loaded -->
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- Why EventEase Section -->
+        <!-- ============================= -->
+
+        <section class="py-16">
+
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                <div class="text-center">
+
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+
+                        Why Choose EventEase?
+
+                    </h2>
+
+                    <p
+                        class="
+                            mx-auto
+                            mt-2
+                            max-w-2xl
+                            text-sm
+                            text-gray-500
+                        "
+                    >
+
+                        We make event discovery and booking simple, secure, and enjoyable.
+
+                    </p>
+
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div class="text-center">
+
+                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-2xl">
+
+                            🔍
+
+                        </div>
+
+                        <h3 class="mt-5 text-lg font-semibold text-gray-900">
+
+                            Easy Event Discovery
+
+                        </h3>
+
+                        <p class="mt-2 text-sm text-gray-500">
+
+                            Find events that match your interests with smart search and filters.
+
+                        </p>
+
+                    </div>
+
+                    <div class="text-center">
+
+                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-2xl">
+
+                            🎫
+
+                        </div>
+
+                        <h3 class="mt-5 text-lg font-semibold text-gray-900">
+
+                            Simple Booking
+
+                        </h3>
+
+                        <p class="mt-2 text-sm text-gray-500">
+
+                            Book your tickets quickly and easily in just a few clicks.
+
+                        </p>
+
+                    </div>
+
+                    <div class="text-center">
+
+                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-2xl">
+
+                            ✅
+
+                        </div>
+
+                        <h3 class="mt-5 text-lg font-semibold text-gray-900">
+
+                            Trusted Organizers
+
+                        </h3>
+
+                        <p class="mt-2 text-sm text-gray-500">
+
+                            Discover events from verified and trusted organizers.
+
+                        </p>
+
+                    </div>
+
+                    <div class="text-center">
+
+                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-50 text-2xl">
+
+                            🔒
+
+                        </div>
+
+                        <h3 class="mt-5 text-lg font-semibold text-gray-900">
+
+                            Secure Experience
+
+                        </h3>
+
+                        <p class="mt-2 text-sm text-gray-500">
+
+                            Your account and booking information stay protected.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- Call To Action Section -->
+        <!-- ============================= -->
+
+        <section class="py-16">
+
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                <div
+                    class="
+                        rounded-3xl
+                        bg-gradient-to-r
+                        from-primary
+                        to-primaryDark
+                        px-8
+                        py-16
+                        text-center
+                        text-white
+                    "
+                >
+
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+
+                        Ready to Find Your Next Event?
+
+                    </h2>
+
+                    <p
+                        class="
+                            mx-auto
+                            mt-4
+                            max-w-2xl
+                            text-base
+                            text-green-100
+                        "
+                    >
+
+                        Explore exciting events and create unforgettable
+                        experiences with EventEase.
+
+                    </p>
+
+                    <a
+                        href="#events"
+                        class="
+                            mt-8
+                            inline-flex
+                            items-center
+                            gap-2
+                            rounded-xl
+                            bg-white
+                            px-8
+                            py-3
+                            text-sm
+                            font-bold
+                            text-primary
+                            transition
+                            hover:bg-green-50
+                            hover:shadow-lg
+                        "
+                    >
+
+                        Explore Events
+
+                        <svg
+                            class="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+
+                        </svg>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
 
     </main>
 
 
     <!-- ========================================
-         Component Loader
-    ========================================= -->
-
-    <script src="./js/components.js"></script>
-
-
-    <!-- ========================================
-         Load Navbar
-    ========================================= -->
-
-    <script>
-
-        loadComponent(
-            "navbar",
-            "./components/navbar.html"
-        ).then(() => {
-
-            const script =
-                document.createElement("script");
-
-            script.src = "./js/navbar.js";
-
-            document.body.appendChild(script);
-
-        });
-
-    </script>
-        <!-- ========================================
-         Footer
+          Footer
     ========================================= -->
 
     <div id="footer"></div>
 
 
     <!-- ========================================
-         Component Loader
+          Component Loader
     ========================================= -->
 
     <script src="./js/components.js"></script>
 
 
     <!-- ========================================
-         Load Navbar & Footer
+          Load Navbar & Footer
     ========================================= -->
 
     <script>
@@ -278,7 +863,8 @@
                 "./components/footer.html"
             )
 
-        ]).then(() => {
+        ])
+        .then(() => {
 
             const script =
                 document.createElement("script");
@@ -287,9 +873,22 @@
 
             document.body.appendChild(script);
 
+        })
+        .catch((error) => {
+
+            console.error(
+                "Failed to load components:",
+                error
+            );
+
         });
 
     </script>
+
+    <script src="./js/index.js"></script>
+
+    <!-- AI -->
+     <script src="./js/components/ai-chatbot.js"></script>
 
 
 </body>
