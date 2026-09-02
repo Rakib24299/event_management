@@ -68,6 +68,18 @@ router.get(
 
 
 // ------------------------------------------------------
+// GET MY CONFIRMED BOOKINGS
+// GET /api/v1/bookings/my/confirmed
+// ------------------------------------------------------
+
+router.get(
+  "/my/confirmed",
+  authMiddleware,
+  bookingController.getMyConfirmedBookings
+);
+
+
+// ------------------------------------------------------
 // CANCEL BOOKING
 // PATCH /api/v1/bookings/:id/cancel
 // ------------------------------------------------------

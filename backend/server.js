@@ -1,11 +1,12 @@
 require("dotenv").config();
 
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = require("./src/app");
 const connectDB = require("./src/config/db");
 const createDefaultAdmin = require("./src/seed/admin.seed");
 const createDefaultCategories = require("./src/seed/category.seed");
-
 
 // ======================================================
 // JOBS
@@ -16,91 +17,243 @@ const {
   startRefundJob,
 } = require("./src/jobs/refund.job");
 
-
 // Booking OTP Expiry Job
 const {
   startBookingExpiryJob,
 } = require("./src/jobs/bookingExpiry.job");
 
+// ======================================================
+// SOCKET.IO CONFIG
+// ======================================================
+
+const {
+  setIO,
+} = require("./src/config/socket");
+
+// ======================================================
+// PORT
+// ======================================================
 
 const PORT =
   process.env.PORT || 5000;
 
+// ======================================================
+// HTTP SERVER
+// ======================================================
+
+const server =
+  http.createServer(app);
 
 // ======================================================
-// START SERVER
+// SOCKET.IO
 // ======================================================
 
-const startServer = async () => {
+const io =
+  new Server(server, {
 
-  try {
+    cors: {
+      origin: "*",
 
-    // ==================================================
-    // Connect to MongoDB
-    // ==================================================
+      methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+      ],
+    },
 
-    await connectDB();
+  });
 
+// ======================================================
+// SAVE SOCKET.IO INSTANCE
+// ======================================================
 
-    // ==================================================
-    // Create Default Admin
-    // ==================================================
+setIO(io);
 
-    await createDefaultAdmin();
+// ======================================================
+// SOCKET CONNECTION
+// ======================================================
 
+io.on(
+  "connection",
+  (socket) => {
 
-    // ==================================================
-    // Create Default Categories
-    // ==================================================
-
-    await createDefaultCategories();
-
-
-    // ==================================================
-    // Start Automatic Refund Job
-    // ==================================================
-
-    startRefundJob();
-
-
-    // ==================================================
-    // Start Booking OTP Expiry Job
-    // ==================================================
-
-    startBookingExpiryJob();
-
+    console.log(
+      `🔌 Socket connected: ${socket.id}`
+    );
 
     // ==================================================
-    // Start Express Server
+    // USER ROOM
     // ==================================================
 
-    app.listen(
-      PORT,
-      () => {
+    socket.on(
+      "joinUserRoom",
+      (userId) => {
+
+        if (!userId) {
+          return;
+        }
+
+        const roomName =
+          `user_${userId}`;
+
+        socket.join(
+          roomName
+        );
 
         console.log(
-          `🚀 Server is running on http://localhost:${PORT}`
+          `👤 User joined room: ${roomName}`
         );
 
       }
     );
 
-  } catch (error) {
+    // ==================================================
+    // ORGANIZER ROOM
+    // ==================================================
 
-    console.error(
-      "❌ Failed to start server:",
-      error.message
+    socket.on(
+      "joinOrganizerRoom",
+      (organizerId) => {
+
+        if (!organizerId) {
+          return;
+        }
+
+        const roomName =
+          `organizer_${organizerId}`;
+
+        socket.join(
+          roomName
+        );
+
+        console.log(
+          `🏢 Organizer joined room: ${roomName}`
+        );
+
+      }
     );
 
-    process.exit(1);
+    // ==================================================
+    // ADMIN ROOM
+    // ==================================================
+
+    socket.on(
+      "joinAdminRoom",
+      () => {
+
+        socket.join(
+          "admin_room"
+        );
+
+        console.log(
+          "👑 Admin joined room"
+        );
+
+      }
+    );
+
+    // ==================================================
+    // DISCONNECT
+    // ==================================================
+
+    socket.on(
+      "disconnect",
+      () => {
+
+        console.log(
+          `🔌 Socket disconnected: ${socket.id}`
+        );
+
+      }
+    );
 
   }
+);
 
-};
+// ======================================================
+// START SERVER
+// ======================================================
 
+const startServer =
+  async () => {
+
+    try {
+
+      // ==================================================
+      // CONNECT MONGODB
+      // ==================================================
+
+      await connectDB();
+
+      // ==================================================
+      // CREATE DEFAULT ADMIN
+      // ==================================================
+
+      await createDefaultAdmin();
+
+      // ==================================================
+      // CREATE DEFAULT CATEGORIES
+      // ==================================================
+
+      await createDefaultCategories();
+
+      // ==================================================
+      // START REFUND JOB
+      // ==================================================
+
+      startRefundJob();
+
+      // ==================================================
+      // START BOOKING EXPIRY JOB
+      // ==================================================
+
+      startBookingExpiryJob();
+
+      // ==================================================
+      // START HTTP + SOCKET.IO SERVER
+      // ==================================================
+
+      server.listen(
+        PORT,
+        () => {
+
+          console.log(
+            `🚀 Server is running on http://localhost:${PORT}`
+          );
+
+          console.log(
+            `🔌 Socket.IO is running on port ${PORT}`
+          );
+
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        "❌ Failed to start server:",
+        error.message
+      );
+
+      process.exit(1);
+
+    }
+
+  };
 
 // ======================================================
 // RUN SERVER
 // ======================================================
 
 startServer();
+
+// ======================================================
+// EXPORT
+// ======================================================
+
+module.exports = {
+  server,
+  io,
+};

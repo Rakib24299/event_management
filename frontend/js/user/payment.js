@@ -1,40 +1,36 @@
 "use strict";
 
 // ======================================================
-// EventEase Payment / Booking Page
+// EventEase Payment Page
+// SSLCommerz Sandbox Hosted Checkout
 // ======================================================
 //
-// FINAL PAYMENT FLOW
+// FLOW
 //
-// payment.html
+// payment.html?id=EVENT_ID
 //      ↓
-// Select Tickets
+// Load event from /api/v1/events/:id
 //      ↓
-// Continue to Payment
+// Display event + ticket quantity selector
 //      ↓
-// Create Booking
+// User clicks "Continue to Payment"
 //      ↓
-// FREE EVENT
+// POST /api/v1/bookings { eventId, ticketQuantity }
 //      ↓
-// payment-success.html
+// Backend creates/reuses pending booking
+//      ↓
+// POST /api/v1/payments/create { booking: bookingId }
+//      ↓
+// Backend creates SSLCOMMERZ session
+//      ↓
+// Redirect to SSLCOMMERZ Sandbox hosted checkout
+//      ↓
+// VISA / MasterCard / bKash / Nagad / Internet Banking
+//      ↓
+// SSLCOMMERZ callback (success/fail/cancel/ipn)
+//      ↓
+// Backend validates payment → OTP → otp-verification.html
 //
-// PAID EVENT
-//      ↓
-// Create Booking
-//      ↓
-// Create Dummy Payment
-//      ↓
-// Process Dummy Payment
-//      ↓
-// OTP Verification
-//      ↓
-// payment-success.html
-//
-// PAYMENT METHOD
-// ONLY DUMMY PAYMENT
-//
-// SSLCommerz
-// COMPLETELY REMOVED
 // ======================================================
 
 
@@ -50,16 +46,11 @@ const API_BASE_URL =
 // STATE
 // ======================================================
 
-let eventId = null;
-
-let eventData = null;
+let bookingId = null;
 
 let bookingData = null;
 
-let paymentData = null;
-
-// Only Dummy Payment
-let selectedPaymentMethod = "dummy";
+let eventData = null;
 
 let ticketQuantity = 1;
 
@@ -67,7 +58,7 @@ let isProcessing = false;
 
 
 // ======================================================
-// GET AUTH TOKEN
+// AUTH TOKEN
 // ======================================================
 
 const getAuthToken = () => {
@@ -84,222 +75,20 @@ const getAuthToken = () => {
 };
 
 
-// ======================================================
-// GET EVENT ID
-// ======================================================
-
-const getEventId = () => {
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    return (
-        params.get("id") ||
-        params.get("eventId") ||
-        params.get("event")
-    );
-
-};
-
-
-// ======================================================
-// DOM ELEMENTS
-// ======================================================
-
-
-// ------------------------------------------------------
-// Loading
-// ------------------------------------------------------
-
-const paymentLoading =
-    document.getElementById(
-        "paymentLoading"
-    );
-
-
-// ------------------------------------------------------
-// Error
-// ------------------------------------------------------
-
-const paymentError =
-    document.getElementById(
-        "paymentError"
-    );
-
-const paymentErrorMessage =
-    document.getElementById(
-        "paymentErrorMessage"
-    );
-
-
-// ------------------------------------------------------
-// Content
-// ------------------------------------------------------
-
-const paymentContent =
-    document.getElementById(
-        "paymentContent"
-    );
-
-
-// ------------------------------------------------------
-// Event
-// ------------------------------------------------------
-
-const eventImage =
-    document.getElementById(
-        "eventImage"
-    );
-
-const eventCategory =
-    document.getElementById(
-        "eventCategory"
-    );
-
-const eventTitle =
-    document.getElementById(
-        "eventTitle"
-    );
-
-const eventDate =
-    document.getElementById(
-        "eventDate"
-    );
-
-const eventLocation =
-    document.getElementById(
-        "eventLocation"
-    );
-
-const availableSeatsElement =
-    document.getElementById(
-        "availableSeats"
-    );
-
-const eventTypeBadge =
-    document.getElementById(
-        "eventTypeBadge"
-    );
-
-
-// ------------------------------------------------------
-// Quantity
-// ------------------------------------------------------
-
-const decreaseQuantity =
-    document.getElementById(
-        "decreaseQuantity"
-    );
-
-const increaseQuantity =
-    document.getElementById(
-        "increaseQuantity"
-    );
-
-const ticketQuantityElement =
-    document.getElementById(
-        "ticketQuantity"
-    );
-
-const quantityMessage =
-    document.getElementById(
-        "quantityMessage"
-    );
-
-
-// ------------------------------------------------------
-// Price
-// ------------------------------------------------------
-
-const ticketPrice =
-    document.getElementById(
-        "ticketPrice"
-    );
-
-
-// ------------------------------------------------------
-// Summary
-// ------------------------------------------------------
-
-const summaryPrice =
-    document.getElementById(
-        "summaryPrice"
-    );
-
-const summaryQuantity =
-    document.getElementById(
-        "summaryQuantity"
-    );
-
-const summarySubtotal =
-    document.getElementById(
-        "summarySubtotal"
-    );
-
-const summaryTotal =
-    document.getElementById(
-        "summaryTotal"
-    );
-
-
-// ------------------------------------------------------
-// Button
-// ------------------------------------------------------
-
-const confirmPaymentButton =
-    document.getElementById(
-        "confirmPaymentButton"
-    );
-
-
-// ------------------------------------------------------
-// Processing message
-// ------------------------------------------------------
-
-const bookingProcessingMessage =
-    document.getElementById(
-        "bookingProcessingMessage"
-    );
-
-
-// ------------------------------------------------------
-// Back button
-// ------------------------------------------------------
-
-const backButton =
-    document.getElementById(
-        "backButton"
-    );
-
-
-// ------------------------------------------------------
-// Retry
-// ------------------------------------------------------
-
-const retryButton =
-    document.getElementById(
-        "retryButton"
-    );
-
-
-// ======================================================
-// AUTH CHECK
-// ======================================================
-
 const requireAuth = () => {
 
     const token =
         getAuthToken();
 
+
     if (!token) {
 
         throw new Error(
-            "You are not logged in. Please login first."
+            "Your session has expired. Please log in again."
         );
 
     }
+
 
     return token;
 
@@ -394,24 +183,187 @@ const apiRequest = async (
 
 
 // ======================================================
-// SHOW LOADING
+// DOM ELEMENTS
 // ======================================================
 
-const showLoading = () => {
+// Loading
 
-    if (paymentLoading) {
+const paymentLoading =
+    document.getElementById(
+        "paymentLoading"
+    );
 
-        paymentLoading.classList.remove(
-            "hidden"
+
+// Error
+
+const paymentError =
+    document.getElementById(
+        "paymentError"
+    );
+
+const paymentErrorMessage =
+    document.getElementById(
+        "paymentErrorMessage"
+    );
+
+
+// Content
+
+const paymentContent =
+    document.getElementById(
+        "paymentContent"
+    );
+
+
+// Event display elements
+
+const eventImage =
+    document.getElementById(
+        "eventImage"
+    );
+
+const eventCategory =
+    document.getElementById(
+        "eventCategory"
+    );
+
+const eventTitle =
+    document.getElementById(
+        "eventTitle"
+    );
+
+const eventDate =
+    document.getElementById(
+        "eventDate"
+    );
+
+const eventLocation =
+    document.getElementById(
+        "eventLocation"
+    );
+
+const availableSeatsElement =
+    document.getElementById(
+        "availableSeats"
+    );
+
+const eventTypeBadge =
+    document.getElementById(
+        "eventTypeBadge"
+    );
+
+
+// Quantity controls
+
+const decreaseQuantity =
+    document.getElementById(
+        "decreaseQuantity"
+    );
+
+const increaseQuantity =
+    document.getElementById(
+        "increaseQuantity"
+    );
+
+const ticketQuantityElement =
+    document.getElementById(
+        "ticketQuantity"
+    );
+
+const quantityMessage =
+    document.getElementById(
+        "quantityMessage"
+    );
+
+
+// Price display
+
+const ticketPrice =
+    document.getElementById(
+        "ticketPrice"
+    );
+
+
+// Summary sidebar
+
+const summaryPrice =
+    document.getElementById(
+        "summaryPrice"
+    );
+
+const summaryQuantity =
+    document.getElementById(
+        "summaryQuantity"
+    );
+
+const summarySubtotal =
+    document.getElementById(
+        "summarySubtotal"
+    );
+
+const summaryTotal =
+    document.getElementById(
+        "summaryTotal"
+    );
+
+
+// Button
+
+const confirmPaymentButton =
+    document.getElementById(
+        "confirmPaymentButton"
+    );
+
+
+// Processing indicator
+
+const bookingProcessingMessage =
+    document.getElementById(
+        "bookingProcessingMessage"
+    );
+
+
+// Back button
+
+const backButton =
+    document.getElementById(
+        "backButton"
+    );
+
+
+// Retry button
+
+const retryButton =
+    document.getElementById(
+        "retryButton"
+    );
+
+
+// ======================================================
+// GET EVENT ID FROM URL
+// ======================================================
+// Supports:
+//   payment.html?id=EVENT_ID
+//   payment.html?eventId=EVENT_ID
+
+const getEventId = () => {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
 
-    }
+
+    return (
+        params.get("id") ||
+        params.get("eventId")
+    );
 
 };
 
 
 // ======================================================
-// HIDE LOADING
+// UI HELPERS
 // ======================================================
 
 const hideLoading = () => {
@@ -426,10 +378,6 @@ const hideLoading = () => {
 
 };
 
-
-// ======================================================
-// SHOW CONTENT
-// ======================================================
 
 const showContent = () => {
 
@@ -455,10 +403,6 @@ const showContent = () => {
 
 };
 
-
-// ======================================================
-// SHOW ERROR
-// ======================================================
 
 const showError = (
     message
@@ -563,7 +507,7 @@ const formatDate = (
 
 
 // ======================================================
-// GET EVENT IMAGE
+// GET EVENT IMAGE URL
 // ======================================================
 
 const getEventImage = (
@@ -628,8 +572,13 @@ const getEventImage = (
 
 
 // ======================================================
-// EXTRACT EVENT
+// EXTRACT EVENT FROM API RESPONSE
 // ======================================================
+// Handles multiple backend response shapes:
+//   result.data.event       → { success, data: { event: {...} } }
+//   result.data             → { success, data: {...} } where data IS the event
+//   result.event            → { event: {...} }
+//   result                  → event directly
 
 const extractEvent = (
     result
@@ -637,11 +586,15 @@ const extractEvent = (
 
     if (
         result &&
-        result.data
+        result.data &&
+        typeof result.data ===
+            "object"
     ) {
 
         if (
-            result.data.event
+            result.data.event &&
+            typeof result.data.event ===
+                "object"
         ) {
 
             return result.data.event;
@@ -649,14 +602,26 @@ const extractEvent = (
         }
 
 
-        return result.data;
+        if (
+            result.data._id &&
+            (
+                result.data.title ||
+                result.data.name
+            )
+        ) {
+
+            return result.data;
+
+        }
 
     }
 
 
     if (
         result &&
-        result.event
+        result.event &&
+        typeof result.event ===
+            "object"
     ) {
 
         return result.event;
@@ -664,7 +629,21 @@ const extractEvent = (
     }
 
 
-    return result;
+    if (
+        result &&
+        result._id &&
+        (
+            result.title ||
+            result.name
+        )
+    ) {
+
+        return result;
+
+    }
+
+
+    return null;
 
 };
 
@@ -672,17 +651,27 @@ const extractEvent = (
 // ======================================================
 // LOAD EVENT
 // ======================================================
+//
+// GET /api/v1/events/:id
+//
+// Response:
+// {
+//   success: true,
+//   data: event
+// }
+//
+// ======================================================
 
 const loadEvent = async () => {
 
-    eventId =
+    const eventId =
         getEventId();
 
 
     if (!eventId) {
 
         throw new Error(
-            "Event ID is missing from the URL."
+            "Event information is missing. Please return to the event page and try again."
         );
 
     }
@@ -696,8 +685,14 @@ const loadEvent = async () => {
 
     const result =
         await apiRequest(
-            `/events/${eventId}`
+            `/events/${encodeURIComponent(eventId)}`
         );
+
+
+    console.log(
+        "Event API Response:",
+        result
+    );
 
 
     eventData =
@@ -707,7 +702,7 @@ const loadEvent = async () => {
     if (!eventData) {
 
         throw new Error(
-            "Event information could not be loaded."
+            "Unable to load event information."
         );
 
     }
@@ -741,9 +736,7 @@ const renderEvent = () => {
     }
 
 
-    // --------------------------------------------------
-    // TITLE
-    // --------------------------------------------------
+    // Title
 
     if (eventTitle) {
 
@@ -755,9 +748,7 @@ const renderEvent = () => {
     }
 
 
-    // --------------------------------------------------
-    // CATEGORY
-    // --------------------------------------------------
+    // Category
 
     if (eventCategory) {
 
@@ -795,9 +786,7 @@ const renderEvent = () => {
     }
 
 
-    // --------------------------------------------------
-    // DATE
-    // --------------------------------------------------
+    // Date
 
     if (eventDate) {
 
@@ -810,24 +799,21 @@ const renderEvent = () => {
     }
 
 
-    // --------------------------------------------------
-    // LOCATION
-    // --------------------------------------------------
+    // Location
 
     if (eventLocation) {
 
         eventLocation.textContent =
             eventData.location ||
             eventData.venue ||
+            eventData.venueName ||
             eventData.address ||
             "Location not available";
 
     }
 
 
-    // --------------------------------------------------
-    // AVAILABLE SEATS
-    // --------------------------------------------------
+    // Available Seats
 
     if (availableSeatsElement) {
 
@@ -838,9 +824,7 @@ const renderEvent = () => {
     }
 
 
-    // --------------------------------------------------
-    // EVENT TYPE
-    // --------------------------------------------------
+    // Event Type Badge
 
     if (eventTypeBadge) {
 
@@ -856,9 +840,7 @@ const renderEvent = () => {
     }
 
 
-    // --------------------------------------------------
-    // IMAGE
-    // --------------------------------------------------
+    // Image
 
     if (eventImage) {
 
@@ -882,11 +864,81 @@ const renderEvent = () => {
 
     }
 
+
+    // Free event / paid event UI toggles
+
+    const freeEventMessage =
+        document.getElementById(
+            "freeEventMessage"
+        );
+
+    const paymentMethodSection =
+        document.getElementById(
+            "paymentMethodSection"
+        );
+
+
+    if (isFreeEvent()) {
+
+        if (freeEventMessage) {
+
+            freeEventMessage.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        if (paymentMethodSection) {
+
+            paymentMethodSection.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (confirmPaymentButton) {
+
+            confirmPaymentButton.textContent =
+                "Confirm Free Booking";
+
+        }
+
+    } else {
+
+        if (freeEventMessage) {
+
+            freeEventMessage.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (paymentMethodSection) {
+
+            paymentMethodSection.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        if (confirmPaymentButton) {
+
+            confirmPaymentButton.textContent =
+                "Continue to Payment";
+
+        }
+
+    }
+
 };
 
 
 // ======================================================
-// GET EVENT PRICE
+// GET TICKET PRICE
 // ======================================================
 
 const getTicketPrice = () => {
@@ -1004,9 +1056,7 @@ const updateQuantityUI = () => {
         ticketQuantity;
 
 
-    // --------------------------------------------------
-    // Quantity
-    // --------------------------------------------------
+    // Quantity display
 
     if (ticketQuantityElement) {
 
@@ -1016,9 +1066,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Ticket Price
-    // --------------------------------------------------
+    // Ticket price
 
     if (ticketPrice) {
 
@@ -1030,9 +1078,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Summary Price
-    // --------------------------------------------------
+    // Summary price
 
     if (summaryPrice) {
 
@@ -1044,9 +1090,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Summary Quantity
-    // --------------------------------------------------
+    // Summary quantity
 
     if (summaryQuantity) {
 
@@ -1056,9 +1100,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
     // Subtotal
-    // --------------------------------------------------
 
     if (summarySubtotal) {
 
@@ -1070,9 +1112,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
     // Total
-    // --------------------------------------------------
 
     if (summaryTotal) {
 
@@ -1084,9 +1124,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Quantity Message
-    // --------------------------------------------------
+    // Quantity message
 
     if (quantityMessage) {
 
@@ -1106,9 +1144,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Decrease
-    // --------------------------------------------------
+    // Decrease button
 
     if (decreaseQuantity) {
 
@@ -1118,9 +1154,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Increase
-    // --------------------------------------------------
+    // Increase button
 
     if (increaseQuantity) {
 
@@ -1144,9 +1178,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // --------------------------------------------------
-    // Continue Button
-    // --------------------------------------------------
+    // Confirm button
 
     if (
         confirmPaymentButton &&
@@ -1243,98 +1275,16 @@ const decreaseTicketQuantity = () => {
 
 
 // ======================================================
-// PAYMENT METHOD
-// ======================================================
-//
-// ONLY DUMMY PAYMENT
-//
-// SSLCommerz completely removed.
-// ======================================================
-
-const setupPaymentMethod = () => {
-
-    selectedPaymentMethod =
-        "dummy";
-
-
-    const inputs =
-        document.querySelectorAll(
-            'input[name="paymentMethod"]'
-        );
-
-
-    inputs.forEach(
-        (input) => {
-
-            if (
-                input.value ===
-                "dummy"
-            ) {
-
-                input.checked =
-                    true;
-
-                input.disabled =
-                    false;
-
-            } else {
-
-                // Disable any old payment
-                // option that may still exist
-                // in HTML.
-
-                input.checked =
-                    false;
-
-                input.disabled =
-                    true;
-
-            }
-
-
-            input.addEventListener(
-                "change",
-                () => {
-
-                    if (
-                        input.checked &&
-                        input.value ===
-                            "dummy"
-                    ) {
-
-                        selectedPaymentMethod =
-                            "dummy";
-
-
-                        console.log(
-                            "Payment Method: Dummy Payment"
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-};
-
-
-// ======================================================
 // CREATE BOOKING
+// ======================================================
+//
+// POST /api/v1/bookings
+// Body: { eventId, ticketQuantity }
+//
+// Only called when no existing bookingId is in the URL.
 // ======================================================
 
 const createBooking = async () => {
-
-    if (!eventId) {
-
-        throw new Error(
-            "Event ID is missing."
-        );
-
-    }
-
 
     if (!eventData) {
 
@@ -1389,7 +1339,9 @@ const createBooking = async () => {
                 body:
                     JSON.stringify({
 
-                        eventId,
+                        eventId:
+                            eventData._id ||
+                            eventData.id,
 
                         ticketQuantity
 
@@ -1419,16 +1371,16 @@ const createBooking = async () => {
     }
 
 
-    bookingData =
+    const newBooking =
         data.booking ||
         data;
 
 
     if (
-        !bookingData ||
+        !newBooking ||
         !(
-            bookingData._id ||
-            bookingData.id
+            newBooking._id ||
+            newBooking.id
         )
     ) {
 
@@ -1440,13 +1392,9 @@ const createBooking = async () => {
 
 
     const createdBookingId =
-        bookingData._id ||
-        bookingData.id;
+        newBooking._id ||
+        newBooking.id;
 
-
-    // --------------------------------------------------
-    // SAVE BOOKING DATA
-    // --------------------------------------------------
 
     sessionStorage.setItem(
         "paymentBookingId",
@@ -1457,7 +1405,7 @@ const createBooking = async () => {
     sessionStorage.setItem(
         "paymentBookingData",
         JSON.stringify(
-            bookingData
+            newBooking
         )
     );
 
@@ -1468,21 +1416,13 @@ const createBooking = async () => {
     );
 
 
-    return bookingData;
+    return newBooking;
 
 };
 
 
 // ======================================================
-// FREE EVENT
-// ======================================================
-//
-// Free event does not need payment.
-//
-// IMPORTANT:
-// If your backend requires OTP for FREE events too,
-// this section can later be changed to send the user
-// to OTP verification.
+// PROCESS FREE BOOKING
 // ======================================================
 
 const processFreeBooking = async (
@@ -1555,7 +1495,7 @@ const processFreeBooking = async (
 
 
     console.log(
-        "Free booking created. Redirecting to OTP verification..."
+        "Free booking created."
     );
 
 
@@ -1568,22 +1508,25 @@ const processFreeBooking = async (
 
 
 // ======================================================
-// CREATE PAYMENT
+// CREATE SSLCommerz PAYMENT SESSION
 // ======================================================
 //
-// Only Dummy Payment is created.
+// Backend: POST /api/v1/payments/create
+// Body:   { booking: bookingId }
+// Returns: { success, data: { payment, gatewayPageURL, sessionkey, transactionId } }
+//
 // ======================================================
 
-const createPayment = async (
+const createSSLCommerzPayment = async (
     booking
 ) => {
 
-    const createdBookingId =
+    const bookingId =
         booking._id ||
         booking.id;
 
 
-    if (!createdBookingId) {
+    if (!bookingId) {
 
         throw new Error(
             "Booking ID is missing."
@@ -1593,17 +1536,13 @@ const createPayment = async (
 
 
     console.log(
-        "STEP 2: Creating dummy payment..."
+        "STEP 2: Creating SSLCommerz payment session..."
     );
-
-
-    selectedPaymentMethod =
-        "dummy";
 
 
     const result =
         await apiRequest(
-            "/payments",
+            "/payments/create",
             {
                 method: "POST",
 
@@ -1611,10 +1550,7 @@ const createPayment = async (
                     JSON.stringify({
 
                         booking:
-                            createdBookingId,
-
-                        paymentMethod:
-                            "dummy"
+                            bookingId
 
                     })
 
@@ -1623,7 +1559,7 @@ const createPayment = async (
 
 
     console.log(
-        "Create Payment Response:",
+        "SSLCommerz Session Response:",
         result
     );
 
@@ -1633,295 +1569,101 @@ const createPayment = async (
         result;
 
 
-    paymentData =
+    if (!data) {
+
+        throw new Error(
+            "SSLCommerz payment response is empty."
+        );
+
+    }
+
+
+    const payment =
         data.payment ||
-        data;
+        null;
 
 
-    if (!paymentData) {
+    const gatewayPageURL =
+        data.gatewayPageURL ||
+        data.GatewayPageURL;
+
+
+    if (!gatewayPageURL) {
 
         throw new Error(
-            "Payment information was not returned by the server."
+            "SSLCommerz Gateway URL was not returned by the server."
         );
 
     }
 
 
-    const createdPaymentId =
-        paymentData._id ||
-        paymentData.id;
+    if (payment) {
+
+        const paymentId =
+            payment._id ||
+            payment.id;
 
 
-    if (!createdPaymentId) {
+        if (paymentId) {
 
-        throw new Error(
-            "Payment ID was not returned by the server."
-        );
+            sessionStorage.setItem(
+                "paymentId",
+                paymentId
+            );
+
+        }
 
     }
-
-
-    // --------------------------------------------------
-    // SAVE PAYMENT
-    // --------------------------------------------------
-
-    sessionStorage.setItem(
-        "paymentId",
-        createdPaymentId
-    );
 
 
     sessionStorage.setItem(
         "paymentMethod",
-        "dummy"
+        "sslcommerz"
+    );
+
+
+    sessionStorage.setItem(
+        "paymentGateway",
+        "sslcommerz"
     );
 
 
     sessionStorage.setItem(
         "paymentCreatedData",
         JSON.stringify(
-            paymentData
+            data
         )
     );
 
 
-    return paymentData;
-
-};
-
-
-// ======================================================
-// DUMMY PAYMENT
-// ======================================================
-//
-// IMPORTANT:
-//
-// Dummy payment does NOT directly redirect to
-// payment-success.html.
-//
-// It goes to OTP verification first.
-//
-// Flow:
-//
-// Dummy Payment
-//      ↓
-// OTP Verification
-//      ↓
-// Success
-//
-// ======================================================
-
-const processDummyPayment = async (
-    payment
-) => {
-
-    const paymentId =
-        payment._id ||
-        payment.id;
-
-
-    if (!paymentId) {
-
-        throw new Error(
-            "Payment ID is missing."
-        );
-
-    }
-
-
-    console.log(
-        "STEP 3: Processing dummy payment..."
+    sessionStorage.setItem(
+        "paymentBookingId",
+        bookingId
     );
-
-
-    const result =
-        await apiRequest(
-            `/payments/${paymentId}/dummy`,
-            {
-                method: "PATCH",
-
-                body:
-                    JSON.stringify({
-
-                        paymentResult:
-                            "success"
-
-                    })
-
-            }
-        );
-
-
-    console.log(
-        "Dummy Payment Response:",
-        result
-    );
-
-
-    const responseData =
-        result.data ||
-        result;
-
-
-    if (!responseData) {
-
-        throw new Error(
-            "Invalid dummy payment response."
-        );
-
-    }
-
-
-    // --------------------------------------------------
-    // Get booking
-    // --------------------------------------------------
-
-    const successfulBooking =
-        responseData.booking ||
-        bookingData;
-
-
-    if (!successfulBooking) {
-
-        throw new Error(
-            "Booking information was not returned after dummy payment."
-        );
-
-    }
-
-
-    const successfulBookingId =
-        successfulBooking._id ||
-        successfulBooking.id;
-
-
-    if (!successfulBookingId) {
-
-        throw new Error(
-            "Booking ID is missing after dummy payment."
-        );
-
-    }
-
-
-    // --------------------------------------------------
-    // SAVE DATA FOR OTP PAGE
-    // --------------------------------------------------
-
-    const otpData = {
-
-        payment:
-            responseData.payment ||
-            payment,
-
-        booking:
-            successfulBooking,
-
-        paymentId,
-
-        bookingId:
-            successfulBookingId,
-
-        paymentMethod:
-            "dummy",
-
-        // Preserve OTP information if backend
-        // returns it.
-        otp:
-            responseData.otp ||
-            successfulBooking.otp ||
-            null,
-
-        otpExpiresAt:
-            responseData.otpExpiresAt ||
-            successfulBooking.otpExpiresAt ||
-            null
-
-    };
 
 
     sessionStorage.setItem(
-        "otpVerificationData",
+        "paymentBookingData",
         JSON.stringify(
-            otpData
+            booking
         )
     );
 
 
-    sessionStorage.setItem(
-        "paymentSuccessData",
-        JSON.stringify(
-            otpData
-        )
-    );
-
-
-    sessionStorage.setItem(
-        "confirmedBookingId",
-        successfulBookingId
-    );
-
-
-    sessionStorage.setItem(
-        "paymentId",
-        paymentId
-    );
-
-
-    sessionStorage.setItem(
-        "paymentMethod",
-        "dummy"
-    );
-
-
     console.log(
-        "Dummy payment completed."
+        "SSLCommerz Gateway URL:",
+        gatewayPageURL
     );
 
-
-    console.log(
-        "Redirecting to OTP verification..."
-    );
-
-
-    // ==================================================
-    // GO TO OTP VERIFICATION
-    // ==================================================
 
     window.location.href =
-        `./otp-verification.html?bookingId=${encodeURIComponent(
-            successfulBookingId
-        )}&paymentId=${encodeURIComponent(
-            paymentId
-        )}`;
+        gatewayPageURL;
 
 };
 
 
 // ======================================================
-// HANDLE CONTINUE BUTTON
-// ======================================================
-//
-// MAIN FLOW:
-//
-// Continue
-//    ↓
-// Create Booking
-//    ↓
-// Free Event?
-//    │
-//    ├── YES → Success
-//    │
-//    └── NO
-//         ↓
-//      Create Dummy Payment
-//         ↓
-//      Process Dummy Payment
-//         ↓
-//      OTP Verification
-//         ↓
-//      Success
-//
+// HANDLE CONTINUE (Pay Now button)
 // ======================================================
 
 const handleContinue = async () => {
@@ -1939,10 +1681,6 @@ const handleContinue = async () => {
             true;
 
 
-        // ------------------------------------------------
-        // Hide previous error
-        // ------------------------------------------------
-
         if (paymentError) {
 
             paymentError.classList.add(
@@ -1952,24 +1690,19 @@ const handleContinue = async () => {
         }
 
 
-        // ------------------------------------------------
-        // Button loading
-        // ------------------------------------------------
-
         if (confirmPaymentButton) {
 
             confirmPaymentButton.disabled =
                 true;
 
+
             confirmPaymentButton.textContent =
-                "Processing...";
+                isFreeEvent()
+                    ? "Confirming..."
+                    : "Connecting to Payment...";
 
         }
 
-
-        // ------------------------------------------------
-        // Processing message
-        // ------------------------------------------------
 
         if (bookingProcessingMessage) {
 
@@ -1980,90 +1713,25 @@ const handleContinue = async () => {
         }
 
 
-        // =================================================
-        // STEP 1
-        // CREATE BOOKING
-        // =================================================
-
-        console.log(
-            "========================================"
-        );
-
-        console.log(
-            "STEP 1: Creating booking..."
-        );
-
-        console.log(
-            "========================================"
-        );
-
-
         const booking =
             await createBooking();
 
-
-        // =================================================
-        // STEP 2
-        // FREE EVENT
-        // =================================================
 
         if (
             isFreeEvent()
         ) {
 
-            console.log(
-                "STEP 2: Free event."
-            );
-
-
             await processFreeBooking(
                 booking
             );
-
 
             return;
 
         }
 
 
-        // =================================================
-        // STEP 2
-        // PAID EVENT
-        // =================================================
-
-        console.log(
-            "STEP 2: Paid event."
-        );
-
-
-        // =================================================
-        // STEP 3
-        // CREATE DUMMY PAYMENT
-        // =================================================
-
-        console.log(
-            "STEP 3: Creating dummy payment..."
-        );
-
-
-        const payment =
-            await createPayment(
-                booking
-            );
-
-
-        // =================================================
-        // STEP 4
-        // PROCESS DUMMY PAYMENT
-        // =================================================
-
-        console.log(
-            "STEP 4: Processing dummy payment..."
-        );
-
-
-        await processDummyPayment(
-            payment
+        await createSSLCommerzPayment(
+            booking
         );
 
 
@@ -2081,17 +1749,16 @@ const handleContinue = async () => {
         );
 
 
-        // ------------------------------------------------
-        // Restore button
-        // ------------------------------------------------
-
         if (confirmPaymentButton) {
 
             confirmPaymentButton.disabled =
                 false;
 
+
             confirmPaymentButton.textContent =
-                "Continue to Payment";
+                isFreeEvent()
+                    ? "Confirm Free Booking"
+                    : "Continue to Payment";
 
         }
 
@@ -2103,7 +1770,6 @@ const handleContinue = async () => {
             );
 
         }
-
 
     } finally {
 
@@ -2143,10 +1809,6 @@ const handleRetry = () => {
 
 const setupEventListeners = () => {
 
-    // --------------------------------------------------
-    // Increase
-    // --------------------------------------------------
-
     if (increaseQuantity) {
 
         increaseQuantity.addEventListener(
@@ -2156,10 +1818,6 @@ const setupEventListeners = () => {
 
     }
 
-
-    // --------------------------------------------------
-    // Decrease
-    // --------------------------------------------------
 
     if (decreaseQuantity) {
 
@@ -2171,10 +1829,6 @@ const setupEventListeners = () => {
     }
 
 
-    // --------------------------------------------------
-    // CONTINUE TO PAYMENT
-    // --------------------------------------------------
-
     if (confirmPaymentButton) {
 
         confirmPaymentButton.addEventListener(
@@ -2185,10 +1839,6 @@ const setupEventListeners = () => {
     }
 
 
-    // --------------------------------------------------
-    // BACK
-    // --------------------------------------------------
-
     if (backButton) {
 
         backButton.addEventListener(
@@ -2198,10 +1848,6 @@ const setupEventListeners = () => {
 
     }
 
-
-    // --------------------------------------------------
-    // RETRY
-    // --------------------------------------------------
 
     if (retryButton) {
 
@@ -2232,15 +1878,11 @@ const initialize = async () => {
         );
 
         console.log(
-            "Dummy Payment Mode"
+            "SSLCommerz Sandbox Mode"
         );
 
         console.log(
-            "OTP Verification Enabled"
-        );
-
-        console.log(
-            "SSLCommerz Removed"
+            "Hosted Checkout Enabled"
         );
 
         console.log(
@@ -2248,36 +1890,18 @@ const initialize = async () => {
         );
 
 
-        // ------------------------------------------------
-        // Authentication
-        // ------------------------------------------------
-
         if (!getAuthToken()) {
 
-            throw new Error(
-                "You are not logged in. Please login first."
-            );
+            window.location.href =
+                "./user-login.html";
+
+            return;
 
         }
 
 
-        // ------------------------------------------------
-        // Setup event listeners
-        // ------------------------------------------------
-
         setupEventListeners();
 
-
-        // ------------------------------------------------
-        // Setup payment method
-        // ------------------------------------------------
-
-        setupPaymentMethod();
-
-
-        // ------------------------------------------------
-        // Load event
-        // ------------------------------------------------
 
         await loadEvent();
 
@@ -2307,6 +1931,11 @@ const initialize = async () => {
 
 // ======================================================
 // DOM READY
+// ======================================================
+//
+// The <script> tag is at the end of <body>.
+// At that point document.readyState is usually "complete",
+// so we must call initialize() immediately in that case.
 // ======================================================
 
 if (

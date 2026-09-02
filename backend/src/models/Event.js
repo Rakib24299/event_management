@@ -214,7 +214,7 @@ const eventSchema = new Schema(
 
         totalSeats: {
             type: Number,
-            required: [true, "Total seats are required"],
+            default: 100,
             min: 1,
         },
 
@@ -225,7 +225,7 @@ const eventSchema = new Schema(
 
         availableSeats: {
             type: Number,
-            required: [true, "Available seats are required"],
+            default: 100,
             min: 0,
         },
 

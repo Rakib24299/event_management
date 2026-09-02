@@ -86,117 +86,170 @@
         <!-- Hero Section -->
         <!-- ============================= -->
 
-        <section class="relative min-h-[420px] overflow-hidden bg-cover bg-center bg-no-repeat text-white" style="background-image: url('./assets/images/1.jpg');">
+        <section class="relative min-h-[520px] md:min-h-[580px] lg:min-h-[640px]">
 
-            <div class="absolute inset-0 bg-black/10" aria-hidden="true"></div>
+            <!-- Background Image -->
 
-            <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24 flex items-center justify-center lg:justify-start">
+            <div
+                class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                style="background-image: url('./assets/Images/1.jpg');"
+                aria-hidden="true"
+            ></div>
 
-                <div class="w-full max-w-2xl rounded-lg border border-white/30 bg-black/30 p-8 backdrop-blur-sm shadow-2xl sm:p-10">
+            <!-- Dark / Subtle Overlay -->
 
-                    <span class="inline-flex items-center rounded-full bg-[#31572c] px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white">
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20"
+                aria-hidden="true"
+            ></div>
 
-                        Discover & Experience
+            <!-- Hero Content -->
 
-                    </span>
+            <div class="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
 
-                    <h1
+                <div class="max-w-xl">
+
+                    <!-- Glass Content Card -->
+
+                    <div
                         class="
-                            mt-6
-                            text-4xl
-                            font-bold
-                            tracking-tight
-                            text-white
-                            sm:text-5xl
-                            lg:text-6xl
+                            rounded-2xl
+                            border
+                            border-white/10
+                            bg-black/30
+                            p-8
+                            shadow-2xl
+                            backdrop-blur-md
+                            sm:p-10
                         "
                     >
 
-                        Discover Events.<br>Create Memories.
+                        <!-- Hero Badge -->
 
-                    </h1>
-
-                    <p
-                        class="
-                            mt-6
-                            text-base
-                            leading-relaxed
-                            text-white/90
-                            sm:text-lg
-                        "
-                    >
-
-                        Find and book amazing events happening
-                        around you with EventEase. From concerts
-                        to conferences, we bring the best
-                        experiences to your fingertips.
-
-                    </p>
-
-                    <div class="mt-8 flex flex-wrap gap-4">
-
-                        <a
-                            href="./pages/user/user-login.html"
+                        <span
                             class="
                                 inline-flex
                                 items-center
-                                gap-2
-                                rounded-xl
-                                border
-                                border-white/30
-                                px-6
-                                py-3.5
-                                text-sm
+                                rounded-full
+                                bg-emerald-900/60
+                                px-4
+                                py-1.5
+                                text-xs
                                 font-bold
-                                text-white
-                                bg-[#31572c]
-                                transition
-                                hover:bg-white/10
-                            "   >
-
-                            Explore Events
-
-                            <svg
-                                class="h-4 w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                />
-
-                            </svg>
-
-                        </a>
-
-                        <a
-                            href="./pages/organizer/organizer-login.html"
-                            class="
-                                inline-flex
-                                items-center
-                                gap-2
-                                rounded-xl
-                                border
-                                border-white/30
-                                px-6
-                                py-3.5
-                                text-sm
-                                font-bold
-                                text-white
-                                bg-[#31572c]
-                                transition
-                                hover:bg-white/10
+                                uppercase
+                                tracking-wider
+                                text-emerald-100
                             "
                         >
 
-                            Create Event
+                            Discover & Experience
 
-                        </a>
+                        </span>
+
+                        <!-- Hero Heading -->
+
+                        <h1
+                            class="
+                                mt-6
+                                text-3xl
+                                font-bold
+                                tracking-tight
+                                text-white
+                                sm:text-4xl
+                                lg:text-5xl
+                            "
+                        >
+
+                            Discover Events.<br>Create Memories.
+
+                        </h1>
+
+                        <!-- Hero Description -->
+
+                        <p
+                            class="
+                                mt-6
+                                text-base
+                                leading-relaxed
+                                text-gray-200
+                                sm:text-lg
+                            "
+                        >
+
+                            Find and book amazing events happening
+                            around you with EventEase. From concerts
+                            to conferences, we bring the best
+                            experiences to your fingertips.
+
+                        </p>
+
+                        <!-- Hero Buttons -->
+
+                        <div class="mt-8 flex flex-wrap gap-4">
+
+                            <a
+                                href="#events"
+                                class="
+                                    inline-flex
+                                    items-center
+                                    gap-2
+                                    rounded-xl
+                                    bg-primary
+                                    px-6
+                                    py-3.5
+                                    text-sm
+                                    font-bold
+                                    text-white
+                                    transition
+                                    hover:bg-primaryDark
+                                    hover:shadow-lg
+                                "
+                            >
+
+                                Explore Events
+
+                                <svg
+                                    class="h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                    />
+
+                                </svg>
+
+                            </a>
+
+                            <a
+                                href="./pages/organizer/organizer-login.html"
+                                class="
+                                    inline-flex
+                                    items-center
+                                    gap-2
+                                    rounded-xl
+                                    border
+                                    border-white/30
+                                    px-6
+                                    py-3.5
+                                    text-sm
+                                    font-bold
+                                    text-white
+                                    transition
+                                    hover:bg-white/10
+                                "
+                            >
+
+                                Create Event
+
+                            </a>
+
+                        </div>
 
                     </div>
 

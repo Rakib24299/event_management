@@ -588,7 +588,7 @@ const renderNotifications =
                     transition hover:shadow-md
                     ${
                         isUnread
-                            ? "border-primary/20 bg-primaryLight/10"
+                            ? "border-gray-200 bg-gray-50"
                             : "border-gray-100"
                     }
                     `;
@@ -627,7 +627,11 @@ const renderNotifications =
                             >
 
                                 <h3
-                                    class="font-bold text-gray-900"
+                                    class="font-bold ${
+                                        isUnread
+                                            ? "text-gray-700"
+                                            : "text-gray-900"
+                                    }"
                                 >
                                     ${escapeHTML(
                                         notification.title ||
@@ -636,23 +640,15 @@ const renderNotifications =
                                 </h3>
 
 
-                                ${
-                                    isUnread
-                                        ? `
-                                            <span
-                                                class="rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white"
-                                            >
-                                                New
-                                            </span>
-                                          `
-                                        : ""
-                                }
-
                             </div>
 
 
                             <p
-                                class="mt-2 text-sm leading-6 text-gray-600"
+                                class="mt-2 text-sm leading-6 ${
+                                    isUnread
+                                        ? "text-gray-500"
+                                        : "text-gray-600"
+                                }"
                             >
                                 ${escapeHTML(
                                     notification.message ||
@@ -695,15 +691,6 @@ const renderNotifications =
                             class="flex shrink-0 flex-col gap-2"
                         >
 
-                            <button
-                                type="button"
-                                class="viewNotificationBtn rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50"
-                                data-id="${escapeHTML(id)}"
-                            >
-                                View
-                            </button>
-
-
                             ${
                                 isUnread
                                     ? `
@@ -712,20 +699,11 @@ const renderNotifications =
                                             class="markReadBtn rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white hover:bg-primaryDark"
                                             data-id="${escapeHTML(id)}"
                                         >
-                                            Read
+                                            Mark as Read
                                         </button>
                                       `
                                     : ""
                             }
-
-
-                            <button
-                                type="button"
-                                class="deleteNotificationBtn rounded-lg border border-red-100 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50"
-                                data-id="${escapeHTML(id)}"
-                            >
-                                Delete
-                            </button>
 
                         </div>
 
@@ -754,30 +732,6 @@ const renderNotifications =
 const attachNotificationListeners =
     () => {
 
-        const viewButtons =
-            document.querySelectorAll(
-                ".viewNotificationBtn"
-            );
-
-
-        viewButtons.forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        openNotification(
-                            button.dataset.id
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
         const readButtons =
             document.querySelectorAll(
                 ".markReadBtn"
@@ -792,30 +746,6 @@ const attachNotificationListeners =
                     () => {
 
                         markAsRead(
-                            button.dataset.id
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
-        const deleteButtons =
-            document.querySelectorAll(
-                ".deleteNotificationBtn"
-            );
-
-
-        deleteButtons.forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        deleteNotification(
                             button.dataset.id
                         );
 
@@ -947,8 +877,7 @@ const openNotification =
         ) {
 
             markAsRead(
-                id,
-                false
+                id
             );
 
         }
@@ -978,9 +907,54 @@ const closeModal = () => {
 // ========================================
 
 const markAsRead = async (
-    id,
-    reload = true
+    id
 ) => {
+
+    const notification =
+        allNotifications.find(
+            item =>
+                String(
+                    item._id ||
+                    item.id
+                ) === String(id)
+        );
+
+
+    if (
+        !notification ||
+        notification.isRead === true
+    ) {
+
+        return;
+
+    }
+
+
+    const button = Array.from(
+        document.querySelectorAll(
+            ".markReadBtn"
+        )
+    ).find(
+        btn =>
+            btn.dataset.id ===
+            String(id)
+    );
+
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.textContent =
+            "Marking...";
+
+        button.classList.add(
+            "opacity-75",
+            "cursor-not-allowed"
+        );
+
+    }
+
 
     try {
 
@@ -992,11 +966,79 @@ const markAsRead = async (
         );
 
 
-        if (reload) {
+        notification.isRead =
+            true;
 
-            await loadNotifications();
+
+        if (button) {
+
+            const card =
+                button.closest(
+                    ".group"
+                );
+
+
+            if (card) {
+
+                card.classList.remove(
+                    "border-gray-200",
+                    "bg-gray-50"
+                );
+
+                card.classList.add(
+                    "border-gray-100",
+                    "bg-white"
+                );
+
+            }
+
+
+            const titleEl =
+                card?.querySelector(
+                    "h3"
+                );
+
+
+            if (titleEl) {
+
+                titleEl.classList.remove(
+                    "text-gray-700"
+                );
+
+                titleEl.classList.add(
+                    "text-gray-900"
+                );
+
+            }
+
+
+            const messageEl =
+                card?.querySelector(
+                    "p.leading-6"
+                );
+
+
+            if (messageEl) {
+
+                messageEl.classList.remove(
+                    "text-gray-500"
+                );
+
+                messageEl.classList.add(
+                    "text-gray-600"
+                );
+
+            }
+
+
+            button.remove();
 
         }
+
+
+        updateStatistics(
+            allNotifications
+        );
 
     } catch (error) {
 
@@ -1004,6 +1046,23 @@ const markAsRead = async (
             "Mark notification read error:",
             error
         );
+
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Mark as Read";
+
+            button.classList.remove(
+                "opacity-75",
+                "cursor-not-allowed"
+            );
+
+        }
+
 
         alert(
             error.message ||
@@ -1043,56 +1102,6 @@ const markAllAsRead = async () => {
         alert(
             error.message ||
             "Failed to mark all notifications as read."
-        );
-
-    }
-
-};
-
-
-// ========================================
-// Delete Notification
-// ========================================
-
-const deleteNotification = async (
-    id
-) => {
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this notification?"
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    try {
-
-        await apiRequest(
-            `/notifications/${id}`,
-            {
-                method: "DELETE",
-            }
-        );
-
-
-        await loadNotifications();
-
-    } catch (error) {
-
-        console.error(
-            "Delete notification error:",
-            error
-        );
-
-        alert(
-            error.message ||
-            "Failed to delete notification."
         );
 
     }

@@ -861,13 +861,13 @@ const approveEvent = async (
     ],
 
     title:
-      "Event Approved",
+      "Event Activated",
 
     message:
-      `Your event "${event.title}" has been approved by the admin and is now published.`,
+      `Your event "${event.title}" has been activated by the admin and is now available to users.`,
 
     type:
-      "approval",
+      "event",
 
   });
 
@@ -1058,6 +1058,22 @@ const createEvent = async (
   } = data;
 
 
+  const finalTicketPrice =
+    eventType === "free"
+      ? 0
+      : ticketPrice;
+
+  const finalTotalSeats =
+    eventType === "free"
+      ? 100
+      : totalSeats;
+
+  const finalMaxTicketsPerUser =
+    eventType === "free"
+      ? 5
+      : maxTicketsPerUser || 5;
+
+
   // ======================================
   // Verify Category Exists
   // ======================================
@@ -1156,14 +1172,17 @@ const createEvent = async (
 
     eventType,
 
-    ticketPrice,
+    ticketPrice:
+      finalTicketPrice,
 
-    totalSeats,
+    totalSeats:
+      finalTotalSeats,
 
-    availableSeats: totalSeats,
+    availableSeats:
+      finalTotalSeats,
 
     maxTicketsPerUser:
-      maxTicketsPerUser || 5,
+      finalMaxTicketsPerUser,
 
     status: "draft",
 

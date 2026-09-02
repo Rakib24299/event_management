@@ -153,6 +153,12 @@ const statusInput =
     );
 
 
+const statusDisplay =
+    document.getElementById(
+        "statusDisplay"
+    );
+
+
 
 // ========================================
 // Show Error
@@ -540,8 +546,11 @@ async function loadEvent() {
             event.maxTicketsPerUser ?? 5;
 
 
-        statusInput.value =
-            event.status || "draft";
+        statusDisplay.textContent =
+            event.status
+                ? event.status.charAt(0).toUpperCase() +
+                  event.status.slice(1)
+                : "Draft";
 
 
         // ====================================
@@ -709,10 +718,6 @@ editEventForm.addEventListener(
             Number(
                 maxTicketsInput.value
             );
-
-
-        const status =
-            statusInput.value;
 
 
 
@@ -971,8 +976,6 @@ editEventForm.addEventListener(
                                 totalSeats,
 
                                 maxTicketsPerUser,
-
-                                status,
 
                             })
 

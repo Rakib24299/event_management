@@ -198,9 +198,77 @@ const getNotificationIcon = (
 
 
 
+        case "account":
+
+            return "👤";
+
+
+
         default:
 
             return "🔔";
+
+    }
+
+};
+
+
+
+// ========================================
+// Get Type Label
+// ========================================
+
+const getTypeLabel = (
+    type
+) => {
+
+    switch (type) {
+
+        case "booking":
+
+            return "Booking";
+
+
+
+        case "event":
+
+            return "Event";
+
+
+
+        case "refund":
+
+            return "Refund";
+
+
+
+        case "system":
+
+            return "System";
+
+
+
+        case "approval":
+
+            return "Approval";
+
+
+
+        case "account":
+
+            return "Account";
+
+
+
+        case "payment":
+
+            return "Payment";
+
+
+
+        default:
+
+            return "Notification";
 
     }
 
@@ -382,21 +450,33 @@ const renderNotifications = (
 
 
 
-                        <!-- Date -->
+                        <!-- Date and Type -->
 
-                        <p
-                            class="mt-3 text-xs ${
+                        <div
+                            class="mt-3 flex flex-wrap items-center gap-2 text-xs ${
                                 isRead
                                     ? "text-gray-400"
                                     : "text-gray-600"
                             }"
                         >
 
-                            ${formatDate(
-                                notification.createdAt
-                            )}
+                            <span
+                                class="rounded-full bg-gray-200 px-2 py-0.5 font-semibold text-gray-600"
+                            >
 
-                        </p>
+                                ${getTypeLabel(
+                                    notification.type
+                                )}
+
+                            </span>
+
+                            <span>
+                                ${formatDate(
+                                    notification.createdAt
+                                )}
+                            </span>
+
+                        </div>
 
 
 
@@ -596,6 +676,14 @@ const markNotificationAsRead =
 
 
 
+            if (typeof updateNotificationBadge === "function") {
+
+                await updateNotificationBadge();
+
+            }
+
+
+
         } catch (error) {
 
             console.error(
@@ -682,7 +770,7 @@ const markAllNotificationsAsRead =
 
 
             await apiRequest(
-                "/notifications/read-all",
+                "/notifications/mark-all-read",
                 {
                     method: "PATCH",
                 }
@@ -691,6 +779,14 @@ const markAllNotificationsAsRead =
 
 
             await loadNotifications();
+
+
+
+            if (typeof updateNotificationBadge === "function") {
+
+                await updateNotificationBadge();
+
+            }
 
 
 
@@ -721,6 +817,113 @@ const markAllNotificationsAsRead =
         }
 
     };
+
+
+
+// ========================================
+// Update Notification Badge
+// ========================================
+
+async function updateNotificationBadge() {
+
+    const badge =
+        document.getElementById(
+            "notificationBadge"
+        );
+
+
+    if (!badge) {
+        return;
+    }
+
+
+    const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
+
+
+    if (!token) {
+
+        badge.classList.add(
+            "hidden"
+        );
+
+        badge.textContent = "0";
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/v1/notifications/unread-count",
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`,
+
+                    },
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            response.ok &&
+            result.success &&
+            result.data
+        ) {
+
+            const count =
+                result.data.unreadCount ||
+                0;
+
+
+            badge.textContent = count;
+
+
+            if (count > 0) {
+
+                badge.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                badge.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        } else {
+
+            badge.classList.add(
+                "hidden"
+            );
+
+            badge.textContent = "0";
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Notification badge error:",
+            error
+        );
+
+    }
+
+}
 
 
 

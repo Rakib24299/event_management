@@ -42,6 +42,21 @@ const eventDate =
 const eventLocation =
     document.getElementById("eventLocation");
 
+const eventTime =
+    document.getElementById("eventTime");
+
+const eventEventType =
+    document.getElementById("eventEventType");
+
+const eventTicketPriceContainer =
+    document.getElementById("eventTicketPriceContainer");
+
+const eventTicketPrice =
+    document.getElementById("eventTicketPrice");
+
+const eventCategoryMeta =
+    document.getElementById("eventCategoryMeta");
+
 const eventDescription =
     document.getElementById("eventDescription");
 
@@ -265,6 +280,66 @@ function formatDate(dateValue) {
             day: "numeric"
         }
     );
+
+}
+
+
+// ========================================
+// Format Time
+// ========================================
+
+function formatTime(timeValue) {
+
+    if (
+        !timeValue
+    ) {
+
+        return null;
+
+    }
+
+
+    const timeString =
+        String(timeValue).trim();
+
+
+    const parts =
+        timeString.split(":");
+
+
+    const hours =
+        Number(parts[0]);
+
+    const minutes =
+        Number(parts[1]);
+
+
+    if (
+        Number.isNaN(hours) ||
+        Number.isNaN(minutes)
+    ) {
+
+        return timeString;
+
+    }
+
+
+    const period =
+        hours >= 12
+            ? "PM"
+            : "AM";
+
+    const displayHours =
+        hours % 12 || 12;
+
+    const displayMinutes =
+        String(minutes).padStart(
+            2,
+            "0"
+        );
+
+
+    return `${displayHours}:${displayMinutes} ${period}`;
 
 }
 
@@ -673,6 +748,106 @@ function displayEvent(event) {
             event.startDate ||
             event.startTime
         );
+
+
+    // ====================================
+    // Time
+    // ====================================
+
+    const timeValue =
+        event.startTime ||
+        event.time ||
+        event.endTime ||
+        null;
+
+
+    if (timeValue) {
+
+        eventTime.textContent =
+            formatTime(timeValue);
+
+    } else {
+
+        eventTime.textContent =
+            "Not available";
+
+    }
+
+
+    // ====================================
+    // Category (Meta)
+    // ====================================
+
+    const categoryName =
+        event.category?.name ||
+        event.category?.title ||
+        event.categoryName ||
+        null;
+
+
+    if (categoryName) {
+
+        eventCategoryMeta.textContent =
+            categoryName;
+
+    } else {
+
+        eventCategoryMeta.textContent =
+            "Not available";
+
+    }
+
+
+    // ====================================
+    // Event Type
+    // ====================================
+
+    const eventType =
+        event.eventType ||
+        "paid";
+
+
+    eventEventType.textContent =
+        eventType === "free"
+            ? "Free"
+            : "Paid";
+
+
+    // ====================================
+    // Ticket Price
+    // ====================================
+
+    const ticketPriceValue =
+        event.ticketPrice ??
+        event.price ??
+        event.registrationFee ??
+        0;
+
+
+    const numericPrice =
+        Number(ticketPriceValue);
+
+
+    if (
+        eventType === "free" ||
+        numericPrice === 0
+    ) {
+
+        eventTicketPriceContainer.classList.add(
+            "hidden"
+        );
+
+    } else {
+
+        eventTicketPriceContainer.classList.remove(
+            "hidden"
+        );
+
+
+        eventTicketPrice.textContent =
+            `৳${numericPrice.toLocaleString()}`;
+
+    }
 
 
     // ====================================
@@ -2362,7 +2537,25 @@ if (bookEventButton) {
 
 
             // ================================
-            // Go To Booking Success Page
+            // Authentication Check
+            // ================================
+
+            const token =
+                getToken();
+
+
+            if (!token) {
+
+                window.location.href =
+                    "./user-login.html";
+
+                return;
+
+            }
+
+
+            // ================================
+            // Go To Payment Page
             // ================================
 
             window.location.href =

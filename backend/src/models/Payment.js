@@ -2,12 +2,14 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
+
 // ======================================================
 // PAYMENT SCHEMA
 // ======================================================
 
 const paymentSchema = new Schema(
   {
+
     // ==================================================
     // USER
     // ==================================================
@@ -17,6 +19,7 @@ const paymentSchema = new Schema(
       ref: "User",
       required: [true, "User is required"],
     },
+
 
     // ==================================================
     // BOOKING
@@ -29,6 +32,7 @@ const paymentSchema = new Schema(
       unique: true,
     },
 
+
     // ==================================================
     // EVENT
     // ==================================================
@@ -38,6 +42,7 @@ const paymentSchema = new Schema(
       ref: "Event",
       required: [true, "Event is required"],
     },
+
 
     // ==================================================
     // ORGANIZER
@@ -49,6 +54,7 @@ const paymentSchema = new Schema(
       required: [true, "Organizer is required"],
     },
 
+
     // ==================================================
     // GROSS AMOUNT
     // ==================================================
@@ -58,6 +64,7 @@ const paymentSchema = new Schema(
       required: [true, "Gross amount is required"],
       min: 0,
     },
+
 
     // ==================================================
     // PLATFORM FEE
@@ -70,6 +77,7 @@ const paymentSchema = new Schema(
       default: 0,
     },
 
+
     // ==================================================
     // ORGANIZER AMOUNT
     // ==================================================
@@ -81,6 +89,7 @@ const paymentSchema = new Schema(
       default: 0,
     },
 
+
     // ==================================================
     // PAYMENT METHOD
     // ==================================================
@@ -90,11 +99,11 @@ const paymentSchema = new Schema(
 
       enum: [
         "sslcommerz",
-        "dummy",
       ],
 
-      default: "dummy",
+      default: "sslcommerz",
     },
+
 
     // ==================================================
     // TRANSACTION ID
@@ -102,11 +111,16 @@ const paymentSchema = new Schema(
 
     transactionId: {
       type: String,
+
       unique: true,
+
       sparse: true,
+
       trim: true,
+
       default: null,
     },
+
 
     // ==================================================
     // SSL SESSION KEY
@@ -114,9 +128,12 @@ const paymentSchema = new Schema(
 
     sessionKey: {
       type: String,
-      default: null,
+
       trim: true,
+
+      default: null,
     },
+
 
     // ==================================================
     // SSL VALIDATION ID
@@ -124,9 +141,12 @@ const paymentSchema = new Schema(
 
     validationId: {
       type: String,
-      default: null,
+
       trim: true,
+
+      default: null,
     },
+
 
     // ==================================================
     // PAYMENT STATUS
@@ -147,14 +167,17 @@ const paymentSchema = new Schema(
       default: "pending",
     },
 
+
     // ==================================================
     // PAID AT
     // ==================================================
 
     paidAt: {
       type: Date,
+
       default: null,
     },
+
 
     // ==================================================
     // REFUND AMOUNT
@@ -162,9 +185,12 @@ const paymentSchema = new Schema(
 
     refundAmount: {
       type: Number,
-      default: 0,
+
       min: 0,
+
+      default: 0,
     },
+
 
     // ==================================================
     // REFUND STATUS
@@ -183,14 +209,17 @@ const paymentSchema = new Schema(
       default: "none",
     },
 
+
     // ==================================================
     // REFUNDED AT
     // ==================================================
 
     refundedAt: {
       type: Date,
+
       default: null,
     },
+
 
     // ==================================================
     // GATEWAY RESPONSE
@@ -198,14 +227,17 @@ const paymentSchema = new Schema(
 
     gatewayResponse: {
       type: Schema.Types.Mixed,
+
       default: null,
     },
+
   },
 
   {
     timestamps: true,
   }
 );
+
 
 // ======================================================
 // MODEL
@@ -215,5 +247,6 @@ const Payment = mongoose.model(
   "Payment",
   paymentSchema
 );
+
 
 module.exports = Payment;

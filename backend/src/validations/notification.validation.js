@@ -47,6 +47,7 @@ const createNotificationSchema = z.object({
             "refund",
             "approval",
             "system",
+            "account",
           ],
           {
             errorMap: () => ({

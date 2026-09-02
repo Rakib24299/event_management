@@ -10,6 +10,9 @@
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
+const SOCKET_URL =
+    "http://localhost:5000";
+
 
 // ========================================
 // DOM Elements
@@ -51,10 +54,97 @@ const getToken = () => {
 
 
 // ========================================
+// Get User ID
+// ========================================
+
+const getUserId = () => {
+
+    const possibleKeys = [
+
+        "user",
+
+        "currentUser",
+
+        "userData",
+
+        "loggedInUser",
+
+        "userInfo",
+
+    ];
+
+
+    for (
+        const key of possibleKeys
+    ) {
+
+        const storedUser =
+            localStorage.getItem(
+                key
+            ) ||
+            sessionStorage.getItem(
+                key
+            );
+
+
+        if (!storedUser) {
+            continue;
+        }
+
+
+        try {
+
+            const parsedUser =
+                JSON.parse(
+                    storedUser
+                );
+
+
+            const userId =
+                parsedUser?._id ||
+                parsedUser?.id ||
+                parsedUser?.userId;
+
+
+            if (userId) {
+
+                return userId;
+
+            }
+
+        } catch (error) {
+
+            // Ignore invalid JSON
+
+        }
+
+    }
+
+
+    // --------------------------------------
+    // Direct user ID storage
+    // --------------------------------------
+
+    const directUserId =
+        localStorage.getItem(
+            "userId"
+        ) ||
+        sessionStorage.getItem(
+            "userId"
+        );
+
+
+    return directUserId || null;
+
+};
+
+
+// ========================================
 // Authentication Check
 // ========================================
 
-const token = getToken();
+const token =
+    getToken();
 
 
 if (!token) {
@@ -73,278 +163,314 @@ if (!token) {
 // API Request Helper
 // ========================================
 
-const apiRequest = async (
-    endpoint,
-    options = {}
-) => {
+const apiRequest =
+    async (
+        endpoint,
+        options = {}
+    ) => {
 
-    const response =
-        await fetch(
-            `${API_BASE_URL}${endpoint}`,
-            {
-                ...options,
+        const response =
+            await fetch(
+                `${API_BASE_URL}${endpoint}`,
+                {
 
-                headers: {
+                    ...options,
 
-                    "Content-Type":
-                        "application/json",
+                    headers: {
 
-                    Authorization:
-                        `Bearer ${token}`,
+                        "Content-Type":
+                            "application/json",
 
-                    ...(options.headers || {}),
+                        Authorization:
+                            `Bearer ${token}`,
 
-                },
+                        ...(options.headers || {}),
 
-            }
-        );
+                    },
 
-
-    const data =
-        await response.json();
+                }
+            );
 
 
-    if (!response.ok) {
-
-        throw new Error(
-            data.message ||
-            "Something went wrong."
-        );
-
-    }
+        const data =
+            await response.json();
 
 
-    return data;
+        if (!response.ok) {
 
-};
+            throw new Error(
+                data.message ||
+                "Something went wrong."
+            );
+
+        }
+
+
+        return data;
+
+    };
 
 
 // ========================================
 // Format Date
 // ========================================
 
-const formatDate = (
-    date
-) => {
+const formatDate =
+    (
+        date
+    ) => {
 
-    if (!date) {
-        return "";
-    }
+        if (!date) {
+
+            return "";
+
+        }
 
 
-    return new Date(date)
-        .toLocaleString(
-            "en-US",
-            {
-                dateStyle: "medium",
-                timeStyle: "short",
-            }
-        );
+        return new Date(date)
+            .toLocaleString(
+                "en-US",
+                {
 
-};
+                    dateStyle:
+                        "medium",
+
+                    timeStyle:
+                        "short",
+
+                }
+            );
+
+    };
 
 
 // ========================================
 // Get Notification Icon
 // ========================================
 
-const getNotificationIcon = (
-    type
-) => {
+const getNotificationIcon =
+    (
+        type
+    ) => {
 
-    switch (type) {
+        switch (type) {
 
-        case "booking":
+            case "booking":
 
-            return "🎟️";
-
-
-        case "refund":
-
-            return "💰";
+                return "🎟️";
 
 
-        case "event":
+            case "refund":
 
-            return "📅";
-
-
-        case "system":
-
-            return "⚙️";
+                return "💰";
 
 
-        default:
+            case "payment":
 
-            return "🔔";
+                return "💳";
 
-    }
 
-};
+            case "event":
+
+                return "📅";
+
+
+            case "approval":
+
+                return "✅";
+
+
+            case "account":
+
+                return "👤";
+
+
+            case "system":
+
+                return "⚙️";
+
+
+            default:
+
+                return "🔔";
+
+        }
+
+    };
 
 
 // ========================================
 // Render Notifications
 // ========================================
 
-const renderNotifications = (
-    notifications
-) => {
+const renderNotifications =
+    (
+        notifications
+    ) => {
 
-    notificationList.innerHTML = "";
-
-
-    loadingState.classList.add(
-        "hidden"
-    );
+        notificationList.innerHTML =
+            "";
 
 
-    if (
-        !notifications ||
-        notifications.length === 0
-    ) {
-
-        emptyState.classList.remove(
+        loadingState.classList.add(
             "hidden"
         );
 
-        return;
 
-    }
+        if (
+            !notifications ||
+            notifications.length === 0
+        ) {
 
+            emptyState.classList.remove(
+                "hidden"
+            );
 
-    emptyState.classList.add(
-        "hidden"
-    );
+            return;
 
-
-    notifications.forEach(
-        (notification) => {
-
-            const isRead =
-                notification.isRead === true;
+        }
 
 
-            const notificationCard =
-                document.createElement(
-                    "div"
-                );
+        emptyState.classList.add(
+            "hidden"
+        );
 
 
-           notificationCard.className = `notification-card rounded-3xl p-5 shadow-soft transition ${
-        isRead
-            ? "bg-gray-100"
-            : "bg-gray-400 text-white"
-    }`;
+        notifications.forEach(
+            (
+                notification
+            ) => {
+
+                const isRead =
+                    notification.isRead ===
+                    true;
 
 
-            notificationCard.innerHTML = `
-
-                <div class="flex items-start gap-4">
-
-                    <!-- Icon -->
-
-                    <div  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-                            isRead
-                                ? "bg-gray-100"
-                                : "bg-white"
-                        } text-xl"
-                    >
-                        ${getNotificationIcon(
-                            notification.type
-                        )}
-                    </div>
+                const notificationCard =
+                    document.createElement(
+                        "div"
+                    );
 
 
-                    <!-- Content -->
+                notificationCard.className =
+                    `notification-card rounded-3xl p-5 shadow-soft transition ${
+                        isRead
+                            ? "bg-gray-100"
+                            : "bg-gray-400 text-white"
+                    }`;
 
-                    <div class="min-w-0 flex-1">
+
+                notificationCard.innerHTML = `
+
+                    <div class="flex items-start gap-4">
+
+                        <!-- Icon -->
 
                         <div
-                            class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"
+                            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
+                                isRead
+                                    ? "bg-gray-100"
+                                    : "bg-white"
+                            } text-xl"
                         >
 
-                            <div>
+                            ${getNotificationIcon(
+                                notification.type
+                            )}
 
-                                <h3
-                                    class="font-bold text-gray-900"
-                                >
-                                    ${
-                                        notification.title ||
-                                        "Notification"
-                                    }
-                                </h3>
+                        </div>
 
-                                <p
-                                    class="mt-1 text-sm leading-6 text-gray-600"
-                                >
-                                    ${
-                                        notification.message ||
-                                        ""
-                                    }
-                                </p>
+
+                        <!-- Content -->
+
+                        <div class="min-w-0 flex-1">
+
+                            <div
+                                class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"
+                            >
+
+                                <div>
+
+                                    <h3
+                                        class="font-bold text-gray-900"
+                                    >
+                                        ${
+                                            notification.title ||
+                                            "Notification"
+                                        }
+                                    </h3>
+
+
+                                    <p
+                                        class="mt-1 text-sm leading-6 text-gray-600"
+                                    >
+                                        ${
+                                            notification.message ||
+                                            ""
+                                        }
+                                    </p>
+
+                                </div>
+
+
+                                ${
+                                    !isRead
+                                        ? `
+                                            <span
+                                                class="w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white"
+                                            >
+                                                New
+                                            </span>
+                                        `
+                                        : ""
+                                }
 
                             </div>
+
+
+                            <!-- Date -->
+
+                            <p
+                                class="mt-3 text-xs text-gray-400"
+                            >
+                                ${formatDate(
+                                    notification.createdAt
+                                )}
+                            </p>
 
 
                             ${
                                 !isRead
                                     ? `
-                                        <span
-                                            class="w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white"
+                                        <button
+                                            type="button"
+                                            class="mark-read-btn mt-3 text-sm font-semibold text-primary hover:text-primaryDark"
+                                            data-id="${notification._id}"
                                         >
-                                            New
-                                        </span>
+                                            Mark as read
+                                        </button>
                                     `
                                     : ""
                             }
 
                         </div>
 
-
-                        <!-- Date -->
-
-                        <p
-                            class="mt-3 text-xs text-gray-400"
-                        >
-                            ${formatDate(
-                                notification.createdAt
-                            )}
-                        </p>
-
-
-                        ${
-                            !isRead
-                                ? `
-                                    <button
-                                        type="button"
-                                        class="mark-read-btn mt-3 text-sm font-semibold text-primary hover:text-primaryDark"
-                                        data-id="${notification._id}"
-                                    >
-                                        Mark as read
-                                    </button>
-                                `
-                                : ""
-                        }
-
                     </div>
 
-                </div>
-
-            `;
+                `;
 
 
-            notificationList.appendChild(
-                notificationCard
-            );
+                notificationList.appendChild(
+                    notificationCard
+                );
 
-        }
-    );
+            }
+        );
 
 
-    attachMarkReadEvents();
+        attachMarkReadEvents();
 
-};
+    };
 
 
 // ========================================
@@ -359,6 +485,7 @@ const loadNotifications =
             loadingState.classList.remove(
                 "hidden"
             );
+
 
             emptyState.classList.add(
                 "hidden"
@@ -380,7 +507,9 @@ const loadNotifications =
             );
 
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
                 "Notification loading error:",
@@ -405,11 +534,13 @@ const loadNotifications =
                         ⚠️
                     </div>
 
+
                     <h3
                         class="mt-4 font-bold text-gray-900"
                     >
                         Failed to Load Notifications
                     </h3>
+
 
                     <p
                         class="mt-2 text-sm text-gray-500"
@@ -419,6 +550,7 @@ const loadNotifications =
                             "Please try again later."
                         }
                     </p>
+
 
                     <button
                         id="retryBtn"
@@ -467,7 +599,10 @@ const markNotificationAsRead =
             await apiRequest(
                 `/notifications/${notificationId}/read`,
                 {
-                    method: "PATCH",
+
+                    method:
+                        "PATCH",
+
                 }
             );
 
@@ -475,14 +610,19 @@ const markNotificationAsRead =
             await loadNotifications();
 
 
-            if (typeof updateNotificationBadge === "function") {
+            if (
+                typeof updateNotificationBadge ===
+                "function"
+            ) {
 
                 await updateNotificationBadge();
 
             }
 
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
                 "Mark notification error:",
@@ -514,7 +654,9 @@ const attachMarkReadEvents =
 
 
         buttons.forEach(
-            (button) => {
+            (
+                button
+            ) => {
 
                 button.addEventListener(
                     "click",
@@ -561,9 +703,12 @@ const markAllNotificationsAsRead =
 
 
             await apiRequest(
-                "/notifications/read-all",
+                "/notifications/mark-all-read",
                 {
-                    method: "PATCH",
+
+                    method:
+                        "PATCH",
+
                 }
             );
 
@@ -571,14 +716,19 @@ const markAllNotificationsAsRead =
             await loadNotifications();
 
 
-            if (typeof updateNotificationBadge === "function") {
+            if (
+                typeof updateNotificationBadge ===
+                "function"
+            ) {
 
                 await updateNotificationBadge();
 
             }
 
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
                 "Mark all read error:",
@@ -609,7 +759,9 @@ const markAllNotificationsAsRead =
 // Mark All Read Button
 // ========================================
 
-if (markAllReadBtn) {
+if (
+    markAllReadBtn
+) {
 
     markAllReadBtn.addEventListener(
         "click",
@@ -617,6 +769,250 @@ if (markAllReadBtn) {
     );
 
 }
+
+
+// ========================================
+// SOCKET.IO CONNECTION
+// ========================================
+
+const connectNotificationSocket =
+    () => {
+
+        if (
+            typeof io !==
+            "function"
+        ) {
+
+            console.error(
+                "❌ Socket.IO client is not loaded."
+            );
+
+            return;
+
+        }
+
+
+        const userId =
+            getUserId();
+
+
+        if (!userId) {
+
+            console.warn(
+                "⚠️ User ID not found. Socket room cannot be joined."
+            );
+
+            return;
+
+        }
+
+
+        const socket =
+            io(
+                SOCKET_URL,
+                {
+
+                    transports: [
+                        "websocket",
+                        "polling",
+                    ],
+
+                    reconnection:
+                        true,
+
+                    reconnectionAttempts:
+                        Infinity,
+
+                    reconnectionDelay:
+                        1000,
+
+                }
+            );
+
+
+        // --------------------------------------------
+        // SOCKET CONNECTED
+        // --------------------------------------------
+
+        socket.on(
+            "connect",
+            () => {
+
+                console.log(
+                    `🔌 Notification Socket connected: ${socket.id}`
+                );
+
+
+                socket.emit(
+                    "joinUserRoom",
+                    userId
+                );
+
+
+                console.log(
+                    `👤 Joined notification room: user_${userId}`
+                );
+
+            }
+        );
+
+
+        // --------------------------------------------
+        // NEW NOTIFICATION
+        // --------------------------------------------
+
+        socket.on(
+            "newNotification",
+            (
+                notification
+            ) => {
+
+                console.log(
+                    "🔔 New real-time notification:",
+                    notification
+                );
+
+
+                // ----------------------------------------
+                // Ignore notification for another user
+                // ----------------------------------------
+
+                if (
+                    notification?.user &&
+                    notification.user.toString() !==
+                        userId.toString()
+                ) {
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------
+                // Reload notification list
+                // ----------------------------------------
+
+                loadNotifications();
+
+
+                // ----------------------------------------
+                // Update notification badge
+                // ----------------------------------------
+
+                if (
+                    typeof updateNotificationBadge ===
+                    "function"
+                ) {
+
+                    updateNotificationBadge();
+
+                }
+
+
+                // ----------------------------------------
+                // Browser notification
+                // ----------------------------------------
+
+                if (
+                    "Notification" in window
+                ) {
+
+                    if (
+                        Notification.permission ===
+                        "granted"
+                    ) {
+
+                        new Notification(
+                            notification.title ||
+                            "New Notification",
+                            {
+
+                                body:
+                                    notification.message ||
+                                    "You have a new notification.",
+
+                            }
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        // --------------------------------------------
+        // SOCKET ERROR
+        // --------------------------------------------
+
+        socket.on(
+            "connect_error",
+            (
+                error
+            ) => {
+
+                console.error(
+                    "❌ Notification Socket connection error:",
+                    error.message
+                );
+
+            }
+        );
+
+
+        // --------------------------------------------
+        // SOCKET DISCONNECTED
+        // --------------------------------------------
+
+        socket.on(
+            "disconnect",
+            (
+                reason
+            ) => {
+
+                console.log(
+                    "🔌 Notification Socket disconnected:",
+                    reason
+                );
+
+            }
+        );
+
+
+        // --------------------------------------------
+        // Request Browser Notification Permission
+        // --------------------------------------------
+
+        if (
+            "Notification" in window &&
+            Notification.permission ===
+                "default"
+        ) {
+
+            Notification.requestPermission()
+                .catch(
+                    () => {}
+                );
+
+        }
+
+
+        // --------------------------------------------
+        // Make socket accessible if needed
+        // --------------------------------------------
+
+        window.eventEaseNotificationSocket =
+            socket;
+
+    };
+
+
+// ========================================
+// Start Socket Connection
+// ========================================
+
+connectNotificationSocket();
 
 
 // ========================================

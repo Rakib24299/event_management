@@ -100,6 +100,51 @@ function formatDate(dateValue) {
 
 
 // ========================================
+// Format Location
+// ========================================
+
+function formatLocation(value) {
+
+    if (!value) {
+        return null;
+    }
+
+    if (typeof value === "string") {
+        return value;
+    }
+
+    if (typeof value === "object") {
+        return (
+            value.name ||
+            value.address ||
+            value.venueName ||
+            [value.street, value.city, value.country].filter(Boolean).join(", ") ||
+            null
+        );
+    }
+
+    return null;
+
+}
+
+
+// ========================================
+// Get Event Location
+// ========================================
+
+function getEventLocation(event) {
+
+    return (
+        formatLocation(event.location) ||
+        formatLocation(event.venue) ||
+        formatLocation(event.address) ||
+        "Location not available"
+    );
+
+}
+
+
+// ========================================
 // Format Price
 // ========================================
 
@@ -286,9 +331,7 @@ function displayEvents(events) {
 
 
         const location =
-            event.location ||
-            event.venue ||
-            "Location not available";
+            getEventLocation(event);
 
 
         const price =

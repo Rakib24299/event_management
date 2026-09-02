@@ -23,7 +23,7 @@ const createPayment =
       success: true,
 
       message:
-        "Payment created successfully.",
+        "Payment session created successfully.",
 
       data:
         result,
@@ -34,30 +34,156 @@ const createPayment =
 
 
 // ======================================================
-// PROCESS DUMMY PAYMENT
+// SSL PAYMENT SUCCESS
 // ======================================================
 //
-// Payment pending
+// SSLCommerz:
+// Hosted Checkout
 //      ↓
-// Payment paid
+// Success URL
 //      ↓
-// OTP generated
+// Validate Payment
 //      ↓
-// OTP sent through Brevo
+// Payment = Paid
+//      ↓
+// OTP Generate
+//
 // ======================================================
 
-const processDummyPayment =
+const sslPaymentSuccess =
   catchAsync(async (req, res) => {
 
     const result =
-      await paymentService.processDummyPayment(
-
-        req.params.id,
-
-        req.user.id,
-
+      await paymentService.finalizeSSLPayment(
         req.body
+      );
 
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "http://127.0.0.1:5500";
+
+    const bookingId =
+      result.booking?._id;
+
+    const paymentId =
+      result.payment?._id;
+
+    if (
+        result.booking?.isOtpVerified &&
+        result.booking?.bookingStatus ===
+          "confirmed"
+    ) {
+
+      return res.redirect(
+        `${frontendUrl}/frontend/pages/user/payment-success.html`
+      );
+
+    }
+
+
+    if (bookingId && paymentId) {
+
+      const otpPage =
+        `${frontendUrl}/frontend/pages/user/otp-verification.html?bookingId=${encodeURIComponent(bookingId)}&paymentId=${encodeURIComponent(paymentId)}`;
+
+      return res.redirect(
+        otpPage
+      );
+
+    }
+
+
+    return res.redirect(
+      `${frontendUrl}/frontend/pages/user/otp-verification.html`
+    );
+
+  });
+
+
+// ======================================================
+// SSL PAYMENT FAILED
+// ======================================================
+
+const sslPaymentFail =
+  catchAsync(async (req, res) => {
+
+    const result =
+      await paymentService.handleSSLFail(
+        req.body
+      );
+
+    return res.status(200).json({
+
+      success: false,
+
+      message:
+        "SSLCommerz payment failed.",
+
+      data: {
+
+        payment:
+          result,
+
+      },
+
+    });
+
+  });
+
+
+// ======================================================
+// SSL PAYMENT CANCELLED
+// ======================================================
+
+const sslPaymentCancel =
+  catchAsync(async (req, res) => {
+
+    const result =
+      await paymentService.handleSSLCancel(
+        req.body
+      );
+
+    return res.status(200).json({
+
+      success: false,
+
+      message:
+        "SSLCommerz payment was cancelled.",
+
+      data: {
+
+        payment:
+          result,
+
+      },
+
+    });
+
+  });
+
+
+// ======================================================
+// SSL IPN
+// ======================================================
+//
+// SSLCommerz IPN
+//      ↓
+// Receive Gateway Data
+//      ↓
+// Validate Payment
+//      ↓
+// Update Payment
+//      ↓
+// Generate OTP
+//
+// ======================================================
+
+const sslPaymentIPN =
+  catchAsync(async (req, res) => {
+
+    const result =
+      await paymentService.handleSSLIPN(
+        req.body
       );
 
     return res.status(200).json({
@@ -65,23 +191,10 @@ const processDummyPayment =
       success: true,
 
       message:
-        result.message,
+        "SSLCommerz IPN processed successfully.",
 
-      data: {
-
-        payment:
-          result.payment,
-
-        booking:
-          result.booking,
-
-        otp:
-          result.otp,
-
-        otpExpiresAt:
-          result.otpExpiresAt,
-
-      },
+      data:
+        result,
 
     });
 
@@ -151,7 +264,7 @@ const getPaymentByBooking =
 
 
 // ======================================================
-// USER REFUND
+// USER REFUND REQUEST
 // ======================================================
 
 const processRefund =
@@ -197,7 +310,9 @@ const getOrganizerPayments =
 
     const result =
       await paymentService.getOrganizerPayments(
+
         req.user.id
+
       );
 
     return res.status(200).json({
@@ -341,7 +456,13 @@ module.exports = {
 
   createPayment,
 
-  processDummyPayment,
+  sslPaymentSuccess,
+
+  sslPaymentFail,
+
+  sslPaymentCancel,
+
+  sslPaymentIPN,
 
   getPaymentById,
 

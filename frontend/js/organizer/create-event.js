@@ -433,8 +433,18 @@ if (
 
 if (
     eventTypeInput &&
-    ticketPriceInput
+    ticketPriceInput &&
+    totalSeatsInput &&
+    maxTicketsInput
 ) {
+
+    const ticketFields =
+        [
+            ticketPriceInput,
+            totalSeatsInput,
+            maxTicketsInput
+        ];
+
 
     eventTypeInput.addEventListener(
         "change",
@@ -448,13 +458,40 @@ if (
                 ticketPriceInput.value =
                     "0";
 
-                ticketPriceInput.disabled =
-                    true;
+                totalSeatsInput.value =
+                    "";
+
+                maxTicketsInput.value =
+                    "";
+
+                ticketFields.forEach(
+                    (field) => {
+
+                        field.disabled =
+                            true;
+
+                        field.removeAttribute(
+                            "required"
+                        );
+
+                    }
+                );
 
             } else {
 
-                ticketPriceInput.disabled =
-                    false;
+                ticketFields.forEach(
+                    (field) => {
+
+                        field.disabled =
+                            false;
+
+                        field.setAttribute(
+                            "required",
+                            "required"
+                        );
+
+                    }
+                );
 
             }
 
@@ -470,8 +507,18 @@ if (
 
 if (
     eventTypeInput &&
-    ticketPriceInput
+    ticketPriceInput &&
+    totalSeatsInput &&
+    maxTicketsInput
 ) {
+
+    const ticketFields =
+        [
+            ticketPriceInput,
+            totalSeatsInput,
+            maxTicketsInput
+        ];
+
 
     if (
         eventTypeInput.value ===
@@ -481,8 +528,40 @@ if (
         ticketPriceInput.value =
             "0";
 
-        ticketPriceInput.disabled =
-            true;
+        totalSeatsInput.value =
+            "";
+
+        maxTicketsInput.value =
+            "";
+
+        ticketFields.forEach(
+            (field) => {
+
+                field.disabled =
+                    true;
+
+                field.removeAttribute(
+                    "required"
+                );
+
+            }
+        );
+
+    } else {
+
+        ticketFields.forEach(
+            (field) => {
+
+                field.disabled =
+                    false;
+
+                field.setAttribute(
+                    "required",
+                    "required"
+                );
+
+            }
+        );
 
     }
 
@@ -731,97 +810,84 @@ function validateForm() {
     // Ticket Validation
     // ====================================
 
-    if (
-        eventType === "free" &&
-        ticketPrice !== 0
-    ) {
+    if (eventType !== "free") {
 
-        showError(
-            "Free events must have a ticket price of 0."
-        );
+        if (
+            ticketPrice <= 0
+        ) {
 
-        ticketPriceInput.focus();
+            showError(
+                "Paid events must have a ticket price greater than 0."
+            );
 
-        return false;
+            ticketPriceInput.focus();
 
-    }
+            return false;
 
-
-    if (
-        eventType === "paid" &&
-        ticketPrice <= 0
-    ) {
-
-        showError(
-            "Paid events must have a ticket price greater than 0."
-        );
-
-        ticketPriceInput.focus();
-
-        return false;
-
-    }
+        }
 
 
-    if (
-        !totalSeats ||
-        totalSeats < 1
-    ) {
+        if (
+            !totalSeats ||
+            totalSeats < 1
+        ) {
 
-        showError(
-            "Total seats must be at least 1."
-        );
+            showError(
+                "Total seats must be at least 1."
+            );
 
-        totalSeatsInput.focus();
+            totalSeatsInput.focus();
 
-        return false;
+            return false;
 
-    }
-
-
-    if (
-        !maxTickets ||
-        maxTickets < 1
-    ) {
-
-        showError(
-            "Maximum tickets per user must be at least 1."
-        );
-
-        maxTicketsInput.focus();
-
-        return false;
-
-    }
+        }
 
 
-    if (
-        maxTickets >
-        totalSeats
-    ) {
+        if (
+            !maxTickets ||
+            maxTickets < 1
+        ) {
 
-        showError(
-            "Maximum tickets per user cannot exceed total seats."
-        );
+            showError(
+                "Maximum tickets per user must be at least 1."
+            );
 
-        maxTicketsInput.focus();
+            maxTicketsInput.focus();
 
-        return false;
+            return false;
 
-    }
+        }
 
 
-    if (
-        maxTickets > 20
-    ) {
+        if (
+            maxTickets >
+            totalSeats
+        ) {
 
-        showError(
-            "Maximum tickets per user cannot exceed 20."
-        );
+            showError(
+                "Maximum tickets per user cannot exceed total seats."
+            );
 
-        maxTicketsInput.focus();
+            maxTicketsInput.focus();
 
-        return false;
+            return false;
+
+        }
+
+
+        if (
+            maxTickets > 20
+        ) {
+
+            showError(
+                "Maximum tickets per user cannot exceed 20."
+            );
+
+            maxTicketsInput.focus();
+
+            return false;
+
+        }
 
     }
 
@@ -1150,11 +1216,17 @@ if (createEventForm) {
 
                     eventType,
 
-                    ticketPrice,
+                    ...(eventType === "paid"
+                        ? {
 
-                    totalSeats,
+                            ticketPrice,
 
-                    maxTicketsPerUser
+                            totalSeats,
+
+                            maxTicketsPerUser
+
+                        }
+                        : {}),
 
                 };
 

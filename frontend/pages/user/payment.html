@@ -10,14 +10,21 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Payment | EventEase</title>
+    <title>
+        EventEase | Payment
+    </title>
 
 
-    <!-- ======================================================
+    <!-- ==================================================
          TAILWIND CSS
-    ======================================================= -->
+    =================================================== -->
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- ==================================================
+         TAILWIND CONFIG
+    =================================================== -->
 
     <script>
 
@@ -29,458 +36,617 @@
 
                     colors: {
 
-                        primary: "#2F6B3F",
+                        primary: "#31572c",
 
-                        primaryDark: "#245331",
+                        primaryDark: "#244522",
 
-                        primaryLight: "#EAF4EC"
+                        primaryLight: "#4f772d",
 
-                    }
+                        softGreen: "#f1f7ef"
 
-                }
+                    },
 
-            }
+                },
+
+            },
 
         };
 
     </script>
 
+
+    <!-- ==================================================
+         CUSTOM STYLE
+    =================================================== -->
+
+    <style>
+
+        body {
+            background: #f8fafc;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .payment-card {
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+
 </head>
 
 
-<body class="min-h-screen bg-gray-50 text-gray-900">
+<body class="min-h-screen text-gray-900">
 
 
-    <!-- ======================================================
-         HEADER
-    ======================================================= -->
-
-    <div id="user-header"></div>
+<!-- ======================================================
+     HEADER
+======================================================= -->
 
 
 
-    <!-- ======================================================
-         MAIN
-    ======================================================= -->
+    <header class="border-b bg-white">
 
-    <main
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-bold text-primary"
+            >
+                <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <a
+                href="./organizer-profile.html"
+                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+            >
+                My Account
+            </a>
+            
+        </div>
+
+    </header>
+
+
+<!-- ======================================================
+     MAIN
+======================================================= -->
+
+<main
+    class="
+        mx-auto
+        max-w-7xl
+        px-4
+        py-8
+        sm:px-6
+        lg:px-8
+    "
+>
+
+
+    <!-- ==================================================
+         PAGE HEADER
+    =================================================== -->
+
+    <div class="mb-8">
+
+        <p
+            class="
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wider
+                text-primary
+            "
+        >
+            Event Booking
+        </p>
+
+
+        <h1
+            class="
+                mt-2
+                text-3xl
+                font-extrabold
+                tracking-tight
+                text-gray-900
+                sm:text-4xl
+            "
+        >
+            Complete Your Booking
+        </h1>
+
+
+        <p
+            class="
+                mt-2
+                max-w-2xl
+                text-sm
+                leading-6
+                text-gray-500
+                sm:text-base
+            "
+        >
+            Review your event details, select your tickets,
+            and complete the booking securely.
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         LOADING
+    =================================================== -->
+
+    <section
+        id="paymentLoading"
         class="
-            mx-auto
-            max-w-6xl
-            px-5
-            py-8
-            lg:px-8
-            lg:py-12
+            rounded-2xl
+            border
+            border-gray-200
+            bg-white
+            p-10
+            text-center
+            shadow-sm
         "
     >
 
-
-        <!-- ==================================================
-             PAGE HEADING
-        =================================================== -->
-
-        <div class="mb-8">
-
-            <p
-                class="
-                    text-sm
-                    font-semibold
-                    text-primary
-                "
-            >
-                EVENT BOOKING
-            </p>
-
-
-            <h1
-                class="
-                    mt-1
-                    text-3xl
-                    font-extrabold
-                    tracking-tight
-                    text-gray-900
-                "
-            >
-                Complete Your Booking
-            </h1>
-
-
-            <p
-                class="
-                    mt-2
-                    text-sm
-                    text-gray-500
-                "
-            >
-                Select your tickets and complete your booking.
-            </p>
-
-        </div>
-
-
-
-        <!-- ==================================================
-             LOADING
-        =================================================== -->
-
         <div
-            id="paymentLoading"
             class="
-                rounded-2xl
-                border
-                border-gray-100
-                bg-white
-                p-12
-                text-center
-                shadow-sm
+                mx-auto
+                h-10
+                w-10
+                animate-spin
+                rounded-full
+                border-4
+                border-gray-200
+                border-t-primary
+            "
+        ></div>
+
+
+        <p
+            class="
+                mt-4
+                text-sm
+                font-medium
+                text-gray-600
             "
         >
+            Loading booking information...
+        </p>
+
+    </section>
+
+
+    <!-- ==================================================
+         ERROR
+    =================================================== -->
+
+    <section
+        id="paymentError"
+        class="
+            hidden
+            rounded-2xl
+            border
+            border-red-200
+            bg-red-50
+            p-6
+        "
+    >
+
+        <div class="flex gap-4">
 
             <div
                 class="
-                    mx-auto
+                    flex
                     h-10
                     w-10
-                    animate-spin
+                    shrink-0
+                    items-center
+                    justify-center
                     rounded-full
-                    border-4
-                    border-gray-200
-                    border-t-primary
-                "
-            ></div>
-
-
-            <p
-                class="
-                    mt-4
-                    text-sm
-                    text-gray-500
+                    bg-red-100
+                    text-red-600
                 "
             >
-                Loading event information...
-            </p>
-
-        </div>
-
-
-
-        <!-- ==================================================
-             ERROR
-        =================================================== -->
-
-        <div
-            id="paymentError"
-            class="
-                hidden
-                rounded-2xl
-                border
-                border-red-100
-                bg-red-50
-                p-8
-                text-center
-            "
-        >
-
-            <div class="text-4xl">
-                ⚠️
+                !
             </div>
 
 
-            <h2
-                class="
-                    mt-3
-                    text-lg
-                    font-bold
-                    text-gray-900
-                "
-            >
-                Unable to continue
-            </h2>
+            <div class="flex-1">
+
+                <h2
+                    class="
+                        font-bold
+                        text-red-800
+                    "
+                >
+                    Something went wrong
+                </h2>
 
 
-            <p
-                id="paymentErrorMessage"
-                class="
-                    mx-auto
-                    mt-2
-                    max-w-md
-                    text-sm
-                    leading-6
-                    text-gray-600
-                "
-            >
-                Something went wrong.
-            </p>
+                <p
+                    id="paymentErrorMessage"
+                    class="
+                        mt-1
+                        text-sm
+                        leading-6
+                        text-red-700
+                    "
+                >
+                    Unable to load payment information.
+                </p>
 
-
-            <div
-                class="
-                    mt-5
-                    flex
-                    flex-wrap
-                    justify-center
-                    gap-3
-                "
-            >
 
                 <button
                     id="retryButton"
                     type="button"
                     class="
+                        mt-4
                         rounded-xl
-                        bg-primary
-                        px-5
-                        py-3
+                        bg-red-600
+                        px-4
+                        py-2
                         text-sm
                         font-semibold
                         text-white
                         transition
-                        hover:bg-primaryDark
+                        hover:bg-red-700
                     "
                 >
                     Try Again
                 </button>
 
-
-                <a
-                    href="./events.html"
-                    class="
-                        rounded-xl
-                        border
-                        border-gray-200
-                        bg-white
-                        px-5
-                        py-3
-                        text-sm
-                        font-semibold
-                        text-gray-700
-                        transition
-                        hover:bg-gray-50
-                    "
-                >
-                    Back to Events
-                </a>
-
             </div>
 
         </div>
 
+    </section>
 
 
-        <!-- ==================================================
-             PAYMENT CONTENT
-        =================================================== -->
+    <!-- ==================================================
+         PAYMENT CONTENT
+    =================================================== -->
+
+    <div
+        id="paymentContent"
+        class="hidden"
+    >
+
+
+        <!-- =================================================
+             GRID
+        ================================================== -->
 
         <div
-            id="paymentContent"
-            class="hidden"
+            class="
+                grid
+                gap-6
+                lg:grid-cols-3
+            "
         >
+
+
+            <!-- =============================================
+                 LEFT SIDE
+            ============================================== -->
 
             <div
                 class="
-                    grid
-                    gap-6
-                    lg:grid-cols-3
+                    space-y-6
+                    lg:col-span-2
                 "
             >
 
 
-                <!-- ==========================================
-                     LEFT SIDE
-                =========================================== -->
+                <!-- =========================================
+                     EVENT CARD
+                ========================================== -->
 
-                <div
+                <section
                     class="
-                        space-y-6
-                        lg:col-span-2
-                "
+                        overflow-hidden
+                        rounded-2xl
+                        border
+                        border-gray-100
+                        bg-white
+                        shadow-sm
+                    "
                 >
 
+                    <!-- Event Image -->
 
-                    <!-- ======================================
-                         EVENT INFORMATION
-                    ======================================= -->
-
-                    <section
+                    <div
                         class="
+                            relative
+                            h-64
                             overflow-hidden
-                            rounded-2xl
-                            border
-                            border-gray-100
-                            bg-white
-                            shadow-sm
+                            bg-gray-100
+                            sm:h-80
                         "
                     >
 
-                        <div
+                        <img
+                            id="eventImage"
+                            src="https://via.placeholder.com/1200x700?text=Event"
+                            alt="Event"
                             class="
-                                flex
-                                flex-col
-                                sm:flex-row
+                                h-full
+                                w-full
+                                object-cover
                             "
                         >
 
 
-                            <!-- Event Image -->
+                        <!-- Event Type -->
+
+                        <div
+                            class="
+                                absolute
+                                right-4
+                                top-4
+                            "
+                        >
+
+                            <span
+                                id="eventTypeBadge"
+                                class="
+                                    rounded-full
+                                    bg-white
+                                    px-3
+                                    py-1.5
+                                    text-xs
+                                    font-bold
+                                    text-primary
+                                    shadow
+                                "
+                            >
+                                PAID EVENT
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Event Info -->
+
+                    <div class="p-6">
+
+                        <!-- Category -->
+
+                        <p
+                            id="eventCategory"
+                            class="
+                                text-xs
+                                font-bold
+                                uppercase
+                                tracking-wider
+                                text-primary
+                            "
+                        >
+                            Event
+                        </p>
+
+
+                        <!-- Title -->
+
+                        <h2
+                            id="eventTitle"
+                            class="
+                                mt-2
+                                text-2xl
+                                font-extrabold
+                                text-gray-900
+                                sm:text-3xl
+                            "
+                        >
+                            Loading event...
+                        </h2>
+
+
+                        <!-- Event Meta -->
+
+                        <div
+                            class="
+                                mt-5
+                                grid
+                                gap-3
+                                sm:grid-cols-2
+                            "
+                        >
+
+                            <!-- Date -->
 
                             <div
                                 class="
-                                    h-56
-                                    w-full
-                                    shrink-0
-                                    overflow-hidden
-                                    bg-gray-100
-                                    sm:h-auto
-                                    sm:w-64
+                                    rounded-xl
+                                    bg-gray-50
+                                    p-4
                                 "
                             >
 
-                                <img
-                                    id="eventImage"
-                                    src=""
-                                    alt="Event"
+                                <p
                                     class="
-                                        h-full
-                                        w-full
-                                        object-cover
+                                        text-xs
+                                        font-semibold
+                                        uppercase
+                                        tracking-wide
+                                        text-gray-400
                                     "
                                 >
+                                    Date
+                                </p>
+
+
+                                <p
+                                    id="eventDate"
+                                    class="
+                                        mt-1
+                                        text-sm
+                                        font-bold
+                                        text-gray-800
+                                    "
+                                >
+                                    -
+                                </p>
 
                             </div>
 
 
-                            <!-- Event Details -->
+                            <!-- Location -->
 
-                            <div class="p-6">
+                            <div
+                                class="
+                                    rounded-xl
+                                    bg-gray-50
+                                    p-4
+                                "
+                            >
 
-                                <span
-                                    id="eventCategory"
+                                <p
                                     class="
-                                        inline-block
-                                        rounded-full
-                                        bg-primaryLight
-                                        px-3
-                                        py-1
                                         text-xs
                                         font-semibold
-                                        text-primary
+                                        uppercase
+                                        tracking-wide
+                                        text-gray-400
                                     "
                                 >
-                                    Event
-                                </span>
+                                    Location
+                                </p>
 
 
-                                <h2
-                                    id="eventTitle"
+                                <p
+                                    id="eventLocation"
                                     class="
-                                        mt-3
-                                        text-2xl
-                                        font-extrabold
-                                        text-gray-900
-                                    "
-                                >
-                                    Loading...
-                                </h2>
-
-
-                                <div
-                                    class="
-                                        mt-4
-                                        space-y-2
+                                        mt-1
                                         text-sm
-                                        text-gray-500
+                                        font-bold
+                                        text-gray-800
                                     "
                                 >
+                                    -
+                                </p>
 
-                                    <p>
-
-                                        📅
-
-                                        <span id="eventDate">
-                                            Loading...
-                                        </span>
-
-                                    </p>
+                            </div>
 
 
-                                    <p>
+                            <!-- Available Seats -->
 
-                                        📍
+                            <div
+                                class="
+                                    rounded-xl
+                                    bg-gray-50
+                                    p-4
+                                "
+                            >
 
-                                        <span id="eventLocation">
-                                            Loading...
-                                        </span>
-
-                                    </p>
-
-
-                                    <p>
-
-                                        🎟️
-
-                                        <span>
-                                            Available Seats:
-                                        </span>
-
-                                        <span
-                                            id="availableSeats"
-                                            class="
-                                                font-semibold
-                                                text-gray-700
-                                            "
-                                        >
-                                            -
-                                        </span>
-
-                                    </p>
-
-                                </div>
+                                <p
+                                    class="
+                                        text-xs
+                                        font-semibold
+                                        uppercase
+                                        tracking-wide
+                                        text-gray-400
+                                    "
+                                >
+                                    Available Seats
+                                </p>
 
 
-                                <!-- Event Type -->
+                                <p
+                                    id="availableSeats"
+                                    class="
+                                        mt-1
+                                        text-sm
+                                        font-bold
+                                        text-gray-800
+                                    "
+                                >
+                                    -
+                                </p>
 
-                                <div class="mt-4">
+                            </div>
 
-                                    <span
-                                        id="eventTypeBadge"
-                                        class="
-                                            inline-flex
-                                            rounded-full
-                                            bg-gray-100
-                                            px-3
-                                            py-1
-                                            text-xs
-                                            font-bold
-                                            text-gray-600
-                                        "
-                                    >
-                                        Loading...
-                                    </span>
 
-                                </div>
+                            <!-- Ticket Price -->
+
+                            <div
+                                class="
+                                    rounded-xl
+                                    bg-gray-50
+                                    p-4
+                                "
+                            >
+
+                                <p
+                                    class="
+                                        text-xs
+                                        font-semibold
+                                        uppercase
+                                        tracking-wide
+                                        text-gray-400
+                                    "
+                                >
+                                    Ticket Price
+                                </p>
+
+
+                                <p
+                                    id="ticketPrice"
+                                    class="
+                                        mt-1
+                                        text-sm
+                                        font-bold
+                                        text-gray-800
+                                    "
+                                >
+                                    ৳0
+                                </p>
 
                             </div>
 
                         </div>
 
-                    </section>
+                    </div>
+
+                </section>
 
 
+                <!-- =========================================
+                     TICKET QUANTITY
+                ========================================== -->
 
-                    <!-- ======================================
-                         TICKET QUANTITY
-                    ======================================= -->
+                <section
+                    class="
+                        rounded-2xl
+                        border
+                        border-gray-100
+                        bg-white
+                        p-6
+                        shadow-sm
+                    "
+                >
 
-                    <section
-                        class="
-                            rounded-2xl
-                            border
-                            border-gray-100
-                            bg-white
-                            p-6
-                            shadow-sm
-                        "
-                    >
+                    <div>
 
                         <h2
                             class="
@@ -500,434 +666,588 @@
                                 text-gray-500
                             "
                         >
-                            Choose how many tickets you want to book.
+                            Choose how many tickets you want
+                            to book.
                         </p>
 
-
-                        <div
-                            class="
-                                mt-6
-                                flex
-                                items-center
-                                justify-between
-                                rounded-xl
-                                border
-                                border-gray-200
-                                p-4
-                            "
-                        >
+                    </div>
 
 
-                            <!-- Ticket Information -->
+                    <!-- Quantity Control -->
 
-                            <div>
-
-                                <p
-                                    class="
-                                        font-semibold
-                                        text-gray-900
-                                    "
-                                >
-                                    Event Ticket
-                                </p>
-
-
-                                <p
-                                    class="
-                                        mt-1
-                                        text-sm
-                                        text-gray-500
-                                    "
-                                >
-                                    Price:
-
-                                    <span
-                                        id="ticketPrice"
-                                        class="
-                                            font-semibold
-                                            text-primary
-                                    "
-                                    >
-                                        ৳0
-                                    </span>
-
-                                </p>
-
-                            </div>
-
-
-                            <!-- Quantity Controls -->
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
-
-                                <button
-                                    id="decreaseQuantity"
-                                    type="button"
-                                    class="
-                                        flex
-                                        h-10
-                                        w-10
-                                        items-center
-                                        justify-center
-                                        rounded-xl
-                                        border
-                                        border-gray-200
-                                        text-lg
-                                        font-bold
-                                        text-gray-600
-                                        transition
-                                        hover:bg-gray-50
-                                    "
-                                >
-                                    −
-                                </button>
-
-
-                                <span
-                                    id="ticketQuantity"
-                                    class="
-                                        flex
-                                        min-w-[32px]
-                                        justify-center
-                                        text-lg
-                                        font-bold
-                                        text-gray-900
-                                    "
-                                >
-                                    1
-                                </span>
-
-
-                                <button
-                                    id="increaseQuantity"
-                                    type="button"
-                                    class="
-                                        flex
-                                        h-10
-                                        w-10
-                                        items-center
-                                        justify-center
-                                        rounded-xl
-                                        bg-primary
-                                        text-lg
-                                        font-bold
-                                        text-white
-                                        transition
-                                        hover:bg-primaryDark
-                                    "
-                                >
-                                    +
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <p
-                            id="quantityMessage"
-                            class="
-                                mt-3
-                                text-xs
-                                text-gray-400
-                            "
-                        ></p>
-
-                    </section>
-
-
-
-                    <!-- ======================================
-                         PAYMENT METHOD
-                    ======================================= -->
-
-                    <section
-                        id="paymentMethodSection"
+                    <div
                         class="
+                            mt-6
+                            flex
+                            items-center
+                            justify-between
                             rounded-2xl
                             border
-                            border-gray-100
-                            bg-white
-                            p-6
-                            shadow-sm
+                            border-gray-200
+                            bg-gray-50
+                            p-4
                         "
                     >
 
                         <div>
 
-                            <h2
+                            <p
                                 class="
-                                    text-lg
+                                    text-sm
                                     font-bold
                                     text-gray-900
                                 "
                             >
-                                Payment Method
-                            </h2>
+                                Number of Tickets
+                            </p>
+
+
+                            <p
+                                id="quantityMessage"
+                                class="
+                                    mt-1
+                                    text-xs
+                                    text-gray-500
+                                "
+                            >
+                                Maximum 10 ticket(s) per user.
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+
+                            <!-- Decrease -->
+
+                            <button
+                                id="decreaseQuantity"
+                                type="button"
+                                class="
+                                    flex
+                                    h-10
+                                    w-10
+                                    items-center
+                                    justify-center
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    text-lg
+                                    font-bold
+                                    text-gray-700
+                                    transition
+                                    hover:bg-gray-100
+                                "
+                                aria-label="Decrease ticket quantity"
+                            >
+                                −
+                            </button>
+
+
+                            <!-- Quantity -->
+
+                            <span
+                                id="ticketQuantity"
+                                class="
+                                    min-w-[32px]
+                                    text-center
+                                    text-lg
+                                    font-extrabold
+                                    text-gray-900
+                                "
+                            >
+                                1
+                            </span>
+
+
+                            <!-- Increase -->
+
+                            <button
+                                id="increaseQuantity"
+                                type="button"
+                                class="
+                                    flex
+                                    h-10
+                                    w-10
+                                    items-center
+                                    justify-center
+                                    rounded-xl
+                                    border
+                                    border-gray-200
+                                    bg-white
+                                    text-lg
+                                    font-bold
+                                    text-gray-700
+                                    transition
+                                    hover:bg-gray-100
+                                "
+                                aria-label="Increase ticket quantity"
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================================
+                     FREE EVENT MESSAGE
+                ========================================== -->
+
+                <section
+                    id="freeEventMessage"
+                    class="
+                        hidden
+                        rounded-2xl
+                        border
+                        border-green-200
+                        bg-green-50
+                        p-5
+                    "
+                >
+
+                    <div
+                        class="
+                            flex
+                            gap-4
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                h-10
+                                w-10
+                                shrink-0
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-green-100
+                                text-green-700
+                            "
+                        >
+                            ✓
+                        </div>
+
+
+                        <div>
+
+                            <h3
+                                class="
+                                    font-bold
+                                    text-green-800
+                                "
+                            >
+                                This is a free event
+                            </h3>
 
 
                             <p
                                 class="
                                     mt-1
                                     text-sm
-                                    text-gray-500
+                                    leading-6
+                                    text-green-700
                                 "
                             >
-                                Choose your payment method.
+                                No payment is required.
+                                Confirm your booking to
+                                continue.
                             </p>
 
                         </div>
 
+                    </div>
 
-                        <!-- ==================================================
-                             ONLY DUMMY PAYMENT
-                        =================================================== -->
+                </section>
 
-                        <div class="mt-5">
 
-                            <label class="block cursor-pointer">
+                <!-- =========================================
+                     SSLCommerz PAYMENT METHOD
+                ========================================== -->
 
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="dummy"
-                                    class="peer sr-only"
-                                    checked
-                                >
+                <section
+                    id="paymentMethodSection"
+                    class="
+                        rounded-2xl
+                        border
+                        border-gray-100
+                        bg-white
+                        p-6
+                        shadow-sm
+                    "
+                >
 
+                    <div>
+
+                        <h2
+                            class="
+                                text-lg
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Payment Method
+                        </h2>
+
+
+                        <p
+                            class="
+                                mt-1
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Secure payment through SSLCommerz.
+                        </p>
+
+                    </div>
+
+
+                    <!-- SSLCommerz -->
+
+                    <div class="mt-5">
+
+                        <div
+                            class="
+                                payment-card
+                                rounded-2xl
+                                border-2
+                                border-primary
+                                bg-primaryLight
+                                p-5
+                                ring-2
+                                ring-primary/10
+                            "
+                        >
+
+                            <!-- Header -->
+
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    justify-between
+                                    gap-4
+                                "
+                            >
 
                                 <div
                                     class="
-                                        rounded-2xl
+                                        flex
+                                        h-12
+                                        w-12
+                                        items-center
+                                        justify-center
+                                        rounded-xl
+                                        bg-white
+                                        text-2xl
+                                        shadow-sm
+                                    "
+                                >
+                                    💳
+                                </div>
+
+
+                                <span
+                                    class="
+                                        rounded-full
+                                        bg-green-100
+                                        px-3
+                                        py-1
+                                        text-xs
+                                        font-bold
+                                        text-green-700
+                                    "
+                                >
+                                    SECURE
+                                </span>
+
+                            </div>
+
+
+                            <!-- Title -->
+
+                            <h3
+                                class="
+                                    mt-4
+                                    text-base
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                SSLCommerz
+                            </h3>
+
+
+                            <p
+                                class="
+                                    mt-1
+                                    text-sm
+                                    leading-6
+                                    text-gray-500
+                                "
+                            >
+                                You will be redirected to the
+                                SSLCommerz secure hosted payment
+                                page to complete your payment.
+                            </p>
+
+
+                            <!-- Payment Types -->
+
+                            <div
+                                class="
+                                    mt-4
+                                    grid
+                                    gap-3
+                                    sm:grid-cols-2
+                                "
+                            >
+
+                                <!-- Cards -->
+
+                                <div
+                                    class="
+                                        rounded-xl
                                         border
-                                        border-primary
-                                        bg-primaryLight
-                                        p-5
-                                        ring-2
-                                        ring-primary/20
+                                        border-gray-100
+                                        bg-white
+                                        p-4
                                     "
                                 >
 
-                                    <div
+                                    <p
                                         class="
-                                            flex
-                                            items-center
-                                            justify-between
+                                            text-xs
+                                            font-semibold
+                                            text-gray-500
                                         "
                                     >
-
-                                        <div
-                                            class="
-                                                flex
-                                                h-12
-                                                w-12
-                                                items-center
-                                                justify-center
-                                                rounded-xl
-                                                bg-white
-                                                text-2xl
-                                                shadow-sm
-                                            "
-                                        >
-                                            🧪
-                                        </div>
-
-
-                                        <span
-                                            class="
-                                                rounded-full
-                                                bg-gray-100
-                                                px-3
-                                                py-1
-                                                text-xs
-                                                font-bold
-                                                text-gray-600
-                                            "
-                                        >
-                                            TEST PAYMENT
-                                        </span>
-
-                                    </div>
-
-
-                                    <h3
-                                        class="
-                                            mt-4
-                                            text-base
-                                            font-bold
-                                            text-gray-900
-                                        "
-                                    >
-                                        Dummy Payment
-                                    </h3>
+                                        Cards
+                                    </p>
 
 
                                     <p
                                         class="
                                             mt-1
                                             text-sm
-                                            leading-5
+                                            font-bold
+                                            text-gray-800
+                                        "
+                                    >
+                                        VISA / MasterCard
+                                    </p>
+
+                                </div>
+
+
+                                <!-- Mobile Banking -->
+
+                                <div
+                                    class="
+                                        rounded-xl
+                                        border
+                                        border-gray-100
+                                        bg-white
+                                        p-4
+                                    "
+                                >
+
+                                    <p
+                                        class="
+                                            text-xs
+                                            font-semibold
                                             text-gray-500
                                         "
                                     >
-                                        Use this option to test the
-                                        booking and OTP verification
-                                        flow without charging real money.
+                                        Mobile Banking
                                     </p>
 
 
                                     <p
                                         class="
-                                            mt-3
-                                            text-xs
-                                            font-medium
-                                            text-primary
+                                            mt-1
+                                            text-sm
+                                            font-bold
+                                            text-gray-800
                                         "
                                     >
-                                        No real money will be charged.
-                                        Booking OTP verification will
-                                        still be required.
+                                        bKash / Nagad
                                     </p>
 
                                 </div>
 
-                            </label>
-
-                        </div>
-
-
-                        <!-- Payment Notice -->
-
-                        <div
-                            class="
-                                mt-5
-                                rounded-xl
-                                border
-                                border-blue-100
-                                bg-blue-50
-                                p-4
-                            "
-                        >
-
-                            <p
-                                class="
-                                    text-xs
-                                    leading-5
-                                    text-blue-700
-                                "
-                            >
-
-                                <strong>
-                                    Payment information:
-                                </strong>
-
-                                This project currently uses Dummy Payment
-                                for testing. After the booking is created,
-                                an OTP verification step will be required
-                                to confirm the booking.
-
-                            </p>
-
-                        </div>
-
-                    </section>
-
-
-
-                    <!-- ======================================
-                         FREE EVENT MESSAGE
-                    ======================================= -->
-
-                    <section
-                        id="freeEventMessage"
-                        class="
-                            hidden
-                            rounded-2xl
-                            border
-                            border-green-100
-                            bg-green-50
-                            p-6
-                        "
-                    >
-
-                        <div class="flex gap-4">
-
-                            <div
-                                class="
-                                    flex
-                                    h-10
-                                    w-10
-                                    shrink-0
-                                    items-center
-                                    justify-center
-                                    rounded-full
-                                    bg-green-100
-                                    text-xl
-                                "
-                            >
-                                ✓
                             </div>
 
 
-                            <div>
+                            <!-- Internet Banking -->
 
-                                <h3
+                            <div
+                                class="
+                                    mt-3
+                                    rounded-xl
+                                    border
+                                    border-gray-100
+                                    bg-white
+                                    p-4
+                                "
+                            >
+
+                                <p
                                     class="
-                                        font-bold
-                                        text-green-800
+                                        text-xs
+                                        font-semibold
+                                        text-gray-500
                                     "
                                 >
-                                    This is a free event
-                                </h3>
+                                    Other available methods
+                                </p>
 
 
                                 <p
                                     class="
                                         mt-1
                                         text-sm
-                                        leading-6
-                                        text-green-700
+                                        font-bold
+                                        text-gray-800
                                     "
                                 >
-                                    No payment is required.
-                                    Your booking will be confirmed
-                                    immediately after you continue.
+                                    Internet Banking and
+                                    other SSLCommerz supported
+                                    payment methods
+                                </p>
+
+                            </div>
+
+
+                            <!-- Sandbox Notice -->
+
+                            <div
+                                class="
+                                    mt-4
+                                    rounded-xl
+                                    border
+                                    border-blue-100
+                                    bg-blue-50
+                                    p-4
+                                "
+                            >
+
+                                <p
+                                    class="
+                                        text-xs
+                                        leading-5
+                                        text-blue-700
+                                    "
+                                >
+
+                                    <strong>
+                                        Sandbox Testing:
+                                    </strong>
+
+                                    This EventEase integration uses
+                                    SSLCommerz Sandbox. Test payments
+                                    do not charge real money.
+
                                 </p>
 
                             </div>
 
                         </div>
 
-                    </section>
-
-                </div>
+                    </div>
 
 
-
-                <!-- ==========================================
-                     RIGHT SIDE
-                =========================================== -->
-
-                <aside>
+                    <!-- Security Notice -->
 
                     <div
                         class="
-                            sticky
-                            top-6
-                            rounded-2xl
+                            mt-5
+                            rounded-xl
                             border
                             border-gray-100
-                            bg-white
-                            p-6
-                            shadow-sm
+                            bg-gray-50
+                            p-4
                         "
                     >
+
+                        <div
+                            class="
+                                flex
+                                gap-3
+                            "
+                        >
+
+                            <span
+                                class="
+                                    text-lg
+                                "
+                            >
+                                🔒
+                            </span>
+
+
+                            <p
+                                class="
+                                    text-xs
+                                    leading-5
+                                    text-gray-600
+                                "
+                            >
+                                EventEase does not collect or
+                                store your card or mobile banking
+                                credentials. Payment details are
+                                entered securely on the SSLCommerz
+                                hosted checkout page.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+
+            <!-- =============================================
+                 RIGHT SIDE
+            ============================================== -->
+
+            <aside
+                class="
+                    lg:col-span-1
+                "
+            >
+
+                <div
+                    class="
+                        sticky
+                        top-24
+                        rounded-2xl
+                        border
+                        border-gray-100
+                        bg-white
+                        p-6
+                        shadow-sm
+                    "
+                >
+
+                    <!-- Summary -->
+
+                    <div>
 
                         <h2
                             class="
@@ -940,243 +1260,379 @@
                         </h2>
 
 
-                        <div
-                            class="
-                                mt-5
-                                space-y-4
-                                text-sm
-                            "
-                        >
-
-
-                            <!-- Ticket Price -->
-
-                            <div
-                                class="
-                                    flex
-                                    justify-between
-                                    gap-4
-                                "
-                            >
-
-                                <span class="text-gray-500">
-                                    Ticket Price
-                                </span>
-
-
-                                <span
-                                    id="summaryPrice"
-                                    class="font-semibold"
-                                >
-                                    ৳0
-                                </span>
-
-                            </div>
-
-
-                            <!-- Quantity -->
-
-                            <div
-                                class="
-                                    flex
-                                    justify-between
-                                    gap-4
-                                "
-                            >
-
-                                <span class="text-gray-500">
-                                    Quantity
-                                </span>
-
-
-                                <span
-                                    id="summaryQuantity"
-                                    class="font-semibold"
-                                >
-                                    1
-                                </span>
-
-                            </div>
-
-
-                            <!-- Subtotal -->
-
-                            <div
-                                class="
-                                    flex
-                                    justify-between
-                                    gap-4
-                                "
-                            >
-
-                                <span class="text-gray-500">
-                                    Subtotal
-                                </span>
-
-
-                                <span
-                                    id="summarySubtotal"
-                                    class="font-semibold"
-                                >
-                                    ৳0
-                                </span>
-
-                            </div>
-
-
-                            <!-- Total -->
-
-                            <div
-                                class="
-                                    border-t
-                                    border-gray-100
-                                    pt-4
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        flex
-                                        items-center
-                                        justify-between
-                                    "
-                                >
-
-                                    <span
-                                        class="
-                                            font-bold
-                                            text-gray-900
-                                        "
-                                    >
-                                        Total
-                                    </span>
-
-
-                                    <span
-                                        id="summaryTotal"
-                                        class="
-                                            text-2xl
-                                            font-extrabold
-                                            text-primary
-                                        "
-                                    >
-                                        ৳0
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- ==================================
-                             CONTINUE BUTTON
-                        =================================== -->
-
-                        <button
-                            id="confirmPaymentButton"
-                            type="button"
-                            disabled
-                            class="
-                                mt-6
-                                w-full
-                                rounded-xl
-                                bg-primary
-                                px-5
-                                py-3.5
-                                text-sm
-                                font-bold
-                                text-white
-                                transition
-                                hover:bg-primaryDark
-                                disabled:cursor-not-allowed
-                                disabled:bg-gray-400
-                            "
-                        >
-                            Continue to Payment
-                        </button>
-
-
-                        <p
-                            id="bookingProcessingMessage"
-                            class="
-                                mt-3
-                                hidden
-                                text-center
-                                text-xs
-                                leading-5
-                                text-gray-400
-                            "
-                        >
-                            Please wait while we process your booking...
-                        </p>
-
-
                         <p
                             class="
-                                mt-3
-                                text-center
-                                text-xs
-                                leading-5
-                                text-gray-400
+                                mt-1
+                                text-sm
+                                text-gray-500
                             "
                         >
-                            Your booking will be created before
-                            payment verification begins.
+                            Review your order before continuing.
                         </p>
 
                     </div>
 
-                </aside>
 
-            </div>
+                    <!-- Divider -->
+
+                    <div
+                        class="
+                            my-5
+                            h-px
+                            bg-gray-100
+                        "
+                    ></div>
+
+
+                    <!-- Ticket Price -->
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Ticket price
+                        </span>
+
+
+                        <span
+                            id="summaryPrice"
+                            class="
+                                text-sm
+                                font-semibold
+                                text-gray-800
+                            "
+                        >
+                            ৳0
+                        </span>
+
+                    </div>
+
+
+                    <!-- Quantity -->
+
+                    <div
+                        class="
+                            mt-4
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Quantity
+                        </span>
+
+
+                        <span
+                            class="
+                                text-sm
+                                font-semibold
+                                text-gray-800
+                            "
+                        >
+
+                            ×
+                            <span
+                                id="summaryQuantity"
+                            >
+                                1
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Subtotal -->
+
+                    <div
+                        class="
+                            mt-4
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                            Subtotal
+                        </span>
+
+
+                        <span
+                            id="summarySubtotal"
+                            class="
+                                text-sm
+                                font-semibold
+                                text-gray-800
+                            "
+                        >
+                            ৳0
+                        </span>
+
+                    </div>
+
+
+                    <!-- Divider -->
+
+                    <div
+                        class="
+                            my-5
+                            h-px
+                            bg-gray-100
+                        "
+                    ></div>
+
+
+                    <!-- Total -->
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            gap-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                text-base
+                                font-bold
+                                text-gray-900
+                            "
+                        >
+                            Total
+                        </span>
+
+
+                        <span
+                            id="summaryTotal"
+                            class="
+                                text-xl
+                                font-extrabold
+                                text-primary
+                            "
+                        >
+                            ৳0
+                        </span>
+
+                    </div>
+
+
+                    <!-- Processing Message -->
+
+                    <div
+                        id="bookingProcessingMessage"
+                        class="
+                            hidden
+                            mt-5
+                            rounded-xl
+                            border
+                            border-primaryLight
+                            bg-softGreen
+                            p-4
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                items-start
+                                gap-3
+                            "
+                        >
+
+                            <div
+                                class="
+                                    mt-0.5
+                                    h-5
+                                    w-5
+                                    animate-spin
+                                    rounded-full
+                                    border-2
+                                    border-primaryLight
+                                    border-t-primary
+                                "
+                            ></div>
+
+
+                            <p
+                                class="
+                                    text-xs
+                                    leading-5
+                                    text-primary
+                                "
+                            >
+                                Connecting to SSLCommerz...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Continue Button -->
+
+                    <button
+                        id="confirmPaymentButton"
+                        type="button"
+                        disabled
+                        class="
+                            mt-6
+                            w-full
+                            rounded-xl
+                            bg-primary
+                            px-5
+                            py-3.5
+                            text-sm
+                            font-bold
+                            text-white
+                            shadow-sm
+                            transition
+                            hover:bg-primaryDark
+                            focus:outline-none
+                            focus:ring-4
+                            focus:ring-primaryLight/30
+                        "
+                    >
+                        Continue to Payment
+                    </button>
+
+
+                    <!-- Secure Text -->
+
+                    <div
+                        class="
+                            mt-4
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            text-xs
+                            text-gray-400
+                        "
+                    >
+
+                        <span>
+                            🔒
+                        </span>
+
+                        <span>
+                            Secure SSLCommerz checkout
+                        </span>
+
+                    </div>
+
+
+                    <!-- OTP Notice -->
+
+                    <div
+                        class="
+                            mt-5
+                            rounded-xl
+                            border
+                            border-purple-100
+                            bg-purple-50
+                            p-4
+                        "
+                    >
+
+                        <p
+                            class="
+                                text-xs
+                                leading-5
+                                text-purple-700
+                            "
+                        >
+
+                            After a successful payment,
+                            EventEase will send a booking
+                            verification OTP to your registered
+                            email address.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
 
         </div>
 
-    </main>
+    </div>
+
+</main>
 
 
+<!-- ======================================================
+     FOOTER
+======================================================= -->
 
-    <!-- ======================================================
-         FOOTER
-    ======================================================= -->
+<footer
+    class="
+        mt-12
+        border-t
+        border-gray-200
+        bg-white
+    "
+>
 
-    <div id="user-footer"></div>
+    <div
+        class="
+            mx-auto
+            max-w-7xl
+            px-4
+            py-6
+            text-center
+            text-xs
+            text-gray-400
+            sm:px-6
+            lg:px-8
+        "
+    >
 
+        © 2026 EventEase. All rights reserved.
 
-    <!-- ======================================================
-         COMPONENTS
-    ======================================================= -->
+    </div>
 
-    <script src="../../js/components.js"></script>
-
-
-    <script>
-
-        Promise.all([
-
-            loadComponent(
-                "user-header",
-                "../../components/user-header.html"
-            ),
-
-            loadComponent(
-                "user-footer",
-                "../../components/user-footer.html"
-            )
-
-        ]);
-
-    </script>
+</footer>
 
 
-    <!-- ======================================================
-         JAVASCRIPT
-    ======================================================= -->
+<!-- ======================================================
+     PAYMENT JS
+======================================================= -->
 
-    <script src="../../js/user/payment.js"></script>
+<script
+    src="../../js/user/payment.js"
+></script>
+
 
 </body>
 

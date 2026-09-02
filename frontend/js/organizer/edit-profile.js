@@ -638,6 +638,13 @@ if (profileForm) {
                         updatedUser
                     );
 
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(
+                            updatedUser
+                        )
+                    );
+
                 }
 
 

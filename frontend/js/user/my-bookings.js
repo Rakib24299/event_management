@@ -16,6 +16,8 @@ let bookings = [];
 
 let selectedBookingId = null;
 
+let currentFilter = "all";
+
 
 // ======================================================
 // DOM Elements
@@ -38,6 +40,9 @@ const emptyState =
 
 const bookingsContainer =
   document.getElementById("bookingsContainer");
+
+const bookingFilter =
+  document.getElementById("bookingFilter");
 
 const cancelModal =
   document.getElementById("cancelModal");
@@ -198,6 +203,8 @@ async function apiRequest(
 
 // ======================================================
 // Load My Bookings
+// Only normal / unconfirmed bookings (status: pending).
+// Confirmed bookings are shown on confirm-booking.html.
 // ======================================================
 
 async function loadMyBookings() {
@@ -212,20 +219,28 @@ async function loadMyBookings() {
       );
 
 
-    bookings =
+    const allBookings =
       result?.data || [];
 
 
+    bookings =
+      allBookings.filter(
+        (booking) => {
+
+          const status =
+            String(
+              booking.bookingStatus ||
+                ""
+            ).toLowerCase();
+
+
+          return status === "pending";
+
+        }
+      );
+
+
     hideLoading();
-
-
-    if (!Array.isArray(bookings) ||
-        bookings.length === 0) {
-
-      showEmptyState();
-
-      return;
-    }
 
 
     renderBookings();
@@ -236,7 +251,7 @@ async function loadMyBookings() {
 
     showError(
       error.message ||
-      "Failed to load bookings."
+        "Failed to load bookings."
     );
 
   }
@@ -252,7 +267,55 @@ function renderBookings() {
   bookingsContainer.innerHTML = "";
 
 
-  bookings.forEach(
+  const filteredBookings =
+    bookings.filter((booking) => {
+
+      const status =
+        String(
+          booking.bookingStatus || ""
+        ).toLowerCase();
+
+
+      if (currentFilter === "all") {
+
+        return (
+          status === "pending" ||
+          status === "confirmed"
+        );
+
+      }
+
+
+      return status === currentFilter;
+
+    });
+
+
+  if (
+    filteredBookings.length === 0
+  ) {
+
+    showEmptyState();
+
+    return;
+
+  }
+
+
+  bookingsContainer.classList.remove(
+    "hidden"
+  );
+
+  emptyState.classList.add(
+    "hidden"
+  );
+
+  errorState.classList.add(
+    "hidden"
+  );
+
+
+  filteredBookings.forEach(
     (booking) => {
 
       const card =
@@ -267,12 +330,7 @@ function renderBookings() {
     }
   );
 
-
-  bookingsContainer.classList.remove(
-    "hidden"
-  );
 }
-
 
 // ======================================================
 // Create Booking Card
@@ -341,21 +399,31 @@ function createBookingCard(
     "pending";
 
 
-  const refundStatus =
-    booking.refundStatus ||
-    "none";
+  const eventType =
+    event.eventType ||
+    "";
 
 
-  const refundPercentage =
-    Number(
-      booking.refundPercentage || 0
-    );
+  const isFreeEvent =
+    String(eventType).toLowerCase() === "free";
 
 
-  const refundAmount =
-    Number(
-      booking.refundAmount || 0
-    );
+  const paymentStatus =
+    payment?.paymentStatus ||
+    payment?.status ||
+    "";
+
+
+  const isPaymentPaid =
+    String(paymentStatus).toLowerCase() ===
+      "paid";
+
+
+  const showMakeConfirm =
+    bookingStatus === "pending" &&
+    !isFreeEvent &&
+    !isPaymentPaid &&
+    bookingStatus !== "cancelled";
 
 
   const canCancel =
@@ -363,19 +431,42 @@ function createBookingCard(
     bookingStatus !== "completed";
 
 
+  const eventImageUrl =
+    event.bannerImage?.url ||
+    event.image ||
+    "https://via.placeholder.com/600x400?text=EventEase";
+
+
+  const showCancel =
+    canCancel;
+
+
   card.innerHTML = `
 
     <!-- ==========================
-         Event Header
+         Event Image
     =========================== -->
 
-    <div class="p-6 border-b">
+    <div class="w-full h-48 sm:h-56 overflow-hidden bg-gray-100">
 
-      <div class="flex flex-col
-                  md:flex-row
-                  md:items-start
-                  md:justify-between
-                  gap-4">
+      <img
+        src="${eventImageUrl}"
+        alt="${escapeHTML(eventTitle)}"
+        class="w-full h-full object-cover"
+      >
+
+    </div>
+
+
+    <!-- ==========================
+         Card Body
+    =========================== -->
+
+    <div class="p-6">
+
+      <!-- Header -->
+
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
 
         <div>
 
@@ -397,7 +488,7 @@ function createBookingCard(
 
         <div class="flex gap-2 flex-wrap">
 
-          ${getBookingStatusBadge(
+          ${getBookingStatusSubtitle(
             bookingStatus
           )}
 
@@ -405,36 +496,32 @@ function createBookingCard(
 
       </div>
 
-    </div>
 
-
-    <!-- ==========================
-         Booking Details
-    =========================== -->
-
-    <div class="p-6">
+      <!-- ==========================
+           Booking Details
+      =========================== -->
 
       <div
-        class="grid grid-cols-1
-               sm:grid-cols-2
-               lg:grid-cols-4
-               gap-5"
+        class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
       >
 
         <!-- Event Date -->
 
         <div>
 
-          <p class="text-xs uppercase
-                    tracking-wide
-                    text-gray-400">
+          <p class="text-xs uppercase tracking-wide text-gray-400">
             Event Date
           </p>
 
-          <p class="mt-1 font-semibold
-                    text-gray-800">
+          <p class="mt-1 font-semibold text-gray-800">
             ${escapeHTML(eventDate)}
           </p>
+
+          ${startTime ? `
+            <p class="mt-1 text-xs text-gray-500">
+              ${escapeHTML(startTime)}
+            </p>
+          ` : ""}
 
         </div>
 
@@ -443,14 +530,11 @@ function createBookingCard(
 
         <div>
 
-          <p class="text-xs uppercase
-                    tracking-wide
-                    text-gray-400">
+          <p class="text-xs uppercase tracking-wide text-gray-400">
             Venue
           </p>
 
-          <p class="mt-1 font-semibold
-                    text-gray-800">
+          <p class="mt-1 font-semibold text-gray-800">
             ${escapeHTML(venueName)}
           </p>
 
@@ -461,14 +545,11 @@ function createBookingCard(
 
         <div>
 
-          <p class="text-xs uppercase
-                    tracking-wide
-                    text-gray-400">
+          <p class="text-xs uppercase tracking-wide text-gray-400">
             Tickets
           </p>
 
-          <p class="mt-1 font-semibold
-                    text-gray-800">
+          <p class="mt-1 font-semibold text-gray-800">
             ${ticketQuantity}
           </p>
 
@@ -479,14 +560,11 @@ function createBookingCard(
 
         <div>
 
-          <p class="text-xs uppercase
-                    tracking-wide
-                    text-gray-400">
+          <p class="text-xs uppercase tracking-wide text-gray-400">
             Total Amount
           </p>
 
-          <p class="mt-1 font-semibold
-                    text-gray-800">
+          <p class="mt-1 font-semibold text-gray-800">
             ৳${formatMoney(totalAmount)}
           </p>
 
@@ -500,22 +578,16 @@ function createBookingCard(
       =========================== -->
 
       <div
-        class="mt-6 p-4 bg-gray-50
-               rounded-xl"
+        class="mt-6 p-4 bg-gray-50 rounded-xl"
       >
 
-        <h3 class="font-semibold
-                   text-gray-800">
+        <h3 class="font-semibold text-gray-800">
           Payment Information
         </h3>
 
 
         <div
-          class="mt-3 grid
-                 grid-cols-1
-                 sm:grid-cols-2
-                 lg:grid-cols-4
-                 gap-4"
+          class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         >
 
           <div>
@@ -541,8 +613,7 @@ function createBookingCard(
             </p>
 
             <p
-              class="mt-1 font-medium
-                     break-all"
+              class="mt-1 font-medium break-all"
             >
               ${escapeHTML(
                 payment.transactionId ||
@@ -595,116 +666,42 @@ function createBookingCard(
 
 
       <!-- ==========================
-           Refund Information
-      =========================== -->
-
-      ${
-        bookingStatus === "cancelled"
-          ? `
-
-            <div
-              class="mt-6 p-4
-                     bg-orange-50
-                     border border-orange-100
-                     rounded-xl"
-            >
-
-              <h3
-                class="font-semibold
-                       text-orange-900"
-              >
-                Refund Information
-              </h3>
-
-
-              <div
-                class="mt-3 grid
-                       grid-cols-1
-                       sm:grid-cols-3
-                       gap-4"
-              >
-
-                <div>
-
-                  <p class="text-xs
-                            text-orange-600">
-                    Refund Percentage
-                  </p>
-
-                  <p
-                    class="mt-1
-                           font-semibold
-                           text-orange-900"
-                  >
-                    ${refundPercentage}%
-                  </p>
-
-                </div>
-
-
-                <div>
-
-                  <p class="text-xs
-                            text-orange-600">
-                    Refund Amount
-                  </p>
-
-                  <p
-                    class="mt-1
-                           font-semibold
-                           text-green-700"
-                  >
-                    ৳${formatMoney(
-                      refundAmount
-                    )}
-                  </p>
-
-                </div>
-
-
-                <div>
-
-                  <p class="text-xs
-                            text-orange-600">
-                    Refund Status
-                  </p>
-
-                  <p
-                    class="mt-1
-                           font-semibold
-                           text-orange-900"
-                  >
-                    ${formatRefundStatus(
-                      refundStatus
-                    )}
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          `
-          : ""
-      }
-
-
-      <!-- ==========================
            Actions
       =========================== -->
 
       <div
-        class="mt-6 flex
-               flex-wrap
-               items-center
-               justify-end
-               gap-3"
+        class="mt-6 flex flex-wrap items-center justify-end gap-3"
       >
 
         ${
-          canCancel
+          showMakeConfirm
             ? `
+
+              <button
+                type="button"
+                class="make-confirm-btn
+                       px-5 py-2.5
+                       rounded-lg
+                       bg-primary
+                       text-white
+                       font-medium
+                       hover:bg-primaryDark
+                       transition"
+                data-booking-id="${
+                  booking._id
+                }"
+              >
+                Confirm Booking
+              </button>
+
+            `
+            : ""
+        }
+
+        ${
+          showCancel
+            ? `
+
               <button
                 type="button"
                 class="cancel-booking-btn
@@ -719,8 +716,9 @@ function createBookingCard(
                   booking._id
                 }"
               >
-                Cancel Booking
+                Cancel
               </button>
+
             `
             : ""
         }
@@ -728,8 +726,46 @@ function createBookingCard(
       </div>
 
     </div>
+
   `;
 
+
+  // ====================================
+  // Confirm Booking Button
+  // Navigation only — opens confirm-booking.html.
+  // Does NOT initiate OTP, payment, or
+  // any booking state change.
+  // ====================================
+
+  const makeConfirmButton =
+    card.querySelector(
+      ".make-confirm-btn"
+    );
+
+
+  if (makeConfirmButton) {
+
+    makeConfirmButton.addEventListener(
+      "click",
+      () => {
+
+        const bookingId =
+          makeConfirmButton.dataset
+            .bookingId;
+
+
+        window.location.href =
+          `./confirm-booking.html`;
+
+      }
+    );
+
+  }
+
+
+  // ====================================
+  // Cancel Button
+  // ====================================
 
   const cancelButton =
     card.querySelector(
@@ -744,7 +780,7 @@ function createBookingCard(
       () => {
 
         openCancelModal(
-          booking._id
+          booking
         );
 
       }
@@ -754,6 +790,7 @@ function createBookingCard(
 
 
   return card;
+
 }
 
 
@@ -762,15 +799,8 @@ function createBookingCard(
 // ======================================================
 
 function openCancelModal(
-  bookingId
+  booking
 ) {
-
-  const booking =
-    bookings.find(
-      (item) =>
-        item._id === bookingId
-    );
-
 
   if (!booking) {
 
@@ -784,65 +814,109 @@ function openCancelModal(
 
 
   selectedBookingId =
-    bookingId;
+    booking._id;
 
 
-  const percentage =
+  const bookingStatus =
+    String(
+      booking.bookingStatus || ""
+    ).toLowerCase();
+
+
+  const totalAmount =
     Number(
-      booking.refundPercentage || 0
+      booking.totalAmount || 0
     );
 
 
-  const amount =
-    Number(
-      booking.refundAmount || 0
+  const isPending =
+    bookingStatus === "pending";
+
+
+  const refundPercentageEl =
+    document.getElementById(
+      "refundPercentage"
+    );
+
+  const refundAmountEl =
+    document.getElementById(
+      "refundAmount"
     );
 
 
-  /*
-   * If refund has not been calculated
-   * by backend yet, show the policy
-   * based on the event date.
-   */
+  if (isPending) {
 
-  let displayPercentage =
-    percentage;
+    refundPercentageEl.textContent =
+      "0%";
 
-  let displayAmount =
-    amount;
+    refundAmountEl.textContent =
+      "৳0.00";
 
+  } else {
 
-  if (
-    booking.event &&
-    booking.event.eventDate
-  ) {
-
-    const calculated =
-      calculateRefundPreview(
-        booking.event.eventDate,
-        Number(
-          booking.totalAmount || 0
-        )
+    const percentage =
+      Number(
+        booking.refundPercentage || 0
       );
 
 
-    displayPercentage =
-      calculated.refundPercentage;
+    const amount =
+      Number(
+        booking.refundAmount || 0
+      );
 
-    displayAmount =
-      calculated.refundAmount;
+
+    let displayPercentage =
+      percentage;
+
+    let displayAmount =
+      amount;
+
+
+    if (
+      booking.event &&
+      booking.event.eventDate
+    ) {
+
+      const calculated =
+        calculateRefundPreview(
+          booking.event.eventDate,
+          totalAmount
+        );
+
+
+      displayPercentage =
+        calculated.refundPercentage;
+
+      displayAmount =
+        calculated.refundAmount;
+
+    }
+
+
+    refundPercentageEl.textContent =
+      `${displayPercentage}%`;
+
+    refundAmountEl.textContent =
+      `৳${formatMoney(
+        displayAmount
+      )}`;
 
   }
 
 
-  refundPercentage.textContent =
-    `${displayPercentage}%`;
+  const refundPreview =
+    document.getElementById(
+      "refundPreview"
+    );
 
 
-  refundAmount.textContent =
-    `৳${formatMoney(
-      displayAmount
-    )}`;
+  if (refundPreview) {
+
+    refundPreview.style.display =
+      isPending ? "none" : "";
+
+  }
 
 
   cancelModal.classList.remove(
@@ -891,8 +965,32 @@ async function confirmCancellation() {
   }
 
 
-  const bookingId =
-    selectedBookingId;
+  const booking =
+    bookings.find(
+      (item) =>
+        item._id === selectedBookingId
+    );
+
+
+  if (!booking) {
+
+    showToast(
+      "Booking not found.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const bookingStatus =
+    String(
+      booking.bookingStatus || ""
+    ).toLowerCase();
+
+
+  const isPending =
+    bookingStatus === "pending";
 
 
   confirmCancelBtn.disabled =
@@ -907,7 +1005,7 @@ async function confirmCancellation() {
 
     const result =
       await apiRequest(
-        `/bookings/${bookingId}/cancel`,
+        `/bookings/${selectedBookingId}/cancel`,
         {
           method: "PATCH",
         }
@@ -917,21 +1015,62 @@ async function confirmCancellation() {
     closeCancelModal();
 
 
-    showToast(
+    const refundPercentage =
+      result?.data?.refundPercentage;
+
+    const refundAmount =
+      result?.data?.refundAmount;
+
+    const refundStatus =
+      result?.data?.refundStatus;
+
+
+    let successMessage =
       result?.message ||
-      "Booking cancelled successfully.",
+      "Booking cancelled successfully.";
+
+
+    if (isPending) {
+
+      successMessage =
+        "Booking cancelled successfully. No refund is applicable.";
+
+    } else if (
+      refundAmount > 0
+    ) {
+
+      successMessage =
+        `Booking cancelled successfully. Refund Amount: ৳${formatMoney(
+          refundAmount
+        )} | Refund Percentage: ${refundPercentage}% | Refund Status: ${formatRefundStatus(
+          refundStatus
+        )}`;
+
+    } else {
+
+      successMessage =
+        "Booking cancelled successfully. No refund is applicable.";
+
+    }
+
+
+    showToast(
+      successMessage,
       "success"
     );
 
 
-    await loadMyBookings();
+    bookings =
+      bookings.filter(
+        (item) =>
+          item._id !== selectedBookingId
+      );
 
 
-    if (typeof updateNotificationBadge === "function") {
+    selectedBookingId = null;
 
-      await updateNotificationBadge();
 
-    }
+    renderBookings();
 
   } catch (error) {
 
@@ -947,10 +1086,9 @@ async function confirmCancellation() {
       false;
 
     confirmCancelBtn.textContent =
-      "Confirm Cancellation";
+      "Yes, Cancel";
   }
 }
-
 
 // ======================================================
 // Refund Preview
@@ -974,7 +1112,7 @@ function calculateRefundPreview(
 
 
   const daysRemaining =
-    Math.ceil(
+    Math.floor(
       difference /
       (1000 * 60 * 60 * 24)
     );
@@ -983,21 +1121,26 @@ function calculateRefundPreview(
   let percentage = 0;
 
 
-  if (daysRemaining >= 6) {
+  if (daysRemaining >= 7) {
 
     percentage = 70;
 
-  } else if (daysRemaining >= 3) {
+  } else if (daysRemaining >= 4) {
 
     percentage = 50;
 
-  } else if (daysRemaining >= 1) {
+  } else if (daysRemaining >= 2) {
 
     percentage = 20;
+
+  } else if (daysRemaining >= 1) {
+
+    percentage = 10;
 
   } else {
 
     percentage = 0;
+
   }
 
 
@@ -1065,6 +1208,19 @@ function getBookingStatusBadge(
   };
 
 
+  const subtitles = {
+
+    pending: "Payment Required",
+
+    confirmed: "Booking Confirmed",
+
+    cancelled: "Booking Cancelled",
+
+    completed: "Event Completed",
+
+  };
+
+
   return `
     <span
       class="px-3 py-1
@@ -1082,6 +1238,66 @@ function getBookingStatusBadge(
       }
     </span>
   `;
+}
+
+
+// ======================================================
+// Booking Status Subtitle
+// ======================================================
+
+function getBookingStatusSubtitle(
+  status
+) {
+
+  const normalized =
+    String(status)
+      .toLowerCase();
+
+
+  const subtitles = {
+
+    pending: "Payment Required",
+
+    confirmed: "Booking Confirmed",
+
+    cancelled: "Booking Cancelled",
+
+    completed: "Event Completed",
+
+  };
+
+
+  const subtitle =
+    subtitles[normalized];
+
+
+  if (!subtitle) {
+
+    return "";
+
+  }
+
+
+  return `
+    <span
+      class="px-3 py-1
+             rounded-full
+             text-xs
+             font-medium
+             ${
+               normalized === "pending"
+                 ? "bg-yellow-50 text-yellow-600"
+                 : normalized === "confirmed"
+                   ? "bg-green-50 text-green-600"
+                   : normalized === "cancelled"
+                     ? "bg-red-50 text-red-600"
+                     : "bg-blue-50 text-blue-600"
+             }"
+    >
+      ${subtitle}
+    </span>
+  `;
+
 }
 
 
@@ -1481,6 +1697,51 @@ retryBtn.addEventListener(
   "click",
   loadMyBookings
 );
+
+
+// ======================================================
+// Confirmed Bookings Button
+// Navigation only — opens confirm-booking.html.
+// Does NOT initiate OTP, payment, or any booking
+// state change.
+// ======================================================
+
+const confirmedBookingsBtn =
+  document.getElementById(
+    "confirmedBookingsBtn"
+  );
+
+
+if (confirmedBookingsBtn) {
+
+  confirmedBookingsBtn.addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "./confirm-booking.html";
+
+    }
+  );
+
+}
+
+
+if (bookingFilter) {
+
+  bookingFilter.addEventListener(
+    "change",
+    () => {
+
+      currentFilter =
+        bookingFilter.value;
+
+      renderBookings();
+
+    }
+  );
+
+}
 
 
 closeCancelModalBtn.addEventListener(

@@ -1,63 +1,55 @@
 const express = require("express");
 
+const router = express.Router();
+
 const paymentController =
   require("../controllers/payment.controller");
 
 const authMiddleware =
   require("../middlewares/auth.middleware");
 
-const roleMiddleware =
-  require("../middlewares/role.middleware");
-
-const validateRequest =
-  require("../middlewares/validateRequest");
-
-const {
-  createPaymentSchema,
-  processDummyPaymentSchema,
-} =
-  require("../validations/payment.validation");
-
-
-const router =
-  express.Router();
-
 
 // ======================================================
-// USER PAYMENT
-// ======================================================
-
-
-// ------------------------------------------------------
 // CREATE PAYMENT
-// POST /api/v1/payments
-// ------------------------------------------------------
+// ======================================================
 
-router.post(
-  "/",
-  authMiddleware,
-  validateRequest(createPaymentSchema),
-  paymentController.createPayment
+router.post("/create",authMiddleware, paymentController.createPayment
 );
 
 
-// ------------------------------------------------------
-// PROCESS DUMMY PAYMENT
-// PATCH /api/v1/payments/:id/dummy
-// ------------------------------------------------------
+// ======================================================
+// SSLCommerz CALLBACKS
+// ======================================================
+//
+// IMPORTANT:
+// These routes must NOT require login authentication
+// because SSLCommerz calls these URLs directly.
+//
+// ======================================================
 
-router.patch(
-  "/:id/dummy",
-  authMiddleware,
-  validateRequest(processDummyPaymentSchema),
-  paymentController.processDummyPayment
+
+// SSLCommerz SUCCESS
+router.post("/sslcommerz/success",
+  paymentController.sslPaymentSuccess
 );
 
 
-// ------------------------------------------------------
+// SSLCommerz FAILED
+router.post( "/sslcommerz/fail", paymentController.sslPaymentFail
+);
+
+
+// SSLCommerz CANCELLED
+router.post("/sslcommerz/cancel", paymentController.sslPaymentCancel);
+
+
+// SSLCommerz IPN
+router.post( "/sslcommerz/ipn", paymentController.sslPaymentIPN);
+
+
+// ======================================================
 // GET PAYMENT BY BOOKING
-// GET /api/v1/payments/booking/:bookingId
-// ------------------------------------------------------
+// ======================================================
 
 router.get(
   "/booking/:bookingId",
@@ -66,12 +58,11 @@ router.get(
 );
 
 
-// ------------------------------------------------------
-// USER REFUND REQUEST
-// PATCH /api/v1/payments/:id/refund
-// ------------------------------------------------------
+// ======================================================
+// USER REQUEST REFUND
+// ======================================================
 
-router.patch(
+router.post(
   "/:id/refund",
   authMiddleware,
   paymentController.processRefund
@@ -79,85 +70,63 @@ router.patch(
 
 
 // ======================================================
-// ORGANIZER
+// ORGANIZER PAYMENTS
 // ======================================================
 
-
-// ------------------------------------------------------
-// GET ORGANIZER PAYMENTS
-// GET /api/v1/payments/organizer
-// ------------------------------------------------------
-
 router.get(
-  "/organizer",
+  "/organizer/all",
   authMiddleware,
-  roleMiddleware("organizer"),
   paymentController.getOrganizerPayments
 );
 
 
-// ------------------------------------------------------
-// GET PLATFORM FEE PERCENTAGE
-// GET /api/v1/payments/config/platform-fee
-// ------------------------------------------------------
+// ======================================================
+// ADMIN PAYMENTS
+// ======================================================
 
 router.get(
-  "/config/platform-fee",
+  "/admin/all",
+  authMiddleware,
+  paymentController.getAdminPayments
+);
+
+
+// ======================================================
+// ADMIN PENDING REFUNDS
+// ======================================================
+
+router.get(
+  "/admin/refunds/pending",
+  authMiddleware,
+  paymentController.getPendingRefunds
+);
+
+
+// ======================================================
+// ADMIN PROCESS REFUND
+// ======================================================
+
+router.patch(
+  "/admin/refunds/:id/process",
+  authMiddleware,
+  paymentController.adminProcessRefund
+);
+
+
+// ======================================================
+// PLATFORM FEE
+// ======================================================
+
+router.get(
+  "/platform-fee",
   authMiddleware,
   paymentController.getPlatformFeePercentage
 );
 
 
 // ======================================================
-// ADMIN
+// GET PAYMENT BY ID (must be last — generic /:id)
 // ======================================================
-
-
-// ------------------------------------------------------
-// GET ALL PAYMENTS
-// GET /api/v1/payments/admin
-// ------------------------------------------------------
-
-router.get(
-  "/admin",
-  authMiddleware,
-  roleMiddleware("admin"),
-  paymentController.getAdminPayments
-);
-
-
-// ------------------------------------------------------
-// GET PENDING REFUNDS
-// GET /api/v1/payments/admin/pending-refunds
-// ------------------------------------------------------
-
-router.get(
-  "/admin/pending-refunds",
-  authMiddleware,
-  roleMiddleware("admin"),
-  paymentController.getPendingRefunds
-);
-
-
-// ------------------------------------------------------
-// PROCESS REFUND
-// PATCH /api/v1/payments/admin/:id/refund
-// ------------------------------------------------------
-
-router.patch(
-  "/admin/:id/refund",
-  authMiddleware,
-  roleMiddleware("admin"),
-  paymentController.adminProcessRefund
-);
-
-
-// ======================================================
-// GET PAYMENT BY ID
-// MUST BE LAST
-// ======================================================
-
-// GET /api/v1/payments/:id
 
 router.get(
   "/:id",

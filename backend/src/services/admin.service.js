@@ -95,13 +95,13 @@ const approveOrganizer = async (
     ],
 
     title:
-      "Organizer Account Approved",
+      "Organizer Account Created",
 
     message:
-      "Your organizer account has been approved by the admin. You can now use organizer features.",
+      "Your organizer account has been successfully created by the admin.",
 
     type:
-      "approval",
+      "account",
 
   });
 

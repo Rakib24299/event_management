@@ -361,6 +361,24 @@ const showSuccess = (
 
 const loadBookingData = () => {
 
+    const urlParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const urlBookingId =
+        urlParams.get(
+            "bookingId"
+        );
+
+
+    const urlPaymentId =
+        urlParams.get(
+            "paymentId"
+        );
+
+
     const savedBookingId =
         sessionStorage.getItem(
             "paymentBookingId"
@@ -373,7 +391,7 @@ const loadBookingData = () => {
         );
 
 
-    if (!savedBookingId) {
+    if (!savedBookingId && !urlBookingId) {
 
         throw new Error(
             "Booking information was not found. Please start the booking process again."
@@ -383,7 +401,27 @@ const loadBookingData = () => {
 
 
     bookingId =
-        savedBookingId;
+        savedBookingId || urlBookingId;
+
+
+    if (urlPaymentId) {
+
+        sessionStorage.setItem(
+            "paymentId",
+            urlPaymentId
+        );
+
+    }
+
+
+    if (!savedBookingId && urlBookingId) {
+
+        sessionStorage.setItem(
+            "paymentBookingId",
+            urlBookingId
+        );
+
+    }
 
 
     if (savedBookingData) {
@@ -428,10 +466,6 @@ const loadBookingData = () => {
 
     }
 
-
-    // --------------------------------------------------
-    // OTP EXPIRY
-    // --------------------------------------------------
 
     if (
         bookingData &&
@@ -802,7 +836,7 @@ const verifyOtp = async () => {
                 verifiedBooking,
 
             paymentMethod:
-                "dummy",
+                "sslcommerz",
 
             otpVerified:
                 true,

@@ -11,6 +11,10 @@ const API_URL = "http://localhost:5000/api/v1";
 
 const EVENTS_ENDPOINT = `${API_URL}/events`;
 
+const BOOKINGS_ENDPOINT = `${API_URL}/bookings`;
+
+const MY_BOOKINGS_ENDPOINT = `${API_URL}/bookings/my`;
+
 
 // ========================================
 // Elements
@@ -37,12 +41,35 @@ const clearFilters =
 const eventCount =
     document.getElementById("eventCount");
 
+const toast =
+    document.getElementById("toast");
+
+const toastMessage =
+    document.getElementById("toastMessage");
+
+const unbookModal =
+    document.getElementById("unbookModal");
+
+const closeUnbookModalBtn =
+    document.getElementById("closeUnbookModalBtn");
+
+const confirmUnbookBtn =
+    document.getElementById("confirmUnbookBtn");
+
 
 // ========================================
 // State
 // ========================================
 
 let allEvents = [];
+
+let userBookings = new Map();
+
+let selectedUnbookEventId = null;
+
+let selectedUnbookBookingId = null;
+
+let activeUnbookButton = null;
 
 
 // ========================================
@@ -61,6 +88,70 @@ if (!token) {
 
     window.location.href =
         "./user-login.html";
+
+}
+
+
+// ========================================
+// Toast
+// ========================================
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    if (!toast || !toastMessage) {
+
+        console.log(
+            `${type === "success" ? "SUCCESS" : "ERROR"}: ${message}`
+        );
+
+        return;
+
+    }
+
+
+    toastMessage.textContent =
+        message;
+
+
+    toast.className =
+        "fixed bottom-5 right-5 z-[60] " +
+        "max-w-sm px-5 py-4 rounded-lg " +
+        "shadow-lg text-white";
+
+
+    if (type === "success") {
+
+        toast.classList.add(
+            "bg-green-600"
+        );
+
+    } else {
+
+        toast.classList.add(
+            "bg-red-600"
+        );
+
+    }
+
+
+    toast.classList.remove(
+        "hidden"
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.classList.add(
+                "hidden"
+            );
+
+        },
+        4000
+    );
 
 }
 
@@ -528,6 +619,829 @@ function getEventLocation(event) {
 
 
 // ========================================
+// Capitalize
+// ========================================
+
+function capitalize(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    return (
+        value.charAt(0).toUpperCase() +
+        value.slice(1)
+    );
+
+}
+
+
+// ========================================
+// Button HTML Helpers
+// ========================================
+
+function bookButtonHTML(eventId) {
+
+    return `
+        <button
+            type="button"
+            data-event-id="${eventId}"
+            class="
+                book-event-btn
+                rounded-xl
+                bg-primary
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-white
+                transition
+                hover:bg-primaryDark
+            "
+        >
+            Book
+        </button>
+    `;
+
+}
+
+
+function unbookButtonHTML(eventId, bookingId) {
+
+    return `
+        <button
+            type="button"
+            data-event-id="${eventId}"
+            data-booking-id="${bookingId}"
+            class="
+                unbook-event-btn
+                rounded-xl
+                bg-red-50
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-red-600
+                border
+                border-red-200
+                transition
+                hover:bg-red-100
+            "
+        >
+            Unbook
+        </button>
+    `;
+
+}
+
+
+function soldOutButtonHTML() {
+
+    return `
+        <button
+            disabled
+            class="
+                book-event-btn
+                rounded-xl
+                bg-gray-400
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-white
+                cursor-not-allowed
+            "
+        >
+            Sold Out
+        </button>
+    `;
+
+}
+
+
+function unavailableButtonHTML() {
+
+    return `
+        <button
+            disabled
+            class="
+                book-event-btn
+                rounded-xl
+                bg-gray-400
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-white
+                cursor-not-allowed
+            "
+        >
+            Unavailable
+        </button>
+    `;
+
+}
+
+
+// ========================================
+// Fetch User Bookings
+// ========================================
+
+async function fetchUserBookings() {
+
+    if (!token) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                MY_BOOKINGS_ENDPOINT,
+                {
+                    method: "GET",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${token}`
+
+                    }
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            response.ok &&
+            result.success &&
+            Array.isArray(result.data)
+        ) {
+
+            userBookings.clear();
+
+
+            result.data.forEach(
+                (booking) => {
+
+                    if (
+                        booking.event &&
+                        booking.bookingStatus !== "cancelled"
+                    ) {
+
+                        const eventId =
+                            booking.event._id
+                                ? String(booking.event._id)
+                                : String(booking.event);
+
+                        const bookingId =
+                            String(booking._id);
+
+
+                        userBookings.set(
+                            eventId,
+                            {
+                                bookingId,
+                                bookingStatus:
+                                    booking.bookingStatus
+                            }
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Fetch User Bookings Error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ========================================
+// Get Book Button HTML
+// ========================================
+
+function getBookButtonHTML(event) {
+
+    const eventId =
+        getEventId(event);
+
+
+    if (!eventId) {
+
+        return unavailableButtonHTML();
+
+    }
+
+
+    const availableSeats =
+        Number(event.availableSeats ?? 0);
+
+    const eventStatus =
+        event.status;
+
+    const eventDate =
+        event.eventDate ||
+        event.date;
+
+    const bookingInfo =
+        userBookings.get(eventId);
+
+    const isActiveBooking =
+        bookingInfo &&
+        (bookingInfo.bookingStatus === "pending" ||
+            bookingInfo.bookingStatus === "confirmed");
+
+
+    // ------------------------------------------------
+    // Active Booking -> Show Unbook
+    // ------------------------------------------------
+
+    if (isActiveBooking) {
+
+        return unbookButtonHTML(
+            eventId,
+            bookingInfo.bookingId
+        );
+
+    }
+
+
+    // ------------------------------------------------
+    // Sold Out
+    // ------------------------------------------------
+
+    if (availableSeats <= 0) {
+
+        return soldOutButtonHTML();
+
+    }
+
+
+    // ------------------------------------------------
+    // Event Status Check
+    // ------------------------------------------------
+
+    if (
+        eventStatus &&
+        eventStatus !== "published"
+    ) {
+
+        return unavailableButtonHTML();
+
+    }
+
+
+    // ------------------------------------------------
+    // Event Date Check
+    // ------------------------------------------------
+
+    if (
+        eventDate &&
+        new Date(eventDate) <= new Date()
+    ) {
+
+        return unavailableButtonHTML();
+
+    }
+
+
+    // ------------------------------------------------
+    // Available for Booking
+    // ------------------------------------------------
+
+    return bookButtonHTML(
+        eventId
+    );
+
+}
+
+
+// ========================================
+// Handle Book Event
+// ========================================
+
+async function handleBookEvent(
+    event,
+    bookButton
+) {
+
+    if (!token) {
+
+        showToast(
+            "Please login to book this event.",
+            "error"
+        );
+
+        window.location.href =
+            "./user-login.html";
+
+        return;
+
+    }
+
+
+    const eventId =
+        getEventId(event);
+
+
+    if (!eventId) {
+
+        showToast(
+            "Event ID is missing.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const availableSeats =
+        Number(event.availableSeats ?? 0);
+
+    const eventStatus =
+        event.status;
+
+    const eventDate =
+        event.eventDate ||
+        event.date;
+
+
+    if (availableSeats <= 0) {
+
+        showToast(
+            "This event is sold out.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        eventStatus &&
+        eventStatus !== "published"
+    ) {
+
+        showToast(
+            "This event is not available for booking.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        eventDate &&
+        new Date(eventDate) <= new Date()
+    ) {
+
+        showToast(
+            "This event is no longer available for booking.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    bookButton.disabled =
+        true;
+
+    bookButton.textContent =
+        "Booking...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                BOOKINGS_ENDPOINT,
+                {
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${token}`
+
+                    },
+
+                    body: JSON.stringify(
+                        {
+                            eventId: eventId,
+                            ticketQuantity: 1
+                        }
+                    )
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (response.status === 401) {
+
+            showToast(
+                "Your session has expired. Please login again.",
+                "error"
+            );
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "./user-login.html";
+
+                },
+                1500
+            );
+
+            return;
+
+        }
+
+
+        if (!response.ok || !result.success) {
+
+            throw new Error(
+                result.message ||
+                "Booking could not be created."
+            );
+
+        }
+
+
+        showToast(
+            "Booking created successfully.",
+            "success"
+        );
+
+
+        const newBookingId =
+            String(result.data.booking._id);
+
+        const newBookingStatus =
+            result.data.booking.bookingStatus;
+
+        userBookings.set(
+            eventId,
+            {
+                bookingId: newBookingId,
+                bookingStatus: newBookingStatus
+            }
+        );
+
+
+        renderEvents(
+            allEvents
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Book Event Error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Something went wrong while booking.",
+            "error"
+        );
+
+
+        bookButton.disabled =
+            false;
+
+        bookButton.textContent =
+            "Book";
+
+    }
+
+}
+
+
+// ========================================
+// Handle Unbook Event
+// ========================================
+
+function handleUnbookEvent(
+    eventId,
+    bookingId,
+    unbookButton
+) {
+
+    if (!token) {
+
+        showToast(
+            "Please login to book this event.",
+            "error"
+        );
+
+        window.location.href =
+            "./user-login.html";
+
+        return;
+
+    }
+
+
+    activeUnbookButton =
+        unbookButton;
+
+    unbookButton.disabled =
+        true;
+
+    unbookButton.textContent =
+        "Unbooking...";
+
+
+    openUnbookModal(
+        eventId,
+        bookingId
+    );
+
+}
+
+
+// ========================================
+// Unbook Modal
+// ========================================
+
+function openUnbookModal(eventId, bookingId) {
+
+    selectedUnbookEventId = eventId;
+
+    selectedUnbookBookingId = bookingId;
+
+    unbookModal.classList.remove(
+        "hidden"
+    );
+
+    document.body.classList.add(
+        "overflow-hidden"
+    );
+
+
+    document.querySelectorAll(
+        ".unbook-event-btn"
+    ).forEach(
+        (btn) => {
+
+            btn.disabled =
+                true;
+
+        }
+    );
+
+}
+
+
+function closeUnbookModal() {
+
+    selectedUnbookEventId = null;
+
+    selectedUnbookBookingId = null;
+
+    unbookModal.classList.add(
+        "hidden"
+    );
+
+    document.body.classList.remove(
+        "overflow-hidden"
+    );
+
+
+    if (activeUnbookButton) {
+
+        activeUnbookButton.disabled =
+            false;
+
+        activeUnbookButton.textContent =
+            "Unbook";
+
+        activeUnbookButton =
+            null;
+
+    }
+
+
+    document.querySelectorAll(
+        ".unbook-event-btn"
+    ).forEach(
+        (btn) => {
+
+            btn.disabled =
+                false;
+
+        }
+    );
+
+
+}
+
+
+async function confirmUnbook() {
+
+    if (!selectedUnbookBookingId || !selectedUnbookEventId) {
+
+        closeUnbookModal();
+
+        return;
+
+    }
+
+
+    const bookingId =
+        selectedUnbookBookingId;
+
+    const eventId =
+        selectedUnbookEventId;
+
+
+    confirmUnbookBtn.disabled =
+        true;
+
+    confirmUnbookBtn.textContent =
+        "Unbooking...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${BOOKINGS_ENDPOINT}/${bookingId}/cancel`,
+                {
+                    method: "PATCH",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${token}`
+
+                    }
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (response.status === 401) {
+
+            showToast(
+                "Your session has expired. Please login again.",
+                "error"
+            );
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "./user-login.html";
+
+                },
+                1500
+            );
+
+            return;
+
+        }
+
+
+        if (!response.ok || !result.success) {
+
+            throw new Error(
+                result.message ||
+                "Booking could not be cancelled."
+            );
+
+        }
+
+
+        userBookings.delete(
+            eventId
+        );
+
+
+        let successMessage =
+            result.message ||
+            "Booking cancelled successfully.";
+
+        const refundAmount =
+            result.data?.refundAmount;
+
+        const refundPercentage =
+            result.data?.refundPercentage;
+
+        const refundStatus =
+            result.data?.refundStatus;
+
+
+        if (refundAmount > 0) {
+
+            successMessage =
+                `Booking cancelled successfully. Refund: ৳${Number(
+                    refundAmount
+                ).toLocaleString()} (${refundPercentage}%)\nRefund Status: ${refundStatus === "pending" ? "Pending" : capitalize(
+                    String(refundStatus || "")
+                )}`;
+
+        } else {
+
+            successMessage =
+                "Booking cancelled successfully. No refund is applicable.";
+
+        }
+
+
+        showToast(
+            successMessage,
+            "success"
+        );
+
+
+        renderEvents(
+            allEvents
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Unbook Event Error:",
+            error
+        );
+
+        showToast(
+            error.message ||
+            "Something went wrong while unbooking.",
+            "error"
+        );
+
+
+
+        if (activeUnbookButton) {
+
+            activeUnbookButton.disabled =
+                false;
+
+            activeUnbookButton.textContent =
+                "Unbook";
+
+        }
+
+    } finally {
+
+        closeUnbookModal();
+
+        confirmUnbookBtn.disabled =
+            false;
+
+        confirmUnbookBtn.textContent =
+            "Yes, Unbook";
+
+    }
+
+}
+
+
+// ========================================
 // Render Events
 // ========================================
 
@@ -663,6 +1577,16 @@ function createEventCard(event) {
         `./event-details.html?id=${encodeURIComponent(id)}`;
 
 
+    const bookButtonHTML =
+        getBookButtonHTML(event);
+
+
+    const priceDisplay =
+        price > 0
+            ? `৳${price.toLocaleString()}`
+            : "Free";
+
+
     return `
 
         <article
@@ -781,32 +1705,37 @@ function createEventCard(event) {
                                 text-primary
                             "
                         >
-                            ${
-                                price > 0
-                                    ? `৳${price.toLocaleString()}`
-                                    : "Free"
-                            }
+                            ${priceDisplay}
                         </p>
 
                     </div>
 
 
-                    <a
-                        href="${detailsURL}"
-                        class="
-                            rounded-xl
-                            bg-primary
-                            px-4
-                            py-2.5
-                            text-sm
-                            font-semibold
-                            text-white
-                            transition
-                            hover:bg-primaryDark
-                        "
-                    >
-                        View Details
-                    </a>
+                    <div class="flex items-center gap-2">
+
+                        <a
+                            href="${detailsURL}"
+                            class="
+                                rounded-xl
+                                border
+                                border-gray-200
+                                px-3
+                                py-2
+                                text-sm
+                                font-semibold
+                                text-gray-700
+                                transition
+                                hover:border-primary
+                                hover:bg-primaryLight
+                                hover:text-primary
+                            "
+                        >
+                            Details
+                        </a>
+
+                        ${bookButtonHTML}
+
+                    </div>
 
                 </div>
 
@@ -1189,7 +2118,174 @@ if (clearFilters) {
 
 
 // ========================================
+// Book Button Event Delegation
+// ========================================
+
+if (eventsContainer) {
+
+    eventsContainer.addEventListener(
+        "click",
+        (e) => {
+
+            const bookButton =
+                e.target.closest(
+                    ".book-event-btn"
+                );
+
+            const unbookButton =
+                e.target.closest(
+                    ".unbook-event-btn"
+                );
+
+
+            if (bookButton) {
+
+                if (bookButton.disabled) {
+                    return;
+                }
+
+
+                const eventId =
+                    bookButton.dataset.eventId;
+
+
+                if (!eventId) {
+                    return;
+                }
+
+
+                const event =
+                    allEvents.find(
+                        (ev) =>
+                            String(getEventId(ev)) ===
+                            String(eventId)
+                    );
+
+
+                if (!event) {
+                    return;
+                }
+
+
+                handleBookEvent(
+                    event,
+                    bookButton
+                );
+
+            }
+
+
+            if (unbookButton) {
+
+                if (
+                    unbookButton.disabled ||
+                    selectedUnbookEventId !== null
+                ) {
+                    return;
+                }
+
+
+                const eventId =
+                    unbookButton.dataset.eventId;
+
+                const bookingId =
+                    unbookButton.dataset.bookingId;
+
+
+                if (!eventId || !bookingId) {
+                    return;
+                }
+
+
+                handleUnbookEvent(
+                    eventId,
+                    bookingId,
+                    unbookButton
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ========================================
+// Unbook Modal Event Listeners
+// ========================================
+
+if (closeUnbookModalBtn) {
+
+    closeUnbookModalBtn.addEventListener(
+        "click",
+        closeUnbookModal
+    );
+
+}
+
+
+if (confirmUnbookBtn) {
+
+    confirmUnbookBtn.addEventListener(
+        "click",
+        confirmUnbook
+    );
+
+}
+
+
+if (unbookModal) {
+
+    unbookModal.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                event.target ===
+                unbookModal
+            ) {
+
+                closeUnbookModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ========================================
 // Initialize
 // ========================================
 
-fetchEvents();
+async function initializePage() {
+
+    showLoading();
+
+
+    try {
+
+        await fetchUserBookings();
+
+        await fetchEvents();
+
+    } catch (error) {
+
+        console.error(
+            "Initialize Page Error:",
+            error
+        );
+
+        showError(
+            error.message ||
+            "Something went wrong while loading the page."
+        );
+
+    }
+
+}
+
+
+initializePage();

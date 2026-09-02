@@ -1,212 +1,469 @@
 const axios = require("axios");
 
-// console.log("========== SSL ENV CHECK ==========");
-// console.log("STORE ID:", process.env.SSL_STORE_ID);
-// console.log("SANDBOX:", process.env.SSL_SANDBOX);
-// console.log(
-//   "PASSWORD EXISTS:",
-//   Boolean(process.env.SSL_STORE_PASSWORD)
-// );
-// console.log(
-//   "PASSWORD LENGTH:",
-//   process.env.SSL_STORE_PASSWORD?.length
-// );
-// console.log("===================================");
+// ======================================================
+// SSLCommerz Configuration
+// ======================================================
 
-// Create SSLCommerz Payment Session
-const createSSLSession = async ({ payment, booking }) => {
+const getSSLConfig = () => {
+  const isSandbox =
+    String(process.env.SSL_SANDBOX).toLowerCase() === "true";
 
-  const isSandbox = process.env.SSL_SANDBOX === "true";
+  const baseUrl = isSandbox
+    ? "https://sandbox.sslcommerz.com"
+    : "https://securepay.sslcommerz.com";
 
-  const apiUrl = isSandbox
-    ? "https://sandbox.sslcommerz.com/gwprocess/v4/api.php"
-    : "https://securepay.sslcommerz.com/gwprocess/v4/api.php";
+  return {
+    isSandbox,
+    baseUrl,
+    sessionUrl:
+      `${baseUrl}/gwprocess/v4/api.php`,
+    validationUrl:
+      `${baseUrl}/validator/api/validationserverAPI.php`,
+  };
+};
 
-  const formData = new URLSearchParams();
 
-  // Store Credentials
+// ======================================================
+// CREATE SSLCommerz PAYMENT SESSION
+// ======================================================
+//
+// EventEase
+//    ↓
+// Create Payment
+//    ↓
+// SSLCommerz Session
+//    ↓
+// Hosted Checkout
+//
+// ======================================================
+
+const createSSLSession = async ({
+  payment,
+  booking,
+}) => {
+
+  if (!payment) {
+    throw new Error(
+      "Payment information is required."
+    );
+  }
+
+  if (!booking) {
+    throw new Error(
+      "Booking information is required."
+    );
+  }
+
+  if (!process.env.SSL_STORE_ID) {
+    throw new Error(
+      "SSL_STORE_ID is not configured."
+    );
+  }
+
+  if (!process.env.SSL_STORE_PASSWORD) {
+    throw new Error(
+      "SSL_STORE_PASSWORD is not configured."
+    );
+  }
+
+  if (!process.env.SSL_SUCCESS_URL) {
+    throw new Error(
+      "SSL_SUCCESS_URL is not configured."
+    );
+  }
+
+  if (!process.env.SSL_FAIL_URL) {
+    throw new Error(
+      "SSL_FAIL_URL is not configured."
+    );
+  }
+
+  if (!process.env.SSL_CANCEL_URL) {
+    throw new Error(
+      "SSL_CANCEL_URL is not configured."
+    );
+  }
+
+  if (!process.env.SSL_IPN_URL) {
+    throw new Error(
+      "SSL_IPN_URL is not configured."
+    );
+  }
+
+
+  const {
+    sessionUrl,
+  } = getSSLConfig();
+
+
+  // --------------------------------------------------
+  // AMOUNT
+  // --------------------------------------------------
+
+  const totalAmount =
+    Number(booking.totalAmount);
+
+
+  if (
+    !Number.isFinite(totalAmount) ||
+    totalAmount < 10
+  ) {
+    throw new Error(
+      "Payment amount must be at least 10 BDT."
+    );
+  }
+
+
+  // --------------------------------------------------
+  // TRANSACTION ID
+  // --------------------------------------------------
+
+  if (!payment.transactionId) {
+    throw new Error(
+      "Payment transaction ID is missing."
+    );
+  }
+
+
+  // --------------------------------------------------
+  // CUSTOMER DATA
+  // --------------------------------------------------
+
+  const customer =
+    booking.user || {};
+
+
+  const customerName =
+    customer.name ||
+    "EventEase Customer";
+
+
+  const customerEmail =
+    customer.email ||
+    "customer@example.com";
+
+
+  const customerPhone =
+    customer.phone ||
+    "01700000000";
+
+
+  const customerAddress =
+    customer.address ||
+    "Dhaka";
+
+
+  // --------------------------------------------------
+  // PRODUCT DATA
+  // --------------------------------------------------
+
+  const event =
+    booking.event || {};
+
+
+  const eventTitle =
+    event.title ||
+    "Event Ticket";
+
+
+  // --------------------------------------------------
+  // FORM DATA
+  // --------------------------------------------------
+
+  const formData =
+    new URLSearchParams();
+
+
+  // ==================================================
+  // STORE INFORMATION
+  // ==================================================
+
   formData.append(
     "store_id",
     process.env.SSL_STORE_ID
   );
+
 
   formData.append(
     "store_passwd",
     process.env.SSL_STORE_PASSWORD
   );
 
-  // Transaction Information
+
+  // ==================================================
+  // TRANSACTION INFORMATION
+  // ==================================================
+
   formData.append(
     "total_amount",
-    String(booking.totalAmount)
+    totalAmount.toFixed(2)
   );
+
 
   formData.append(
     "currency",
     "BDT"
   );
 
+
   formData.append(
     "tran_id",
     payment.transactionId
   );
 
-  // Callback URLs
+
+  // ==================================================
+  // CALLBACK URLs
+  // ==================================================
+
   formData.append(
     "success_url",
     process.env.SSL_SUCCESS_URL
   );
+
 
   formData.append(
     "fail_url",
     process.env.SSL_FAIL_URL
   );
 
+
   formData.append(
     "cancel_url",
     process.env.SSL_CANCEL_URL
   );
+
 
   formData.append(
     "ipn_url",
     process.env.SSL_IPN_URL
   );
 
-  // Shipping
+
+  // ==================================================
+  // SHIPPING
+  // ==================================================
+
   formData.append(
     "shipping_method",
     "NO"
   );
 
-  // Product Information
+
+  // ==================================================
+  // PRODUCT INFORMATION
+  // ==================================================
+
   formData.append(
     "product_name",
-    booking.event.title
+    eventTitle
   );
+
 
   formData.append(
     "product_category",
     "Event Ticket"
   );
 
+
   formData.append(
     "product_profile",
     "general"
   );
 
-  // Customer Information
+
+  // ==================================================
+  // CUSTOMER INFORMATION
+  // ==================================================
+
   formData.append(
     "cus_name",
-    booking.user.name
+    customerName
   );
+
 
   formData.append(
     "cus_email",
-    booking.user.email
+    customerEmail
   );
+
 
   formData.append(
     "cus_phone",
-    booking.user.phone
+    customerPhone
   );
+
 
   formData.append(
     "cus_add1",
-    booking.user.address || "Dhaka"
+    customerAddress
   );
+
 
   formData.append(
     "cus_add2",
     ""
   );
 
+
   formData.append(
     "cus_city",
     "Dhaka"
   );
+
 
   formData.append(
     "cus_state",
     "Dhaka"
   );
 
+
   formData.append(
     "cus_postcode",
     "1200"
   );
+
 
   formData.append(
     "cus_country",
     "Bangladesh"
   );
 
-  // Custom Values
+
+  // ==================================================
+  // CUSTOM VALUES
+  // ==================================================
+
   formData.append(
     "value_a",
     booking._id.toString()
   );
+
 
   formData.append(
     "value_b",
     payment._id.toString()
   );
 
+
   formData.append(
     "value_c",
     booking.user._id.toString()
   );
 
+
+  // ==================================================
+  // SEND REQUEST TO SSLCOMMERZ
+  // ==================================================
+
   try {
 
-    const response = await axios.post(
-      apiUrl,
-      formData.toString(),
-      {
-        headers: {
-          "Content-Type":
-            "application/x-www-form-urlencoded",
-        },
-
-        timeout: 30000,
-      }
+    console.log(
+      "========== SSLCommerz SESSION =========="
     );
+
+    console.log(
+      "Environment:",
+      getSSLConfig().isSandbox
+        ? "SANDBOX"
+        : "LIVE"
+    );
+
+    console.log(
+      "Transaction ID:",
+      payment.transactionId
+    );
+
+    console.log(
+      "Amount:",
+      totalAmount
+    );
+
+    console.log(
+      "========================================="
+    );
+
+
+    const response =
+      await axios.post(
+        sessionUrl,
+        formData.toString(),
+        {
+          headers: {
+            "Content-Type":
+              "application/x-www-form-urlencoded",
+          },
+
+          timeout: 30000,
+        }
+      );
+
 
     console.log(
       "========== SSL SESSION RESPONSE =========="
     );
 
-    console.log(response.data);
+    console.log(
+      response.data
+    );
 
     console.log(
       "=========================================="
     );
 
-    // SSLCommerz returned failure
+
+    // ------------------------------------------------
+    // CHECK RESPONSE
+    // ------------------------------------------------
+
     if (
-      !response.data ||
-      response.data.status !== "SUCCESS"
+      !response.data
     ) {
       throw new Error(
-        response.data?.failedreason ||
+        "Empty response received from SSLCommerz."
+      );
+    }
+
+
+    if (
+      response.data.status !==
+      "SUCCESS"
+    ) {
+      throw new Error(
+        response.data.failedreason ||
         "SSLCommerz payment session creation failed."
       );
     }
 
-    // Gateway URL missing
-    if (!response.data.GatewayPageURL) {
+
+    // ------------------------------------------------
+    // CHECK GATEWAY URL
+    // ------------------------------------------------
+
+    if (
+      !response.data.GatewayPageURL
+    ) {
       throw new Error(
         "SSLCommerz GatewayPageURL was not returned."
       );
     }
+
 
     return response.data;
 
   } catch (error) {
 
     console.error(
-      "SSLCommerz Session Error:",
+      "========== SSL SESSION ERROR =========="
+    );
+
+    console.error(
       error.response?.data ||
       error.message
+    );
+
+    console.error(
+      "======================================="
     );
 
     throw error;
@@ -214,36 +471,143 @@ const createSSLSession = async ({ payment, booking }) => {
 };
 
 
-// Validate SSLCommerz Payment
-const validateSSLPayment = async (valId) => {
+// ======================================================
+// VALIDATE SSLCommerz PAYMENT
+// ======================================================
+//
+// Hosted Checkout
+//       ↓
+// Success / IPN
+//       ↓
+// val_id
+//       ↓
+// Backend Validation
+//       ↓
+// VALID / VALIDATED
+//
+// ======================================================
 
-  const isSandbox =
-    process.env.SSL_SANDBOX === "true";
+const validateSSLPayment = async (
+  valId
+) => {
 
-  const baseUrl = isSandbox
-    ? "https://sandbox.sslcommerz.com"
-    : "https://securepay.sslcommerz.com";
+  if (!valId) {
+    throw new Error(
+      "SSLCommerz validation ID is required."
+    );
+  }
 
-  const url =
-    `${baseUrl}/validator/api/validationserverAPI.php`;
 
-  const response = await axios.get(url, {
-    params: {
-      val_id: valId,
-      store_id: process.env.SSL_STORE_ID,
-      store_passwd:
-        process.env.SSL_STORE_PASSWORD,
-      format: "json",
-    },
+  if (!process.env.SSL_STORE_ID) {
+    throw new Error(
+      "SSL_STORE_ID is not configured."
+    );
+  }
 
-    timeout: 30000,
-  });
 
-  return response.data;
+  if (!process.env.SSL_STORE_PASSWORD) {
+    throw new Error(
+      "SSL_STORE_PASSWORD is not configured."
+    );
+  }
+
+
+  const {
+    validationUrl,
+  } = getSSLConfig();
+
+
+  try {
+
+    console.log(
+      "========== SSL PAYMENT VALIDATION =========="
+    );
+
+    console.log(
+      "Validation ID:",
+      valId
+    );
+
+    console.log(
+      "Environment:",
+      getSSLConfig().isSandbox
+        ? "SANDBOX"
+        : "LIVE"
+    );
+
+    console.log(
+      "============================================="
+    );
+
+
+    const response =
+      await axios.get(
+        validationUrl,
+        {
+          params: {
+
+            val_id:
+              valId,
+
+            store_id:
+              process.env.SSL_STORE_ID,
+
+            store_passwd:
+              process.env.SSL_STORE_PASSWORD,
+
+            format:
+              "json",
+
+          },
+
+          timeout: 30000,
+        }
+      );
+
+
+    console.log(
+      "========== SSL VALIDATION RESPONSE =========="
+    );
+
+    console.log(
+      response.data
+    );
+
+    console.log(
+      "=============================================="
+    );
+
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error(
+      "========== SSL VALIDATION ERROR =========="
+    );
+
+    console.error(
+      error.response?.data ||
+      error.message
+    );
+
+    console.error(
+      "=========================================="
+    );
+
+    throw error;
+  }
 };
 
 
+// ======================================================
+// EXPORT
+// ======================================================
+
 module.exports = {
+
   createSSLSession,
+
   validateSSLPayment,
+
 };

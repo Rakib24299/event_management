@@ -36,8 +36,9 @@ const {Schema} = mongoose;
                 "refund",
                 "approval",
                 "system",
+                "account",
             ],
-      default: "system",
+       default: "system",
     },
 
 

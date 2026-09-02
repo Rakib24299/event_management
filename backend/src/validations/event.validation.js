@@ -176,7 +176,8 @@ const createEventSchema = z.object({
         .min(
           0,
           "Ticket price cannot be negative"
-        ),
+        )
+        .optional(),
 
 
       totalSeats: z
@@ -187,7 +188,8 @@ const createEventSchema = z.object({
         .min(
           1,
           "Total seats must be at least 1"
-        ),
+        )
+        .optional(),
 
 
       maxTicketsPerUser: z
@@ -245,6 +247,7 @@ const createEventSchema = z.object({
 
       if (
         data.eventType === "free" &&
+        data.ticketPrice !== undefined &&
         data.ticketPrice !== 0
       ) {
 
@@ -265,26 +268,74 @@ const createEventSchema = z.object({
 
 
       // ====================================
-      // Paid Event Price
+      // Paid Event Validation
       // ====================================
 
       if (
-        data.eventType === "paid" &&
-        data.ticketPrice <= 0
+        data.eventType === "paid"
       ) {
 
-        ctx.addIssue({
+        if (
+          data.ticketPrice === undefined ||
+          data.ticketPrice <= 0
+        ) {
 
-          code:
-            z.ZodIssueCode.custom,
+          ctx.addIssue({
 
-          path:
-            ["ticketPrice"],
+            code:
+              z.ZodIssueCode.custom,
 
-          message:
-            "Paid events must have a ticket price greater than 0.",
+            path:
+              ["ticketPrice"],
 
-        });
+            message:
+              "Paid events must have a ticket price greater than 0.",
+
+          });
+
+        }
+
+
+        if (
+          data.totalSeats === undefined ||
+          data.totalSeats < 1
+        ) {
+
+          ctx.addIssue({
+
+            code:
+              z.ZodIssueCode.custom,
+
+            path:
+              ["totalSeats"],
+
+            message:
+              "Total seats must be at least 1.",
+
+          });
+
+        }
+
+
+        if (
+          data.maxTicketsPerUser === undefined ||
+          data.maxTicketsPerUser < 1
+        ) {
+
+          ctx.addIssue({
+
+            code:
+              z.ZodIssueCode.custom,
+
+            path:
+              ["maxTicketsPerUser"],
+
+            message:
+              "Maximum tickets must be at least 1.",
+
+          });
+
+        }
 
       }
 
@@ -295,6 +346,7 @@ const createEventSchema = z.object({
 
       if (
         data.maxTicketsPerUser &&
+        data.totalSeats &&
         data.maxTicketsPerUser >
           data.totalSeats
       ) {

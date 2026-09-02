@@ -580,7 +580,7 @@ async function createBooking() {
 
     const bookingPayload = {
 
-        event: eventId,
+        eventId: eventId,
 
         ticketQuantity: quantity
 
@@ -642,11 +642,17 @@ async function createBooking() {
 
 
         // ====================================
-        // Booking Created
+        // Booking Created / Existing Pending
         // ====================================
 
         const booking =
-            result.data;
+            result.data.booking ||
+            result.booking;
+
+
+        const isExistingPending =
+            result.data.isExistingPending ||
+            result.isExistingPending;
 
 
         sessionStorage.setItem(
@@ -660,22 +666,29 @@ async function createBooking() {
 
 
         confirmBookingButton.textContent =
-            "Booking Created ✓";
+            isExistingPending
+                ? "Pending Booking Found ✓"
+                : "Booking Created ✓";
 
 
         // ====================================
         // Next Step
         // ====================================
 
-        alert(
+        const message =
             result.message ||
-            "Booking created successfully. Next step is OTP verification."
+            "Booking created successfully. Redirecting to payment...";
+
+
+        alert(
+            message
         );
 
 
-        /*
-         * Booking OTP page আমরা পরের ধাপে তৈরি করব।
-         */
+        window.location.href =
+            `./payment.html?bookingId=${encodeURIComponent(
+                booking._id
+            )}`;
 
     } catch (error) {
 

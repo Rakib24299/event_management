@@ -210,26 +210,66 @@ const createBooking = async (
   }
 
   // --------------------------------------------------
-  // PREVIOUS ACTIVE BOOKING
+  // DUPLICATE BOOKING CHECK
+  // --------------------------------------------------
+  //
+  // Only BLOCK if the user already has a CONFIRMED booking.
+  // A pending (unpaid) booking is NOT a final booking and
+  // must be returned so the user can complete payment.
   // --------------------------------------------------
 
-  const previousBooking =
+  const confirmedBooking =
     await Booking.findOne({
       user: userId,
       event: eventData._id,
-      bookingStatus: {
-        $in: [
-          "pending",
-          "confirmed",
-        ],
-      },
+      bookingStatus: "confirmed",
     });
 
-  if (previousBooking) {
+  if (confirmedBooking) {
     throw createError(
       "You have already booked this event.",
       409
     );
+  }
+
+  // --------------------------------------------------
+  // REUSE EXISTING PENDING BOOKING
+  // --------------------------------------------------
+
+  const existingPendingBooking =
+    await Booking.findOne({
+      user: userId,
+      event: eventData._id,
+      bookingStatus: "pending",
+      isOtpVerified: false,
+    });
+
+  if (existingPendingBooking) {
+    const pendingResult =
+      await populateBooking(
+        Booking.findById(
+          existingPendingBooking._id
+        )
+      );
+
+    let existingPayment = null;
+
+    if (
+      existingPendingBooking.payment
+    ) {
+      existingPayment =
+        await Payment.findById(
+          existingPendingBooking.payment
+        );
+    }
+
+    return {
+      booking: pendingResult,
+      payment: existingPayment,
+      message:
+        "You have an existing pending booking. Please complete payment.",
+      isExistingPending: true,
+    };
   }
 
   // ==================================================
@@ -459,7 +499,7 @@ const createBooking = async (
 
       organizerAmount,
 
-      paymentMethod: "dummy",
+      paymentMethod: "sslcommerz",
 
       status: "pending",
 
@@ -703,11 +743,59 @@ const verifyBookingOtp = async (
   booking.bookingOtpExpires =
     null;
 
-  await booking.save();
+   await booking.save();
 
-  // --------------------------------------------------
-  // CONFIRMATION EMAIL
-  // --------------------------------------------------
+
+   // --------------------------------------------------
+   // NOTIFY ORGANIZER
+   // --------------------------------------------------
+
+   try {
+
+     const eventForNotification =
+       await Event.findById(
+         booking.event
+       ).select(
+         "title organizer"
+       );
+
+     if (
+       eventForNotification?.organizer
+     ) {
+
+       await notificationService.createNotification({
+
+         user:
+           eventForNotification.organizer,
+
+         title:
+           "New Ticket Booking",
+
+         message:
+           `A user has successfully booked a ticket for your event "${eventForNotification.title}". Ticket Quantity: ${booking.ticketQuantity}.`,
+
+         type:
+           "booking",
+
+       });
+
+     }
+
+   } catch (
+     notificationError
+   ) {
+
+     console.error(
+       "Organizer booking notification failed:",
+       notificationError.message
+     );
+
+   }
+
+
+   // --------------------------------------------------
+   // CONFIRMATION EMAIL
+   // --------------------------------------------------
 
   const user =
     await User.findById(userId)
@@ -1091,6 +1179,26 @@ const cancelBooking = async (
 };
 
 // ======================================================
+// GET MY CONFIRMED BOOKINGS
+// ======================================================
+// Returns only bookings that have been successfully
+// confirmed (bookingStatus = "confirmed").
+// Source of truth: backend only.
+
+const getMyConfirmedBookings = async (
+  userId
+) => {
+  return await populateBooking(
+    Booking.find({
+      user: userId,
+      bookingStatus: "confirmed",
+    }).sort({
+      createdAt: -1,
+    })
+  );
+};
+
+// ======================================================
 // GET MY BOOKINGS
 // ======================================================
 
@@ -1100,7 +1208,12 @@ const getMyBookings = async (
   return await populateBooking(
     Booking.find({
       user: userId,
-      bookingStatus: "confirmed",
+      bookingStatus: {
+        $in: [
+          "pending",
+          "confirmed",
+        ],
+      },
     }).sort({
       createdAt: -1,
     })
@@ -1506,6 +1619,7 @@ module.exports = {
   verifyBookingOtp,
   cancelBooking,
   getMyBookings,
+  getMyConfirmedBookings,
   getOrganizerBookings,
   getEventBookings,
   getBookingById,

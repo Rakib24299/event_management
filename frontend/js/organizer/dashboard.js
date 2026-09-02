@@ -203,6 +203,30 @@ async function loadOrganizerLogo() {
         }
 
 
+        if (organizerName && user.name) {
+
+            organizerName.textContent =
+                user.name;
+
+        }
+
+
+        if (
+            organizationName &&
+            user.organizationName
+        ) {
+
+            organizationName.textContent =
+                user.organizationName;
+
+        } else if (organizationName) {
+
+            organizationName.textContent =
+                "Manage your organization and events.";
+
+        }
+
+
         const storedUser =
             localStorage.getItem("user");
 
@@ -217,6 +241,13 @@ async function loadOrganizerLogo() {
                 parsedUser.organizationLogo =
                     user.organizationLogo ||
                     parsedUser.organizationLogo;
+
+                parsedUser.name =
+                    user.name || parsedUser.name;
+
+                parsedUser.organizationName =
+                    user.organizationName ||
+                    parsedUser.organizationName;
 
                 localStorage.setItem(
                     "user",
@@ -397,6 +428,112 @@ function displayRecentEvents(events) {
     recentEventsEl.classList.remove("hidden");
 
     recentEventsEmpty.classList.add("hidden");
+
+}
+
+
+// ========================================
+// Update Notification Badge
+// ========================================
+
+async function updateNotificationBadge() {
+
+    const badge =
+        document.getElementById(
+            "notificationBadge"
+        );
+
+
+    if (!badge) {
+        return;
+    }
+
+
+    const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
+
+
+    if (!token) {
+
+        badge.classList.add(
+            "hidden"
+        );
+
+        badge.textContent = "0";
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/v1/notifications/unread-count",
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`,
+
+                    },
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            response.ok &&
+            result.success &&
+            result.data
+        ) {
+
+            const count =
+                result.data.unreadCount ||
+                0;
+
+
+            badge.textContent = count;
+
+
+            if (count > 0) {
+
+                badge.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                badge.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        } else {
+
+            badge.classList.add(
+                "hidden"
+            );
+
+            badge.textContent = "0";
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Notification badge error:",
+            error
+        );
+
+    }
 
 }
 
@@ -583,3 +720,5 @@ retryDashboardButton.addEventListener(
 // ========================================
 
 loadDashboard();
+
+updateNotificationBadge();

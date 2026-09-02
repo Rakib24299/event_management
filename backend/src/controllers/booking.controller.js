@@ -159,6 +159,30 @@ const cancelBooking = catchAsync(async (req, res) => {
 });
 
 // ======================================================
+// GET MY CONFIRMED BOOKINGS
+// ======================================================
+// GET /api/v1/bookings/my/confirmed
+// ======================================================
+
+const getMyConfirmedBookings = catchAsync(
+  async (req, res) => {
+    const result =
+      await bookingService.getMyConfirmedBookings(
+        req.user.id
+      );
+
+    return res.status(200).json({
+      success: true,
+
+      message:
+        "Your confirmed bookings fetched successfully.",
+
+      data: result,
+    });
+  }
+);
+
+// ======================================================
 // GET MY BOOKINGS
 // ======================================================
 // GET /api/v1/bookings/my
@@ -391,6 +415,7 @@ module.exports = {
   verifyBookingOtp,
   cancelBooking,
   getMyBookings,
+  getMyConfirmedBookings,
   getOrganizerBookings,
   getEventBookings,
   getBookingById,

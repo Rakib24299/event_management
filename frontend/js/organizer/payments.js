@@ -420,7 +420,7 @@ function getPaymentMethod(payment) {
         method === "dummy"
     ) {
 
-        return "Dummy Payment";
+        return "SSLCommerz";
 
     }
 

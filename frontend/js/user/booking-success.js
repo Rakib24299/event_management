@@ -454,7 +454,7 @@ const displayBookingInformation =
     const paymentMethod =
       completedPayment?.paymentMethod ||
       successData?.paymentMethod ||
-      "dummy";
+      "sslcommerz";
 
 
     const transactionId =
