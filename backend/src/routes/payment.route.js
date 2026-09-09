@@ -48,6 +48,17 @@ router.post( "/sslcommerz/ipn", paymentController.sslPaymentIPN);
 
 
 // ======================================================
+// DOWNLOAD PAYMENT RECEIPT PDF
+// ======================================================
+
+router.get(
+  "/booking/:bookingId/receipt",
+  authMiddleware,
+  paymentController.downloadPaymentReceipt
+);
+
+
+// ======================================================
 // GET PAYMENT BY BOOKING
 // ======================================================
 

@@ -222,6 +222,32 @@ const getAllEvents =
 
 
 // ======================================================
+// Get Event History
+// ======================================================
+
+const getEventHistory =
+  catchAsync(async (req, res) => {
+
+    const result =
+      await adminService
+        .getEventHistory();
+
+    return res.status(200).json({
+
+      success: true,
+
+      message:
+        "Event history fetched successfully.",
+
+      data:
+        result,
+
+    });
+
+  });
+
+
+// ======================================================
 // Delete Event By Admin
 // ======================================================
 
@@ -410,6 +436,8 @@ module.exports = {
   unblockUser,
 
   getAllEvents,
+
+  getEventHistory,
 
   deleteEventByAdmin,
 

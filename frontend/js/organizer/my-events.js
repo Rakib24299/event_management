@@ -1,3 +1,22 @@
+
+// ========================================
+// Helper: Is Event Expired
+// ========================================
+const isEventExpired = (event) => {
+    if (!event || !event.eventDate) return false;
+    const date = new Date(event.eventDate);
+    if (isNaN(date.getTime())) return false;
+    if (event.endTime) {
+        const parts = String(event.endTime).split(":").map(Number);
+        if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            date.setHours(parts[0], parts[1], 0, 0);
+        }
+    } else {
+        date.setHours(23, 59, 59, 999);
+    }
+    return date < new Date();
+};
+
 // ========================================
 // EventEase Organizer - My Events
 // ========================================
@@ -332,12 +351,14 @@ function displayEvents(events) {
 
         const location =
             getEventLocation(event);
-
-
         const price =
             event.ticketPrice ??
             event.price ??
             0;
+
+
+        const isFreeEvent =
+            event.eventType === "free";
 
 
         const availableSeats =
@@ -356,12 +377,17 @@ function displayEvents(events) {
 
         let soldSeats = 0;
 
-        if (totalSeats > 0) {
+
+        if (
+            totalSeats > 0 &&
+            !isFreeEvent
+        ) {
 
             soldSeats =
                 Math.max(
                     0,
-                    totalSeats - availableSeats
+                    totalSeats -
+                        availableSeats
                 );
 
         }
@@ -463,7 +489,7 @@ function displayEvents(events) {
                 >
 
                     <span>
-                        📅
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     </span>
 
                     <span>
@@ -489,7 +515,7 @@ function displayEvents(events) {
                 >
 
                     <span>
-                        📍
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </span>
 
                     <span class="line-clamp-1">
@@ -505,107 +531,148 @@ function displayEvents(events) {
                     class="
                         mt-5
                         grid
-                        grid-cols-3
                         gap-2
+                        ${
+                            isFreeEvent
+                                ? "grid-cols-1"
+                                : "grid-cols-3"
+                        }
                     "
                 >
 
-                    <!-- Price -->
+                    ${!isFreeEvent ? `
 
-                    <div
-                        class="
-                            rounded-2xl
-                            bg-[#e76f51]/10
-                            p-3
-                        "
-                    >
+                        <!-- Sold -->
 
-                        <p
+                        <div
                             class="
-                                text-xs
-                                text-gray-500
+                                rounded-2xl
+                                bg-[#e76f51]/10
+                                p-3
                             "
                         >
-                            Price
-                        </p>
 
-                        <p
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                "
+                            >
+                                Price
+                            </p>
+
+                            <p
+                                class="
+                                    mt-1
+                                    font-bold
+                                    text-[#e76f51]
+                                "
+                            >
+                                ${escapeHTML(
+                                    formatPrice(price)
+                                )}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Sold -->
+
+                        <div
                             class="
-                                mt-1
-                                font-bold
-                                text-[#e76f51]
+                                rounded-2xl
+                                bg-gray-50
+                                p-3
                             "
                         >
-                            ${escapeHTML(
-                                formatPrice(price)
-                            )}
-                        </p>
 
-                    </div>
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                "
+                            >
+                                Sold
+                            </p>
+
+                            <p
+                                class="
+                                    mt-1
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                ${soldSeats}
+                            </p>
+
+                        </div>
 
 
-                    <!-- Sold -->
+                        <!-- Available -->
 
-                    <div
-                        class="
-                            rounded-2xl
-                            bg-gray-50
-                            p-3
-                        "
-                    >
-
-                        <p
+                        <div
                             class="
-                                text-xs
-                                text-gray-500
+                                rounded-2xl
+                                bg-gray-50
+                                p-3
                             "
                         >
-                            Sold
-                        </p>
 
-                        <p
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                "
+                            >
+                                Available
+                            </p>
+
+                            <p
+                                class="
+                                    mt-1
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                ${availableSeats}
+                            </p>
+
+                        </div>
+
+                    ` : `
+
+                        <!-- Free Event spacer -->
+
+                        <div
                             class="
-                                mt-1
-                                font-bold
-                                text-gray-900
+                                rounded-2xl
+                                bg-gray-50
+                                p-3
                             "
                         >
-                            ${soldSeats}
-                        </p>
 
-                    </div>
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                "
+                            >
+                                Type
+                            </p>
 
+                            <p
+                                class="
+                                    mt-1
+                                    font-bold
+                                    text-gray-900
+                                "
+                            >
+                                Free
+                            </p>
 
-                    <!-- Available -->
+                        </div>
 
-                    <div
-                        class="
-                            rounded-2xl
-                            bg-gray-50
-                            p-3
-                        "
-                    >
-
-                        <p
-                            class="
-                                text-xs
-                                text-gray-500
-                            "
-                        >
-                            Available
-                        </p>
-
-                        <p
-                            class="
-                                mt-1
-                                font-bold
-                                text-gray-900
-                            "
-                        >
-                            ${availableSeats}
-                        </p>
-
-                    </div>
+                    `}
 
                 </div>
 
@@ -754,7 +821,8 @@ async function loadMyEvents() {
         eventsLoading.classList.add("hidden");
 
 
-        displayEvents(events);
+        const activeEvents = (events || []).filter(event => !isEventExpired(event));
+        displayEvents(activeEvents);
 
 
     } catch (error) {

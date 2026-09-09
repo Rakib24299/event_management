@@ -160,6 +160,25 @@ router.get(
 
 
 // ======================================================
+// Event History
+// Expired events within 30 days
+// ======================================================
+
+router.get(
+
+  "/events/history",
+
+  authMiddleware,
+
+  roleMiddleware("admin"),
+
+  adminController
+    .getEventHistory
+
+);
+
+
+// ======================================================
 // Delete Event
 // ======================================================
 

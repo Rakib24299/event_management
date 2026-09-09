@@ -6,22 +6,24 @@ const Review = require("../models/Review");
 const Notification = require("../models/Notification");
 const AppError = require("../utils/AppError");
 
+const {
+  getEventEndDateTime,
+  isEventExpired,
+} = require("../utils/eventDateTime");
+
 // Admin Dashboard
 
 const getAdminDashboard = async () => {
+
   const [
     totalUsers,
     totalOrganizers,
     pendingOrganizers,
-    totalEvents,
-    publishedEvents,
-    completedEvents,
-    cancelledEvents,
-    totalBookings,
+    totalBookingsResult,
     totalRevenue,
     recentUsers,
-    recentEvents,
     recentBookings,
+    totalTicketsResult,
   ] = await Promise.all([
     User.countDocuments({
       role: "user",
@@ -39,30 +41,107 @@ const getAdminDashboard = async () => {
       status: "active",
     }),
 
-    Event.countDocuments({
-      isDeleted: false,
-    }),
-
-    Event.countDocuments({
-      isDeleted: false,
-      status: "published",
-    }),
-
-    Event.countDocuments({
-      isDeleted: false,
-      status: "completed",
-    }),
-
-    Event.countDocuments({
-      isDeleted: false,
-      status: "cancelled",
-    }),
-
-    Booking.countDocuments({
-      bookingStatus: {
-        $ne: "cancelled",
+    Booking.aggregate([
+      {
+        $match: {
+          bookingStatus: {
+            $ne: "cancelled",
+          },
+        },
       },
-    }),
+      {
+        $lookup: {
+          from: "events",
+          localField: "event",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+      { $unwind: "$event" },
+      {
+        $addFields: {
+          eventEndDateTime: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: "$event.eventDate",
+                    },
+                  },
+                  "T",
+                  { $ifNull: ["$event.endTime", "23:59:59"] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $match: {
+          "event.isDeleted": false,
+          eventEndDateTime: { $gt: new Date() },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalBookings: { $sum: 1 },
+        },
+      },
+    ]),
+
+    Booking.aggregate([
+      {
+        $match: {
+          bookingStatus: {
+            $ne: "cancelled",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "events",
+          localField: "event",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+      { $unwind: "$event" },
+      {
+        $addFields: {
+          eventEndDateTime: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: "$event.eventDate",
+                    },
+                  },
+                  "T",
+                  { $ifNull: ["$event.endTime", "23:59:59"] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $match: {
+          "event.isDeleted": false,
+          eventEndDateTime: { $gt: new Date() },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalTickets: { $sum: "$ticketQuantity" },
+        },
+      },
+    ]),
 
     Payment.aggregate([
       {
@@ -89,14 +168,6 @@ const getAdminDashboard = async () => {
       })
       .limit(5),
 
-    Event.find({
-      isDeleted: false,
-    })
-      .sort({
-        createdAt: -1,
-      })
-      .limit(5),
-
     Booking.find({
       bookingStatus: {
         $ne: "cancelled",
@@ -110,6 +181,70 @@ const getAdminDashboard = async () => {
       .limit(5),
   ]);
 
+
+  const totalEventsResult =
+    await Event.find({
+      isDeleted: false,
+    });
+
+
+  const totalEvents =
+    totalEventsResult.filter(
+      (event) =>
+        !isEventExpired(event)
+    ).length;
+
+
+  const publishedEventsResult =
+    await Event.find({
+      isDeleted: false,
+      status: "published",
+    });
+
+
+  const publishedEvents =
+    publishedEventsResult.filter(
+      (event) =>
+        !isEventExpired(event)
+    ).length;
+
+
+  const allEventsForHistory =
+    await Event.find({
+      isDeleted: false,
+    });
+
+
+  const completedEvents =
+    allEventsForHistory.filter(
+      isEventExpired
+    ).length;
+
+
+  const cancelledEvents =
+    await Event.countDocuments({
+      isDeleted: false,
+      status: "cancelled",
+    });
+
+
+  const recentEventsResult =
+    await Event.find({
+      isDeleted: false,
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .limit(50);
+
+
+  const recentEvents =
+    recentEventsResult.filter(
+      (event) =>
+        !isEventExpired(event)
+    );
+
+
   return {
     totalUsers,
     totalOrganizers,
@@ -118,7 +253,15 @@ const getAdminDashboard = async () => {
     publishedEvents,
     completedEvents,
     cancelledEvents,
-    totalBookings,
+    totalBookings:
+      totalBookingsResult.length > 0
+        ? totalBookingsResult[0].totalBookings
+        : 0,
+
+    totalTickets:
+      totalTicketsResult.length > 0
+        ? totalTicketsResult[0].totalTickets
+        : 0,
 
     totalRevenue:
       totalRevenue.length > 0
@@ -142,6 +285,14 @@ const getOrganizerDashboard = async (organizerId) => {
 
   const eventIds = myEvents.map((event) => event._id);
 
+  const upcomingEvents = myEvents.filter(
+    (event) => !isEventExpired(event)
+  );
+
+  const upcomingEventIds = upcomingEvents.map(
+    (event) => event._id
+  );
+
     const [
      totalEvents,
      publishedEvents,
@@ -155,12 +306,18 @@ const getOrganizerDashboard = async (organizerId) => {
       Event.countDocuments({
         organizer: organizerId,
         isDeleted: false,
+        _id: {
+          $in: upcomingEventIds,
+        },
       }),
 
       Event.countDocuments({
         organizer: organizerId,
         isDeleted: false,
         status: "published",
+        _id: {
+          $in: upcomingEventIds,
+        },
       }),
 
       Event.countDocuments({
@@ -185,7 +342,7 @@ const getOrganizerDashboard = async (organizerId) => {
         {
           $match: {
             event: {
-              $in: eventIds,
+              $in: upcomingEventIds,
             },
             bookingStatus: {
               $ne: "cancelled",
@@ -205,6 +362,9 @@ const getOrganizerDashboard = async (organizerId) => {
       Event.find({
         organizer: organizerId,
         isDeleted: false,
+        _id: {
+          $in: upcomingEventIds,
+        },
       })
         .sort({
           createdAt: -1,

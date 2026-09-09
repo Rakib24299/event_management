@@ -214,7 +214,7 @@ const eventSchema = new Schema(
 
         totalSeats: {
             type: Number,
-            default: 100,
+            default: null,
             min: 1,
         },
 
@@ -225,7 +225,7 @@ const eventSchema = new Schema(
 
         availableSeats: {
             type: Number,
-            default: 100,
+            default: null,
             min: 0,
         },
 
@@ -236,7 +236,7 @@ const eventSchema = new Schema(
 
         maxTicketsPerUser: {
             type: Number,
-            default: 5,
+            default: null,
             min: 1,
         },
 

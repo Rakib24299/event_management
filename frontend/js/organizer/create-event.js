@@ -1331,7 +1331,7 @@ if (createEventForm) {
 
 
                 createEventButton.textContent =
-                    "Event Created ✓";
+                    "Event Created";
 
 
                 // ====================================

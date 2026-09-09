@@ -45,6 +45,9 @@ const ticketQuantity =
 const ticketPrice =
     document.getElementById("ticketPrice");
 
+const ticketPriceSection =
+    document.getElementById("ticketPriceSection");
+
 const totalAmount =
     document.getElementById("totalAmount");
 
@@ -387,6 +390,18 @@ function displayBooking(booking) {
         formatPrice(
             pricePerTicket
         );
+
+
+    if (
+        ticketPriceSection &&
+        booking.event?.eventType === "free"
+    ) {
+
+        ticketPriceSection.classList.add(
+            "hidden"
+        );
+
+    }
 
 
     // ====================================

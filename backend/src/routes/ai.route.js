@@ -10,8 +10,8 @@ const aiController =
     require("../controllers/ai.controller");
 
 
-const authMiddleware =
-    require("../middlewares/auth.middleware");
+const optionalAuthMiddleware =
+    require("../middlewares/optionalAuth.middleware");
 
 
 const router =
@@ -20,14 +20,14 @@ const router =
 
 // ========================================
 // AI Chat
-// Authenticated Users
+// Optional Authentication
 // ========================================
 
 router.post(
 
     "/chat",
 
-    authMiddleware,
+    optionalAuthMiddleware,
 
     aiController.chatWithAI
 

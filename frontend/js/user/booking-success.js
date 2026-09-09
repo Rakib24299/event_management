@@ -101,6 +101,76 @@ const otpMessage =
     "otpMessage"
   );
 
+const ticketsCard =
+  document.getElementById(
+    "ticketsCard"
+  );
+
+const paymentMethodCard =
+  document.getElementById(
+    "paymentMethodCard"
+  );
+
+const bookingIdCard =
+  document.getElementById(
+    "bookingIdCard"
+  );
+
+const totalAmountCard =
+  document.getElementById(
+    "totalAmountCard"
+  );
+
+const bookingInfoGrid =
+  document.getElementById(
+    "bookingInfoGrid"
+  );
+
+const paymentInfoSection =
+  document.getElementById(
+    "paymentInfoSection"
+  );
+
+const paymentInfoHeading =
+  document.getElementById(
+    "paymentInfoHeading"
+  );
+
+const paymentInfoSubheading =
+  document.getElementById(
+    "paymentInfoSubheading"
+  );
+
+const paymentIdRow =
+  document.getElementById(
+    "paymentIdRow"
+  );
+
+const transactionIdRow =
+  document.getElementById(
+    "transactionIdRow"
+  );
+
+const paymentStatusRow =
+  document.getElementById(
+    "paymentStatusRow"
+  );
+
+const bookingStatusRow =
+  document.getElementById(
+    "bookingStatusRow"
+  );
+
+const successHeading =
+  document.getElementById(
+    "successHeading"
+  );
+
+const successSubheading =
+  document.getElementById(
+    "successSubheading"
+  );
+
 
 // ======================================================
 // TOKEN
@@ -477,6 +547,14 @@ const displayBookingInformation =
       successData?.bookingStatus ||
       "pending";
 
+    const isFreeEvent =
+      (eventData && (eventData.eventType === "free" || Number(eventData.ticketPrice ?? 0) === 0)) ||
+      (completedBooking?.event && (completedBooking.event.eventType === "free" || Number(completedBooking.event.ticketPrice ?? 0) === 0)) ||
+      (completedBooking && Number(completedBooking.totalAmount ?? 0) === 0 && (completedBooking.ticketPrice === 0 || completedBooking.ticketPrice === undefined || completedBooking.ticketPrice === null)) ||
+      completedPayment?.paymentMethod === "free" ||
+      successData?.paymentMethod === "free" ||
+      successData?.paymentMethod === "free_registration";
+
 
     if (successBookingId) {
 
@@ -495,16 +573,21 @@ const displayBookingInformation =
     if (successPaymentMethod) {
 
       successPaymentMethod.textContent =
-        "Dummy Payment";
+        paymentMethod === "sslcommerz"
+          ? "SSLCommerz"
+          : paymentMethod || "Online";
+
     }
 
 
     if (successTotalAmount) {
 
       successTotalAmount.textContent =
-        formatMoney(
-          totalAmount
-        );
+        isFreeEvent
+          ? "Free"
+          : formatMoney(
+              totalAmount
+            );
     }
 
 
@@ -547,6 +630,112 @@ const displayBookingInformation =
           bookingCurrentStatus
         ).toUpperCase();
     }
+
+
+    // --------------------------------------------------
+    // Free Event UI Adjustments
+    // --------------------------------------------------
+
+    if (isFreeEvent) {
+
+      if (ticketsCard) {
+        ticketsCard.classList.add("hidden");
+      } else if (successTicketQuantity) {
+        successTicketQuantity.closest("div")?.classList.add("hidden");
+      }
+
+      if (paymentMethodCard) {
+        paymentMethodCard.classList.add("hidden");
+      } else if (successPaymentMethod) {
+        successPaymentMethod.closest("div")?.classList.add("hidden");
+      }
+
+      if (paymentStatusRow) {
+        paymentStatusRow.classList.add("hidden");
+      } else if (successPaymentStatus) {
+        successPaymentStatus.closest("div")?.classList.add("hidden");
+      }
+
+      if (paymentIdRow) {
+        paymentIdRow.classList.add("hidden");
+      } else if (successPaymentId) {
+        successPaymentId.closest("div")?.classList.add("hidden");
+      }
+
+      if (transactionIdRow) {
+        transactionIdRow.classList.add("hidden");
+      } else if (successTransactionId) {
+        successTransactionId.closest("div")?.classList.add("hidden");
+      }
+
+      if (successHeading) {
+        successHeading.textContent = "Registration Confirmed!";
+      }
+
+      if (successSubheading) {
+        successSubheading.textContent = "Your free event registration has been successfully confirmed.";
+      }
+
+      if (paymentInfoHeading) {
+        paymentInfoHeading.textContent = "Registration Information";
+      }
+
+      if (paymentInfoSubheading) {
+        paymentInfoSubheading.textContent = "Your event registration is confirmed.";
+      }
+
+      if (bookingInfoGrid) {
+        bookingInfoGrid.className = "mt-7 grid grid-cols-1 gap-3 border-t border-gray-100 pt-6 sm:grid-cols-2";
+      }
+
+      if (successBookingStatus) {
+        successBookingStatus.textContent = "CONFIRMED";
+        successBookingStatus.className = "rounded-full bg-primaryLight px-3 py-1 text-xs font-semibold text-primary";
+      }
+
+      if (bookingStatus) {
+        bookingStatus.textContent = "CONFIRMED";
+        bookingStatus.className = "w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white";
+      }
+
+    } else {
+
+      if (ticketsCard) {
+        ticketsCard.classList.remove("hidden");
+      } else if (successTicketQuantity) {
+        successTicketQuantity.closest("div")?.classList.remove("hidden");
+      }
+
+      if (paymentMethodCard) {
+        paymentMethodCard.classList.remove("hidden");
+      } else if (successPaymentMethod) {
+        successPaymentMethod.closest("div")?.classList.remove("hidden");
+      }
+
+      if (paymentStatusRow) {
+        paymentStatusRow.classList.remove("hidden");
+      } else if (successPaymentStatus) {
+        successPaymentStatus.closest("div")?.classList.remove("hidden");
+      }
+
+      if (paymentIdRow) {
+        paymentIdRow.classList.remove("hidden");
+      } else if (successPaymentId) {
+        successPaymentId.closest("div")?.classList.remove("hidden");
+      }
+
+      if (transactionIdRow) {
+        transactionIdRow.classList.remove("hidden");
+      } else if (successTransactionId) {
+        successTransactionId.closest("div")?.classList.remove("hidden");
+      }
+
+      if (bookingInfoGrid) {
+        bookingInfoGrid.className = "mt-7 grid grid-cols-1 gap-3 border-t border-gray-100 pt-6 sm:grid-cols-2 lg:grid-cols-4";
+      }
+
+    }
+
   };
 
 
@@ -947,6 +1136,23 @@ const displayEventInformation =
         eventData.availableSeats ??
         "--";
     }
+
+    const isFreeEvent =
+      (eventData && (eventData.eventType === "free" || Number(eventData.ticketPrice ?? 0) === 0)) ||
+      (completedBooking?.event && (completedBooking.event.eventType === "free" || Number(completedBooking.event.ticketPrice ?? 0) === 0)) ||
+      (completedBooking && Number(completedBooking.totalAmount ?? 0) === 0 && (completedBooking.ticketPrice === 0 || completedBooking.ticketPrice === undefined || completedBooking.ticketPrice === null)) ||
+      completedPayment?.paymentMethod === "free" ||
+      successData?.paymentMethod === "free" ||
+      successData?.paymentMethod === "free_registration";
+
+    if (isFreeEvent && successAvailableSeats) {
+      const seatsRow = successAvailableSeats.closest("p");
+      if (seatsRow) {
+        seatsRow.classList.add("hidden");
+      }
+    }
+
+    displayBookingInformation();
   };
 
 

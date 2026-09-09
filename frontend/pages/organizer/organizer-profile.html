@@ -37,7 +37,7 @@
 </head>
 
 
-<body class="min-h-screen bg-gray-50 text-gray-800">
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
 
 
    <!-- ============================= -->
@@ -78,10 +78,8 @@
 
         <div class="flex items-center gap-3">
 
-            <!-- Dashboard -->
-
-            <a
-                href="../organizer/dashboard.html"
+            <!-- <a
+                href="./dashboard.html"
                 class="
                     rounded-lg
                     border
@@ -96,7 +94,25 @@
                 "
             >
                 Dashboard
-            </a>
+            </a> -->
+
+            <!-- <a
+                href="./organizer-history.html"
+                class="
+                    rounded-lg
+                    border
+                    border-gray-200
+                    px-4
+                    py-2
+                    text-sm
+                    font-semibold
+                    text-gray-700
+                    transition
+                    hover:bg-gray-50
+                "
+            >
+                History
+            </a> -->
 
 
             <!-- Logout -->
@@ -120,9 +136,7 @@
          MAIN
     ======================================= -->
 
-    <main
-        class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8"
-    >
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
 
 
         <!-- PAGE HEADER -->
@@ -178,7 +192,7 @@
         >
 
             <div class="text-5xl">
-                ⚠️
+                <svg class="h-5 w-5 text-amber-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
 
             <h2
@@ -544,7 +558,7 @@
          FOOTER
     ======================================= -->
 
-    <footer class="mt-10 border-t border-gray-200 bg-white">
+    <footer class="mt-auto border-t border-gray-200 bg-white">
 
         <div
             class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
@@ -571,6 +585,7 @@
          ORGANIZER PROFILE JS
     ======================================= -->
 
+    <script src="../../js/components.js"></script>
     <script src="../../js/organizer/organizer-profile.js"></script>
 
 </body>

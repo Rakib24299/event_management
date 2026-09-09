@@ -48,9 +48,15 @@ const chatWithAI =
             // Generate AI Response
             // ========================================
 
+            const isGuest =
+                !req.user;
+
             const reply =
                 await aiService.generateAIResponse(
-                    message
+                    message,
+                    req.user?.id,
+                    req.user?.role,
+                    isGuest
                 );
 
 

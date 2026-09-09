@@ -17,6 +17,7 @@ const bookingEventLocation = document.getElementById("bookingEventLocation");
 
 const bookingTicketPrice = document.getElementById("bookingTicketPrice");
 const bookingAvailableSeats = document.getElementById("bookingAvailableSeats");
+const bookingTicketInfo = document.getElementById("bookingTicketInfo");
 
 const decreaseTicket = document.getElementById("decreaseTicket");
 const increaseTicket = document.getElementById("increaseTicket");
@@ -27,6 +28,7 @@ const customerEmail = document.getElementById("customerEmail");
 const customerPhone = document.getElementById("customerPhone");
 
 const summaryTicketPrice = document.getElementById("summaryTicketPrice");
+const summaryTicketPriceRow = document.getElementById("summaryTicketPriceRow");
 const summaryQuantity = document.getElementById("summaryQuantity");
 const summarySubtotal = document.getElementById("summarySubtotal");
 const summaryTotal = document.getElementById("summaryTotal");
@@ -310,6 +312,19 @@ function displayEvent() {
     bookingAvailableSeats.textContent =
         eventData.availableSeats ??
         0;
+
+
+    if (eventData.eventType === "free") {
+
+        if (bookingTicketInfo) {
+            bookingTicketInfo.classList.add("hidden");
+        }
+
+        if (summaryTicketPriceRow) {
+            summaryTicketPriceRow.classList.add("hidden");
+        }
+
+    }
 
 
     const seats =
@@ -667,8 +682,8 @@ async function createBooking() {
 
         confirmBookingButton.textContent =
             isExistingPending
-                ? "Pending Booking Found ✓"
-                : "Booking Created ✓";
+                ? "Pending Booking Found"
+                : "Booking Created";
 
 
         // ====================================
@@ -677,7 +692,7 @@ async function createBooking() {
 
         const message =
             result.message ||
-            "Booking created successfully. Redirecting to payment...";
+            "Booking created successfully. Redirecting to your bookings...";
 
 
         alert(
@@ -686,9 +701,7 @@ async function createBooking() {
 
 
         window.location.href =
-            `./payment.html?bookingId=${encodeURIComponent(
-                booking._id
-            )}`;
+            "./my-bookings.html";
 
     } catch (error) {
 
@@ -707,7 +720,7 @@ async function createBooking() {
         confirmBookingButton.disabled = false;
 
         confirmBookingButton.textContent =
-            "Continue to Payment";
+            "Book Now";
     }
 }
 

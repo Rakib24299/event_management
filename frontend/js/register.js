@@ -335,7 +335,7 @@ registerForm.addEventListener(
 
 
             registerButton.textContent =
-                "Account Created ✓";
+                "Account Created";
 
 
             // ========================================

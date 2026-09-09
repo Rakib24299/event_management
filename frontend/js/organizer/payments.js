@@ -416,15 +416,6 @@ function getPaymentMethod(payment) {
     }
 
 
-    if (
-        method === "dummy"
-    ) {
-
-        return "SSLCommerz";
-
-    }
-
-
     return method;
 
 }
@@ -886,7 +877,7 @@ async function loadOrganizerPayments() {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/payments/organizer`,
+                `${API_BASE_URL}/payments/organizer/all`,
                 {
 
                     method: "GET",

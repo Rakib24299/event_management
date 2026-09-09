@@ -1,3 +1,22 @@
+
+// ========================================
+// Helper: Is Event Expired
+// ========================================
+const isEventExpired = (event) => {
+    if (!event || !event.eventDate) return false;
+    const date = new Date(event.eventDate);
+    if (isNaN(date.getTime())) return false;
+    if (event.endTime) {
+        const parts = String(event.endTime).split(":").map(Number);
+        if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            date.setHours(parts[0], parts[1], 0, 0);
+        }
+    } else {
+        date.setHours(23, 59, 59, 999);
+    }
+    return date < new Date();
+};
+
 // ========================================
 // EventEase Organizer Dashboard
 // ========================================
@@ -409,14 +428,18 @@ function displayRecentEvents(events) {
                     <p
                         class="mt-2 text-sm text-gray-500"
                     >
-                        📅 ${eventDate}
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> ${eventDate}
                     </p>
 
-                    <p
-                        class="mt-1 text-sm text-gray-500"
-                    >
-                        🎫 ${event.totalSeats || 0} seats
-                    </p>
+                    ${event.eventType !== "free" ? `
+
+                        <p
+                            class="mt-1 text-sm text-gray-500"
+                        >
+                            <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg> ${event.totalSeats || 0} seats
+                        </p>
+
+                    ` : ""}
                 </div>
             `;
 
@@ -669,7 +692,8 @@ async function loadDashboard() {
         // ====================================
 
         if (data.recentEvents && Array.isArray(data.recentEvents)) {
-            displayRecentEvents(data.recentEvents);
+            const activeRecent = (data.recentEvents || []).filter(event => !isEventExpired(event));
+            displayRecentEvents(activeRecent);
         } else if (data.recentReviews && Array.isArray(data.recentReviews)) {
             displayRecentEvents([]);
         } else {

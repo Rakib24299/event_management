@@ -207,6 +207,26 @@ router.delete(
 
 
 // ========================================
+// Get Organizer Event History
+// Organizer Only
+// ========================================
+
+router.get(
+
+    "/organizer/history",
+
+    authMiddleware,
+
+    roleMiddleware(
+        "organizer"
+    ),
+
+    eventController.getOrganizerEventHistory
+
+);
+
+
+// ========================================
 // Export
 // ========================================
 

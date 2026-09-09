@@ -40,12 +40,6 @@ const statusFilter =
 const totalBookings =
     document.getElementById("totalBookings");
 
-const confirmedBookings =
-    document.getElementById("confirmedBookings");
-
-const pendingBookings =
-    document.getElementById("pendingBookings");
-
 const cancelledBookings =
     document.getElementById("cancelledBookings");
 
@@ -594,22 +588,6 @@ function updateSummary(
 
     totalBookings.textContent =
         bookings.length;
-
-
-    confirmedBookings.textContent =
-        bookings.filter(
-            (booking) =>
-                booking.bookingStatus ===
-                "confirmed"
-        ).length;
-
-
-    pendingBookings.textContent =
-        bookings.filter(
-            (booking) =>
-                booking.bookingStatus ===
-                "pending"
-        ).length;
 
 
     cancelledBookings.textContent =

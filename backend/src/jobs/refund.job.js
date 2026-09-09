@@ -121,7 +121,7 @@ const processPendingRefunds = async () => {
         // ------------------------------------------------
 
         if (
-          payment.paymentStatus ===
+          payment.status ===
           "refunded"
         ) {
 
@@ -144,12 +144,12 @@ const processPendingRefunds = async () => {
         // ------------------------------------------------
 
         if (
-          payment.paymentStatus !==
+          payment.status !==
           "paid"
         ) {
 
           console.log(
-            `[REFUND JOB] Payment ${payment._id} is not paid. Status: ${payment.paymentStatus}`
+            `[REFUND JOB] Payment ${payment._id} is not paid. Status: ${payment.status}`
           );
 
           continue;
@@ -181,7 +181,7 @@ const processPendingRefunds = async () => {
           await booking.save();
 
 
-          payment.paymentStatus =
+          payment.status =
             "cancelled";
 
           payment.refundAmount = 0;
@@ -204,7 +204,7 @@ const processPendingRefunds = async () => {
         // Process Dummy Refund
         // ------------------------------------------------
 
-        payment.paymentStatus =
+        payment.status =
           "refunded";
 
         payment.refundAmount =

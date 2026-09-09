@@ -38,10 +38,10 @@
 </head>
 
 
-<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
 
 
-    <!-- ======================================
+     <!-- ======================================
          NAVBAR
     ======================================= -->
 
@@ -51,20 +51,50 @@
             class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
         >
 
+            <!-- Logo -->
+
             <a
                 href="./dashboard.html"
-                class="text-2xl font-bold text-primary"
-            >
-                <span class="text-black">Event</span>Ease
+                class="text-2xl font-bold text-primary" >
+               
+                 <span class="text-black">Event</span>Ease
             </a>
 
 
-            <a
-                href="./organizer-profile.html"
-                class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
-            >
-                My Account
-            </a>
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Notification -->
+
+                <a
+                    href="./notifications.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
+                    title="Notifications"
+                >
+
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Account -->
+
+                <a
+                    href="./organizer-profile.html"
+                    class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+                >
+                    My Account
+                </a>
+
+            </div>
 
         </div>
 
@@ -91,13 +121,24 @@
 
             <div>
 
-                <a
-                    href="./dashboard.html"
-                    class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-primary"
-                >
-                    <span class="text-lg">←</span>
-                    Dashboard
-                </a>
+                <div class="flex flex-wrap items-center gap-3">
+
+                    <!-- <a
+                        href="./dashboard.html"
+                        class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-primary"
+                    >
+                        <span class="text-lg">←</span>
+                        Back
+                    </a> -->
+
+                    <!-- <a
+                        href="./organizer-history.html"
+                        class="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primaryDark"
+                    >
+                        <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg> Event History
+                    </a> -->
+
+                </div>
 
                 <h1
                     class="mt-4 text-3xl font-bold text-gray-900 sm:text-4xl"
@@ -155,7 +196,7 @@
                         <span
                             class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                         >
-                            🔍
+                            <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                         </span>
 
                         <input
@@ -247,7 +288,7 @@
         >
 
             <div class="text-5xl">
-                ⚠️
+                <svg class="h-5 w-5 text-amber-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
 
             <h2
@@ -284,7 +325,7 @@
         >
 
             <div class="text-6xl">
-                📅
+                <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
             </div>
 
             <h2
@@ -336,9 +377,7 @@
          FOOTER
     ======================================= -->
 
-    <footer
-        class="border-t border-gray-100 bg-white"
-    >
+    <footer class="mt-auto border-t border-gray-200 bg-white">
 
         <div
             class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
@@ -367,6 +406,7 @@
          MY EVENTS JS
     ======================================= -->
 
+    <script src="../../js/components.js"></script>
     <script src="../../js/organizer/my-events.js"></script>
 
 

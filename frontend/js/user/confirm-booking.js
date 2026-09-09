@@ -43,6 +43,56 @@ const toast =
 const toastMessage =
   document.getElementById("toastMessage");
 
+const cancelBookingModal =
+  document.getElementById(
+    "cancelBookingModal"
+  );
+
+const cancelModalOverlay =
+  document.getElementById(
+    "cancelModalOverlay"
+  );
+
+const cancelModalEventName =
+  document.getElementById(
+    "cancelModalEventName"
+  );
+
+const cancelModalRefundSection =
+  document.getElementById(
+    "cancelModalRefundSection"
+  );
+
+const cancelModalRefundPercentage =
+  document.getElementById(
+    "cancelModalRefundPercentage"
+  );
+
+const cancelModalRefundAmount =
+  document.getElementById(
+    "cancelModalRefundAmount"
+  );
+
+const cancelModalRefundStatus =
+  document.getElementById(
+    "cancelModalRefundStatus"
+  );
+
+const cancelModalNoRefund =
+  document.getElementById(
+    "cancelModalNoRefund"
+  );
+
+const cancelModalKeepBtn =
+  document.getElementById(
+    "cancelModalKeepBtn"
+  );
+
+const cancelModalConfirmBtn =
+  document.getElementById(
+    "cancelModalConfirmBtn"
+  );
+
 
 // ======================================================
 // Get Token
@@ -246,12 +296,6 @@ function createConfirmedBookingCard(
   const card =
     document.createElement("div");
 
-
-  card.className =
-    "bg-white rounded-2xl shadow-sm " +
-    "border border-gray-100 overflow-hidden";
-
-
   const event =
     booking.event || {};
 
@@ -262,6 +306,10 @@ function createConfirmedBookingCard(
 
   const payment =
     booking.payment || {};
+
+
+  const bookingId =
+    booking._id || "-";
 
 
   const eventTitle =
@@ -297,10 +345,6 @@ function createConfirmedBookingCard(
     );
 
 
-  const bookingId =
-    booking._id || "-";
-
-
   const eventImageUrl =
     event.bannerImage?.url ||
     event.image ||
@@ -313,9 +357,20 @@ function createConfirmedBookingCard(
     "";
 
 
-  const isPaymentPaid =
-    String(paymentStatus).toLowerCase() ===
-      "paid";
+  const bookingStatus =
+    String(booking.bookingStatus || "")
+      .toLowerCase();
+
+
+  card.className =
+    "bg-white rounded-2xl shadow-sm " +
+    "border border-gray-100 overflow-hidden";
+
+
+  card.setAttribute(
+    "data-booking-id",
+    bookingId
+  );
 
 
   card.innerHTML = `
@@ -336,7 +391,7 @@ function createConfirmedBookingCard(
 
       <div class="absolute top-4 right-4">
         <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
-          ✓ Confirmed
+          <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg> Confirmed
         </span>
       </div>
 
@@ -574,6 +629,42 @@ function createConfirmedBookingCard(
           Download PDF
         </button>
 
+        <button
+          type="button"
+          class="download-receipt-btn
+                 px-5 py-2.5
+                 rounded-lg
+                 border border-primary
+                 text-primary
+                 font-bold
+                 hover:bg-primaryLight
+                 transition"
+          data-booking-id="${escapeHTML(bookingId)}"
+          data-transaction-id="${escapeHTML(payment.transactionId || "receipt")}"
+          data-index="${index}"
+        >
+          Payment Receipt
+        </button>
+
+        <button
+          type="button"
+          class="cancel-booking-btn
+                 px-5 py-2.5
+                 rounded-lg
+                 border-2 border-red-500
+                 text-red-600
+                 font-bold
+                 hover:bg-red-50
+                 transition
+                 disabled:opacity-50
+                 disabled:cursor-not-allowed"
+          data-booking-id="${escapeHTML(bookingId)}"
+          data-index="${index}"
+          ${bookingStatus === 'cancelled' || bookingStatus === 'completed' ? 'disabled' : ''}
+        >
+          ${bookingStatus === 'cancelled' ? 'Already Cancelled' : bookingStatus === 'completed' ? 'Completed' : 'Cancel'}
+        </button>
+
       </div>
 
     </div>
@@ -654,6 +745,92 @@ function createConfirmedBookingCard(
             "Download PDF";
 
         }
+
+      }
+    );
+
+  }
+
+
+  // ====================================
+  // Download Payment Receipt Button
+  // ====================================
+
+  const downloadReceiptButton =
+    card.querySelector(
+      ".download-receipt-btn"
+    );
+
+
+  if (downloadReceiptButton) {
+
+    downloadReceiptButton.addEventListener(
+      "click",
+      async (e) => {
+
+        e.preventDefault();
+
+        e.stopPropagation();
+
+
+        downloadReceiptButton.disabled =
+          true;
+
+        downloadReceiptButton.textContent =
+          "Generating Receipt...";
+
+
+        try {
+
+          await downloadPaymentReceiptPdf(
+            booking,
+            downloadReceiptButton
+          );
+
+        } catch (error) {
+
+          showToast(
+            error.message ||
+            "Unable to download payment receipt. Please try again.",
+            "error"
+          );
+
+        } finally {
+
+          downloadReceiptButton.disabled =
+            false;
+
+          downloadReceiptButton.textContent =
+            "Payment Receipt";
+
+        }
+
+      }
+    );
+
+  }
+
+
+  // ====================================
+  // Cancel Booking Button
+  // ====================================
+
+  const cancelBookingButton =
+    card.querySelector(
+      ".cancel-booking-btn"
+    );
+
+
+  if (cancelBookingButton) {
+
+    cancelBookingButton.addEventListener(
+      "click",
+      () => {
+
+        openCancelBookingModal(
+          booking,
+          cancelBookingButton
+        );
 
       }
     );
@@ -755,7 +932,7 @@ async function downloadTicketPDF(
 
           <div style="width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
 
-            <span style="font-size:32px;">✓</span>
+            <span style="font-size:32px;"><svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></span>
 
           </div>
 
@@ -1045,6 +1222,175 @@ async function downloadTicketPDF(
 
 
 // ======================================================
+// Download Payment Receipt PDF
+// ======================================================
+
+async function downloadPaymentReceiptPdf(
+  booking,
+  downloadButton
+) {
+
+  const bookingId =
+    booking._id || booking.id;
+
+  const transactionId =
+    booking.payment?.transactionId ||
+    "receipt";
+
+
+  if (!bookingId) {
+
+    alert(
+      "Booking ID not found. Unable to download payment receipt."
+    );
+
+    return;
+
+  }
+
+
+  const originalText =
+    downloadButton?.textContent;
+
+
+  if (downloadButton) {
+
+    downloadButton.disabled = true;
+
+    downloadButton.textContent =
+      "Generating Receipt...";
+
+  }
+
+
+  try {
+
+    const token =
+      getToken();
+
+    if (!token) {
+
+      throw new Error(
+        "You must be logged in to download the payment receipt."
+      );
+
+    }
+
+
+    const response =
+      await fetch(
+        `${API_BASE_URL}/payments/booking/${encodeURIComponent(bookingId)}/receipt`,
+        {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+
+            Authorization:
+              `Bearer ${token}`,
+
+          },
+        }
+      );
+
+
+    if (!response.ok) {
+
+      let errorMessage =
+        "Unable to download payment receipt. Please try again.";
+
+      try {
+
+        const result =
+          await response.json();
+
+        errorMessage =
+          result?.message ||
+          result?.error ||
+          errorMessage;
+
+      } catch {
+
+        errorMessage =
+          `Server error (${response.status}). Please try again.`;
+
+      }
+
+      throw new Error(
+        errorMessage
+      );
+
+    }
+
+
+    const blob =
+      await response.blob();
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    const a =
+      document.createElement(
+        "a"
+      );
+
+    a.href = url;
+
+    a.download =
+      `payment-receipt-${transactionId}.pdf`;
+
+
+    document.body.appendChild(
+      a
+    );
+
+    a.click();
+
+    document.body.removeChild(
+      a
+    );
+
+
+    URL.revokeObjectURL(
+      url
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Payment Receipt Download Error:",
+      error
+    );
+
+
+    alert(
+      error.message ||
+      "Unable to download payment receipt. Please try again."
+    );
+
+  } finally {
+
+    if (downloadButton) {
+
+      downloadButton.disabled = false;
+
+      downloadButton.textContent =
+        originalText ||
+        "Payment Receipt";
+
+    }
+
+  }
+
+}
+
+
+// ======================================================
 // Format Date
 // ======================================================
 
@@ -1318,6 +1664,508 @@ function showToast(
     4000
   );
 }
+
+
+// ======================================================
+// Cancel Booking Modal
+// ======================================================
+
+let activeCancelBooking = null;
+let activeCancelButton = null;
+
+
+function openCancelBookingModal(
+  booking,
+  cancelButton
+) {
+
+  activeCancelBooking = booking;
+  activeCancelButton = cancelButton;
+
+
+  const event =
+    booking.event || {};
+
+  const eventTitle =
+    event.title || "Event";
+
+  const payment =
+    booking.payment || {};
+
+  const totalAmount =
+    Number(
+      booking.totalAmount || 0
+    );
+
+
+  cancelModalEventName.textContent =
+    eventTitle;
+
+
+  if (
+    totalAmount > 0 &&
+    String(
+      payment.paymentStatus ||
+      payment.status ||
+      ""
+    ).toLowerCase() === "paid"
+  ) {
+
+    cancelModalRefundSection.classList.remove(
+      "hidden"
+    );
+
+    cancelModalNoRefund.classList.add(
+      "hidden"
+    );
+
+    cancelModalRefundPercentage.textContent =
+      "Loading...";
+
+    cancelModalRefundAmount.textContent =
+      "Loading...";
+
+    cancelModalRefundStatus.textContent =
+      "Loading...";
+
+    cancelModalConfirmBtn.disabled = true;
+
+
+    fetchRefundInformation(
+      booking._id
+    ).then(
+      (refundInfo) => {
+
+        cancelModalRefundPercentage.textContent =
+          refundInfo.refundPercentage + "%";
+
+        cancelModalRefundAmount.textContent =
+          "৳" + formatMoney(
+            refundInfo.refundAmount
+          );
+
+        cancelModalRefundStatus.textContent =
+          refundInfo.refundStatus === "pending"
+            ? "Pending"
+            : refundInfo.refundStatus ===
+                "processed"
+            ? "Processed"
+            : refundInfo.refundStatus ===
+                "none"
+            ? "None"
+            : refundInfo.refundStatus ||
+                "Pending";
+
+        cancelModalConfirmBtn.disabled =
+          false;
+
+      }
+    ).catch(
+      (error) => {
+
+        cancelModalRefundPercentage.textContent =
+          "Error";
+
+        cancelModalRefundAmount.textContent =
+          "Error";
+
+        cancelModalRefundStatus.textContent =
+          "Error";
+
+        cancelModalConfirmBtn.disabled =
+          false;
+
+      }
+    );
+
+  } else {
+
+    cancelModalRefundSection.classList.add(
+      "hidden"
+    );
+
+    cancelModalNoRefund.classList.remove(
+      "hidden"
+    );
+
+    cancelModalConfirmBtn.disabled = false;
+
+  }
+
+
+  cancelBookingModal.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+function closeCancelBookingModal() {
+
+  cancelBookingModal.classList.add(
+    "hidden"
+  );
+
+  cancelModalEventName.textContent = "";
+
+  cancelModalRefundSection.classList.add(
+    "hidden"
+  );
+
+  cancelModalNoRefund.classList.add(
+    "hidden"
+  );
+
+  cancelModalRefundPercentage.textContent = "";
+  cancelModalRefundAmount.textContent = "";
+  cancelModalRefundStatus.textContent = "";
+
+  cancelModalConfirmBtn.disabled = false;
+
+  activeCancelBooking = null;
+  activeCancelButton = null;
+
+}
+
+
+async function handleCancelBooking() {
+
+  if (!activeCancelBooking) {
+    return;
+  }
+
+
+  const bookingId =
+    activeCancelBooking._id ||
+    activeCancelBooking.id;
+
+  if (!bookingId) {
+    showToast(
+      "Booking ID not found.",
+      "error"
+    );
+
+    closeCancelBookingModal();
+    return;
+  }
+
+
+  const button = activeCancelButton || cancelModalConfirmBtn;
+
+  button.disabled = true;
+
+  button.textContent = "Cancelling...";
+
+
+  try {
+
+    const token =
+      getToken();
+
+    if (!token) {
+      throw new Error(
+        "You must be logged in to cancel a booking."
+      );
+    }
+
+
+    const response =
+      await fetch(
+        `${API_BASE_URL}/bookings/${encodeURIComponent(bookingId)}/cancel`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+            "Content-Type":
+              "application/json",
+          },
+        }
+      );
+
+
+    let result = null;
+
+    try {
+      result =
+        await response.json();
+    } catch {
+      result = null;
+    }
+
+
+    if (!response.ok) {
+      const message =
+        result?.message ||
+        result?.error ||
+        "Failed to cancel booking.";
+
+      throw new Error(message);
+    }
+
+
+    const refundPercentage =
+      result?.data?.refundPercentage ?? 0;
+
+    const refundAmount =
+      result?.data?.refundAmount ?? 0;
+
+    const refundStatus =
+      result?.data?.refundStatus ||
+      (refundAmount > 0 ? "pending" : "none");
+
+
+    closeCancelBookingModal();
+
+    updateCardToCancelled(
+      bookingId,
+      refundPercentage,
+      refundAmount,
+      refundStatus
+    );
+
+
+    if (refundAmount > 0) {
+
+      showToast(
+        `Booking cancelled successfully. ${refundPercentage}% refund (৳${formatMoney(refundAmount)}) is pending.`
+      );
+
+    } else {
+
+      showToast(
+        "Booking cancelled successfully. No refund is applicable."
+      );
+
+    }
+
+
+    setTimeout(
+      () => {
+        loadConfirmedBookings();
+      },
+      1500
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Cancel booking error:",
+      error
+    );
+
+    showToast(
+      error.message ||
+        "Unable to cancel booking. Please try again.",
+      "error"
+    );
+
+    if (activeCancelButton) {
+      activeCancelButton.disabled = false;
+    }
+
+    button.textContent =
+      button.textContent ||
+      (activeCancelButton
+        ? "Cancel"
+        : "Confirm Cancel");
+
+  }
+}
+
+
+function updateCardToCancelled(
+  bookingId,
+  refundPercentage,
+  refundAmount,
+  refundStatus
+) {
+
+  const card =
+    confirmedBookingsContainer.querySelector(
+      `[data-booking-id="${CSS.escape(bookingId)}"]`
+    );
+
+  if (!card) {
+    return;
+  }
+
+
+  const badge =
+    card.querySelector(
+      'span[class*="bg-green"]'
+    );
+
+  if (badge) {
+    badge.textContent = "Cancelled";
+    badge.className =
+      "px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-700";
+  }
+
+
+  const cancelBtn =
+    card.querySelector(
+      ".cancel-booking-btn"
+    );
+
+  if (cancelBtn) {
+    cancelBtn.disabled = true;
+
+    cancelBtn.textContent =
+      "Already Cancelled";
+
+    cancelBtn.className =
+      "px-5 py-2.5 rounded-lg border-2 border-gray-300 text-gray-400 font-bold cursor-not-allowed transition";
+  }
+
+
+  const paymentInfoSection =
+    card.querySelector(
+      '[class*="bg-gray-50"]'
+    );
+
+  if (
+    paymentInfoSection &&
+    refundAmount > 0
+  ) {
+
+    const existingRefundDiv =
+      paymentInfoSection.querySelector(
+        '[class*="bg-orange"]'
+      );
+
+    if (!existingRefundDiv) {
+
+      const refundDiv =
+        document.createElement(
+          "div"
+        );
+
+      refundDiv.className =
+        "mt-4 p-3 bg-orange-50 border border-orange-200 rounded-xl";
+
+      refundDiv.innerHTML = `
+        <p class="text-sm font-semibold text-orange-800 mb-1">
+          Refund Information
+        </p>
+        <div class="grid grid-cols-3 gap-2 text-xs">
+          <div>
+            <span class="text-gray-500">Percentage</span>
+            <p class="font-bold text-orange-700">${refundPercentage}%</p>
+          </div>
+          <div>
+            <span class="text-gray-500">Amount</span>
+            <p class="font-bold text-orange-700">৳${formatMoney(refundAmount)}</p>
+          </div>
+          <div>
+            <span class="text-gray-500">Status</span>
+            <p class="font-bold text-orange-700 capitalize">${refundStatus}</p>
+          </div>
+        </div>
+      `;
+
+      paymentInfoSection.appendChild(
+        refundDiv
+      );
+
+    }
+
+  }
+
+}
+
+
+async function fetchRefundInformation(
+  bookingId
+) {
+
+  const token =
+    getToken();
+
+  if (!token) {
+    throw new Error(
+      "You must be logged in."
+    );
+  }
+
+
+  const response =
+    await fetch(
+      `${API_BASE_URL}/refunds/booking/${encodeURIComponent(bookingId)}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
+
+
+  if (!response.ok) {
+
+    let errorMessage =
+      "Unable to fetch refund information.";
+
+    try {
+      const result =
+        await response.json();
+
+      errorMessage =
+        result?.message ||
+        result?.error ||
+        errorMessage;
+
+    } catch {
+      errorMessage =
+        `Server error (${response.status}).`;
+    }
+
+    throw new Error(
+      errorMessage
+    );
+  }
+
+
+  const result =
+    await response.json();
+
+  const data =
+    result?.data || result;
+
+  return {
+    refundPercentage:
+      data.refundPercentage ?? 0,
+
+    refundAmount:
+      data.refundAmount ?? 0,
+
+    refundStatus:
+      data.refundStatus ||
+        "none",
+
+    message:
+      data.message || "",
+  };
+
+}
+
+
+cancelModalOverlay.addEventListener(
+  "click",
+  closeCancelBookingModal
+);
+
+cancelModalKeepBtn.addEventListener(
+  "click",
+  closeCancelBookingModal
+);
+
+cancelModalConfirmBtn.addEventListener(
+  "click",
+  handleCancelBooking
+);
 
 
 // ======================================================

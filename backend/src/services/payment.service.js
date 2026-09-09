@@ -1,23 +1,19 @@
-const Payment =
-  require("../models/Payment");
+const PDFDocument = require("pdfkit");
 
-const Booking =
-  require("../models/Booking");
+const Booking = require("../models/Booking");
 
-const Event =
-  require("../models/Event");
+const Event = require("../models/Event");
 
-const User =
-  require("../models/User");
+const User = require("../models/User");
 
-const sendEmail =
-  require("../utils/sendEmail");
+const Payment = require("../models/Payment");
+
+const sendEmail = require("../utils/sendEmail");
 
 const {
   createSSLSession,
   validateSSLPayment,
-} =
-  require("./ssl.service");
+} = require("./ssl.service");
 
 
 // ======================================================
@@ -692,6 +688,34 @@ const finalizeSSLPayment =
         "This booking has already been cancelled.",
         400
       );
+
+    }
+
+
+    // --------------------------------------------------
+    // ENSURE ORGANIZER
+    // --------------------------------------------------
+
+    if (
+      !payment.organizer &&
+      payment.event
+    ) {
+
+      const eventForOrganizer =
+        await Event.findById(
+          payment.event
+        );
+
+
+
+      if (
+        eventForOrganizer?.organizer
+      ) {
+
+        payment.organizer =
+          eventForOrganizer.organizer;
+
+      }
 
     }
 
@@ -1437,18 +1461,30 @@ const getOrganizerPayments =
       organizer:
         userId,
 
+      paymentMethod:
+        "sslcommerz",
+
     })
+
       .populate(
         "user",
         "name email profileImage"
       )
+
+      .populate(
+        "organizer",
+        "name email organizationName organizationLogo"
+      )
+
       .populate(
         "event",
         "title eventDate"
       )
+
       .populate(
         "booking"
       )
+
       .sort({
         createdAt:
           -1,
@@ -1620,8 +1656,173 @@ const adminProcessRefund =
 
 
 // ======================================================
+// GET PAYMENT RECEIPT PDF BUFFER
+// ======================================================
+
+const getPaymentReceiptPdfBuffer =
+  async (bookingId, userId) => {
+
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      throw createError("Booking not found.", 404);
+    }
+
+    if (booking.user.toString() !== userId.toString()) {
+      throw createError(
+        "You are not authorized to download this payment receipt.",
+        403
+      );
+    }
+
+    if (!booking.payment) {
+      throw createError(
+        "No payment record found for this booking.",
+        404
+      );
+    }
+
+    const payment = await Payment.findById(booking.payment)
+      .populate("event", "title eventDate venue bannerImage")
+      .populate("user", "name email");
+
+    if (!payment) {
+      throw createError("Payment not found.", 404);
+    }
+
+    if (payment.status !== "paid") {
+      throw createError(
+        "Payment receipt is only available for paid payments.",
+        400
+      );
+    }
+
+    const event = payment.event || {};
+    const user = payment.user || {};
+    const transactionId = payment.transactionId || "N/A";
+    const validationId = payment.validationId || "";
+
+    const doc = new PDFDocument({ size: "A4", margin: 50 });
+
+    const PRIMARY = "#31572c";
+    const PRIMARY_LIGHT = "#eaf2e8";
+    const DARK = "#111827";
+    const GRAY = "#6b7280";
+    const LIGHT_GRAY = "#d1d5db";
+
+    const pageWidth = doc.page.width;
+    const pageHeight = doc.page.height;
+    const margin = 50;
+    const contentWidth = pageWidth - margin * 2;
+    let currentY = margin;
+
+    const ensureSpace = (requiredHeight) => {
+      if (currentY + requiredHeight > pageHeight - margin) {
+        doc.addPage();
+        currentY = margin;
+      }
+    };
+
+    doc.rect(margin, currentY, contentWidth, 70).fill(PRIMARY);
+    doc.font("Helvetica-Bold").fontSize(26).fill("#ffffff").text("EventEase", margin + 20, currentY + 18);
+    doc.font("Helvetica").fontSize(12).fill("#ffffff").opacity(0.85).text("PAYMENT RECEIPT", margin + 20, currentY + 42);
+    doc.opacity(1);
+    currentY += 85;
+
+    ensureSpace(50);
+    doc.roundedRect(margin, currentY, contentWidth, 36, 6).fill(PRIMARY_LIGHT);
+    doc.font("Helvetica-Bold").fontSize(13).fill(PRIMARY).text("Payment Status: PAID", margin, currentY + 10, { width: contentWidth, align: "center" });
+    currentY += 50;
+
+    ensureSpace(40);
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Event Name", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(event.title || "Event", margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Customer Name", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(user.name || "Customer", margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Booking ID", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(String(booking._id), margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Transaction ID", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(transactionId, margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    const paidAtFormatted = payment.paidAt
+      ? new Date(payment.paidAt).toLocaleString("en-GB", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })
+      : "Not available";
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Payment Date & Time", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(paidAtFormatted, margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    const paymentMethodFormatted = payment.paymentMethod === "sslcommerz" ? "Online (SSLCommerz)" : (payment.paymentMethod || "Online");
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Payment Method", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(paymentMethodFormatted, margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Ticket Quantity", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(String(booking.ticketQuantity || 0), margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    const ticketQty = Number(booking.ticketQuantity || 1);
+    const totalAmount = Number(booking.totalAmount || 0);
+    const pricePerTicket = ticketQty > 0 ? totalAmount / ticketQty : 0;
+    const pricePerTicketFormatted = `\u09F3${pricePerTicket.toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Ticket Price", margin, currentY);
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(pricePerTicketFormatted, margin, currentY + 16, { width: contentWidth });
+    currentY += 45;
+
+    ensureSpace(40);
+    const grossAmountFormatted = `\u09F3${Number(payment.grossAmount || 0).toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Payment Bill", margin, currentY);
+    doc.font("Helvetica-Bold").fontSize(16).fill(PRIMARY).text(grossAmountFormatted, margin, currentY + 16, { width: contentWidth });
+    currentY += 50;
+
+    if (validationId) {
+      ensureSpace(40);
+      doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Payment Validation ID", margin, currentY);
+      doc.font("Helvetica").fontSize(14).fill(DARK).text(validationId, margin, currentY + 16, { width: contentWidth });
+      currentY += 45;
+    }
+
+    ensureSpace(60);
+    doc.moveTo(margin, currentY).lineTo(margin + contentWidth, currentY).strokeColor(LIGHT_GRAY).lineWidth(1).stroke();
+    currentY += 20;
+    doc.font("Helvetica-Bold").fontSize(14).fill(PRIMARY).text("Payment Successful", margin, currentY, { width: contentWidth, align: "center" });
+    currentY += 24;
+    doc.font("Helvetica").fontSize(11).fill(GRAY).text("Thank you for your booking.", margin, currentY, { width: contentWidth, align: "center" });
+
+    return new Promise((resolve, reject) => {
+      const chunks = [];
+      doc.on("data", (chunk) => chunks.push(chunk));
+      doc.on("end", () =>
+        resolve({
+          buffer: Buffer.concat(chunks),
+          transactionId,
+        })
+      );
+      doc.on("error", () =>
+        reject(createError("Failed to generate payment receipt PDF.", 500))
+      );
+      doc.end();
+    });
+  };
+
+
+// ======================================================
 // PLATFORM FEE
 // ======================================================
+
 
 module.exports = {
 
@@ -1650,5 +1851,7 @@ module.exports = {
   adminProcessRefund,
 
   getPlatformFeePercentage,
+
+  getPaymentReceiptPdfBuffer,
 
 };

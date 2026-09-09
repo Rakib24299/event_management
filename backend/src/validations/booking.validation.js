@@ -58,6 +58,19 @@ const verifyBookingOtpSchema = Joi.object({
 });
 
 // ======================================================
+// GENERATE FREE BOOKING OTP
+// ======================================================
+
+const freeBookingOtpSchema = Joi.object({
+  bookingId: Joi.string()
+    .required()
+    .messages({
+      "string.empty": "Booking ID is required.",
+      "any.required": "Booking ID is required.",
+    }),
+});
+
+// ======================================================
 // UPDATE BOOKING STATUS
 // ======================================================
 
@@ -86,4 +99,5 @@ module.exports = {
   createBookingSchema,
   verifyBookingOtpSchema,
   updateBookingStatusSchema,
+  freeBookingOtpSchema,
 };

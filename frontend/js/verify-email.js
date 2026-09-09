@@ -242,7 +242,7 @@ verifyForm.addEventListener(
 
 
             verifyButton.textContent =
-                "Email Verified ✓";
+                "Email Verified";
 
 
             // ====================================

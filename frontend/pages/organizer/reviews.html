@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Reviews | EventEase Organizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4",
+                    },
+                    boxShadow: {
+                        soft: "0 10px 30px rgba(0,0,0,0.07)",
+                        modal: "0 20px 50px rgba(0,0,0,0.2)"
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
+
+   <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <!-- Logo -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-bold text-primary" >
+               
+                 <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Notification -->
+
+                <a
+                    href="./notifications.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
+                    title="Notifications"
+                >
+
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Account -->
+
+                <a
+                    href="./organizer-profile.html"
+                    class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+                >
+                    My Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- ======================================
+         MAIN CONTENT
+    ======================================= -->
+    <main class="flex-1">
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+
+            <!-- Header Breadcrumb & Title -->
+            <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <a href="./dashboard.html" class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-primary mb-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </a>
+                    <h1 class="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl flex items-center gap-3">
+                        <span>Event Reviews & Ratings</span>
+                        <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 border border-amber-200">
+                            Last 30 Days
+                        </span>
+                    </h1>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Showing attendee reviews and feedback for your events completed within the past 30 days.
+                    </p>
+                </div>
+
+                <div id="reviewsStatsSummary" class="hidden sm:flex items-center gap-4 bg-white p-3 px-5 rounded-2xl border border-gray-100 shadow-soft">
+                    <div class="text-center">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Completed Events</p>
+                        <p id="totalEventsCount" class="text-xl font-black text-gray-900">0</p>
+                    </div>
+                    <div class="h-8 w-px bg-gray-200"></div>
+                    <div class="text-center">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Reviews</p>
+                        <p id="totalReviewsCount" class="text-xl font-black text-primary">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="reviewsLoading" class="flex flex-col items-center justify-center py-20">
+                <div class="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                <p class="mt-4 text-sm font-medium text-gray-500">Loading completed events & reviews...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="reviewsError" class="hidden rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <h3 class="mt-4 text-lg font-bold text-red-900">Unable to load reviews</h3>
+                <p id="reviewsErrorMessage" class="mt-1 text-sm text-red-600">An error occurred while fetching your event reviews.</p>
+                <button id="retryButton" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">
+                    Try Again
+                </button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="reviewsEmpty" class="hidden rounded-3xl border border-dashed border-gray-200 bg-white p-12 text-center shadow-soft">
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-500 text-3xl">
+                    ⭐
+                </div>
+                <h2 class="mt-5 text-xl font-bold text-gray-900">No Completed Events in the Last 30 Days</h2>
+                <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">
+                    Reviews are collected for events that have finished within the last 30 days. When your upcoming events conclude, their attendee reviews will show up here.
+                </p>
+                <div class="mt-6 flex flex-wrap justify-center gap-3">
+                    <a href="./my-events.html" class="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark">
+                        View My Events
+                    </a>
+                    <a href="./organizer-history.html" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
+                        View All History
+                    </a>
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div id="reviewsContent" class="hidden">
+                <div id="eventReviewsList" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Dynamic Event Cards will be rendered here -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ======================================
+         REVIEW DETAILS MODAL
+    ======================================= -->
+    <div id="reviewDetailsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200">
+        <div class="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-3xl bg-white shadow-modal overflow-hidden animate-in fade-in zoom-in duration-150">
+            
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between border-b border-gray-100 p-6 bg-gray-50/70">
+                <div class="pr-6">
+                    <span class="text-xs font-bold uppercase tracking-wider text-primary">Attendee Reviews & Feedback</span>
+                    <h3 id="modalEventTitle" class="mt-1 text-xl font-bold text-gray-900 line-clamp-1">Event Title</h3>
+                    <div id="modalRatingSummary" class="mt-2 flex items-center gap-2">
+                        <!-- Dynamic Star Rating & Count -->
+                    </div>
+                </div>
+                <button id="closeModalBtn" type="button" class="rounded-xl p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Modal Content / Reviews List -->
+            <div id="modalReviewsBody" class="flex-1 overflow-y-auto p-6 space-y-4 max-h-[60vh]">
+                <!-- Dynamic Reviews will be injected here -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="border-t border-gray-100 bg-gray-50 p-4 px-6 flex items-center justify-between">
+                <span id="modalReviewCountFooter" class="text-xs text-gray-500 font-medium"></span>
+                <button id="closeModalFooterBtn" type="button" class="rounded-xl bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+    <footer class="mt-auto border-t border-gray-200 bg-white">
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+                <p class="text-sm text-gray-500">© 2026 EventEase. All rights reserved.</p>
+                <p class="text-sm text-gray-500">Developed by <span class="font-bold text-primary">Rakib</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../js/components.js"></script>
+    <script src="../../js/organizer/reviews.js"></script>
+</body>
+</html>

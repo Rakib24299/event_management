@@ -534,16 +534,59 @@ async function loadEvent() {
             event.eventType || "paid";
 
 
-        ticketPriceInput.value =
-            event.ticketPrice ?? 0;
+        if (event.eventType === "free") {
 
+            ticketPriceInput.value =
+                0;
 
-        totalSeatsInput.value =
-            event.totalSeats ?? 1;
+            totalSeatsInput.value =
+                "";
 
+            totalSeatsInput.disabled =
+                true;
 
-        maxTicketsInput.value =
-            event.maxTicketsPerUser ?? 5;
+            totalSeatsInput.removeAttribute(
+                "required"
+            );
+
+            maxTicketsInput.value =
+                "";
+
+            maxTicketsInput.disabled =
+                true;
+
+            maxTicketsInput.removeAttribute(
+                "required"
+            );
+
+        } else {
+
+            ticketPriceInput.value =
+                event.ticketPrice ?? 0;
+
+            totalSeatsInput.value =
+                event.totalSeats ?? 1;
+
+            totalSeatsInput.disabled =
+                false;
+
+            totalSeatsInput.setAttribute(
+                "required",
+                "required"
+            );
+
+            maxTicketsInput.value =
+                event.maxTicketsPerUser ?? 5;
+
+            maxTicketsInput.disabled =
+                false;
+
+            maxTicketsInput.setAttribute(
+                "required",
+                "required"
+            );
+
+        }
 
 
         statusDisplay.textContent =
@@ -604,10 +647,46 @@ eventTypeInput.addEventListener(
             ticketPriceInput.disabled =
                 true;
 
+            totalSeatsInput.value =
+                "";
+
+            totalSeatsInput.disabled =
+                true;
+
+            totalSeatsInput.removeAttribute(
+                "required"
+            );
+
+            maxTicketsInput.value =
+                "";
+
+            maxTicketsInput.disabled =
+                true;
+
+            maxTicketsInput.removeAttribute(
+                "required"
+            );
+
         } else {
 
             ticketPriceInput.disabled =
                 false;
+
+            totalSeatsInput.disabled =
+                false;
+
+            totalSeatsInput.setAttribute(
+                "required",
+                "required"
+            );
+
+            maxTicketsInput.disabled =
+                false;
+
+            maxTicketsInput.setAttribute(
+                "required",
+                "required"
+            );
 
         }
 
@@ -856,47 +935,53 @@ editEventForm.addEventListener(
 
 
         if (
-            totalSeats < 1
+            eventType === "paid"
         ) {
 
-            showError(
-                "Total seats must be at least 1."
-            );
+            if (
+                totalSeats < 1
+            ) {
 
-            totalSeatsInput.focus();
+                showError(
+                    "Total seats must be at least 1."
+                );
 
-            return;
+                totalSeatsInput.focus();
 
-        }
+                return;
 
-
-        if (
-            maxTicketsPerUser < 1
-        ) {
-
-            showError(
-                "Maximum tickets per user must be at least 1."
-            );
-
-            maxTicketsInput.focus();
-
-            return;
-
-        }
+            }
 
 
-        if (
-            maxTicketsPerUser >
-            totalSeats
-        ) {
+            if (
+                maxTicketsPerUser < 1
+            ) {
 
-            showError(
-                "Maximum tickets per user cannot exceed total seats."
-            );
+                showError(
+                    "Maximum tickets per user must be at least 1."
+                );
 
-            maxTicketsInput.focus();
+                maxTicketsInput.focus();
 
-            return;
+                return;
+
+            }
+
+
+            if (
+                maxTicketsPerUser >
+                totalSeats
+            ) {
+
+                showError(
+                    "Maximum tickets per user cannot exceed total seats."
+                );
+
+                maxTicketsInput.focus();
+
+                return;
+
+            }
 
         }
 
@@ -973,9 +1058,15 @@ editEventForm.addEventListener(
                                         ? 0
                                         : ticketPrice,
 
-                                totalSeats,
+                                ...(eventType === "paid"
+                                    ? {
 
-                                maxTicketsPerUser,
+                                        totalSeats,
+
+                                        maxTicketsPerUser
+
+                                    }
+                                    : {}),
 
                             })
 
@@ -1020,7 +1111,7 @@ editEventForm.addEventListener(
 
 
             saveButton.textContent =
-                "Updated Successfully ✓";
+                "Updated Successfully";
 
 
             // =================================

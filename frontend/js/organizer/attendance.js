@@ -494,7 +494,7 @@ const renderAttendance = (
                                 <span
                                     class="inline-flex rounded-full bg-primaryLight px-3 py-1 text-xs font-semibold text-white"
                                 >
-                                    ✓ Attended
+                                    <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg> Attended
                                 </span>
 
                             `
@@ -635,7 +635,7 @@ const handleQRCode = async (
                 <div
                     class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-2xl"
                 >
-                    ✓
+                    <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
 
 
@@ -756,7 +756,7 @@ const handleQRCode = async (
                 <div
                     class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-2xl"
                 >
-                    ✕
+                    <svg class="h-4 w-4 text-red-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </div>
 
 

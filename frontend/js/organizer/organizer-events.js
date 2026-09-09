@@ -1,3 +1,22 @@
+
+// ========================================
+// Helper: Is Event Expired
+// ========================================
+const isEventExpired = (event) => {
+    if (!event || !event.eventDate) return false;
+    const date = new Date(event.eventDate);
+    if (isNaN(date.getTime())) return false;
+    if (event.endTime) {
+        const parts = String(event.endTime).split(":").map(Number);
+        if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            date.setHours(parts[0], parts[1], 0, 0);
+        }
+    } else {
+        date.setHours(23, 59, 59, 999);
+    }
+    return date < new Date();
+};
+
 // ========================================
 // EventEase Organizer Events
 // ========================================
@@ -443,7 +462,7 @@ const createEventCard = (
                 <div
                     class="flex h-52 w-full items-center justify-center bg-gradient-to-br from-primaryLight to-primary text-6xl"
                 >
-                    📅
+                    <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 </div>
 
             `;
@@ -571,7 +590,7 @@ const createEventCard = (
                 <span
                     class="text-lg"
                 >
-                    📅
+                    <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 </span>
 
                 <div>
@@ -604,7 +623,7 @@ const createEventCard = (
                 <span
                     class="text-lg"
                 >
-                    🕐
+                    <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </span>
 
                 <div>
@@ -644,7 +663,7 @@ const createEventCard = (
                 <span
                     class="text-lg"
                 >
-                    📍
+                    <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 </span>
 
                 <div>
@@ -670,73 +689,81 @@ const createEventCard = (
 
             <!-- Seats -->
 
-            <div
-                class="mt-5 grid grid-cols-2 gap-3"
-            >
+            ${event.eventType !== "free" ? `
 
                 <div
-                    class="rounded-2xl bg-gray-50 p-3"
+                    class="mt-5 grid grid-cols-2 gap-3"
                 >
 
-                    <p
-                        class="text-xs text-gray-400"
+                    <div
+                        class="rounded-2xl bg-gray-50 p-3"
                     >
-                        Total Seats
-                    </p>
 
-                    <p
-                        class="mt-1 font-bold text-gray-900"
+                        <p
+                            class="text-xs text-gray-400"
+                        >
+                            Total Seats
+                        </p>
+
+                        <p
+                            class="mt-1 font-bold text-gray-900"
+                        >
+                            ${totalSeats}
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="rounded-2xl bg-green-50 p-3"
                     >
-                        ${totalSeats}
-                    </p>
+
+                        <p
+                            class="text-xs text-gray-400"
+                        >
+                            Available
+                        </p>
+
+                        <p
+                            class="mt-1 font-bold text-primary"
+                        >
+                            ${availableSeats}
+                        </p>
+
+                    </div>
 
                 </div>
 
-
-                <div
-                    class="rounded-2xl bg-green-50 p-3"
-                >
-
-                    <p
-                        class="text-xs text-gray-400"
-                    >
-                        Available
-                    </p>
-
-                    <p
-                        class="mt-1 font-bold text-primary"
-                    >
-                        ${availableSeats}
-                    </p>
-
-                </div>
-
-            </div>
+            ` : ""}
 
 
             <!-- Price -->
 
-            <div
-                class="mt-4 flex items-center justify-between"
-            >
+            ${event.eventType !== "free" ? `
 
-                <span
-                    class="text-sm text-gray-500"
+                <div
+                    class="mt-4 flex items-center justify-between"
                 >
-                    Ticket Price
-                </span>
 
-                <span
-                    class="font-extrabold text-gray-900"
-                >
-                    ${
-                        ticketPrice === 0
-                            ? "Free"
-                            : `${ticketPrice} BDT`
-                    }
-                </span>
+                    <span
+                        class="text-sm text-gray-500"
+                    >
+                        Ticket Price
+                    </span>
 
-            </div>
+                    <span
+                        class="font-extrabold text-gray-900"
+                    >
+                        ${
+                            ticketPrice === 0
+                                ? "Free"
+                                : `${ticketPrice} BDT`
+                        }
+                    </span>
+
+                </div>
+
+            ` : ""}
 
 
             <!-- Actions -->
@@ -909,7 +936,7 @@ const loadMyEvents =
 
 
             const events =
-                result.data || [];
+                (result.data || []).filter(event => !isEventExpired(event));
 
 
             renderEvents(

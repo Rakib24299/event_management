@@ -56,6 +56,8 @@ let ticketQuantity = 1;
 
 let isProcessing = false;
 
+let useExistingBooking = false;
+
 
 // ======================================================
 // AUTH TOKEN
@@ -358,6 +360,25 @@ const getEventId = () => {
         params.get("id") ||
         params.get("eventId")
     );
+
+};
+
+
+// ======================================================
+// GET BOOKING ID FROM URL
+// ======================================================
+// Supports:
+//   payment.html?bookingId=BOOKING_ID
+
+const getBookingId = () => {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    return params.get("bookingId");
 
 };
 
@@ -724,6 +745,126 @@ const loadEvent = async () => {
 
 
 // ======================================================
+// LOAD BOOKING BY ID
+// ======================================================
+//
+// GET /api/v1/bookings/:id
+//
+// Used when payment.html is opened with ?bookingId=...
+// The backend validates ownership and eligibility.
+//
+// ======================================================
+
+const loadBooking = async () => {
+
+    if (!bookingId) {
+
+        throw new Error(
+            "Booking information is missing. Please return to your bookings and try again."
+        );
+
+    }
+
+
+    console.log(
+        "Loading Booking:",
+        bookingId
+    );
+
+
+    const result =
+        await apiRequest(
+            `/bookings/${encodeURIComponent(bookingId)}`
+        );
+
+
+    console.log(
+        "Booking API Response:",
+        result
+    );
+
+
+    bookingData =
+        result.data ||
+        result;
+
+
+    if (!bookingData) {
+
+        throw new Error(
+            "Unable to load booking information."
+        );
+
+    }
+
+
+    const payment =
+        bookingData.payment ||
+        {};
+
+
+    const paymentStatus =
+        String(
+            payment.paymentStatus ||
+            payment.status ||
+            ""
+        ).toLowerCase();
+
+
+    if (paymentStatus === "paid") {
+
+        throw new Error(
+            "This booking has already been paid. No further payment is required."
+        );
+
+    }
+
+
+    if (
+        bookingData.bookingStatus ===
+        "cancelled"
+    ) {
+
+        throw new Error(
+            "This booking has been cancelled and cannot be paid for."
+        );
+
+    }
+
+
+    eventData =
+        bookingData.event || {};
+
+
+    ticketQuantity =
+        Number(
+            bookingData.ticketQuantity ||
+            1
+        );
+
+
+    console.log(
+        "Booking Data:",
+        bookingData
+    );
+
+
+    console.log(
+        "Event Data:",
+        eventData
+    );
+
+
+    renderEvent();
+
+    updateQuantityUI();
+
+    showContent();
+
+};
+
+
+// ======================================================
 // RENDER EVENT
 // ======================================================
 
@@ -820,6 +961,36 @@ const renderEvent = () => {
         availableSeatsElement.textContent =
             eventData.availableSeats ??
             "-";
+
+    }
+
+
+    if (isFreeEvent()) {
+
+        const availableSeatsSection =
+            document.getElementById(
+                "availableSeatsSection"
+            );
+
+
+        const ticketPriceSection =
+            document.getElementById(
+                "ticketPriceSection"
+            );
+
+
+        if (availableSeatsSection) {
+            availableSeatsSection.classList.add(
+                "hidden"
+            );
+        }
+
+
+        if (ticketPriceSection) {
+            ticketPriceSection.classList.add(
+                "hidden"
+            );
+        }
 
     }
 
@@ -1167,6 +1338,7 @@ const updateQuantityUI = () => {
         const cannotIncrease =
             ticketQuantity >= maxTickets ||
             (
+                eventData?.eventType !== "free" &&
                 availableSeats > 0 &&
                 ticketQuantity >= availableSeats
             );
@@ -1190,6 +1362,7 @@ const updateQuantityUI = () => {
 
 
         const hasSeats =
+            eventData?.eventType === "free" ||
             availableSeats == null ||
             Number(
                 availableSeats
@@ -1330,6 +1503,12 @@ const createBooking = async () => {
     );
 
 
+    const eventIdValue =
+        eventData._id ||
+        eventData.id ||
+        getEventId() ||
+        (bookingData?.event?._id || bookingData?.event?.id || bookingData?.event);
+
     const result =
         await apiRequest(
             "/bookings",
@@ -1340,8 +1519,7 @@ const createBooking = async () => {
                     JSON.stringify({
 
                         eventId:
-                            eventData._id ||
-                            eventData.id,
+                            eventIdValue,
 
                         ticketQuantity
 
@@ -1903,7 +2081,38 @@ const initialize = async () => {
         setupEventListeners();
 
 
-        await loadEvent();
+        const bookingIdParam =
+            getBookingId();
+
+
+        if (bookingIdParam) {
+
+            bookingId =
+                bookingIdParam;
+
+            useExistingBooking =
+                true;
+
+            await loadBooking();
+
+        } else {
+
+            const eventId =
+                getEventId();
+
+
+            if (!eventId) {
+
+                throw new Error(
+                    "Event information is missing. Please return to the event page and try again."
+                );
+
+            }
+
+
+            await loadEvent();
+
+        }
 
 
         console.log(

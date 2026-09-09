@@ -352,6 +352,68 @@ const cancelEvent =
 
 
 // ========================================
+// Get Event History
+// Admin Only
+// ========================================
+
+const getEventHistory =
+    catchAsync(
+        async (req, res) => {
+
+            const result =
+                await eventService
+                    .getEventHistory();
+
+
+            return res.status(200).json({
+
+                success: true,
+
+                message:
+                    "Event history fetched successfully.",
+
+                data:
+                    result,
+
+            });
+
+        }
+    );
+
+
+// ========================================
+// Get Organizer Event History
+// Organizer Only
+// ========================================
+
+const getOrganizerEventHistory =
+    catchAsync(
+        async (req, res) => {
+
+            const result =
+                await eventService
+                    .getOrganizerEventHistory(
+                        req.user.id
+                    );
+
+
+            return res.status(200).json({
+
+                success: true,
+
+                message:
+                    "Organizer event history fetched successfully.",
+
+                data:
+                    result,
+
+            });
+
+        }
+    );
+
+
+// ========================================
 // Export
 // ========================================
 
@@ -374,5 +436,9 @@ module.exports = {
     rejectEvent,
 
     cancelEvent,
+
+    getEventHistory,
+
+    getOrganizerEventHistory,
 
 };

@@ -126,10 +126,12 @@ const getRefundInformation = async (
   // ----------------------------------------------------
 
   if (!booking.event) {
+
     throw new AppError(
-      "Event not found for this booking.",
-      404
+      "Event no longer exists. Refund cannot be processed.",
+      400
     );
+
   }
 
 
@@ -137,7 +139,7 @@ const getRefundInformation = async (
   // Event DateTime
   // ----------------------------------------------------
 
-  let eventDateTime = new Date(booking.event.eventDate);
+   let eventDateTime = new Date(booking.event.eventDate);
 
   if (booking.event.startTime) {
     const timeParts =
@@ -336,7 +338,7 @@ const processRefund = async (
     await booking.save();
 
 
-    payment.paymentStatus =
+    payment.status =
       "cancelled";
 
     payment.refundAmount = 0;
@@ -363,7 +365,7 @@ const processRefund = async (
   // Process Dummy Refund
   // ----------------------------------------------------
 
-  payment.paymentStatus =
+  payment.status =
     "refunded";
 
   payment.refundAmount =

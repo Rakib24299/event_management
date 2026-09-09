@@ -75,6 +75,48 @@ const qrCode =
 const qrMessage =
     document.getElementById("qrMessage");
 
+const ticketsCard =
+    document.getElementById("ticketsCard");
+
+const paymentMethodCard =
+    document.getElementById("paymentMethodCard");
+
+const bookingIdCard =
+    document.getElementById("bookingIdCard");
+
+const totalAmountCard =
+    document.getElementById("totalAmountCard");
+
+const bookingInfoGrid =
+    document.getElementById("bookingInfoGrid");
+
+const paymentInfoSection =
+    document.getElementById("paymentInfoSection");
+
+const paymentInfoHeading =
+    document.getElementById("paymentInfoHeading");
+
+const paymentInfoSubheading =
+    document.getElementById("paymentInfoSubheading");
+
+const paymentIdRow =
+    document.getElementById("paymentIdRow");
+
+const transactionIdRow =
+    document.getElementById("transactionIdRow");
+
+const paymentStatusRow =
+    document.getElementById("paymentStatusRow");
+
+const bookingStatusRow =
+    document.getElementById("bookingStatusRow");
+
+const successHeading =
+    document.getElementById("successHeading");
+
+const successSubheading =
+    document.getElementById("successSubheading");
+
 
 // ======================================================
 // TOKEN
@@ -464,6 +506,15 @@ const displayBookingInformation = () => {
         "pending";
 
 
+    const isFreeEvent =
+        (eventData && (eventData.eventType === "free" || Number(eventData.ticketPrice ?? 0) === 0)) ||
+        (completedBooking?.event && (completedBooking.event.eventType === "free" || Number(completedBooking.event.ticketPrice ?? 0) === 0)) ||
+        (completedBooking && Number(completedBooking.totalAmount ?? 0) === 0 && (completedBooking.ticketPrice === 0 || completedBooking.ticketPrice === undefined || completedBooking.ticketPrice === null)) ||
+        completedPayment?.paymentMethod === "free" ||
+        successData?.paymentMethod === "free" ||
+        successData?.paymentMethod === "free_registration";
+
+
     // ==================================================
     // DISPLAY
     // ==================================================
@@ -486,9 +537,11 @@ const displayBookingInformation = () => {
 
 
     successTotalAmount.textContent =
-        formatMoney(
-            totalAmount
-        );
+        isFreeEvent
+            ? "Free"
+            : formatMoney(
+                totalAmount
+            );
 
 
     successPaymentId.textContent =
@@ -501,7 +554,7 @@ const displayBookingInformation = () => {
 
     successPaymentStatus.textContent =
         String(
-            paymentStatus
+          paymentStatus
         ).toUpperCase();
 
 
@@ -515,6 +568,111 @@ const displayBookingInformation = () => {
         String(
             bookingCurrentStatus
         ).toUpperCase();
+
+
+    // --------------------------------------------------
+    // Free Event UI Adjustments
+    // --------------------------------------------------
+
+    if (isFreeEvent) {
+
+        if (ticketsCard) {
+            ticketsCard.classList.add("hidden");
+        } else if (successTicketQuantity) {
+            successTicketQuantity.closest("div")?.classList.add("hidden");
+        }
+
+        if (paymentMethodCard) {
+            paymentMethodCard.classList.add("hidden");
+        } else if (successPaymentMethod) {
+            successPaymentMethod.closest("div")?.classList.add("hidden");
+        }
+
+        if (paymentStatusRow) {
+            paymentStatusRow.classList.add("hidden");
+        } else if (successPaymentStatus) {
+            successPaymentStatus.closest("div")?.classList.add("hidden");
+        }
+
+        if (paymentIdRow) {
+            paymentIdRow.classList.add("hidden");
+        } else if (successPaymentId) {
+            successPaymentId.closest("div")?.classList.add("hidden");
+        }
+
+        if (transactionIdRow) {
+            transactionIdRow.classList.add("hidden");
+        } else if (successTransactionId) {
+            successTransactionId.closest("div")?.classList.add("hidden");
+        }
+
+        if (successHeading) {
+            successHeading.textContent = "Registration Confirmed!";
+        }
+
+        if (successSubheading) {
+            successSubheading.textContent = "Your free event registration has been successfully confirmed.";
+        }
+
+        if (paymentInfoHeading) {
+            paymentInfoHeading.textContent = "Registration Information";
+        }
+
+        if (paymentInfoSubheading) {
+            paymentInfoSubheading.textContent = "Your event registration is confirmed.";
+        }
+
+        if (bookingInfoGrid) {
+            bookingInfoGrid.className = "mt-7 grid grid-cols-1 gap-3 border-t border-gray-100 pt-6 sm:grid-cols-2";
+        }
+
+        if (successBookingStatus) {
+            successBookingStatus.textContent = "CONFIRMED";
+            successBookingStatus.className = "rounded-full bg-primaryLight px-3 py-1 text-xs font-semibold text-primary";
+        }
+
+        if (bookingStatus) {
+            bookingStatus.textContent = "CONFIRMED";
+            bookingStatus.className = "w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white";
+        }
+
+    } else {
+
+        if (ticketsCard) {
+            ticketsCard.classList.remove("hidden");
+        } else if (successTicketQuantity) {
+            successTicketQuantity.closest("div")?.classList.remove("hidden");
+        }
+
+        if (paymentMethodCard) {
+            paymentMethodCard.classList.remove("hidden");
+        } else if (successPaymentMethod) {
+            successPaymentMethod.closest("div")?.classList.remove("hidden");
+        }
+
+        if (paymentStatusRow) {
+            paymentStatusRow.classList.remove("hidden");
+        } else if (successPaymentStatus) {
+            successPaymentStatus.closest("div")?.classList.remove("hidden");
+        }
+
+        if (paymentIdRow) {
+            paymentIdRow.classList.remove("hidden");
+        } else if (successPaymentId) {
+            successPaymentId.closest("div")?.classList.remove("hidden");
+        }
+
+        if (transactionIdRow) {
+            transactionIdRow.classList.remove("hidden");
+        } else if (successTransactionId) {
+            successTransactionId.closest("div")?.classList.remove("hidden");
+        }
+
+        if (bookingInfoGrid) {
+            bookingInfoGrid.className = "mt-7 grid grid-cols-1 gap-3 border-t border-gray-100 pt-6 sm:grid-cols-2 lg:grid-cols-4";
+        }
+
+    }
 
 };
 
@@ -883,9 +1041,32 @@ const displayEventInformation = () => {
     // AVAILABLE SEATS
     // --------------------------------------------------
 
-    successAvailableSeats.textContent =
-        eventData.availableSeats ??
-        "--";
+    if (successAvailableSeats) {
+
+        const isFree =
+            eventData.eventType === "free" ||
+            Number(eventData.ticketPrice ?? 0) === 0;
+
+        if (isFree) {
+
+            const seatsRow =
+                successAvailableSeats.closest("p");
+
+            if (seatsRow) {
+                seatsRow.classList.add("hidden");
+            }
+
+        } else {
+
+            successAvailableSeats.textContent =
+                eventData.availableSeats ??
+                "--";
+
+        }
+
+    }
+
+    displayBookingInformation();
 
 };
 
@@ -1024,7 +1205,7 @@ const generateQRCode = async () => {
 
 
         generateQrButton.textContent =
-            "QR Ticket Generated ✓";
+            "QR Ticket Generated";
 
 
     } catch (error) {
@@ -1064,6 +1245,169 @@ if (generateQrButton) {
     );
 
 }
+// ======================================================
+// LOAD BOOKING FROM API (FALLBACK)
+// ======================================================
+// Used when sessionStorage data is not available
+// (e.g., after free event OTP verification where
+// the backend redirects directly to this page).
+
+const loadBookingFromApi =
+    async () => {
+
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const bookingId =
+            urlParams.get("bookingId") ||
+            sessionStorage.getItem(
+                "confirmedBookingId"
+            ) ||
+            sessionStorage.getItem(
+                "paymentBookingId"
+            );
+
+
+        if (!bookingId) {
+
+            console.log(
+                "No bookingId found for API fallback."
+            );
+
+            return;
+
+        }
+
+
+        if (!token) {
+
+            console.log(
+                "No auth token for API fallback."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/bookings/${encodeURIComponent(bookingId)}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`,
+                        },
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                console.error(
+                    "Failed to load booking for success page:",
+                    result
+                );
+
+                return;
+
+            }
+
+
+            const booking =
+                result?.data ||
+                result;
+
+
+            if (booking) {
+
+                completedBooking =
+                    booking;
+
+
+                if (
+                    booking?.payment
+                ) {
+
+                    try {
+
+                        const paymentResponse =
+                            await fetch(
+                                `${API_URL}/payments/booking/${encodeURIComponent(booking.payment)}`,
+                                {
+                                    method: "GET",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json",
+
+                                        "Authorization":
+                                            `Bearer ${token}`,
+                                    },
+                                }
+                            );
+
+
+                        const paymentResult =
+                            await paymentResponse.json();
+
+
+                        if (
+                            paymentResult?.success &&
+                            paymentResult?.data
+                        ) {
+
+                            completedPayment =
+                                paymentResult.data;
+
+                        }
+
+                    } catch (paymentError) {
+
+                        console.error(
+                            "Failed to load payment:",
+                            paymentError
+                        );
+
+                    }
+
+                }
+
+
+                console.log(
+                    "Booking loaded from API:",
+                    completedBooking
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "API fallback error:",
+                error
+            );
+
+        }
+
+    };
 
 
 // ======================================================
@@ -1086,15 +1430,15 @@ const initialize = async () => {
         successEventTitle.textContent =
             "Booking information unavailable.";
 
+
         successBookingId.textContent =
             sessionStorage.getItem(
                 "confirmedBookingId"
             ) || "--";
 
+
         otpMessage.textContent =
             "Booking data was not found.";
-
-        return;
 
     }
 
@@ -1103,6 +1447,9 @@ const initialize = async () => {
 
 
     displayOTP();
+
+
+    await loadBookingFromApi();
 
 
     await loadEventInformation();

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Event History | EventEase</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4",
+                    },
+
+                    boxShadow: {
+                        soft: "0 10px 30px rgba(0,0,0,0.07)"
+                    }
+
+                }
+            }
+        };
+    </script>
+
+</head>
+
+
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
+
+
+      <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <!-- Logo -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-bold text-primary" >
+               
+                 <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Notification -->
+
+                <a
+                    href="./notifications.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
+                    title="Notifications"
+                >
+
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Account -->
+
+                <a
+                    href="./organizer-profile.html"
+                    class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+                >
+                    My Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ======================================
+         MAIN
+    ======================================= -->
+
+    <main class="flex-1">
+        <div
+            class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8"
+        >
+
+
+        <!-- ======================================
+             PAGE HEADER
+        ======================================= -->
+
+        <div
+            class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"
+        >
+
+            <div>
+
+                <a
+                    href="./dashboard.html"
+                    class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-primary"
+                >
+                    <span class="text-lg">←</span>
+                    Dashboard
+                </a>
+
+                <h1
+                    class="mt-4 text-3xl font-bold text-gray-900 sm:text-4xl"
+                >
+                    Event History
+                </h1>
+
+                <p
+                    class="mt-2 text-sm leading-6 text-gray-500 sm:text-base"
+                >
+                    View all your past events that have already ended.
+                </p>
+
+            </div>
+
+
+            <!-- History Count -->
+
+            <div
+                id="historyCount"
+                class="inline-flex w-fit items-center gap-2 rounded-2xl bg-primaryLight/40 px-4 py-3"
+            >
+
+                <span class="text-lg">
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                </span>
+
+                <span
+                    class="font-bold text-primary"
+                >
+                    0 Events
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             LOADING
+        ======================================= -->
+
+        <div
+            id="historyLoading"
+            class="rounded-3xl bg-white p-12 text-center shadow-soft"
+        >
+
+            <div
+                class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+            ></div>
+
+            <p
+                class="mt-4 text-sm text-gray-500"
+            >
+                Loading event history...
+            </p>
+
+        </div>
+
+
+        <!-- ======================================
+             ERROR
+        ======================================= -->
+
+        <div
+            id="historyError"
+            class="mt-8 hidden rounded-3xl bg-white p-8 text-center shadow-soft"
+        >
+
+            <div class="text-5xl">
+                <svg class="h-5 w-5 text-amber-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            </div>
+
+            <h2
+                class="mt-4 text-xl font-bold text-gray-900"
+            >
+                Unable to Load Event History
+            </h2>
+
+            <p
+                id="historyErrorMessage"
+                class="mt-2 text-sm leading-6 text-gray-500"
+            >
+                Something went wrong while loading your event history.
+            </p>
+
+            <button
+                id="retryHistoryButton"
+                type="button"
+                class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                Try Again
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             EMPTY
+        ======================================= -->
+
+        <div
+            id="historyEmpty"
+            class="mt-8 hidden rounded-3xl border border-dashed border-gray-200 bg-white p-10 text-center shadow-soft"
+        >
+
+            <div class="text-6xl">
+                <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+            </div>
+
+            <h2
+                class="mt-5 text-xl font-bold text-gray-900"
+            >
+                No Event History
+            </h2>
+
+            <p
+                class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500"
+            >
+                You don't have any expired events yet. Events will appear here once their date and time have passed.
+            </p>
+
+            <a
+                href="./my-events.html"
+                class="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primaryDark"
+            >
+                View My Events
+            </a>
+
+        </div>
+
+
+        <!-- ======================================
+             HISTORY CONTENT
+        ======================================= -->
+
+        <section
+            id="historyContent"
+            class="mt-8 hidden"
+        >
+
+            <div
+                id="historyList"
+                class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+            ></div>
+
+        </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer class="mt-auto border-t border-gray-200 bg-white">
+
+        <div
+            class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+        >
+
+            <div
+                class="flex flex-col items-center justify-between gap-4 sm:flex-row"
+            >
+
+                <p class="text-sm text-gray-500">
+                    © 2026 EventEase. All rights reserved.
+                </p>
+
+                <p class="text-sm text-gray-500">
+                    Developed by <span class="font-bold text-primary">Rakib</span>
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ======================================
+         ORGANIZER HISTORY JS
+    ======================================= -->
+
+    <script src="../../js/components.js"></script>
+    <script src="../../js/organizer/organizer-history.js"></script>
+
+
+</body>
+
+</html>

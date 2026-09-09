@@ -236,7 +236,7 @@ function showError(message) {
         >
 
             <div class="text-4xl">
-                ⚠️
+                <svg class="h-5 w-5 text-amber-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
 
             <h3
@@ -325,7 +325,7 @@ function showEmptyState() {
         >
 
             <div class="text-5xl">
-                🔍
+                <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
 
             <h3
@@ -566,6 +566,66 @@ function getEventDate(event) {
         event.startDate ||
         event.startTime
     );
+
+}
+
+
+// ========================================
+// Get Event DateTime (combines date + startTime)
+// ========================================
+
+function getEventDateTime(event) {
+
+    if (!event) {
+        return null;
+    }
+
+
+    const eventDate =
+        event.eventDate || event.date;
+
+    if (!eventDate) {
+        return null;
+    }
+
+
+    const dateTime =
+        new Date(eventDate);
+
+    if (
+        Number.isNaN(
+            dateTime.getTime()
+        )
+    ) {
+        return null;
+    }
+
+
+    const startTime =
+        event.startTime;
+
+    if (startTime) {
+        const timeParts =
+            String(startTime)
+                .split(":")
+                .map(Number);
+
+        if (
+            timeParts.length >= 2 &&
+            !Number.isNaN(timeParts[0]) &&
+            !Number.isNaN(timeParts[1])
+        ) {
+            dateTime.setHours(
+                timeParts[0],
+                timeParts[1] || 0,
+                0,
+                0
+            );
+        }
+    }
+
+
+    return dateTime;
 
 }
 
@@ -858,9 +918,8 @@ function getBookButtonHTML(event) {
     const eventStatus =
         event.status;
 
-    const eventDate =
-        event.eventDate ||
-        event.date;
+    const eventDateTime =
+        getEventDateTime(event);
 
     const bookingInfo =
         userBookings.get(eventId);
@@ -869,6 +928,9 @@ function getBookButtonHTML(event) {
         bookingInfo &&
         (bookingInfo.bookingStatus === "pending" ||
             bookingInfo.bookingStatus === "confirmed");
+
+    const isFree =
+        event.eventType === "free";
 
 
     // ------------------------------------------------
@@ -889,7 +951,7 @@ function getBookButtonHTML(event) {
     // Sold Out
     // ------------------------------------------------
 
-    if (availableSeats <= 0) {
+    if (!isFree && availableSeats <= 0) {
 
         return soldOutButtonHTML();
 
@@ -915,8 +977,8 @@ function getBookButtonHTML(event) {
     // ------------------------------------------------
 
     if (
-        eventDate &&
-        new Date(eventDate) <= new Date()
+        eventDateTime &&
+        eventDateTime <= new Date()
     ) {
 
         return unavailableButtonHTML();
@@ -981,12 +1043,14 @@ async function handleBookEvent(
     const eventStatus =
         event.status;
 
-    const eventDate =
-        event.eventDate ||
-        event.date;
+    const eventDateTime =
+        getEventDateTime(event);
+
+    const isFree =
+        event.eventType === "free";
 
 
-    if (availableSeats <= 0) {
+    if (!isFree && availableSeats <= 0) {
 
         showToast(
             "This event is sold out.",
@@ -1014,8 +1078,8 @@ async function handleBookEvent(
 
 
     if (
-        eventDate &&
-        new Date(eventDate) <= new Date()
+        eventDateTime &&
+        eventDateTime <= new Date()
     ) {
 
         showToast(
@@ -1556,7 +1620,7 @@ function createEventCard(event) {
                     text-6xl
                 "
             >
-                🎟️
+                <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
             </div>
 
         `;
@@ -1573,8 +1637,16 @@ function createEventCard(event) {
      * and converted to string.
      */
 
+    const bookingInfo =
+        userBookings.get(id);
+
+
     const detailsURL =
-        `./event-details.html?id=${encodeURIComponent(id)}`;
+        bookingInfo &&
+            String(bookingInfo.bookingStatus).toLowerCase() ===
+                "pending"
+            ? `./event-details.html?id=${encodeURIComponent(id)}&bookingId=${encodeURIComponent(bookingInfo.bookingId)}`
+            : `./event-details.html?id=${encodeURIComponent(id)}`;
 
 
     const bookButtonHTML =
@@ -1634,6 +1706,26 @@ function createEventCard(event) {
                     ${category}
                 </span>
 
+                ${event.eventType === "free" || price === 0 ? `
+                    <span
+                        class="
+                            absolute
+                            right-4
+                            top-4
+                            rounded-full
+                            bg-emerald-600
+                            px-3
+                            py-1
+                            text-xs
+                            font-bold
+                            text-white
+                            shadow-sm
+                        "
+                    >
+                        Free
+                    </span>
+                ` : ""}
+
             </div>
 
 
@@ -1664,11 +1756,11 @@ function createEventCard(event) {
                 >
 
                     <p>
-                        📍 ${location}
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> ${location}
                     </p>
 
                     <p>
-                        📅 ${date}
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> ${date}
                     </p>
 
                 </div>
@@ -1702,14 +1794,13 @@ function createEventCard(event) {
                                 mt-1
                                 text-lg
                                 font-bold
-                                text-primary
+                                ${event.eventType === "free" || price === 0 ? "text-emerald-600" : "text-primary"}
                             "
                         >
                             ${priceDisplay}
                         </p>
 
                     </div>
-
 
                     <div class="flex items-center gap-2">
 

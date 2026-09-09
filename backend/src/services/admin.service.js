@@ -12,6 +12,12 @@ const {
 const { getPlatformFeePercentage } =
   require("./payment.service");
 
+const {
+  getEventEndDateTime,
+  isEventExpired,
+  isEventInAdminHistory,
+} = require("../utils/eventDateTime");
+
 
 // ======================================================
 // Get Pending Organizers
@@ -214,55 +220,232 @@ const getDashboardStats = async () => {
 
 
   const totalEvents =
-    await Event.countDocuments({
+    await Event.find({
+
       isDeleted: false,
+
     });
+
+
+  const activeTotalEvents =
+    totalEvents.filter(
+      (event) =>
+        !isEventExpired(event)
+    );
+
+
+  const totalEventsCount =
+    activeTotalEvents.length;
 
 
   const activeEvents =
     await Event.countDocuments({
+
       isDeleted: false,
+
       status: "published",
+
+    });
+
+
+  const publishedEventsForCount =
+    await Event.find({
+
+      isDeleted: false,
+
+      status: "published",
+
+    });
+
+
+  const activePublishedEventsCount =
+    publishedEventsForCount.filter(
+      (event) =>
+        !isEventExpired(event)
+    ).length;
+
+
+  const allEventsForHistory =
+    await Event.find({
+
+      isDeleted: false,
+
     });
 
 
   const completedEvents =
-    await Event.countDocuments({
-      isDeleted: false,
-      status: "completed",
-    });
+    allEventsForHistory.filter(
+      isEventInAdminHistory
+    ).length;
 
 
   const totalBookings =
-    await Booking.countDocuments();
+    await Booking.aggregate([
+
+      {
+        $lookup: {
+          from: "events",
+          localField: "event",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+
+      { $unwind: "$event" },
+
+      {
+        $addFields: {
+          eventEndDateTime: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: "$event.eventDate",
+                    },
+                  },
+                  "T",
+                  { $ifNull: ["$event.endTime", "23:59:59"] },
+                ],
+              },
+            },
+          },
+        },
+      },
+
+      {
+        $match: {
+          bookingStatus: { $ne: "cancelled" },
+          "event.isDeleted": false,
+          eventEndDateTime: { $gt: new Date() },
+        },
+      },
+
+      {
+        $group: {
+          _id: null,
+          totalBookings: { $sum: 1 },
+        },
+      },
+
+    ]);
+
+
+  const totalBookingsCount =
+    totalBookings.length > 0
+      ? totalBookings[0].totalBookings
+      : 0;
 
 
   const confirmedBookings =
-    await Booking.countDocuments({
-      bookingStatus: "confirmed",
-    });
+    await Booking.aggregate([
+
+      {
+        $lookup: {
+          from: "events",
+          localField: "event",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+
+      { $unwind: "$event" },
+
+      {
+        $addFields: {
+          eventEndDateTime: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: "$event.eventDate",
+                    },
+                  },
+                  "T",
+                  { $ifNull: ["$event.endTime", "23:59:59"] },
+                ],
+              },
+            },
+          },
+        },
+      },
+
+      {
+        $match: {
+          bookingStatus: "confirmed",
+          "event.isDeleted": false,
+          eventEndDateTime: { $gt: new Date() },
+        },
+      },
+
+      {
+        $group: {
+          _id: null,
+          confirmedBookings: { $sum: 1 },
+        },
+      },
+
+    ]);
+
+
+  const confirmedBookingsCount =
+    confirmedBookings.length > 0
+      ? confirmedBookings[0].confirmedBookings
+      : 0;
 
 
   const ticketResult =
     await Booking.aggregate([
 
       {
+        $lookup: {
+          from: "events",
+          localField: "event",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+
+      { $unwind: "$event" },
+
+      {
+        $addFields: {
+          eventEndDateTime: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  {
+                    $dateToString: {
+                      format: "%Y-%m-%d",
+                      date: "$event.eventDate",
+                    },
+                  },
+                  "T",
+                  { $ifNull: ["$event.endTime", "23:59:59"] },
+                ],
+              },
+            },
+          },
+        },
+      },
+
+      {
         $match: {
-          bookingStatus:
-            "confirmed",
+          bookingStatus: "confirmed",
+          "event.isDeleted": false,
+          eventEndDateTime: { $gt: new Date() },
         },
       },
 
       {
         $group: {
-
           _id: null,
-
           totalTickets: {
-            $sum:
-              "$ticketQuantity",
+            $sum: "$ticketQuantity",
           },
-
         },
       },
 
@@ -275,6 +458,15 @@ const getDashboardStats = async () => {
       : 0;
 
 
+  const now = new Date();
+  const oneMonthAgo = new Date(now);
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const monthStart = new Date(
+    oneMonthAgo.getFullYear(),
+    oneMonthAgo.getMonth(),
+    oneMonthAgo.getDate()
+  );
+
   const revenueResult =
     await Booking.aggregate([
 
@@ -282,6 +474,9 @@ const getDashboardStats = async () => {
         $match: {
           bookingStatus:
             "confirmed",
+          createdAt: {
+            $gte: monthStart,
+          },
         },
       },
 
@@ -315,15 +510,15 @@ const getDashboardStats = async () => {
 
     pendingOrganizers,
 
-    totalEvents,
+    totalEvents: totalEventsCount,
 
-    activeEvents,
+    activeEvents: activePublishedEventsCount,
 
     completedEvents,
 
-    totalBookings,
+    totalBookings: totalBookingsCount,
 
-    confirmedBookings,
+    confirmedBookings: confirmedBookingsCount,
 
     totalTickets,
 
@@ -480,80 +675,82 @@ const getAllEvents = async () => {
         createdAt: -1,
       });
 
-  return events;
+  return events.filter(
+    (event) => !isEventExpired(event)
+  );
 };
 
 
 // ======================================================
 // Delete Event By Admin
+// Hard Delete
 // ======================================================
 
 const deleteEventByAdmin = async (
-  eventId,
-  adminId
+   eventId,
+   adminId
 ) => {
 
-  const event =
-    await Event.findById(
-      eventId
-    );
+   const event =
+     await Event.findById(
+       eventId
+     );
 
-  if (
-    !event ||
-    event.isDeleted
-  ) {
+   if (!event) {
 
-    throw new AppError(
-      "Event not found.",
-      404
-    );
+     throw new AppError(
+       "Event not found.",
+       404
+     );
 
-  }
-
-  event.isDeleted =
-    true;
-
-  event.deletedAt =
-    new Date();
-
-  event.deletedBy =
-    adminId;
-
-  await event.save();
+   }
 
 
-  // ============================================
-  // Notify Organizer
-  // ============================================
+   const eventTitle =
+     event.title;
 
-  if (event.organizer) {
-
-    await createBulkNotifications({
-
-      users: [
-        event.organizer,
-      ],
-
-      title:
-        "Event Removed",
-
-      message:
-        `Your event "${event.title}" has been removed by the admin.`,
-
-      type:
-        "system",
-
-    });
-
-  }
+   const organizerId =
+     event.organizer;
 
 
-  return {
+   await Event.findByIdAndDelete(
+     eventId
+   );
 
-    message:
-      "Event deleted successfully.",
 
-  };
+   // ============================================
+   // Notify Organizer
+   // ============================================
+
+   if (organizerId) {
+
+     await createBulkNotifications({
+
+       users: [
+         organizerId,
+       ],
+
+       title:
+         "Event Removed",
+
+       message:
+         `Your event "${eventTitle}" has been removed by the admin.`,
+
+       type:
+         "system",
+
+     });
+
+   }
+
+
+   return {
+
+     message:
+       "Event deleted successfully.",
+
+   };
+
 };
 
 
@@ -608,7 +805,7 @@ const getPaymentStatistics =
     const paidPayments =
       await Payment.countDocuments({
 
-        paymentStatus:
+        status:
           "paid",
 
       });
@@ -617,7 +814,7 @@ const getPaymentStatistics =
     const pendingPayments =
       await Payment.countDocuments({
 
-        paymentStatus: {
+        status: {
           $in: [
             "pending",
             "processing",
@@ -630,7 +827,7 @@ const getPaymentStatistics =
     const failedPayments =
       await Payment.countDocuments({
 
-        paymentStatus:
+        status:
           "failed",
 
       });
@@ -639,7 +836,7 @@ const getPaymentStatistics =
     const refundedPayments =
       await Payment.countDocuments({
 
-        paymentStatus:
+        status:
           "refunded",
 
       });
@@ -660,7 +857,7 @@ const getPaymentStatistics =
         {
           $match: {
 
-            paymentStatus:
+            status:
               "paid",
 
           },
@@ -673,7 +870,7 @@ const getPaymentStatistics =
 
             total: {
               $sum:
-                "$amount",
+                "$grossAmount",
             },
 
           },
@@ -831,7 +1028,7 @@ const getAdminRevenueHistory =
       };
 
 
-    const [today, last7Days, last1Month] =
+    const [today, last7Days, last1Month, dailyPayments] =
       await Promise.all([
 
         aggregateForPeriod(
@@ -849,8 +1046,68 @@ const getAdminRevenueHistory =
           tomorrowStart
         ),
 
+        Payment.aggregate([
+          {
+            $match: {
+              status: "paid",
+              $or: [
+                { paidAt: { $gte: sevenDaysAgo, $lt: tomorrowStart } },
+                {
+                  paidAt: { $exists: false },
+                  createdAt: { $gte: sevenDaysAgo, $lt: tomorrowStart },
+                },
+              ],
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: "%Y-%m-%d",
+                  date: { $ifNull: ["$paidAt", "$createdAt"] },
+                },
+              },
+              totalRevenue: { $sum: "$grossAmount" },
+              platformFee: { $sum: "$platformFee" },
+              organizerRevenue: { $sum: "$organizerAmount" },
+              totalPayments: { $sum: 1 },
+            },
+          },
+          { $sort: { _id: 1 } },
+        ]),
+
       ]);
 
+    const dailyMap = new Map();
+    (dailyPayments || []).forEach((item) => {
+      dailyMap.set(item._id, item);
+    });
+
+    const dailyLast7Days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(todayStart.getTime() - i * 24 * 60 * 60 * 1000);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const dateKey = `${year}-${month}-${day}`;
+      const dayName = d.toLocaleDateString("en-US", { weekday: "short" });
+
+      const dayData = dailyMap.get(dateKey) || {
+        totalRevenue: 0,
+        platformFee: 0,
+        organizerRevenue: 0,
+        totalPayments: 0,
+      };
+
+      dailyLast7Days.push({
+        date: dateKey,
+        label: `${dayName} (${day}/${month})`,
+        totalRevenue: dayData.totalRevenue,
+        platformFee: dayData.platformFee,
+        organizerRevenue: dayData.organizerRevenue,
+        totalPayments: dayData.totalPayments,
+      });
+    }
 
     return {
 
@@ -862,6 +1119,8 @@ const getAdminRevenueHistory =
       last7Days,
 
       last1Month,
+
+      dailyLast7Days,
 
     };
 
@@ -933,7 +1192,7 @@ const processRefundByAdmin =
 
 
     if (
-      payment.paymentStatus !==
+      payment.status !==
       "paid"
     ) {
 
@@ -986,7 +1245,7 @@ const processRefundByAdmin =
     // Update Payment
     // ==========================================
 
-    payment.paymentStatus =
+    payment.status =
       "refunded";
 
     payment.refundAmount =
@@ -1072,6 +1331,39 @@ const processRefundByAdmin =
 
 
 // ======================================================
+// Get Event History
+// Expired events within 30-day retention period
+// ======================================================
+
+const getEventHistory = async () => {
+
+  const events =
+    await Event.find({
+
+      isDeleted: false,
+
+    })
+      .populate(
+        "organizer",
+        "name email organizationName"
+      )
+      .populate(
+        "category",
+        "name"
+      )
+      .sort({
+        createdAt: -1,
+      });
+
+
+  return events.filter(
+    isEventExpired
+  );
+
+};
+
+
+// ======================================================
 // Export
 // ======================================================
 
@@ -1092,6 +1384,8 @@ module.exports = {
   unblockUser,
 
   getAllEvents,
+
+  getEventHistory,
 
   deleteEventByAdmin,
 

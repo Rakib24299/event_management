@@ -22,6 +22,11 @@ const {
   startBookingExpiryJob,
 } = require("./src/jobs/bookingExpiry.job");
 
+// Event History Cleanup Job
+const {
+  startEventHistoryCleanupJob,
+} = require("./src/jobs/eventHistoryCleanup.job");
+
 // ======================================================
 // SOCKET.IO CONFIG
 // ======================================================
@@ -210,6 +215,12 @@ const startServer =
       // ==================================================
 
       startBookingExpiryJob();
+
+      // ==================================================
+      // START EVENT HISTORY CLEANUP JOB
+      // ==================================================
+
+      startEventHistoryCleanupJob();
 
       // ==================================================
       // START HTTP + SOCKET.IO SERVER

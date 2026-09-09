@@ -223,7 +223,7 @@ const renderEmptyState = () => {
             <div
                 class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50 text-3xl"
             >
-                ✅
+                <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
             </div>
 
 
@@ -360,7 +360,7 @@ const renderOrganizers = (
                                       `
                                     : `
                                         <span class="text-2xl">
-                                            🧑‍💼
+                                            <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                                         </span>
                                       `
                             }

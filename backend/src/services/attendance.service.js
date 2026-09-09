@@ -1,4 +1,5 @@
 const Booking = require("../models/Booking");
+const Payment = require("../models/Payment");
 const AppError = require("../utils/AppError");
 
 
@@ -68,11 +69,22 @@ const scanQRCode = async (qrData) => {
 
 
   // Check payment status
-  if (booking.paymentStatus !== "paid") {
+  const payment =
+    await Payment.findById(
+      booking.payment
+    );
+
+
+
+  if (
+    !payment ||
+    payment.status !== "paid"
+  ) {
     throw new AppError(
       "Payment has not been completed.",
       400
     );
+
   }
 
 

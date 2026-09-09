@@ -339,7 +339,7 @@ if (loginForm) {
                 // ====================================
 
                 loginButton.textContent =
-                    "Login Successful ✓";
+                    "Login Successful";
 
 
                 console.log(

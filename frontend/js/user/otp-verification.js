@@ -828,6 +828,13 @@ const verifyOtp = async () => {
         }
 
 
+        const isFree =
+            existingSuccessData?.paymentMethod === "free" ||
+            existingSuccessData?.payment?.paymentMethod === "free" ||
+            verifiedBooking?.event?.eventType === "free" ||
+            verifiedBooking?.ticketPrice === 0 ||
+            verifiedBooking?.totalAmount === 0;
+
         const finalSuccessData = {
 
             ...existingSuccessData,
@@ -836,7 +843,9 @@ const verifyOtp = async () => {
                 verifiedBooking,
 
             paymentMethod:
-                "sslcommerz",
+                isFree
+                    ? "free"
+                    : (existingSuccessData?.paymentMethod || "sslcommerz"),
 
             otpVerified:
                 true,

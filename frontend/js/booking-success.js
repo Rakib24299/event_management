@@ -1246,7 +1246,7 @@ async function generateQRCode() {
         if (generateQrButton) {
 
             generateQrButton.textContent =
-                "QR Ticket Generated ✓";
+                "QR Ticket Generated";
 
         }
 

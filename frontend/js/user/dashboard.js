@@ -155,6 +155,40 @@ function formatPrice(price) {
 
 
 // ========================================
+// Format Location
+// ========================================
+
+function formatLocation(value) {
+
+    if (!value) {
+        return null;
+    }
+
+
+    if (typeof value === "string") {
+        return value;
+    }
+
+
+    if (typeof value === "object") {
+        return (
+            value.name ||
+            value.address ||
+            value.venueName ||
+            value.venue ||
+            value.city ||
+            [value.street, value.city, value.country].filter(Boolean).join(", ") ||
+            null
+        );
+    }
+
+
+    return null;
+
+}
+
+
+// ========================================
 // Get Event From Booking
 // ========================================
 
@@ -246,10 +280,11 @@ function createBookingCard(booking) {
 
 
     const location =
-        event.location ||
-        event.venue ||
-        booking.location ||
-        "Location not available";
+        formatLocation(
+            event.location ||
+            event.venue ||
+            booking.location
+        ) || "Location not available";
 
 
     const quantity =
@@ -340,7 +375,7 @@ function createBookingCard(booking) {
 
                             <p class="text-sm text-gray-500">
 
-                                📅
+                                <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
 
                                 <span class="ml-1">
                                     ${formatDate(eventDate)}
@@ -351,7 +386,7 @@ function createBookingCard(booking) {
 
                             <p class="text-sm text-gray-500">
 
-                                📍
+                                <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 
                                 <span class="ml-1">
                                     ${location}
@@ -362,7 +397,7 @@ function createBookingCard(booking) {
 
                             <p class="text-sm text-gray-500">
 
-                                🎫
+                                <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
 
                                 <span class="ml-1">
                                     ${quantity} Ticket${quantity > 1 ? "s" : ""}
@@ -644,6 +679,112 @@ async function loadBookings() {
 
 
 // ========================================
+// Update Notification Badge
+// ========================================
+
+async function updateNotificationBadge() {
+
+    const badge =
+        document.getElementById(
+            "notificationBadge"
+        );
+
+
+    if (!badge) {
+        return;
+    }
+
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        badge.classList.add(
+            "hidden"
+        );
+
+        badge.textContent = "0";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/v1/notifications/unread-count",
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`,
+
+                    },
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            response.ok &&
+            result.success &&
+            result.data
+        ) {
+
+            const count =
+                result.data.unreadCount ||
+                0;
+
+
+            badge.textContent = count;
+
+
+            if (count > 0) {
+
+                badge.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                badge.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        } else {
+
+            badge.classList.add(
+                "hidden"
+            );
+
+            badge.textContent = "0";
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Notification badge error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ========================================
 // Load Dashboard
 // ========================================
 
@@ -732,3 +873,5 @@ async function loadDashboard() {
 // ========================================
 
 loadDashboard();
+
+updateNotificationBadge();

@@ -74,6 +74,9 @@ const organizerOrganization =
 const eventPrice =
     document.getElementById("eventPrice");
 
+const eventPriceSection =
+    document.getElementById("eventPriceSection");
+
 const availableSeats =
     document.getElementById("availableSeats");
 
@@ -161,6 +164,10 @@ let editingReviewId = null;
 
 let currentEvent = null;
 
+let continuationBookingData = null;
+
+let isContinuationMode = false;
+
 
 // ========================================
 // Get Event ID From URL
@@ -180,11 +187,19 @@ const urlParams =
  * We also support:
  *
  * event-details.html?eventId=EVENT_ID
+ *
+ * Payment continuation mode:
+ *
+ * event-details.html?eventId=EVENT_ID&bookingId=BOOKING_ID
  */
 
 const eventId =
     urlParams.get("id") ||
     urlParams.get("eventId");
+
+
+const continuationBookingId =
+    urlParams.get("bookingId");
 
 
 // ========================================
@@ -208,9 +223,82 @@ console.log(
 
 function getToken() {
 
-    return localStorage.getItem(
-        "token"
+    return (
+        localStorage.getItem("token") ||
+        localStorage.getItem("accessToken") ||
+        sessionStorage.getItem("token") ||
+        sessionStorage.getItem("accessToken")
     );
+
+}
+
+
+// ========================================
+// API Request Helper
+// ========================================
+
+async function apiRequest(
+    endpoint,
+    options = {}
+) {
+
+    const token =
+        getToken();
+
+
+    const headers = {
+        "Content-Type":
+            "application/json",
+        ...(options.headers || {}),
+    };
+
+
+    if (token) {
+
+        headers.Authorization =
+            `Bearer ${token}`;
+
+    }
+
+
+    const response =
+        await fetch(
+            `${API_URL}${endpoint}`,
+            {
+                ...options,
+                headers,
+            }
+        );
+
+
+    let result = null;
+
+
+    try {
+
+        result =
+            await response.json();
+
+    } catch (error) {
+
+        result = null;
+
+    }
+
+
+    if (!response.ok) {
+
+        const message =
+            result?.message ||
+            result?.error ||
+            "Something went wrong.";
+
+        throw new Error(message);
+
+    }
+
+
+    return result;
 
 }
 
@@ -456,8 +544,8 @@ function createStars(rating) {
 
         stars +=
             i <= roundedRating
-                ? "★"
-                : "☆";
+                ? '<svg class="h-5 w-5 text-amber-400 fill-current inline-block align-middle" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>'
+                : '<svg class="h-5 w-5 text-gray-300 fill-none stroke-current inline-block align-middle" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>';
 
     }
 
@@ -799,79 +887,37 @@ function displayEvent(event) {
 
 
     // ====================================
-    // Event Type
-    // ====================================
-
-    const eventType =
-        event.eventType ||
-        "paid";
-
-
-    eventEventType.textContent =
-        eventType === "free"
-            ? "Free"
-            : "Paid";
-
-
-    // ====================================
-    // Ticket Price
-    // ====================================
-
-    const ticketPriceValue =
-        event.ticketPrice ??
-        event.price ??
-        event.registrationFee ??
-        0;
-
-
-    const numericPrice =
-        Number(ticketPriceValue);
-
-
-    if (
-        eventType === "free" ||
-        numericPrice === 0
-    ) {
-
-        eventTicketPriceContainer.classList.add(
-            "hidden"
-        );
-
-    } else {
-
-        eventTicketPriceContainer.classList.remove(
-            "hidden"
-        );
-
-
-        eventTicketPrice.textContent =
-            `৳${numericPrice.toLocaleString()}`;
-
-    }
-
-
-    // ====================================
     // Location
     // ====================================
 
-    const locationText =
-        formatLocation(event.location) ||
-        formatLocation(event.venue) ||
-        formatLocation(event.address) ||
-        "Location not available";
+    const locationValue =
+        formatLocation(
+            event.venue ||
+            event.location ||
+            event.address ||
+            null
+        );
 
 
     eventLocation.textContent =
-        locationText;
+        locationValue ||
+        "Location not available";
 
 
     // ====================================
     // Description
     // ====================================
 
-    eventDescription.textContent =
+    const descriptionText =
         event.description ||
-        "No description available for this event.";
+        event.about ||
+        event.eventDescription ||
+        "";
+
+
+    eventDescription.textContent =
+        descriptionText ||
+        "No description available.";
 
 
     // ====================================
@@ -882,57 +928,121 @@ function displayEvent(event) {
         event.organizer || {};
 
 
-    const firstName =
-        organizer.firstName ||
-        "";
-
-
-    const lastName =
-        organizer.lastName ||
-        "";
-
-
-    const fullName =
+    const organizerDisplayName =
         organizer.name ||
-        `${firstName} ${lastName}`.trim() ||
         organizer.fullName ||
-        "Event Organizer";
-
-
-    organizerInitial.textContent =
-        getInitial(
-            fullName
-        );
+        "Unknown Organizer";
 
 
     organizerName.textContent =
-        fullName;
+        organizerDisplayName;
 
 
     organizerOrganization.textContent =
         organizer.organizationName ||
-        organizer.organization ||
-        "Event Organizer";
+        "";
+
+
+    organizerInitial.textContent =
+        getInitial(
+            organizerDisplayName
+        );
 
 
     // ====================================
-    // Price
+    // Event Type
     // ====================================
 
-    const price =
-        event.ticketPrice ??
-        event.price ??
-        event.registrationFee ??
-        0;
+    const eventType =
+        event.eventType ||
+        "paid";
 
 
-    eventPrice.textContent =
-        formatPrice(price);
+    const numericPrice =
+        Number(
+            event.ticketPrice ??
+            0
+        );
+
+    const isFreeEvent =
+        eventType === "free" || numericPrice === 0;
+
+
+    if (eventEventType) {
+        eventEventType.textContent =
+            isFreeEvent
+                ? "Free"
+                : "Paid";
+    }
 
 
     // ====================================
-    // Seats
+    // Ticket Price (meta strip)
     // ====================================
+
+    if (eventTicketPriceContainer) {
+        eventTicketPriceContainer.classList.remove(
+            "hidden"
+        );
+    }
+
+    if (eventTicketPrice) {
+        eventTicketPrice.textContent =
+            isFreeEvent
+                ? "Free"
+                : `৳${numericPrice.toLocaleString()}`;
+
+        if (isFreeEvent) {
+            eventTicketPrice.classList.add("text-emerald-600");
+        } else {
+            eventTicketPrice.classList.remove("text-emerald-600");
+        }
+    }
+
+
+    // ====================================
+    // Right Sidebar Price + Seats
+    // ====================================
+
+    const eventSeatsSection =
+        document.getElementById(
+            "eventSeatsSection"
+        );
+
+
+    if (eventPriceSection) {
+        eventPriceSection.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    if (eventSeatsSection) {
+        eventSeatsSection.classList.toggle(
+            "hidden",
+            isFreeEvent
+        );
+    }
+
+
+    if (isFreeEvent) {
+
+        eventPrice.textContent =
+            "Free";
+
+        eventPrice.classList.add("text-emerald-600");
+        eventPrice.classList.remove("text-primary");
+
+    } else {
+
+        eventPrice.textContent =
+            `৳${numericPrice.toLocaleString()}`;
+
+        eventPrice.classList.remove("text-emerald-600");
+        eventPrice.classList.add("text-primary");
+
+    }
+
 
     const seats =
         Number(
@@ -942,7 +1052,7 @@ function displayEvent(event) {
         );
 
 
-    const totalSeats =
+    const totalSeatsValue =
         Number(
             event.totalSeats ??
             event.capacity ??
@@ -952,24 +1062,23 @@ function displayEvent(event) {
 
 
     availableSeats.textContent =
-        `${seats} seats`;
+        isFreeEvent
+            ? ""
+            : `${seats} seats`;
 
-
-    // ====================================
-    // Seat Progress
-    // ====================================
 
     let progress = 0;
 
 
     if (
-        totalSeats > 0
+        totalSeatsValue > 0 &&
+        !isFreeEvent
     ) {
 
         progress =
             (
                 seats /
-                totalSeats
+                totalSeatsValue
             ) * 100;
 
     }
@@ -989,12 +1098,51 @@ function displayEvent(event) {
         `${progress}%`;
 
 
+    const availableSeatsContainer =
+        availableSeats?.closest(
+            "div"
+        )?.parentElement;
+
+
+    const seatProgressContainer =
+        seatProgress?.closest(
+            "div"
+        );
+
+
+    if (
+        isFreeEvent &&
+        availableSeatsContainer
+    ) {
+
+        availableSeatsContainer.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (
+        isFreeEvent &&
+        seatProgressContainer
+    ) {
+
+        seatProgressContainer.classList.add(
+            "hidden"
+        );
+
+    }
+
+
     // ====================================
     // Booking Button
     // ====================================
 
     if (
-        seats <= 0
+        !isFreeEvent &&
+        seats <= 0 &&
+        !(isContinuationMode &&
+            continuationBookingData)
     ) {
 
         bookEventButton.disabled =
@@ -1061,6 +1209,119 @@ function displayEvent(event) {
 
     eventContent.classList.remove(
         "hidden"
+    );
+
+}
+
+
+// ========================================
+// Update Continuation UI
+// ========================================
+// Called when the user arrives with a
+// bookingId in the URL. Adjusts the book
+// button to reflect that a booking already
+// exists and the user is continuing to payment.
+// ========================================
+
+function updateContinuationUI() {
+
+    if (!isContinuationMode || !continuationBookingData) {
+
+        return;
+
+    }
+
+
+    const bookingEvent =
+        continuationBookingData?.event || {};
+
+
+    const eventType =
+        (currentEvent?.eventType ||
+            bookingEvent?.eventType ||
+            "paid"
+        ).toLowerCase();
+
+
+    const isFree =
+        eventType === "free";
+
+
+    if (bookEventButton) {
+
+        bookEventButton.disabled =
+            false;
+
+
+        bookEventButton.textContent =
+            isFree
+                ? "Book This Event"
+                : "Continue to Payment";
+
+
+        bookEventButton.classList.remove(
+            "bg-primary",
+            "hover:bg-primaryDark",
+            "cursor-not-allowed",
+            "bg-gray-400"
+        );
+
+
+        if (isFree) {
+
+            bookEventButton.classList.add(
+                "bg-primary",
+                "hover:bg-primaryDark"
+            );
+
+        } else {
+
+            bookEventButton.classList.add(
+                "bg-primary",
+                "hover:bg-primaryDark"
+            );
+
+        }
+
+    }
+
+
+    const seatsSection =
+        document.getElementById(
+            "eventSeatsSection"
+        );
+
+
+    if (seatsSection && !isFree) {
+
+        const availableSeatsEl =
+            document.getElementById(
+                "availableSeats"
+            );
+
+
+        if (availableSeatsEl) {
+
+            const bookingQty =
+                Number(
+                    continuationBookingData?.ticketQuantity ||
+                    0
+                );
+
+
+            availableSeatsEl.textContent =
+                `${bookingQty} ticket(s) booked`;
+
+        }
+
+    }
+
+
+    console.log(
+        "Continuation mode active:",
+        isFree ? "free" : "paid",
+        "booking:",
+        continuationBookingId
     );
 
 }
@@ -1177,6 +1438,191 @@ async function loadEvent() {
     try {
 
         // ==================================
+        // Continuation Mode:
+        // User arrived with ?bookingId=...
+        // Load booking first, then event from booking.
+        // ==================================
+
+        if (continuationBookingId) {
+
+            console.log(
+                "Continuation mode: loading booking",
+                continuationBookingId
+            );
+
+
+            const bookingResult =
+                await apiRequest(
+                    `/bookings/${encodeURIComponent(continuationBookingId)}`
+                );
+
+
+            const booking =
+                bookingResult?.data ||
+                bookingResult;
+
+
+            if (
+                !booking ||
+                booking.bookingStatus === "cancelled"
+            ) {
+
+                throw new Error(
+                    booking?.bookingStatus === "cancelled"
+                        ? "This booking has been cancelled and cannot be paid for."
+                        : "Booking not found. Please return to My Bookings and try again."
+                );
+
+            }
+
+
+            if (
+                booking.isOtpVerified &&
+                booking.bookingStatus === "confirmed"
+            ) {
+
+                throw new Error(
+                    "This booking is already confirmed. No further payment is required."
+                );
+
+            }
+
+
+            const payment =
+                booking?.payment || {};
+
+
+            const paymentStatus =
+                String(
+                    payment?.paymentStatus ||
+                    payment?.status ||
+                    ""
+                ).toLowerCase();
+
+
+            if (
+                paymentStatus === "paid"
+            ) {
+
+                throw new Error(
+                    "This booking has already been paid. No further payment is required."
+                );
+
+            }
+
+
+            continuationBookingData =
+                booking;
+
+
+            const bookingEvent =
+                booking?.event || {};
+
+
+            const resolvedEventId =
+                bookingEvent?._id ||
+                bookingEvent?.id ||
+                eventId;
+
+
+            isContinuationMode = true;
+
+
+            const eventResponse =
+                await fetch(
+                    `${API_URL}/events/${encodeURIComponent(resolvedEventId)}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            let eventResult = null;
+
+
+            try {
+
+                eventResult =
+                    await eventResponse.json();
+
+            } catch (jsonError) {
+
+                console.error(
+                    "Invalid JSON response:",
+                    jsonError
+                );
+
+            }
+
+
+            if (
+                eventResponse.ok &&
+                eventResult &&
+                eventResult.success
+            ) {
+
+                const event =
+                    extractSingleEvent(
+                        eventResult
+                    );
+
+
+                if (event) {
+
+                    displayEvent(
+                        event
+                    );
+
+
+                    updateContinuationUI();
+
+
+                    await loadReviews();
+
+
+                    return;
+
+                }
+
+            }
+
+
+            const fallbackEvent =
+                bookingEvent;
+
+
+            if (fallbackEvent) {
+
+                displayEvent(
+                    fallbackEvent
+                );
+
+
+                updateContinuationUI();
+
+
+                await loadReviews();
+
+
+                return;
+
+            }
+
+
+            throw new Error(
+                eventResult?.message ||
+                "Event not found for this booking."
+            );
+
+        }
+
+
+        // ==================================
         // First Try:
         // GET /events/:id
         // ==================================
@@ -1243,9 +1689,38 @@ async function loadEvent() {
                 );
 
 
+                const existingBooking =
+                    await findPendingBookingForEvent(
+                        eventId
+                    );
+
+
+                if (
+                    existingBooking
+                ) {
+
+                    continuationBookingData =
+                        existingBooking;
+
+
+                    isContinuationMode =
+                        true;
+
+                }
+
+
                 displayEvent(
                     event
                 );
+
+
+                if (
+                    isContinuationMode
+                ) {
+
+                    updateContinuationUI();
+
+                }
 
 
                 await loadReviews();
@@ -1287,9 +1762,38 @@ async function loadEvent() {
         );
 
 
+        const existingBooking =
+            await findPendingBookingForEvent(
+                eventId
+            );
+
+
+        if (
+            existingBooking
+        ) {
+
+            continuationBookingData =
+                existingBooking;
+
+
+            isContinuationMode =
+                true;
+
+        }
+
+
         displayEvent(
             fallbackEvent
         );
+
+
+        if (
+            isContinuationMode
+        ) {
+
+            updateContinuationUI();
+
+        }
 
 
         await loadReviews();
@@ -1319,16 +1823,18 @@ async function loadEvent() {
 
 async function loadReviews() {
 
-    if (!eventId) {
+    if (!eventId || (!reviewsLoading && !reviewsList && !averageRating)) {
 
         return;
 
     }
 
 
-    reviewsLoading.classList.remove(
-        "hidden"
-    );
+    if (reviewsLoading) {
+        reviewsLoading.classList.remove(
+            "hidden"
+        );
+    }
 
 
     reviewsEmpty.classList.add(
@@ -1847,6 +2353,115 @@ function getCurrentUserId() {
 
         console.error(
             "User Parse Error:",
+            error
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+// ========================================
+// Find Pending Booking For Event
+// ========================================
+// Checks if the current authenticated user already
+// has a pending (unpaid/unconfirmed) booking for the
+// given event. Used when the user opens an event
+// without a bookingId in the URL (e.g. from Events
+// page or direct navigation).
+
+async function findPendingBookingForEvent(
+    eventId
+) {
+
+    const token =
+        getToken();
+
+
+    if (!token || !eventId) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/bookings/my`,
+                {
+                    method: "GET",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        Authorization:
+                            `Bearer ${token}`
+
+                    }
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success ||
+            !Array.isArray(
+                result.data
+            )
+        ) {
+
+            return null;
+
+        }
+
+
+        const booking =
+            result.data.find(
+                (b) => {
+
+                    const bookingEventId =
+                        b.event?._id ||
+                        b.event?.id ||
+                        b.eventId;
+
+
+                    return (
+                        String(
+                            bookingEventId
+                        ) ===
+                        String(
+                            eventId
+                        ) &&
+                        String(
+                            b.bookingStatus ||
+                            ""
+                        ).toLowerCase() ===
+                            "pending"
+                    );
+
+                }
+            );
+
+
+        return booking ||
+            null;
+
+    } catch (error) {
+
+        console.error(
+            "Error checking existing pending booking:",
             error
         );
 
@@ -2519,13 +3134,13 @@ if (bookEventButton) {
 
     bookEventButton.addEventListener(
         "click",
-        () => {
+        async () => {
 
             // ================================
             // Event ID Check
             // ================================
 
-            if (!eventId) {
+            if (!eventId && !isContinuationMode) {
 
                 alert(
                     "Event ID is missing."
@@ -2555,11 +3170,198 @@ if (bookEventButton) {
 
 
             // ================================
-            // Go To Payment Page
+            // Continuation Mode:
+            // User already has a pending booking.
+            // ================================
+
+            if (isContinuationMode && continuationBookingId) {
+
+                const bookingEvent =
+                    (continuationBookingData?.event) || {};
+
+
+                const eventType =
+                    String(
+                        currentEvent?.eventType ||
+                        bookingEvent?.eventType ||
+                        "paid"
+                    ).toLowerCase();
+
+
+                const isFreeEvent =
+                    eventType === "free";
+
+
+                bookEventButton.disabled =
+                    true;
+
+
+                bookEventButton.textContent =
+                    isFreeEvent
+                        ? "Processing..."
+                        : "Connecting to Payment...";
+
+
+                try {
+
+                    if (isFreeEvent) {
+
+                        // ----------------------------------------
+                        // FREE EVENT: generate OTP and redirect
+                        // to OTP verification.
+                        // ----------------------------------------
+
+                        const response =
+                            await fetch(
+                                `${API_URL}/bookings/free-otp`,
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json",
+
+                                        "Authorization":
+                                            `Bearer ${token}`,
+                                    },
+
+                                    body: JSON.stringify({
+                                        bookingId:
+                                            continuationBookingId,
+                                    }),
+                                }
+                            );
+
+
+                        const result =
+                            await response.json();
+
+
+                        if (
+                            !response.ok ||
+                            !result.success
+                        ) {
+
+                            throw new Error(
+                                result?.message ||
+                                "Unable to process free booking. Please try again."
+                            );
+
+                        }
+
+
+                        const otpBookingId =
+                            result?.data?.booking?._id ||
+                            continuationBookingId;
+
+
+                        const otpData = {
+
+                            payment: null,
+
+                            booking:
+                                result?.data?.booking ||
+                                continuationBookingData,
+
+                            otp:
+                                result?.data?.otp ||
+                                result?.otp ||
+                                null,
+
+                            otpExpiresAt:
+                                result?.data?.otpExpiresAt ||
+                                result?.otpExpiresAt ||
+                                null,
+
+                            paymentMethod:
+                                "free"
+
+                        };
+
+
+                        sessionStorage.setItem(
+                            "paymentSuccessData",
+                            JSON.stringify(
+                                otpData
+                            )
+                        );
+
+
+                        sessionStorage.setItem(
+                            "confirmedBookingId",
+                            otpBookingId
+                        );
+
+
+                        sessionStorage.setItem(
+                            "paymentBookingId",
+                            otpBookingId
+                        );
+
+
+                        sessionStorage.setItem(
+                            "paymentBookingData",
+                            JSON.stringify(
+                                result?.data?.booking ||
+                                continuationBookingData
+                            )
+                        );
+
+
+                        window.location.href =
+                            `./otp-verification.html?bookingId=${encodeURIComponent(
+                                otpBookingId
+                            )}`;
+
+                    } else {
+
+                        // ----------------------------------------
+                        // PAID EVENT: redirect to payment.html
+                        // with the existing bookingId.
+                        // ----------------------------------------
+
+                        window.location.href =
+                            `./payment.html?bookingId=${encodeURIComponent(
+                                continuationBookingId
+                            )}`;
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Continuation payment error:",
+                        error
+                    );
+
+
+                    alert(
+                        error.message ||
+                        "Unable to process payment. Please try again."
+                    );
+
+
+                    bookEventButton.disabled =
+                        false;
+
+
+                    bookEventButton.textContent =
+                        "Continue to Payment";
+
+                }
+
+
+                return;
+
+            }
+
+
+            // ================================
+            // Normal booking flow
             // ================================
 
             window.location.href =
-                `./payment.html?id=${encodeURIComponent(
+                `./booking.html?id=${encodeURIComponent(
                     eventId
                 )}`;
 

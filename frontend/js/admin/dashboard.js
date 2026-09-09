@@ -236,7 +236,7 @@ const renderPendingOrganizers = (
             >
 
                 <div class="text-3xl">
-                    ✅
+                    <svg class="h-5 w-5 text-primary inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
 
                 <p
@@ -302,7 +302,7 @@ const renderPendingOrganizers = (
                     >
 
                         <div
-                            class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primaryLight/20"
+                            class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/10 text-primary"
                         >
 
                             ${
@@ -316,7 +316,7 @@ const renderPendingOrganizers = (
                                       `
                                     : `
                                         <span class="text-lg">
-                                            🧑‍💼
+                                            <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                                         </span>
                                       `
                             }
@@ -634,7 +634,115 @@ if (logoutBtn) {
 
 
 // ========================================
+// Update Notification Badge
+// ========================================
+
+async function updateNotificationBadge() {
+
+    const badge =
+        document.getElementById(
+            "notificationBadge"
+        );
+
+
+    if (!badge) {
+        return;
+    }
+
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        badge.classList.add(
+            "hidden"
+        );
+
+        badge.textContent = "0";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/v1/notifications/unread-count",
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`,
+
+                    },
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            response.ok &&
+            result.success &&
+            result.data
+        ) {
+
+            const count =
+                result.data.unreadCount ||
+                0;
+
+
+            badge.textContent = count;
+
+
+            if (count > 0) {
+
+                badge.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                badge.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        } else {
+
+            badge.classList.add(
+                "hidden"
+            );
+
+            badge.textContent = "0";
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Notification badge error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ========================================
 // Load Dashboard on Page Load
 // ========================================
 
 loadDashboard();
+
+updateNotificationBadge();

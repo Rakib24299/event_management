@@ -419,9 +419,8 @@ function createBookingCard(
       "paid";
 
 
-  const showMakeConfirm =
+  const showMakePayment =
     bookingStatus === "pending" &&
-    !isFreeEvent &&
     !isPaymentPaid &&
     bookingStatus !== "cancelled";
 
@@ -502,7 +501,7 @@ function createBookingCard(
       =========================== -->
 
       <div
-        class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+        class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-5"
       >
 
         <!-- Event Date -->
@@ -540,35 +539,6 @@ function createBookingCard(
 
         </div>
 
-
-        <!-- Tickets -->
-
-        <div>
-
-          <p class="text-xs uppercase tracking-wide text-gray-400">
-            Tickets
-          </p>
-
-          <p class="mt-1 font-semibold text-gray-800">
-            ${ticketQuantity}
-          </p>
-
-        </div>
-
-
-        <!-- Total -->
-
-        <div>
-
-          <p class="text-xs uppercase tracking-wide text-gray-400">
-            Total Amount
-          </p>
-
-          <p class="mt-1 font-semibold text-gray-800">
-            ৳${formatMoney(totalAmount)}
-          </p>
-
-        </div>
 
       </div>
 
@@ -670,58 +640,57 @@ function createBookingCard(
       =========================== -->
 
       <div
-        class="mt-6 flex flex-wrap items-center justify-end gap-3"
-      >
+        class="mt-6 flex flex-wrap items-center justify-end gap-3" >
 
-        ${
-          showMakeConfirm
-            ? `
+         ${
+            showMakePayment
+             ? `
 
-              <button
-                type="button"
-                class="make-confirm-btn
-                       px-5 py-2.5
-                       rounded-lg
-                       bg-primary
-                       text-white
-                       font-medium
-                       hover:bg-primaryDark
-                       transition"
-                data-booking-id="${
-                  booking._id
-                }"
-              >
-                Confirm Booking
-              </button>
+                <button
+                  type="button"
+                  class="make-payment-btn
+                         px-5 py-2.5
+                         rounded-lg
+                         bg-[#31572c]
+                         text-white
+                         font-medium
+                         hover:bg-primaryDark
+                         transition"
+                  data-booking-id="${
+                    booking._id
+                  }"
+                >
+                  Make Payment
+                </button>
 
-            `
-            : ""
-        }
+             `
+             : ""
+         }
 
-        ${
-          showCancel
-            ? `
+         ${
+           showCancel
+             ? `
 
-              <button
-                type="button"
-                class="cancel-booking-btn
-                       px-5 py-2.5
-                       rounded-lg
-                       bg-red-600
-                       text-white
-                       font-medium
-                       hover:bg-red-700
-                       transition"
-                data-booking-id="${
-                  booking._id
-                }"
-              >
-                Cancel
-              </button>
+               <button
+                 type="button"
+                 class="cancel-booking-btn
+                        px-5 py-2.5
+                        rounded-lg
+                        bg-red-600
+                        text-white
+                        font-medium
+                        hover:bg-red-700
+                        transition"
+                 data-booking-id="${
+                   booking._id
+                 }"
+               >
+                 Cancel
+               </button>
 
-            `
-            : ""
-        }
+             `
+             : ""
+         }
 
       </div>
 
@@ -731,31 +700,51 @@ function createBookingCard(
 
 
   // ====================================
-  // Confirm Booking Button
-  // Navigation only — opens confirm-booking.html.
-  // Does NOT initiate OTP, payment, or
-  // any booking state change.
+  // Make Payment Button
+  // Navigates to the Event Details page first,
+  // passing the eventId and bookingId so the
+  // Event Details page can continue the payment
+  // flow (free OTP or SSLCommerz).
   // ====================================
 
-  const makeConfirmButton =
+  const makePaymentButton =
     card.querySelector(
-      ".make-confirm-btn"
+      ".make-payment-btn"
     );
 
 
-  if (makeConfirmButton) {
+  if (makePaymentButton) {
 
-    makeConfirmButton.addEventListener(
+    makePaymentButton.addEventListener(
       "click",
       () => {
 
         const bookingId =
-          makeConfirmButton.dataset
+          makePaymentButton.dataset
             .bookingId;
+
+        const eventId =
+          booking?.event?._id ||
+          booking?.event?.id ||
+          booking?.eventId ||
+          "";
+
+        if (!eventId) {
+          showToast(
+            "Unable to determine the event. Please try again.",
+            "error"
+          );
+
+          return;
+        }
 
 
         window.location.href =
-          `./confirm-booking.html`;
+          `./event-details.html?eventId=${encodeURIComponent(
+            eventId
+          )}&bookingId=${encodeURIComponent(
+            bookingId
+          )}`;
 
       }
     );

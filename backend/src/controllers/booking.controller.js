@@ -12,14 +12,14 @@ const catchAsync = require("../utils/catchAsync");
 //      ↓
 // Seats reserved
 //      ↓
-// Payment pending
+// (No payment created — payment is created later
+//  when user proceeds from Event Details)
 //
 // Free Event:
-// Booking confirmed
+// Booking pending
 //      ↓
-// Seats reserved
-//      ↓
-// OTP not required
+// (No OTP generated — OTP is generated later
+//  when user confirms from Event Details)
 // ======================================================
 
 const createBooking = catchAsync(async (req, res) => {
@@ -35,6 +35,48 @@ const createBooking = catchAsync(async (req, res) => {
       result.message || "Booking created successfully.",
 
     data: result,
+  });
+});
+
+
+// ======================================================
+// GENERATE FREE BOOKING OTP
+// ======================================================
+// POST /api/v1/bookings/free-otp
+// Body: { bookingId }
+//
+// For free events: generates OTP, sends email,
+// and prepares booking for OTP verification.
+// ======================================================
+
+const generateFreeBookingOtp = catchAsync(async (req, res) => {
+  const { bookingId } = req.body;
+
+  if (!bookingId) {
+    return res.status(400).json({
+      success: false,
+      message: "Booking ID is required.",
+    });
+  }
+
+  const result =
+    await bookingService.generateFreeBookingOtp(
+      bookingId,
+      req.user.id
+    );
+
+  return res.status(200).json({
+    success: true,
+
+    message: result.message,
+
+    data: {
+      booking: result.booking,
+
+      otp: result.otp,
+
+      otpExpiresAt: result.otpExpiresAt,
+    },
   });
 });
 
@@ -412,6 +454,7 @@ const getBookingHistory = catchAsync(
 
 module.exports = {
   createBooking,
+  generateFreeBookingOtp,
   verifyBookingOtp,
   cancelBooking,
   getMyBookings,

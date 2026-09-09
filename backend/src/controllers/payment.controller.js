@@ -444,13 +444,46 @@ const getPlatformFeePercentage =
       },
 
     });
-
   });
+
+
+// ======================================================
+// DOWNLOAD PAYMENT RECEIPT PDF
+// ======================================================
+
+const downloadPaymentReceipt = catchAsync(async (req, res) => {
+  const bookingId = req.params.bookingId;
+
+  if (!bookingId) {
+    return res.status(400).json({
+      success: false,
+      message: "Booking ID is required.",
+    });
+  }
+
+  const result = await paymentService.getPaymentReceiptPdfBuffer(
+    bookingId,
+    req.user.id
+  );
+
+  const pdfBuffer = result.buffer;
+  const transactionId = result.transactionId || "receipt";
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="payment-receipt-${transactionId}.pdf"`
+  );
+  res.setHeader("Content-Length", pdfBuffer.length);
+
+  return res.send(pdfBuffer);
+});
 
 
 // ======================================================
 // EXPORT
 // ======================================================
+
 
 module.exports = {
 
@@ -479,5 +512,7 @@ module.exports = {
   adminProcessRefund,
 
   getPlatformFeePercentage,
+
+  downloadPaymentReceipt,
 
 };

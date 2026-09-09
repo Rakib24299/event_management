@@ -171,8 +171,38 @@ function formatDate(dateValue) {
 function loadBookingInformation() {
 
     /*
-     * We first try to get booking information
-     * from sessionStorage.
+     * Priority 1:
+     * Check URL query parameters:
+     * review.html?eventId=EVENT_ID&bookingId=BOOKING_ID
+     */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const urlEventId =
+        params.get("eventId");
+
+    const urlBookingId =
+        params.get("bookingId");
+
+    if (urlEventId) {
+
+        eventId =
+            urlEventId;
+
+        bookingId =
+            urlBookingId ||
+            null;
+
+        return true;
+    }
+
+
+    /*
+     * Priority 2:
+     * Check booking information from sessionStorage (completedPayment).
      */
 
     const completedBooking =
@@ -201,7 +231,9 @@ function loadBookingInformation() {
                         ? booking.event?._id
                         : booking.event;
 
-                return true;
+                if (eventId) {
+                    return true;
+                }
             }
 
         } catch (error) {
@@ -215,9 +247,8 @@ function loadBookingInformation() {
 
 
     /*
-     * Fallback:
-     * Check booking information saved by
-     * booking-details / booking flow.
+     * Priority 3:
+     * Check booking information saved by pendingBooking.
      */
 
     const pendingBooking =
@@ -246,7 +277,9 @@ function loadBookingInformation() {
                         ? booking.event?._id
                         : booking.event;
 
-                return true;
+                if (eventId) {
+                    return true;
+                }
             }
 
         } catch (error) {
@@ -257,26 +290,6 @@ function loadBookingInformation() {
             );
         }
     }
-
-
-    /*
-     * URL fallback:
-     *
-     * review.html?eventId=EVENT_ID&bookingId=BOOKING_ID
-     */
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    eventId =
-        eventId ||
-        params.get("eventId");
-
-    bookingId =
-        bookingId ||
-        params.get("bookingId");
 
 
     if (!eventId) {
@@ -625,20 +638,6 @@ async function submitReview() {
     };
 
 
-    /*
-     * If your backend requires booking,
-     * this field can be added after checking
-     * review.validation.js.
-     */
-
-
-    if (bookingId) {
-
-        payload.booking =
-            bookingId;
-    }
-
-
     console.log(
         "Review Payload:",
         payload
@@ -744,7 +743,7 @@ async function submitReview() {
 
 
         submitReviewButton.textContent =
-            "Review Submitted ✓";
+            "Review Submitted";
 
 
         /*

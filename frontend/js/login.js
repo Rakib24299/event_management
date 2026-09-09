@@ -288,7 +288,7 @@ loginForm.addEventListener(
             // ====================================
 
             loginButton.textContent =
-                "Login Successful ✓";
+                "Login Successful";
 
 
             // ====================================

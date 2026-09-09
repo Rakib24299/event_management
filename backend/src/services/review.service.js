@@ -1,9 +1,8 @@
 const Review = require("../models/Review");
 const Booking = require("../models/Booking");
 const Event = require("../models/Event");
+const Payment = require("../models/Payment");
 const AppError = require("../utils/AppError");
-
-
 
 // Update Event Rating Summary***
 
@@ -40,27 +39,34 @@ const updateEventRatingSummary = async (eventId) => {
   }
 };
 
-
 // Create Review****
 
 const createReview = async (userId, payload) => {
   const event = await Event.findById(payload.event);
 
-  if (!event || event.isDeleted) 
-    {
-    throw new AppError("Event not found.",404);
+  if (!event || event.isDeleted) {
+    throw new AppError("Event not found.", 404);
   }
 
- const booking = await Booking.findOne({
-  user: userId,
-  event: payload.event,
-  bookingStatus: "confirmed",
-  paymentStatus: "paid",
-  isAttended: true,
-});
-  if (!booking) 
-    {
-    throw new AppError("You can review only events you have attended.",403);
+  const booking = await Booking.findOne({
+    user: userId,
+    event: payload.event,
+    bookingStatus: { $in: ["confirmed", "completed"] },
+  });
+
+  if (!booking) {
+    throw new AppError("You can review only events you have booked.", 403);
+  }
+
+  if (booking.payment) {
+    const payment = await Payment.findById(booking.payment);
+
+    if (payment && payment.status !== "paid") {
+      throw new AppError(
+        "You can review only events you have booked and paid for.",
+        403
+      );
+    }
   }
 
   const existingReview = await Review.findOne({
@@ -68,140 +74,95 @@ const createReview = async (userId, payload) => {
     event: payload.event,
   });
 
-  if (existingReview) 
-  {
-    throw new AppError("You have already reviewed this event.",409);
+  if (existingReview) {
+    throw new AppError("You have already reviewed this event.", 409);
   }
 
- const review = await Review.create({
-  user: userId,
-  event: payload.event,
-  booking: booking._id,
-  rating: payload.rating,
-  review: payload.comment,
-});
+  const review = await Review.create({
+    user: userId,
+    event: payload.event,
+    booking: booking._id,
+    rating: payload.rating,
+    review: payload.comment,
+  });
 
   await updateEventRatingSummary(payload.event);
 
   return review;
 };
 
-
 // Get Event Reviews
-
 
 const getEventReviews = async (eventId) => {
   return await Review.find({
     event: eventId,
   })
-    .populate("user", "name profileImage")
+    .populate("user", "name profileImage email")
     .sort({
       createdAt: -1,
     });
 };
 
-
 // Get Review By ID
-
 
 const getReviewById = async (reviewId) => {
   const review = await Review.findById(reviewId)
     .populate("user", "name profileImage")
     .populate("event", "title");
 
-  if (!review) 
-  {
-    throw new AppError("Review not found.",404);
+  if (!review) {
+    throw new AppError("Review not found.", 404);
   }
 
   return review;
 };
 
-
-
 // Update Review****
 
-const updateReview = async (
-  reviewId,
-  userId,
-  payload
-) => {
-
+const updateReview = async (reviewId, userId, payload) => {
   const review = await Review.findById(reviewId);
 
   if (!review) {
-
-    throw new AppError(
-      "Review not found.",
-      404
-    );
-
+    throw new AppError("Review not found.", 404);
   }
 
-
   // Check ownership
-
-  if (
-    review.user.toString() !==
-    userId.toString()
-  ) {
-
+  if (review.user.toString() !== userId.toString()) {
     throw new AppError(
       "You are not authorized to update this review.",
       403
     );
-
   }
-
 
   // Update rating
-
   if (payload.rating !== undefined) {
-
-    review.rating =
-      payload.rating;
-
+    review.rating = payload.rating;
   }
-
 
   // Update review comment
-
   if (payload.comment !== undefined) {
-
-    review.review =
-      payload.comment;
-
+    review.review = payload.comment;
   }
-
 
   await review.save();
 
-
   // Update event rating summary
-
-  await updateEventRatingSummary(
-    review.event
-  );
-
+  await updateEventRatingSummary(review.event);
 
   return review;
 };
 
-
 // Delete Review
 
-const deleteReview = async (reviewId,userId) => {
-
+const deleteReview = async (reviewId, userId) => {
   const review = await Review.findById(reviewId);
 
-  if (!review) 
-    {
-    throw new AppError("Review not found.",404);
+  if (!review) {
+    throw new AppError("Review not found.", 404);
   }
 
-  if (review.user.toString() !== userId.toString()) 
-    {
-    throw new AppError("You are not authorized to delete this review.",403);
+  if (review.user.toString() !== userId.toString()) {
+    throw new AppError("You are not authorized to delete this review.", 403);
   }
 
   const eventId = review.event;
@@ -210,8 +171,9 @@ const deleteReview = async (reviewId,userId) => {
 
   await updateEventRatingSummary(eventId);
 
-  return {message: "Review deleted successfully.",};
+  return { message: "Review deleted successfully." };
 };
+
 module.exports = {
   createReview,
   getEventReviews,

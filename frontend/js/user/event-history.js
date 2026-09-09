@@ -39,6 +39,78 @@ const historyContainer =
 
 
 // ======================================================
+// Review Modal Elements & State
+// ======================================================
+
+const reviewModal =
+    document.getElementById("reviewModal");
+
+const reviewModalBox =
+    document.getElementById("reviewModalBox");
+
+const closeReviewModal =
+    document.getElementById("closeReviewModal");
+
+const cancelReviewModal =
+    document.getElementById("cancelReviewModal");
+
+const modalEventImage =
+    document.getElementById("modalEventImage");
+
+const modalEventCategory =
+    document.getElementById("modalEventCategory");
+
+const modalEventTitle =
+    document.getElementById("modalEventTitle");
+
+const modalEventDate =
+    document.getElementById("modalEventDate");
+
+const modalReviewAlert =
+    document.getElementById("modalReviewAlert");
+
+const modalReviewForm =
+    document.getElementById("modalReviewForm");
+
+const modalEventId =
+    document.getElementById("modalEventId");
+
+const modalBookingId =
+    document.getElementById("modalBookingId");
+
+const modalStarGroup =
+    document.getElementById("modalStarGroup");
+
+const modalRatingText =
+    document.getElementById("modalRatingText");
+
+const modalRatingError =
+    document.getElementById("modalRatingError");
+
+const modalReviewComment =
+    document.getElementById("modalReviewComment");
+
+const modalCharCount =
+    document.getElementById("modalCharCount");
+
+const modalCommentError =
+    document.getElementById("modalCommentError");
+
+const submitModalReviewBtn =
+    document.getElementById("submitModalReviewBtn");
+
+let selectedModalRating = 0;
+
+const modalRatingLabels = {
+    1: "Very Bad",
+    2: "Bad",
+    3: "Average",
+    4: "Good",
+    5: "Excellent"
+};
+
+
+// ======================================================
 // Auth Token
 // ======================================================
 
@@ -173,6 +245,31 @@ function isEventExpired(event) {
         )
     ) {
         return false;
+    }
+
+
+    const startTime =
+        event.startTime;
+
+
+    if (startTime) {
+        const timeParts =
+            String(startTime)
+                .split(":")
+                .map(Number);
+
+        if (
+            timeParts.length >= 2 &&
+            !Number.isNaN(timeParts[0]) &&
+            !Number.isNaN(timeParts[1])
+        ) {
+            eventDateTime.setHours(
+                timeParts[0],
+                timeParts[1] || 0,
+                0,
+                0
+            );
+        }
     }
 
 
@@ -388,6 +485,14 @@ function createHistoryCard(booking) {
                     : "bg-yellow-100 text-yellow-700";
 
 
+    const eventId =
+        event._id ||
+        event.id ||
+        (typeof booking.event === "string" ? booking.event : "") ||
+        booking.eventId ||
+        "";
+
+
     const card =
         document.createElement("div");
 
@@ -443,7 +548,7 @@ function createHistoryCard(booking) {
 
                         <p class="text-sm text-gray-500">
 
-                            📅
+                            <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
 
                             <span class="ml-1">
                                 ${formatDate(eventDate)}${startTime ? " at " + formatTime(eventDate) : ""}
@@ -454,7 +559,7 @@ function createHistoryCard(booking) {
 
                         <p class="text-sm text-gray-500">
 
-                            📍
+                            <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 
                             <span class="ml-1">
                                 ${escapeHTML(venueName)}
@@ -465,7 +570,7 @@ function createHistoryCard(booking) {
 
                         <p class="text-sm text-gray-500">
 
-                            🎫
+                            <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
 
                             <span class="ml-1">
                                 ${quantity} Ticket${quantity > 1 ? "s" : ""}
@@ -508,18 +613,20 @@ function createHistoryCard(booking) {
                     </div>
 
 
-                    ${
-                        bookingId
-                            ? `
-                                <a
-                                    href="./booking-details.html?id=${bookingId}"
-                                    class="rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-primaryDark"
-                                >
-                                    View Details
-                                </a>
-                              `
-                            : ""
-                    }
+                    <div>
+                        ${
+                            eventId && bookingStatus !== "cancelled"
+                                ? `
+                                    <button
+                                        type="button"
+                                        class="open-review-btn rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-primaryDark shadow-sm cursor-pointer"
+                                    >
+                                        Review
+                                    </button>
+                                  `
+                                : ""
+                        }
+                    </div>
 
                 </div>
 
@@ -528,6 +635,30 @@ function createHistoryCard(booking) {
         </div>
 
     `;
+
+
+    const reviewBtn =
+        card.querySelector(".open-review-btn");
+
+    if (reviewBtn) {
+
+        reviewBtn.addEventListener(
+            "click",
+            () => {
+
+                openReviewModal({
+                    id: eventId,
+                    bookingId: bookingId,
+                    title: eventTitle,
+                    image: eventImage,
+                    category: event.category?.name || "Event",
+                    date: formatDate(eventDate) + (startTime ? ` at ${formatTime(eventDate)}` : "")
+                });
+
+            }
+        );
+
+    }
 
 
     return card;
@@ -596,7 +727,9 @@ async function loadEventHistory() {
 
         /*
          * Client-side safety filter:
-         * ensure only expired events are shown.
+         * ensure only expired events with confirmed
+         * bookings are shown. Cancelled bookings
+         * must never appear in history.
          */
 
         const expiredBookings =
@@ -608,8 +741,7 @@ async function loadEventHistory() {
                         );
 
                     return (
-                        booking.bookingStatus === "cancelled" ||
-                        booking.bookingStatus === "completed" ||
+                        booking.bookingStatus === "confirmed" &&
                         isEventExpired(event)
                     );
                 }
@@ -881,6 +1013,301 @@ setupLogoutListener();
 
 
 // ======================================================
+// Review Modal Logic
+// ======================================================
+
+function openReviewModal(eventInfo) {
+
+    if (!reviewModal) return;
+
+    if (modalEventId) {
+        modalEventId.value = eventInfo.id || "";
+    }
+
+    if (modalBookingId) {
+        modalBookingId.value = eventInfo.bookingId || "";
+    }
+
+    if (modalEventImage) {
+        modalEventImage.src =
+            eventInfo.image ||
+            "https://via.placeholder.com/100";
+        modalEventImage.alt =
+            eventInfo.title || "Event";
+    }
+
+    if (modalEventCategory) {
+        modalEventCategory.textContent =
+            eventInfo.category || "Event";
+    }
+
+    if (modalEventTitle) {
+        modalEventTitle.textContent =
+            eventInfo.title || "Untitled Event";
+    }
+
+    if (modalEventDate) {
+        modalEventDate.textContent =
+            eventInfo.date || "--";
+    }
+
+    // Reset Form Fields
+    setModalRating(0);
+
+    if (modalReviewComment) {
+        modalReviewComment.value = "";
+    }
+
+    if (modalCharCount) {
+        modalCharCount.textContent = "0 / 1000";
+    }
+
+    if (modalRatingError) {
+        modalRatingError.classList.add("hidden");
+    }
+
+    if (modalCommentError) {
+        modalCommentError.classList.add("hidden");
+    }
+
+    hideModalAlert();
+
+    if (submitModalReviewBtn) {
+        submitModalReviewBtn.disabled = false;
+        submitModalReviewBtn.textContent = "Submit Review";
+    }
+
+    reviewModal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+
+}
+
+
+function closeReviewModalFunc() {
+
+    if (!reviewModal) return;
+
+    reviewModal.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+
+}
+
+
+function setModalRating(rating) {
+
+    selectedModalRating =
+        Number(rating) || 0;
+
+    const stars =
+        modalStarGroup
+            ? modalStarGroup.querySelectorAll(".modal-rating-star")
+            : [];
+
+    stars.forEach((star) => {
+
+        const starRating =
+            Number(star.dataset.rating);
+
+        if (starRating <= selectedModalRating) {
+
+            star.classList.remove("text-gray-300");
+            star.classList.add("text-yellow-400");
+
+        } else {
+
+            star.classList.remove("text-yellow-400");
+            star.classList.add("text-gray-300");
+
+        }
+
+    });
+
+    if (modalRatingText) {
+
+        modalRatingText.textContent =
+            modalRatingLabels[selectedModalRating] ||
+            "Select a rating";
+
+    }
+
+    if (selectedModalRating > 0 && modalRatingError) {
+        modalRatingError.classList.add("hidden");
+    }
+
+}
+
+
+function showModalAlert(message, type = "error") {
+
+    if (!modalReviewAlert) return;
+
+    modalReviewAlert.textContent = message;
+
+    if (type === "success") {
+
+        modalReviewAlert.className =
+            "rounded-xl p-3.5 text-sm mb-4 bg-green-50 text-green-700 border border-green-200";
+
+    } else {
+
+        modalReviewAlert.className =
+            "rounded-xl p-3.5 text-sm mb-4 bg-red-50 text-red-700 border border-red-200";
+
+    }
+
+    modalReviewAlert.classList.remove("hidden");
+
+}
+
+
+function hideModalAlert() {
+
+    if (!modalReviewAlert) return;
+
+    modalReviewAlert.textContent = "";
+    modalReviewAlert.classList.add("hidden");
+
+}
+
+
+function setupReviewModalListeners() {
+
+    if (closeReviewModal) {
+        closeReviewModal.addEventListener("click", closeReviewModalFunc);
+    }
+
+    if (cancelReviewModal) {
+        cancelReviewModal.addEventListener("click", closeReviewModalFunc);
+    }
+
+    if (reviewModal) {
+        reviewModal.addEventListener("click", (event) => {
+            if (event.target === reviewModal) {
+                closeReviewModalFunc();
+            }
+        });
+    }
+
+    if (modalStarGroup) {
+        const stars = modalStarGroup.querySelectorAll(".modal-rating-star");
+        stars.forEach((star) => {
+            star.addEventListener("click", () => {
+                setModalRating(star.dataset.rating);
+            });
+        });
+    }
+
+    if (modalReviewComment) {
+        modalReviewComment.addEventListener("input", () => {
+            const length = modalReviewComment.value.length;
+            if (modalCharCount) {
+                modalCharCount.textContent = `${length} / 1000`;
+            }
+            if (length >= 5 && modalCommentError) {
+                modalCommentError.classList.add("hidden");
+            }
+        });
+    }
+
+    if (modalReviewForm) {
+        modalReviewForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            hideModalAlert();
+
+            const eventId = modalEventId ? modalEventId.value : "";
+            const comment = modalReviewComment ? modalReviewComment.value.trim() : "";
+
+            let isValid = true;
+
+            if (!selectedModalRating || selectedModalRating < 1 || selectedModalRating > 5) {
+                if (modalRatingError) {
+                    modalRatingError.classList.remove("hidden");
+                }
+                isValid = false;
+            } else if (modalRatingError) {
+                modalRatingError.classList.add("hidden");
+            }
+
+            if (!comment || comment.length < 5) {
+                if (modalCommentError) {
+                    modalCommentError.textContent = "Review must be at least 5 characters.";
+                    modalCommentError.classList.remove("hidden");
+                }
+                isValid = false;
+            } else if (comment.length > 1000) {
+                if (modalCommentError) {
+                    modalCommentError.textContent = "Review cannot exceed 1000 characters.";
+                    modalCommentError.classList.remove("hidden");
+                }
+                isValid = false;
+            } else if (modalCommentError) {
+                modalCommentError.classList.add("hidden");
+            }
+
+            if (!isValid) return;
+
+            const token = getToken();
+            if (!token) {
+                showModalAlert("Please log in again to submit a review.", "error");
+                return;
+            }
+
+            if (!eventId) {
+                showModalAlert("Event information was not found.", "error");
+                return;
+            }
+
+            if (submitModalReviewBtn) {
+                submitModalReviewBtn.disabled = true;
+                submitModalReviewBtn.textContent = "Submitting Review...";
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/reviews`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        event: eventId,
+                        rating: selectedModalRating,
+                        comment: comment
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Failed to submit review.");
+                }
+
+                showModalAlert(result.message || "Your review has been submitted successfully!", "success");
+
+                if (submitModalReviewBtn) {
+                    submitModalReviewBtn.textContent = "Submitted ✓";
+                }
+
+                setTimeout(() => {
+                    closeReviewModalFunc();
+                }, 1500);
+
+            } catch (err) {
+                console.error("Submit Modal Review Error:", err);
+                showModalAlert(err.message || "Something went wrong while submitting your review.", "error");
+
+                if (submitModalReviewBtn) {
+                    submitModalReviewBtn.disabled = false;
+                    submitModalReviewBtn.textContent = "Submit Review";
+                }
+            }
+        });
+    }
+
+}
+
+
+// ======================================================
 // Event Listeners
 // ======================================================
 
@@ -902,8 +1329,14 @@ document.addEventListener(
             return;
         }
 
+        setupReviewModalListeners();
 
         loadEventHistory();
 
     }
 );
+
+// Fallback in case DOM is already loaded
+if (document.readyState === "complete" || document.readyState === "interactive") {
+    setupReviewModalListeners();
+}

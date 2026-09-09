@@ -67,7 +67,7 @@
 </head>
 
 
-<body class="min-h-screen bg-gray-50 text-gray-800">
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
 
 
     <!-- ========================================
@@ -100,7 +100,7 @@
                 <div
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg text-white"
                 >
-                    👤
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
 
                 <div class="hidden text-left sm:block">
@@ -131,9 +131,7 @@
          Main
     ========================================= -->
 
-    <main
-        class="mx-auto min-h-[calc(100vh-220px)] max-w-7xl px-6 py-10"
-    >
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
 
 
         <!-- Back -->
@@ -340,7 +338,7 @@
                         <div
                             class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-200 text-2xl"
                         >
-                            📷
+                            <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </div>
 
                         <p
@@ -423,7 +421,7 @@
                 <div
                     class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 text-3xl"
                 >
-                    👥
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                 </div>
 
                 <h3
@@ -503,7 +501,7 @@
          Footer
     ========================================= -->
 
-    <footer class="border-t bg-white">
+    <footer class="mt-auto border-t border-gray-200 bg-white">
 
         <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left" >
 
@@ -534,6 +532,7 @@
          JavaScript
     ========================================= -->
 
+    <script src="../../js/components.js"></script>
     <script src="../../js/organizer/attendance.js"></script>
 
 </body>

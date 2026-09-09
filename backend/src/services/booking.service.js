@@ -38,6 +38,48 @@ const getOtpExpiry = () => {
 };
 
 // ======================================================
+// GET EVENT END DATETIME
+// ======================================================
+// Combines eventDate (Date) with startTime (String "HH:mm")
+// to produce the moment the event begins.
+// Returns null if event data is missing or invalid.
+
+const getEventEndDateTime = (event) => {
+  if (!event) return null;
+
+  const eventDate = event.eventDate || event.date;
+
+  if (!eventDate) return null;
+
+  const dateTime = new Date(eventDate);
+
+  if (Number.isNaN(dateTime.getTime())) return null;
+
+  const startTime = event.startTime;
+
+  if (startTime) {
+    const timeParts = String(startTime)
+      .split(":")
+      .map(Number);
+
+    if (
+      timeParts.length >= 2 &&
+      !Number.isNaN(timeParts[0]) &&
+      !Number.isNaN(timeParts[1])
+    ) {
+      dateTime.setHours(
+        timeParts[0],
+        timeParts[1] || 0,
+        0,
+        0
+      );
+    }
+  }
+
+  return dateTime;
+};
+
+// ======================================================
 // POPULATE BOOKING
 // ======================================================
 
@@ -76,13 +118,13 @@ const populateBooking = (query) => {
 //      ↓
 // Check Max Tickets
 //      ↓
-// Create Booking
+// Create Booking (NO OTP, NO payment)
 //      ↓
-// Reserve Seats
+// Booking Pending
 //      ↓
-// Booking Confirmed
+// my-bookings.html
 //      ↓
-// isOtpVerified = true
+// [Make Payment] → Event Details → OTP → Confirm
 //
 // PAID EVENT:
 //
@@ -90,13 +132,15 @@ const populateBooking = (query) => {
 //      ↓
 // Check Seats
 //      ↓
-// Create Booking
+// Create Booking (NO payment)
 //      ↓
 // Reserve Seats
 //      ↓
 // Booking Pending
 //      ↓
-// Payment Pending
+// my-bookings.html
+//      ↓
+// [Make Payment] → Event Details → SSLCommerz → OTP → Confirm
 // ======================================================
 
 const createBooking = async (
@@ -196,26 +240,25 @@ const createBooking = async (
   }
 
   // --------------------------------------------------
-  // AVAILABLE SEATS
+  // AVAILABLE SEATS (paid events only)
   // --------------------------------------------------
 
   if (
-    Number(eventData.availableSeats) <
-    quantity
+      eventData.eventType !== "free" &&
+      Number(
+          eventData.availableSeats
+      ) < quantity
   ) {
-    throw createError(
-      "Not enough seats available.",
-      400
-    );
+
+      throw createError(
+          "Not enough seats available.",
+          400
+      );
+
   }
 
   // --------------------------------------------------
   // DUPLICATE BOOKING CHECK
-  // --------------------------------------------------
-  //
-  // Only BLOCK if the user already has a CONFIRMED booking.
-  // A pending (unpaid) booking is NOT a final booking and
-  // must be returned so the user can complete payment.
   // --------------------------------------------------
 
   const confirmedBooking =
@@ -245,6 +288,15 @@ const createBooking = async (
     });
 
   if (existingPendingBooking) {
+    if (existingPendingBooking.ticketQuantity !== quantity) {
+      existingPendingBooking.ticketQuantity = quantity;
+      existingPendingBooking.totalAmount =
+        eventData.eventType === "free"
+          ? 0
+          : Number(eventData.ticketPrice || 0) * quantity;
+      await existingPendingBooking.save();
+    }
+
     const pendingResult =
       await populateBooking(
         Booking.findById(
@@ -273,18 +325,12 @@ const createBooking = async (
   }
 
   // ==================================================
-  // FREE EVENT
+  // FREE EVENT — create booking only, no OTP, no payment
   // ==================================================
 
   if (
     eventData.eventType === "free"
   ) {
-
-    const otp =
-      generateBookingOtp();
-
-    const otpExpiresAt =
-      getOtpExpiry();
 
     const booking =
       await Booking.create({
@@ -297,9 +343,9 @@ const createBooking = async (
 
         bookingStatus: "pending",
 
-        bookingOtp: otp,
+        bookingOtp: null,
 
-        bookingOtpExpires: otpExpiresAt,
+        bookingOtpExpires: null,
 
         isOtpVerified: false,
 
@@ -312,73 +358,6 @@ const createBooking = async (
         cancelledAt: null,
       });
 
-    // ------------------------------------------------
-    // RESERVE SEATS
-    // ------------------------------------------------
-
-    eventData.availableSeats -=
-      quantity;
-
-    await eventData.save();
-
-    // ------------------------------------------------
-    // GET USER
-    // ------------------------------------------------
-
-    const user =
-      await User.findById(userId)
-        .select("name email");
-
-    // ------------------------------------------------
-    // OTP EMAIL
-    // ------------------------------------------------
-
-    if (user?.email) {
-      try {
-        await sendEmail({
-          to: user.email,
-
-          subject:
-            "Verify Your Free Booking OTP",
-
-          text:
-            `Hello ${user.name}, your OTP for booking ${eventData.title} is ${otp}. It is valid for 5 minutes.`,
-
-          html: `
-            <h2>Verify Your Booking</h2>
-
-            <p>Hello ${user.name},</p>
-
-            <p>
-              Your booking for
-              <strong>${eventData.title}</strong>
-              is ready. Please use the following OTP
-              to confirm your booking:
-            </p>
-
-            <h1>${otp}</h1>
-
-            <p>
-              This OTP is valid for 5 minutes.
-            </p>
-
-            <p>
-              Thank you for using EventEase.
-            </p>
-          `,
-        });
-      } catch (error) {
-        console.error(
-          "Free booking OTP email failed:",
-          error.message
-        );
-      }
-    }
-
-    // ------------------------------------------------
-    // RETURN BOOKING
-    // ------------------------------------------------
-
     const result =
       await populateBooking(
         Booking.findById(booking._id)
@@ -390,17 +369,13 @@ const createBooking = async (
       payment: null,
 
       message:
-        "Free booking created successfully. Please verify OTP.",
-
-      otp,
-
-      otpExpiresAt,
+        "Free booking created successfully. Please complete payment.",
 
     };
   }
 
   // ==================================================
-  // PAID EVENT
+  // PAID EVENT — create booking only, no payment yet
   // ==================================================
 
   const totalAmount =
@@ -445,77 +420,17 @@ const createBooking = async (
     });
 
   // --------------------------------------------------
-  // RESERVE SEATS
+  // RESERVE SEATS (paid events only)
   // --------------------------------------------------
 
-  eventData.availableSeats -= quantity;
+  if (eventData.eventType !== "free") {
+
+    eventData.availableSeats -=
+      quantity;
+
+  }
 
   await eventData.save();
-
-  // --------------------------------------------------
-  // PLATFORM FEE
-  // --------------------------------------------------
-
-  const platformFeePercentage =
-    Number(
-      process.env.PLATFORM_FEE_PERCENTAGE || 10
-    );
-
-  const platformFee =
-    Number(
-      (
-        totalAmount *
-        platformFeePercentage /
-        100
-      ).toFixed(2)
-    );
-
-  const organizerAmount =
-    Number(
-      (
-        totalAmount -
-        platformFee
-      ).toFixed(2)
-    );
-
-  // --------------------------------------------------
-  // CREATE PAYMENT
-  // --------------------------------------------------
-
-  const payment =
-    await Payment.create({
-      user: userId,
-
-      booking: booking._id,
-
-      event: eventData._id,
-
-      organizer:
-        eventData.organizer,
-
-      grossAmount: totalAmount,
-
-      platformFee,
-
-      organizerAmount,
-
-      paymentMethod: "sslcommerz",
-
-      status: "pending",
-
-      refundAmount: 0,
-
-      refundStatus: "none",
-    });
-
-  // --------------------------------------------------
-  // LINK PAYMENT
-  // --------------------------------------------------
-
-  booking.payment =
-    payment._id;
-
-  await booking.save();
 
   // --------------------------------------------------
   // RETURN
@@ -529,10 +444,207 @@ const createBooking = async (
   return {
     booking: result,
 
-    payment,
+    payment: null,
 
     message:
       "Booking created successfully. Please complete payment.",
+  };
+};
+
+// ======================================================
+// GENERATE FREE BOOKING OTP
+// ======================================================
+//
+// Called when the user arrives at the Event Details page
+// for a free event with an existing pending booking and
+// clicks the confirmation/payment button.
+//
+// Creates OTP, sends email, updates booking.
+// ======================================================
+
+const generateFreeBookingOtp = async (
+  bookingId,
+  userId
+) => {
+  const booking =
+    await Booking.findById(
+      bookingId
+    );
+
+  if (!booking) {
+    throw createError(
+      "Booking not found.",
+      404
+    );
+  }
+
+  // --------------------------------------------------
+  // OWNER CHECK
+  // --------------------------------------------------
+
+  if (
+    booking.user.toString() !==
+    userId.toString()
+  ) {
+    throw createError(
+      "You are not authorized to verify this booking.",
+      403
+    );
+  }
+
+  // --------------------------------------------------
+  // BOOKING STATUS
+  // --------------------------------------------------
+
+  if (
+    booking.bookingStatus ===
+    "cancelled"
+  ) {
+    throw createError(
+      "This booking has been cancelled.",
+      400
+    );
+  }
+
+  if (
+    booking.bookingStatus ===
+    "confirmed"
+  ) {
+    return {
+      booking,
+      message:
+        "This booking is already confirmed.",
+    };
+  }
+
+  // --------------------------------------------------
+  // ALREADY VERIFIED
+  // --------------------------------------------------
+
+  if (booking.isOtpVerified) {
+    return {
+      booking,
+      message:
+        "This booking has already been verified.",
+    };
+  }
+
+  // --------------------------------------------------
+  // MUST BE FREE EVENT
+  // --------------------------------------------------
+
+  const event =
+    await Event.findById(
+      booking.event
+    );
+
+  if (!event) {
+    throw createError(
+      "Event not found.",
+      404
+    );
+  }
+
+  if (event.eventType !== "free") {
+    throw createError(
+      "This endpoint is only for free events. Paid events must use the payment flow.",
+      400
+    );
+  }
+
+  // --------------------------------------------------
+  // GENERATE OTP
+  // --------------------------------------------------
+
+  const otp =
+    generateBookingOtp();
+
+  const otpExpiresAt =
+    getOtpExpiry();
+
+  // --------------------------------------------------
+  // UPDATE BOOKING
+  // --------------------------------------------------
+
+  booking.bookingOtp = otp;
+  booking.bookingOtpExpires = otpExpiresAt;
+  booking.isOtpVerified = false;
+  booking.bookingStatus = "pending";
+
+  await booking.save();
+
+  // --------------------------------------------------
+  // GET USER
+  // --------------------------------------------------
+
+  const user =
+    await User.findById(userId)
+      .select("name email");
+
+  // --------------------------------------------------
+  // OTP EMAIL
+  // --------------------------------------------------
+
+  if (user?.email) {
+    try {
+      await sendEmail({
+        to: user.email,
+
+        subject:
+          "Verify Your Free Booking OTP",
+
+        text:
+          `Hello ${user.name}, your OTP for booking ${event.title} is ${otp}. It is valid for 5 minutes.`,
+
+        html: `
+          <h2>Verify Your Booking</h2>
+
+          <p>Hello ${user.name},</p>
+
+          <p>
+            Your booking for
+            <strong>${event.title}</strong>
+            is ready. Please use the following OTP
+            to confirm your booking:
+          </p>
+
+          <h1>${otp}</h1>
+
+          <p>
+            This OTP is valid for 5 minutes.
+          </p>
+
+          <p>
+            Thank you for using EventEase.
+          </p>
+        `,
+      });
+    } catch (error) {
+      console.error(
+        "Free booking OTP email failed:",
+        error.message
+      );
+    }
+  }
+
+  // --------------------------------------------------
+  // RETURN
+  // --------------------------------------------------
+
+  const result =
+    await populateBooking(
+      Booking.findById(booking._id)
+    );
+
+  return {
+    booking: result,
+
+    message:
+      "Free booking OTP generated successfully. Please verify OTP.",
+
+    otp,
+
+    otpExpiresAt,
   };
 };
 
@@ -667,18 +779,25 @@ const verifyBookingOtp = async (
       );
 
     if (event) {
-      event.availableSeats +=
-        booking.ticketQuantity;
 
-      if (
-        event.availableSeats >
-        event.totalSeats
-      ) {
-        event.availableSeats =
-          event.totalSeats;
+      if (event.eventType !== "free") {
+
+        event.availableSeats +=
+          booking.ticketQuantity;
+
+        if (
+          event.availableSeats >
+          event.totalSeats
+        ) {
+          event.availableSeats =
+            event.totalSeats;
+        }
+
       }
 
+
       await event.save();
+
     }
 
     booking.bookingStatus =
@@ -1059,18 +1178,22 @@ const cancelBooking = async (
     );
 
   // ==================================================
-  // RESTORE SEATS
+  // RESTORE SEATS (paid events only)
   // ==================================================
 
-  event.availableSeats +=
-    booking.ticketQuantity;
+  if (event.eventType !== "free") {
 
-  if (
-    event.availableSeats >
-    event.totalSeats
-  ) {
-    event.availableSeats =
-      event.totalSeats;
+    event.availableSeats +=
+      booking.ticketQuantity;
+
+    if (
+      event.availableSeats >
+      event.totalSeats
+    ) {
+      event.availableSeats =
+        event.totalSeats;
+    }
+
   }
 
   await event.save();
@@ -1188,10 +1311,41 @@ const cancelBooking = async (
 const getMyConfirmedBookings = async (
   userId
 ) => {
+  const now = new Date();
+
+  const upcomingEvents =
+    await Event.find({
+      isDeleted: false,
+    }).select(
+      "_id eventDate startTime"
+    );
+
+  const upcomingEventIds =
+    upcomingEvents
+      .filter(
+        (event) => {
+          const eventDateTime =
+            getEventEndDateTime(
+              event
+            );
+
+          return (
+            eventDateTime !== null &&
+            eventDateTime > now
+          );
+        }
+      )
+      .map(
+        (event) => event._id
+      );
+
   return await populateBooking(
     Booking.find({
       user: userId,
       bookingStatus: "confirmed",
+      event: {
+        $in: upcomingEventIds,
+      },
     }).sort({
       createdAt: -1,
     })
@@ -1205,6 +1359,34 @@ const getMyConfirmedBookings = async (
 const getMyBookings = async (
   userId
 ) => {
+  const now = new Date();
+
+  const upcomingEvents =
+    await Event.find({
+      isDeleted: false,
+    }).select(
+      "_id eventDate startTime"
+    );
+
+  const upcomingEventIds =
+    upcomingEvents
+      .filter(
+        (event) => {
+          const eventDateTime =
+            getEventEndDateTime(
+              event
+            );
+
+          return (
+            eventDateTime !== null &&
+            eventDateTime > now
+          );
+        }
+      )
+      .map(
+        (event) => event._id
+      );
+
   return await populateBooking(
     Booking.find({
       user: userId,
@@ -1213,6 +1395,9 @@ const getMyBookings = async (
           "pending",
           "confirmed",
         ],
+      },
+      event: {
+        $in: upcomingEventIds,
       },
     }).sort({
       createdAt: -1,
@@ -1555,12 +1740,18 @@ const expirePendingBookings =
 
 
       if (event) {
-        event.availableSeats =
-          Math.min(
-            event.totalSeats,
-            event.availableSeats +
-              booking.ticketQuantity
-          );
+
+        if (event.eventType !== "free") {
+
+          event.availableSeats =
+            Math.min(
+              event.totalSeats,
+              event.availableSeats +
+                booking.ticketQuantity
+            );
+
+        }
+
 
         await event.save();
 
@@ -1587,25 +1778,39 @@ const getBookingHistory = async (
 ) => {
   const now = new Date();
 
-  const expiredEventIds =
-    (
-      await Event.find({
-        eventDate: { $lt: now },
-        isDeleted: false,
-      }).select("_id")
-    ).map((event) => event._id);
+  const expiredEvents =
+    await Event.find({
+      isDeleted: false,
+    }).select(
+      "_id eventDate startTime"
+    );
 
+  const expiredEventIds =
+    expiredEvents
+      .filter(
+        (event) => {
+          const eventDateTime =
+            getEventEndDateTime(
+              event
+            );
+
+          return (
+            eventDateTime !== null &&
+            eventDateTime <= now
+          );
+        }
+      )
+      .map(
+        (event) => event._id
+      );
 
   return await populateBooking(
     Booking.find({
       user: userId,
-      $or: [
-        { bookingStatus: { $in: ["cancelled", "completed"] } },
-        {
-          bookingStatus: "confirmed",
-          event: { $in: expiredEventIds },
-        },
-      ],
+      bookingStatus: "confirmed",
+      event: {
+        $in: expiredEventIds,
+      },
     }).sort({ createdAt: -1 })
   );
 };
@@ -1616,6 +1821,7 @@ const getBookingHistory = async (
 
 module.exports = {
   createBooking,
+  generateFreeBookingOtp,
   verifyBookingOtp,
   cancelBooking,
   getMyBookings,

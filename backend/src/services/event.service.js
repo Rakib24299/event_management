@@ -9,6 +9,11 @@ const {
   createBulkNotifications,
 } = require("./notification.service");
 
+const {
+  getEventEndDateTime,
+  isEventExpired,
+} = require("../utils/eventDateTime");
+
 
 // ========================================
 // Get Pending Organizers
@@ -675,7 +680,7 @@ const getSingleEvent = async (
 
 const getAllEvents = async () => {
 
-  const events =
+  const allEvents =
     await Event.find({
 
       isDeleted: false,
@@ -695,7 +700,12 @@ const getAllEvents = async () => {
         createdAt: -1,
       });
 
-  return events;
+
+  return allEvents.filter(
+    (event) =>
+      !isEventExpired(event)
+  );
+
 };
 
 
@@ -1063,14 +1073,16 @@ const createEvent = async (
       ? 0
       : ticketPrice;
 
+
   const finalTotalSeats =
     eventType === "free"
-      ? 100
+      ? null
       : totalSeats;
+
 
   const finalMaxTicketsPerUser =
     eventType === "free"
-      ? 5
+      ? null
       : maxTicketsPerUser || 5;
 
 
@@ -1175,14 +1187,22 @@ const createEvent = async (
     ticketPrice:
       finalTicketPrice,
 
-    totalSeats:
-      finalTotalSeats,
+    ...(finalTotalSeats !== null
+      ? {
+          totalSeats:
+            finalTotalSeats,
 
-    availableSeats:
-      finalTotalSeats,
+          availableSeats:
+            finalTotalSeats,
+        }
+      : {}),
 
-    maxTicketsPerUser:
-      finalMaxTicketsPerUser,
+    ...(finalMaxTicketsPerUser !== null
+      ? {
+          maxTicketsPerUser:
+            finalMaxTicketsPerUser,
+        }
+      : {}),
 
     status: "draft",
 
@@ -1262,7 +1282,10 @@ const getMyEvents = async (
         createdAt: -1,
       });
 
-  return events;
+
+  return events.filter(
+    (event) => !isEventExpired(event)
+  );
 
 };
 
@@ -1372,15 +1395,40 @@ const updateEvent = async (
   }
 
 
+  const updatePayload =
+      { ...data };
+
+
+  if (
+      updatePayload.eventType ===
+      "free"
+  ) {
+
+      updatePayload.ticketPrice =
+          0;
+
+      updatePayload.totalSeats =
+          null;
+
+      updatePayload.availableSeats =
+          null;
+
+      updatePayload.maxTicketsPerUser =
+          null;
+
+  }
+
+
   const updatedEvent =
-    await Event.findByIdAndUpdate(
-      eventId,
-      data,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+      await Event.findByIdAndUpdate(
+          eventId,
+          updatePayload,
+          {
+              new: true,
+              runValidators:
+                  true,
+          }
+      );
 
   return updatedEvent;
 
@@ -1390,64 +1438,61 @@ const updateEvent = async (
 // ========================================
 // Delete Event
 // Organizer (own) + Admin
-// Soft Delete
+// Hard Delete
 // ========================================
 
 const deleteEvent = async (
-  eventId,
-  userId,
-  userRole
+   eventId,
+   userId,
+   userRole
 ) => {
 
-  const event =
-    await Event.findById(
-      eventId
-    );
+   const event =
+     await Event.findById(
+       eventId
+     );
 
-  if (
-    !event ||
-    event.isDeleted
-  ) {
+   if (!event) {
 
-    throw new AppError(
-      "Event not found.",
-      404
-    );
+     throw new AppError(
+       "Event not found.",
+       404
+     );
 
-  }
+   }
 
 
-  // ======================================
-  // Authorization
-  // ======================================
+   // ======================================
+   // Authorization
+   // ======================================
 
-  if (
-    userRole !== "admin" &&
-    String(event.organizer) !==
-      String(userId)
-  ) {
+   if (
+     userRole !== "admin" &&
+     String(event.organizer) !==
+       String(userId)
+   ) {
 
-    throw new AppError(
-      "You are not authorized to delete this event.",
-      403
-    );
+     throw new AppError(
+       "You are not authorized to delete this event.",
+       403
+     );
 
-  }
-
-
-  event.isDeleted = true;
-  event.deletedAt = new Date();
-
-  await event.save();
+   }
 
 
-  return {
-    message:
-      "Event deleted successfully.",
-  };
+   await Event.findByIdAndDelete(
+     eventId
+   );
+
+
+   return {
+
+     message:
+       "Event deleted successfully.",
+
+   };
 
 };
-
 
 // ========================================
 // Cancel Event
@@ -1507,6 +1552,77 @@ const cancelEvent = async (
 
 
 // ========================================
+// Get Event History
+// Expired events within 30-day retention period
+// ========================================
+
+const getEventHistory = async () => {
+
+  const allEvents =
+    await Event.find({
+
+      isDeleted: false,
+
+      status: "published",
+
+    })
+      .populate(
+        "organizer",
+        "name email organizationName"
+      )
+      .populate(
+        "category",
+        "name"
+      )
+      .sort({
+        createdAt: -1,
+      });
+
+
+  return allEvents.filter(
+    (event) => isEventExpired(event)
+  );
+
+};
+
+
+// ========================================
+// Get Organizer Event History
+// Expired events for the current organizer
+// ========================================
+
+const getOrganizerEventHistory = async (
+  organizerId
+) => {
+
+  const events =
+    await Event.find({
+
+      organizer: organizerId,
+      isDeleted: false,
+
+    })
+      .populate(
+        "organizer",
+        "name email organizationName"
+      )
+      .populate(
+        "category",
+        "name"
+      )
+      .sort({
+        createdAt: -1,
+      });
+
+
+  return events.filter(
+    (event) => isEventExpired(event)
+  );
+
+};
+
+
+// ========================================
 // Export
 // ========================================
 
@@ -1547,5 +1663,9 @@ module.exports = {
   rejectEvent,
 
   deleteEventByAdmin,
+
+  getEventHistory,
+
+  getOrganizerEventHistory,
 
 };

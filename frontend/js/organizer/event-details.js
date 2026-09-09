@@ -510,6 +510,14 @@ function displayEvent(
 
 
     // ====================================
+    // Payment Type
+    // ====================================
+
+    const isPaidEvent =
+        event.eventType === "paid";
+
+
+    // ====================================
     // Banner
     // ====================================
 
@@ -675,55 +683,80 @@ function displayEvent(
 
 
     // ====================================
-    // Ticket Price
+    // Ticket Price (hide for free events)
     // ====================================
 
     if (ticketPrice) {
 
-        ticketPrice.textContent =
-            formatTicketPrice(
-                event.ticketPrice,
-                event.eventType
+        if (isPaidEvent) {
+
+            ticketPrice.textContent =
+                formatTicketPrice(
+                    event.ticketPrice,
+                    event.eventType
+                );
+
+
+            ticketPrice.parentElement.classList.remove(
+                "hidden"
             );
+
+        } else {
+
+            ticketPrice.parentElement.classList.add(
+                "hidden"
+            );
+
+        }
 
     }
 
 
     // ====================================
-    // Total Seats
+    // Seat Fields (paid events only)
     // ====================================
 
     if (totalSeats) {
 
         totalSeats.textContent =
-            event.totalSeats ??
-            "--";
+            isPaidEvent
+                ? event.totalSeats ?? "--"
+                : "";
+
+        totalSeats.parentElement.classList.toggle(
+            "hidden",
+            !isPaidEvent
+        );
 
     }
 
-
-    // ====================================
-    // Available Seats
-    // ====================================
 
     if (availableSeats) {
 
         availableSeats.textContent =
-            event.availableSeats ??
-            "--";
+            isPaidEvent
+                ? event.availableSeats ?? "--"
+                : "";
+
+        availableSeats.parentElement.classList.toggle(
+            "hidden",
+            !isPaidEvent
+        );
 
     }
 
 
-    // ====================================
-    // Maximum Tickets
-    // ====================================
-
     if (maxTicketsPerUser) {
 
         maxTicketsPerUser.textContent =
-            event.maxTicketsPerUser ??
-            "--";
+            isPaidEvent
+                ? event.maxTicketsPerUser ?? "--"
+                : "";
+
+        maxTicketsPerUser.parentElement.classList.toggle(
+            "hidden",
+            !isPaidEvent
+        );
 
     }
 
@@ -1020,7 +1053,7 @@ if (deleteEventButton) {
                 // ====================================
 
                 deleteEventButton.textContent =
-                    "Deleted ✓";
+                    "Deleted";
 
 
                 alert(

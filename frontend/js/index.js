@@ -16,20 +16,18 @@ let allCategories = [];
 // ========================================
 
 const categoryIcons = {
-
-    "Music": "🎵",
-    "Others": "📍",
-    "Cricket": "🏏",
-    "Entertainment": "🎭",
-    "Education": "🎓",
-    "Health & Wellness": "🏥",
-    "Arts & Culture": "🎨",
-    "Food & Drink": "🍔",
-    "Business": "💼",
-    "Technology": "💻",
-    "Sports": "⚽",
-    "Football": "🏈"
-
+    "Music": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zm12-2a3 3 0 11-6 0 3 3 0 016 0z" /></svg>',
+    "Others": '<svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>',
+    "Cricket": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-2-2a1.5 1.5 0 00-2.12 0L9.5 8.38M14.5 3.38L4.88 13a3.5 3.5 0 00-.98 2.37l.2 3.43 3.43.2a3.5 3.5 0 002.37-.98L19.5 8.4a1.5 1.5 0 000-2.12z" /><circle cx="18" cy="18" r="3" stroke="currentColor" stroke-width="2" /></svg>',
+    "Entertainment": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" /><line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" /></svg>',
+    "Education": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 14v7" /></svg>',
+    "Health & Wellness": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>',
+    "Arts & Culture": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4 5 5 0 015-5h1.25a1.75 1.75 0 001.75-1.75V9A6 6 0 0117 3a6 6 0 016 0z" /></svg>',
+    "Food & Drink": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 2v6a3 3 0 01-3 3 3 3 0 01-3-3V2M15 2v20M5 2v13a3 3 0 003 3h1a3 3 0 003-3V2M9 2v20" /></svg>',
+    "Business": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path stroke-linecap="round" stroke-linejoin="round" d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" /></svg>',
+    "Technology": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>',
+    "Sports": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 7l3.5 2.5-1.5 4h-4L8.5 9.5 12 7z" /></svg>',
+    "Football": '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" /></svg>'
 };
 
 // ========================================
@@ -396,7 +394,7 @@ function showEmptyState() {
                 "
             >
 
-                <div class="text-5xl">🔍</div>
+                <div class="text-5xl"><svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></div>
 
                 <h3 class="mt-4 text-xl font-bold text-gray-900">
 
@@ -450,6 +448,11 @@ function createEventCard(event) {
     const price =
         getEventPrice(event);
 
+
+    const eventType =
+        event.eventType ||
+        "paid";
+
     const image =
         getEventImage(event);
 
@@ -484,7 +487,7 @@ function createEventCard(event) {
                 "
             >
 
-                🎟️
+                <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
 
             </div>
 
@@ -544,6 +547,26 @@ function createEventCard(event) {
 
                 </span>
 
+                ${eventType === "free" || price === 0 ? `
+                    <span
+                        class="
+                            absolute
+                            right-4
+                            top-4
+                            rounded-full
+                            bg-emerald-600
+                            px-3
+                            py-1
+                            text-xs
+                            font-bold
+                            text-white
+                            shadow-sm
+                        "
+                    >
+                        Free
+                    </span>
+                ` : ""}
+
             </div>
 
             <div class="p-5">
@@ -573,13 +596,13 @@ function createEventCard(event) {
 
                     <p>
 
-                        📍 ${location}
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> ${location}
 
                     </p>
 
                     <p>
 
-                        📅 ${date}
+                        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> ${date}
 
                     </p>
 
@@ -610,14 +633,14 @@ function createEventCard(event) {
                                 mt-1
                                 text-lg
                                 font-bold
-                                text-primary
+                                ${eventType === "free" || price === 0 ? "text-emerald-600" : "text-primary"}
                             "
                         >
 
                             ${
-                                price > 0
-                                    ? `৳${price.toLocaleString()}`
-                                    : "Free"
+                                eventType === "free" || price === 0
+                                    ? "Free"
+                                    : `৳${price.toLocaleString()}`
                             }
 
                         </p>
@@ -708,7 +731,7 @@ function createCategoryCard(category) {
         categoryIcons[rawName] ||
         category.icon ||
         category.emoji ||
-        "📍";
+        '<svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>';
 
     const count =
         category.eventCount ||

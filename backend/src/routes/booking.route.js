@@ -16,12 +16,26 @@ const {
   createBookingSchema,
   verifyBookingOtpSchema,
   updateBookingStatusSchema,
+  freeBookingOtpSchema,
 } =
   require("../validations/booking.validation");
 
 
 const router =
   express.Router();
+
+
+// ------------------------------------------------------
+// GENERATE FREE BOOKING OTP
+// POST /api/v1/bookings/free-otp
+// ------------------------------------------------------
+
+router.post(
+  "/free-otp",
+  authMiddleware,
+  validateRequest(freeBookingOtpSchema),
+  bookingController.generateFreeBookingOtp
+);
 
 
 // ======================================================
