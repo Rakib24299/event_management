@@ -364,12 +364,22 @@ const getId = (value) => {
 // Get Customer
 // ========================================
 
+const extractImageUrl = (imageVal) => {
+    if (!imageVal) return "";
+    if (typeof imageVal === "string") return imageVal.trim();
+    if (typeof imageVal === "object") {
+        return imageVal.url || imageVal.secure_url || imageVal.path || "";
+    }
+    return "";
+};
+
 const getCustomer = (booking) => {
 
     const user =
         booking.user ||
         booking.customer ||
-        booking.customerId;
+        booking.customerId ||
+        booking.userId;
 
 
     if (
@@ -377,43 +387,67 @@ const getCustomer = (booking) => {
         typeof user === "object"
     ) {
 
+        const name =
+            user.name ||
+            user.fullName ||
+            user.username ||
+            booking.customerName ||
+            "Unknown User";
+
+        const email =
+            user.email ||
+            booking.customerEmail ||
+            "No email";
+
+        const image =
+            extractImageUrl(user.profileImage) ||
+            extractImageUrl(user.image) ||
+            extractImageUrl(user.avatar) ||
+            extractImageUrl(booking.customerImage) ||
+            "";
+
+        const phone =
+            user.phone ||
+            booking.customerPhone ||
+            "";
+
         return {
-
-            name:
-                user.name ||
-                user.fullName ||
-                user.username ||
-                "Unknown User",
-
-            email:
-                user.email ||
-                "No email",
-
-            image:
-                user.profileImage ||
-                user.image ||
-                "",
-
+            name,
+            email,
+            image,
+            phone,
+            initial: (name || "U").trim().charAt(0).toUpperCase(),
         };
 
     }
 
 
+    const name =
+        booking.customerName ||
+        "Unknown User";
+
+    const email =
+        booking.customerEmail ||
+        "No email";
+
+    const image =
+        extractImageUrl(booking.customerImage) ||
+        "";
+
+    const phone =
+        booking.customerPhone ||
+        "";
+
     return {
-
-        name:
-            booking.customerName ||
-            "Unknown User",
-
-        email:
-            booking.customerEmail ||
-            "No email",
-
-        image: "",
-
+        name,
+        email,
+        image,
+        phone,
+        initial: (name || "U").trim().charAt(0).toUpperCase(),
     };
 
 };
+
 
 
 // ========================================
@@ -935,7 +969,7 @@ const renderBookings = (bookings) => {
                     <div class="flex items-center gap-3">
 
                         <div
-                            class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primaryLight/15 font-bold text-primary"
+                            class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/10 font-bold text-primary"
                         >
 
                             ${
@@ -943,11 +977,12 @@ const renderBookings = (bookings) => {
                                     ? `
                                         <img
                                             src="${escapeHTML(customer.image)}"
-                                            alt="User"
+                                            alt="${escapeHTML(customer.name)}"
                                             class="h-full w-full object-cover"
+                                            onerror="this.parentElement.innerHTML='<span class=\\'text-sm font-bold text-primary\\'>${escapeHTML(customer.initial || 'U')}</span>'"
                                         >
                                       `
-                                    : '<svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>'
+                                    : `<span class="text-sm font-bold text-primary">${escapeHTML(customer.initial || 'U')}</span>`
                             }
 
                         </div>
@@ -1220,15 +1255,46 @@ const openBookingModal = (booking) => {
                 Customer
             </h3>
 
-            <div class="mt-4">
+            <div class="mt-4 flex items-center gap-4">
 
-                <p class="font-bold text-gray-900">
-                    ${escapeHTML(customer.name)}
-                </p>
+                <div
+                    class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-primary/10 font-bold text-primary text-base"
+                >
+                    ${
+                        customer.image
+                            ? `
+                                <img
+                                    src="${escapeHTML(customer.image)}"
+                                    alt="${escapeHTML(customer.name)}"
+                                    class="h-full w-full object-cover"
+                                    onerror="this.parentElement.innerHTML='<span class=\\'text-base font-bold text-primary\\'>${escapeHTML(customer.initial || 'U')}</span>'"
+                                >
+                              `
+                            : `<span class="text-base font-bold text-primary">${escapeHTML(customer.initial || 'U')}</span>`
+                    }
+                </div>
 
-                <p class="mt-1 text-sm text-gray-500">
-                    ${escapeHTML(customer.email)}
-                </p>
+                <div class="min-w-0">
+
+                    <p class="font-bold text-gray-900">
+                        ${escapeHTML(customer.name)}
+                    </p>
+
+                    <p class="mt-0.5 text-sm text-gray-500">
+                        ${escapeHTML(customer.email)}
+                    </p>
+
+                    ${
+                        customer.phone
+                            ? `
+                                <p class="mt-0.5 text-xs text-gray-400">
+                                    ${escapeHTML(customer.phone)}
+                                </p>
+                              `
+                            : ""
+                    }
+
+                </div>
 
             </div>
 

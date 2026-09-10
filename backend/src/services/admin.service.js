@@ -459,6 +459,14 @@ const getDashboardStats = async () => {
 
 
   const now = new Date();
+  const todayStart = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+  const tomorrowStart = new Date(
+    todayStart.getTime() + 24 * 60 * 60 * 1000
+  );
   const oneMonthAgo = new Date(now);
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
   const monthStart = new Date(
@@ -468,15 +476,18 @@ const getDashboardStats = async () => {
   );
 
   const revenueResult =
-    await Booking.aggregate([
+    await Payment.aggregate([
 
       {
         $match: {
-          bookingStatus:
-            "confirmed",
-          createdAt: {
-            $gte: monthStart,
-          },
+          status: "paid",
+          $or: [
+            { paidAt: { $gte: monthStart, $lt: tomorrowStart } },
+            {
+              paidAt: { $exists: false },
+              createdAt: { $gte: monthStart, $lt: tomorrowStart },
+            },
+          ],
         },
       },
 
@@ -487,7 +498,7 @@ const getDashboardStats = async () => {
 
           totalRevenue: {
             $sum:
-              "$totalAmount",
+              "$grossAmount",
           },
 
         },

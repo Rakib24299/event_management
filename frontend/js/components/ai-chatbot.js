@@ -762,8 +762,8 @@
                     </form>
 
                     <div class="mt-2.5 flex items-center justify-between px-1 text-[10px] text-gray-400">
-                        <span>⚡ Instant Event Assistant</span>
-                        <span class="font-semibold text-primary">Gemini 2.0 AI</span>
+                        <span> Event Assistant</span>
+                        <span class="font-semibold text-primary">Gemini</span>
                     </div>
 
                 </div>
@@ -799,7 +799,7 @@
 
                 <!-- Hover Tooltip -->
                 <span class="pointer-events-none absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-gray-900/90 px-3 py-1.5 text-xs font-semibold text-white shadow-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100 backdrop-blur-sm">
-                    Ask AI Assistant ✨
+                    Ask AI Assistant
                 </span>
             </button>
         `;
