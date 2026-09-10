@@ -15,10 +15,9 @@ async function loadComponent(elementId, filePath) {
         const html = await response.text();
         element.innerHTML = html;
 
-        if (elementId === "user-header") {
-            updateNotificationBadge();
-            attachLogoutListener();
-        }
+        // Auto update badge and attach logout whenever header is loaded
+        updateNotificationBadge();
+        attachLogoutListener();
 
         window.dispatchEvent(
             new CustomEvent("componentLoaded", {
@@ -34,10 +33,36 @@ async function loadComponent(elementId, filePath) {
 }
 
 // ========================================
+// Ensure Badge Element Exists In Notification Links
+// ========================================
+
+function ensureNotificationBadgesExist() {
+    const notifLinks = document.querySelectorAll(
+        'a[href*="notifications.html"], a[href*="notification-management.html"], a[title*="Notifications"], a[aria-label*="Notifications"]'
+    );
+
+    notifLinks.forEach(link => {
+        let badge = link.querySelector("#notificationBadge, .notification-badge");
+        if (!badge) {
+            badge = document.createElement("span");
+            badge.id = "notificationBadge";
+            badge.className = "absolute -right-1 -top-1 hidden h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white z-10 pointer-events-none";
+            badge.textContent = "0";
+            if (getComputedStyle(link).position === "static") {
+                link.style.position = "relative";
+            }
+            link.appendChild(badge);
+        }
+    });
+}
+
+// ========================================
 // Update Notification Badge
 // ========================================
 
 async function updateNotificationBadge() {
+    ensureNotificationBadgesExist();
+
     const badges = document.querySelectorAll("#notificationBadge, .notification-badge");
     if (!badges || badges.length === 0) return;
 
@@ -73,7 +98,7 @@ async function updateNotificationBadge() {
             badges.forEach(badge => {
                 if (count > 0) {
                     badge.textContent = count > 99 ? "99+" : String(count);
-                    badge.className = "absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white shadow-md ring-2 ring-white z-10 pointer-events-none";
+                    badge.className = "absolute -right-1.5 -top-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-md ring-2 ring-white z-10 pointer-events-none";
                     badge.style.display = "flex";
                     badge.classList.remove("hidden");
                     badge.classList.add("flex");
@@ -102,15 +127,15 @@ async function updateNotificationBadge() {
 // ========================================
 
 function attachLogoutListener() {
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (!logoutBtn) return;
-
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("user");
-        window.location.replace("./user-login.html");
+    const logoutBtns = document.querySelectorAll("#logoutBtn, .logout-btn");
+    logoutBtns.forEach(btn => {
+        btn.onclick = () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
+            window.location.replace("./user-login.html");
+        };
     });
 }
 
@@ -119,27 +144,30 @@ function attachLogoutListener() {
 // ========================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    ensureNotificationBadgesExist();
     updateNotificationBadge();
     attachLogoutListener();
 });
 
 window.addEventListener("componentLoaded", () => {
+    ensureNotificationBadgesExist();
     updateNotificationBadge();
+    attachLogoutListener();
 });
 
 window.addEventListener("focus", () => {
     updateNotificationBadge();
 });
 
-// Run immediately
+// Run immediately and after small delays for async components
+ensureNotificationBadgesExist();
 updateNotificationBadge();
-
-// Run after short delays to catch async rendered headers
 setTimeout(updateNotificationBadge, 300);
-setTimeout(updateNotificationBadge, 1000);
+setTimeout(updateNotificationBadge, 800);
+setTimeout(updateNotificationBadge, 1500);
 
-// Periodically update every 10 seconds
-setInterval(updateNotificationBadge, 10000);
+// Periodically update every 5 seconds
+setInterval(updateNotificationBadge, 5000);
 
 // Global export
 window.updateNotificationBadge = updateNotificationBadge;

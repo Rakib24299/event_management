@@ -335,10 +335,10 @@ const renderNotifications =
 
 
                 notificationCard.className =
-                    `notification-card rounded-3xl p-5 shadow-soft transition ${
+                    `notification-card rounded-3xl p-5 shadow-soft transition-all duration-200 border ${
                         isRead
-                            ? "bg-gray-100"
-                            : "bg-gray-400 text-white"
+                            ? "bg-white border-gray-100 hover:border-gray-200"
+                            : "bg-gray-100 border-gray-200/90 hover:bg-gray-200/70"
                     }`;
 
 
@@ -350,9 +350,7 @@ const renderNotifications =
 
                         <div
                             class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-                                isRead
-                                    ? "bg-gray-100"
-                                    : "bg-white"
+                                isRead ? "bg-gray-100 text-gray-500" : "bg-white text-primary shadow-xs ring-1 ring-gray-200"
                             } text-xl"
                         >
 
@@ -384,7 +382,7 @@ const renderNotifications =
 
 
                                     <p
-                                        class="mt-1 text-sm leading-6 text-gray-600"
+                                        class="mt-1 text-sm leading-6 ${isRead ? 'text-gray-500' : 'text-gray-700 font-medium'}"
                                     >
                                         ${
                                             notification.message ||

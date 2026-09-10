@@ -430,6 +430,8 @@ const extractNotifications =
 const updateStatistics =
     (notifications) => {
 
+        if (!notifications) return;
+
         const total =
             notifications.length;
 
@@ -448,16 +450,17 @@ const updateStatistics =
             ).length;
 
 
-        totalNotifications.textContent =
-            total;
+        if (totalNotifications) {
+            totalNotifications.textContent = total;
+        }
 
+        if (unreadNotifications) {
+            unreadNotifications.textContent = unread;
+        }
 
-        unreadNotifications.textContent =
-            unread;
-
-
-        readNotifications.textContent =
-            read;
+        if (readNotifications) {
+            readNotifications.textContent = read;
+        }
 
     };
 
@@ -545,12 +548,12 @@ const renderNotifications =
                 card.className =
                     `
                     group rounded-2xl border
-                    bg-white p-5 shadow-sm
-                    transition hover:shadow-md
+                    p-5 shadow-sm
+                    transition-all duration-200 hover:shadow-md
                     ${
                         isUnread
-                            ? "border-gray-200 bg-gray-50"
-                            : "border-gray-100"
+                            ? "border-gray-200/90 bg-gray-100 hover:bg-gray-200/70"
+                            : "border-gray-100 bg-white"
                     }
                     `;
 
@@ -590,8 +593,8 @@ const renderNotifications =
                                 <h3
                                     class="font-bold ${
                                         isUnread
-                                            ? "text-gray-700"
-                                            : "text-gray-900"
+                                            ? "text-gray-900 font-bold"
+                                            : "text-gray-700 font-medium"
                                     }"
                                 >
                                     ${escapeHTML(
@@ -607,8 +610,8 @@ const renderNotifications =
                             <p
                                 class="mt-2 text-sm leading-6 ${
                                     isUnread
-                                        ? "text-gray-500"
-                                        : "text-gray-600"
+                                        ? "text-gray-700 font-medium"
+                                        : "text-gray-500"
                                 }"
                             >
                                 ${escapeHTML(
@@ -1097,15 +1100,15 @@ const markAllAsRead = async () => {
 const filterNotifications = () => {
 
     const search =
-        searchInput.value
+        (searchInput ? searchInput.value : "")
             .trim()
             .toLowerCase();
 
 
     const selectedType =
-        normalizeType(
-            typeFilter.value
-        );
+        typeFilter
+            ? normalizeType(typeFilter.value)
+            : "all";
 
 
     const filtered =
@@ -1165,9 +1168,9 @@ const filterNotifications = () => {
 
 const clearFilters = () => {
 
-    searchInput.value = "";
+    if (searchInput) searchInput.value = "";
 
-    typeFilter.value = "all";
+    if (typeFilter) typeFilter.value = "all";
 
     renderNotifications(
         allNotifications

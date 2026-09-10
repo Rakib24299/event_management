@@ -30,6 +30,32 @@ router.get(
 );
 
 
+// Get Unread Count
+
+router.get(
+
+    "/unread-count",
+
+    authMiddleware,
+
+    notificationController.getUnreadCount
+
+);
+
+
+// Mark All Notifications As Read
+
+router.patch(
+
+    "/mark-all-read",
+
+    authMiddleware,
+
+    notificationController.markAllAsRead
+
+);
+
+
 // Get Notification By ID
 
 router.get(
@@ -52,32 +78,6 @@ router.patch(
     authMiddleware,
 
     notificationController.markAsRead
-
-);
-
-
-// Mark All Notifications As Read
-
-router.patch(
-
-    "/mark-all-read",
-
-    authMiddleware,
-
-    notificationController.markAllAsRead
-
-);
-
-
-// Get Unread Count
-
-router.get(
-
-    "/unread-count",
-
-    authMiddleware,
-
-    notificationController.getUnreadCount
 
 );
 
