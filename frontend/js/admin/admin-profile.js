@@ -178,20 +178,31 @@ const renderProfile = (user) => {
     if (viewHeroEmail) viewHeroEmail.textContent = email;
 
     // View Avatar
-    if (user.profileImage && user.profileImage.url) {
+    let photoUrl = "";
+    if (typeof user.profileImage === "string") {
+        photoUrl = user.profileImage;
+    } else if (user.profileImage && typeof user.profileImage === "object") {
+        photoUrl = user.profileImage.url || user.profileImage.secure_url || "";
+    } else if (typeof user.image === "string") {
+        photoUrl = user.image;
+    } else if (user.image && typeof user.image === "object") {
+        photoUrl = user.image.url || user.image.secure_url || "";
+    }
+
+    if (photoUrl) {
         viewAvatarContainer.innerHTML = `
-            <img src="${user.profileImage.url}" alt="${name}" class="h-full w-full object-cover">
+            <img src="${photoUrl}" alt="${name}" class="h-full w-full object-cover">
         `;
         editAvatarContainer.innerHTML = `
-            <img src="${user.profileImage.url}" alt="${name}" class="h-full w-full object-cover">
+            <img src="${photoUrl}" alt="${name}" class="h-full w-full object-cover">
         `;
         if (removePhotoBtn) removePhotoBtn.classList.remove("hidden");
     } else {
         viewAvatarContainer.innerHTML = `
-            <span id="viewAvatarInitial" class="text-4xl font-extrabold text-primary">${initial}</span>
+            <span id="viewAvatarInitial" class="text-3xl sm:text-4xl font-extrabold text-primary">${initial}</span>
         `;
         editAvatarContainer.innerHTML = `
-            <span id="editAvatarInitial" class="text-3xl font-bold text-primary">${initial}</span>
+            <span id="editAvatarInitial" class="text-2xl sm:text-3xl font-bold text-primary">${initial}</span>
         `;
         if (removePhotoBtn) removePhotoBtn.classList.add("hidden");
     }

@@ -58,341 +58,181 @@
 
 
     <!-- ============================= -->
-    <!-- Hero -->
-    <!-- ============================= -->
-
-    <section class="bg-primary">
-
-        <div
-            class="
-                mx-auto
-                max-w-7xl
-                px-4
-                py-12
-                sm:px-6
-                lg:px-8
-                lg:py-16
-            "
-        >
-
-            <div class="max-w-3xl">
-
-                <p
-                    class="
-                        text-sm
-                        font-medium
-                        text-green-100
-                    "
-                >
-                    Discover & Experience
-                </p>
-
-                <h1
-                    class="
-                        mt-2
-                        text-3xl
-                        font-bold
-                        tracking-tight
-                        text-white
-                        sm:text-4xl
-                        lg:text-5xl
-                    "
-                >
-                    Explore Events
-                </h1>
-
-                <p
-                    class="
-                        mt-4
-                        text-sm
-                        leading-6
-                        text-green-50
-                        sm:text-base
-                    "
-                >
-                    Find exciting events, tournaments and
-                    experiences happening around you.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ============================= -->
-    <!-- Search & Filters -->
-    <!-- ============================= -->
-
-    <section>
-
-        <div
-            class="
-                mx-auto
-                max-w-7xl
-                px-4
-                py-8
-                sm:px-6
-                lg:px-8
-            "
-        >
-
-            <div
-                class="
-                    rounded-2xl
-                    bg-white
-                    p-4
-                    shadow-sm
-                    sm:p-6
-                "
-            >
-
-                <div
-                    class="
-                        grid
-                        grid-cols-1
-                        gap-4
-                        md:grid-cols-2
-                        lg:grid-cols-4
-                    "
-                >
-
-                    <!-- Search -->
-
-                    <div class="lg:col-span-2">
-
-                        <label
-                            for="searchInput"
-                            class="
-                                mb-2
-                                block
-                                text-sm
-                                font-medium
-                                text-gray-700
-                            "
-                        >
-                            Search Events
-                        </label>
-
-                        <div class="relative">
-
-                            <input
-                                type="text"
-                                id="searchInput"
-                                placeholder="Search by event name..."
-                                class="
-                                    h-12
-                                    w-full
-                                    rounded-xl
-                                    border
-                                    border-gray-200
-                                    px-4
-                                    text-sm
-                                    outline-none
-                                    transition
-                                    placeholder:text-gray-400
-                                    focus:border-primary
-                                    focus:ring-4
-                                    focus:ring-green-900/10
-                                "
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Category -->
-
-                    <div>
-
-                        <label
-                            for="categoryFilter"
-                            class="
-                                mb-2
-                                block
-                                text-sm
-                                font-medium
-                                text-gray-700
-                            "
-                        >
-                            Category
-                        </label>
-
-                        <select
-                            id="categoryFilter"
-                            class="
-                                h-12
-                                w-full
-                                rounded-xl
-                                border
-                                border-gray-200
-                                bg-white
-                                px-4
-                                text-sm
-                                outline-none
-                                focus:border-primary
-                                focus:ring-4
-                                focus:ring-green-900/10
-                            "
-                        >
-
-                            <option value="">
-                                All Categories
-                            </option>
-
-                            <option value="sports">
-                                Sports
-                            </option>
-
-                            <option value="music">
-                                Music
-                            </option>
-
-                            <option value="tournament">
-                                Tournament
-                            </option>
-
-                            <option value="conference">
-                                Conference
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- Event Type -->
-
-                    <div>
-
-                        <label
-                            for="eventTypeFilter"
-                            class="
-                                mb-2
-                                block
-                                text-sm
-                                font-medium
-                                text-gray-700
-                            "
-                        >
-                            Event Type
-                        </label>
-
-                        <select
-                            id="eventTypeFilter"
-                            class="
-                                h-12
-                                w-full
-                                rounded-xl
-                                border
-                                border-gray-200
-                                bg-white
-                                px-4
-                                text-sm
-                                outline-none
-                                focus:border-primary
-                                focus:ring-4
-                                focus:ring-green-900/10
-                            "
-                        >
-
-                            <option value="">
-                                All Events
-                            </option>
-
-                            <option value="free">
-                                Free
-                            </option>
-
-                            <option value="paid">
-                                Paid
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Filter Buttons -->
-
-                <!-- <div
-                    class="
-                        mt-4
-                        flex
-                        flex-col
-                        gap-3
-                        sm:flex-row
-                        sm:justify-end
-                    " >
-
-                    <button
-                        id="clearFilters"
-                        type="button"
-                        class="
-                            rounded-xl
-                            border
-                            border-gray-200
-                            px-5
-                            py-3
-                            text-sm
-                            font-semibold
-                            text-gray-600
-                            transition
-                            hover:bg-gray-50
-                        "
-                    >
-                        Clear Filters
-                    </button>
-
-                    <button
-                        id="searchButton"
-                        type="button"
-                        class="
-                            rounded-xl
-                            bg-primary
-                            px-6
-                            py-3
-                            text-sm
-                            font-semibold
-                            text-white
-                            transition
-                            hover:bg-primaryDark
-                        "
-                    >
-                        Search Events
-                    </button>
-
-                </div> -->
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ============================= -->
-    <!-- Events -->
+    <!-- Main -->
     <!-- ============================= -->
 
     <main class="flex-1">
 
         <div
-            class="
-                mx-auto
-                max-w-7xl
-                px-4
-                pb-12
-                sm:px-6
-                lg:px-8
-            "
+            class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8"
         >
+
+            <!-- ============================= -->
+            <!-- Hero / Welcome Section -->
+            <!-- ============================= -->
+
+            <section
+                class="rounded-3xl bg-primary p-6 text-white shadow-soft sm:p-8"
+            >
+
+                <div
+                    class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
+                >
+
+                    <div>
+
+                        <p
+                            class="text-sm font-medium text-white/80"
+                        >
+                            Discover & Experience
+                        </p>
+
+                        <h1
+                            class="mt-1 text-3xl font-bold sm:text-4xl"
+                        >
+                            Explore Events
+                        </h1>
+
+                        <p
+                            class="mt-2 max-w-xl text-sm leading-6 text-white/80 sm:text-base"
+                        >
+                            Find exciting events, tournaments and
+                            experiences happening around you.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ============================= -->
+            <!-- Search & Filters -->
+            <!-- ============================= -->
+
+            <section class="mt-8">
+
+                <div
+                    class="rounded-2xl bg-white p-4 shadow-sm sm:p-6"
+                >
+
+                    <div
+                        class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
+                    >
+
+                        <!-- Search -->
+
+                        <div class="lg:col-span-2">
+
+                            <label
+                                for="searchInput"
+                                class="mb-2 block text-sm font-medium text-gray-700"
+                            >
+                                Search Events
+                            </label>
+
+                            <div class="relative">
+
+                                <input
+                                    type="text"
+                                    id="searchInput"
+                                    placeholder="Search by event name..."
+                                    class="h-12 w-full rounded-xl border border-gray-200 px-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-4 focus:ring-green-900/10"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Category -->
+
+                        <div>
+
+                            <label
+                                for="categoryFilter"
+                                class="mb-2 block text-sm font-medium text-gray-700"
+                            >
+                                Category
+                            </label>
+
+                            <select
+                                id="categoryFilter"
+                                class="h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-green-900/10"
+                            >
+
+                                <option value="">
+                                    All Categories
+                                </option>
+
+                                <option value="sports">
+                                    Sports
+                                </option>
+
+                                <option value="music">
+                                    Music
+                                </option>
+
+                                <option value="tournament">
+                                    Tournament
+                                </option>
+
+                                <option value="conference">
+                                    Conference
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Event Type -->
+
+                        <div>
+
+                            <label
+                                for="eventTypeFilter"
+                                class="mb-2 block text-sm font-medium text-gray-700"
+                            >
+                                Event Type
+                            </label>
+
+                            <select
+                                id="eventTypeFilter"
+                                class="h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-green-900/10"
+                            >
+
+                                <option value="">
+                                    All Events
+                                </option>
+
+                                <option value="free">
+                                    Free
+                                </option>
+
+                                <option value="paid">
+                                    Paid
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ============================= -->
+            <!-- Events -->
+            <!-- ============================= -->
+
+            <section class="mt-8">
 
             <!-- Section Header -->
 
@@ -975,6 +815,8 @@
                 </article>
 
             </div>
+
+            </section>
 
         </div>
 

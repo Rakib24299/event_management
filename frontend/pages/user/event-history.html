@@ -6,7 +6,11 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
+
+  <title>Event History | EventEase</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -14,13 +18,14 @@
           colors: {
             primary: "#31572c",
             primaryDark: "#244522",
-            primaryLight: "#eaf2e8",
+            primaryLight: "#4f772d",
+            softGreen: "#f1f7ef"
           },
           boxShadow: {
-            soft: "0 10px 30px rgba(0,0,0,0.07)",
-          },
-        },
-      },
+            soft: "0 10px 30px rgba(0,0,0,0.07)"
+          }
+        }
+      }
     };
   </script>
 </head>
@@ -30,184 +35,132 @@
   <!-- ==============================
        HEADER
   =============================== -->
-
-  <header class="border-b border-gray-200 bg-white">
-
-    <div
-        class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8"
-    >
-
-        <!-- EventEase -->
-
-        <a
-            href="./dashboard.html"
-            class="text-2xl font-extrabold tracking-tight text-primary"
-        >
-             <span class="text-black">Event</span><span class="text-[#31572c]">Ease</span>
-        </a>
-
-        <!-- Right Side -->
-
-        <div class="flex items-center gap-3">
-
-            <!-- Notification -->
-
-            <a
-                href="./notifications.html"
-                class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
-                title="Notifications" >
-
-                <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-
-                <span
-                    id="notificationBadge"
-                    class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
-                >
-                    0
-                </span>
-
-            </a>
-
-            <!-- My Account -->
-
-            <a
-                href="./profile.html"
-                class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
-            >
-                My Account
-            </a>
-
-            <!-- Logout -->
-
-            <button
-                id="logoutBtn"
-                type="button"
-                class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
-            >
-                Logout
-            </button>
-
-        </div>
-
-    </div>
-
-</header>
-
+  <div id="user-header"></div>
 
 
   <!-- ==============================
        Main
   =============================== -->
+  <main class="flex-1">
 
-  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
 
-    <!-- Page Heading -->
+      <!-- ======================================
+           HERO SECTION
+      ======================================= -->
+      <section class="rounded-3xl bg-primary p-6 text-white shadow-soft sm:p-8">
 
-    <div class="mb-8">
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 
-      <h1 class="text-3xl font-bold text-gray-900">
-        Event History
-      </h1>
+          <div>
+            <p class="text-sm font-medium text-white/80">
+              Past Experiences
+            </p>
 
-      <p class="mt-2 text-gray-500">
-        View your previously booked events that have already expired.
-      </p>
+            <h1 class="mt-1 text-3xl font-bold sm:text-4xl text-white">
+              Event History
+            </h1>
 
-    </div>
+            <p class="mt-2 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
+              View your previously attended and completed events, access ticket receipts, and leave reviews.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <a
+              href="./events.html"
+              class="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-primary shadow-soft transition hover:bg-gray-100 active:scale-95"
+            >
+              <span>Explore Active Events</span>
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </a>
+          </div>
+
+        </div>
+
+      </section>
 
 
-    <!-- ==============================
-         Loading
-    =============================== -->
-
-    <div
-      id="loadingState"
-      class="bg-white rounded-xl shadow-sm p-10 text-center"
-    >
-
+      <!-- ==============================
+           Loading
+      =============================== -->
       <div
-        class="inline-block w-8 h-8
-               border-4 border-gray-200
-               border-t-primary rounded-full animate-spin"
-      ></div>
-
-      <p class="mt-4 text-gray-500">
-        Loading event history...
-      </p>
-
-    </div>
-
-
-    <!-- ==============================
-         Error
-    =============================== -->
-
-    <div
-      id="errorState"
-      class="hidden bg-red-50 border border-red-200
-             rounded-xl p-5 mb-6"
-    >
-
-      <p
-        id="errorMessage"
-        class="text-red-600"
-      ></p>
-
-      <button
-        id="retryBtn"
-        type="button"
-        class="mt-3 px-4 py-2
-               bg-red-600 text-white rounded-lg
-               hover:bg-red-700"
+        id="loadingState"
+        class="mt-8 rounded-3xl border border-gray-100 bg-white p-12 text-center shadow-soft"
       >
-        Try Again
-      </button>
+        <div
+          class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary"
+        ></div>
 
-    </div>
-
-
-    <!-- ==============================
-         Empty State
-    =============================== -->
-
-    <div
-      id="emptyState"
-      class="hidden bg-white rounded-xl shadow-sm
-             p-12 text-center"
-    >
-
-      <div class="text-5xl mb-4">
-        <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <p class="mt-4 text-sm font-medium text-gray-500">
+          Loading event history...
+        </p>
       </div>
 
-      <h2 class="text-xl font-semibold text-gray-800">
-        No Past Events Found
-      </h2>
 
-      <p class="mt-2 text-gray-500">
-        You haven't attended any events yet. Once events pass their date, they will appear here.
-      </p>
-
-      <a
-        href="../events.html"
-        class="inline-block mt-5 px-5 py-2.5
-               bg-primary text-white rounded-lg
-               hover:bg-primaryDark transition"
+      <!-- ==============================
+           Error
+      =============================== -->
+      <div
+        id="errorState"
+        class="mt-8 mb-6 hidden rounded-2xl border border-red-200 bg-red-50 p-6 shadow-soft"
       >
-        Browse Events
-      </a>
+        <p
+          id="errorMessage"
+          class="font-medium text-red-600"
+        ></p>
+
+        <button
+          id="retryBtn"
+          type="button"
+          class="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700"
+        >
+          Try Again
+        </button>
+      </div>
+
+
+      <!-- ==============================
+           Empty State
+      =============================== -->
+      <div
+        id="emptyState"
+        class="mt-8 hidden rounded-3xl border border-gray-100 bg-white p-12 text-center shadow-soft"
+      >
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
+          <svg class="h-8 w-8 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-800">
+          No Past Events Found
+        </h2>
+
+        <p class="mt-2 text-sm text-gray-500">
+          You haven't attended any events yet. Once events pass their date, they will appear here.
+        </p>
+
+        <a
+          href="./events.html"
+          class="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-primaryDark"
+        >
+          Browse Events
+        </a>
+      </div>
+
+
+      <!-- ==============================
+           History Container
+      =============================== -->
+      <div
+        id="historyContainer"
+        class="mt-8 hidden space-y-6"
+      ></div>
 
     </div>
-
-
-    <!-- ==============================
-         History Container
-    =============================== -->
-
-    <div
-      id="historyContainer"
-      class="hidden space-y-6"
-    ></div>
 
   </main>
 
@@ -215,17 +168,14 @@
   <!-- ==============================
        Review Modal / Popover
   =============================== -->
-
   <div
     id="reviewModal"
     class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity"
   >
-
     <div
       id="reviewModalBox"
       class="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white p-6 shadow-2xl transition-all sm:p-8"
     >
-
       <!-- Close Button -->
       <button
         type="button"
@@ -238,15 +188,12 @@
         </svg>
       </button>
 
-
       <h2 class="text-xl font-bold text-gray-900 mb-4">
         Write a Review
       </h2>
 
-
       <!-- Event Preview -->
       <div class="mb-5 flex items-center gap-4 rounded-2xl bg-gray-50 p-3.5 border border-gray-100">
-
         <img
           id="modalEventImage"
           src="https://via.placeholder.com/100"
@@ -255,7 +202,6 @@
         />
 
         <div class="flex-1 min-w-0">
-
           <p id="modalEventCategory" class="text-xs font-semibold text-primary uppercase tracking-wide">
             Event
           </p>
@@ -267,32 +213,24 @@
           <p id="modalEventDate" class="text-xs text-gray-500 mt-0.5">
             Date
           </p>
-
         </div>
-
       </div>
-
 
       <!-- Alert Message -->
       <div id="modalReviewAlert" class="hidden rounded-xl p-3.5 text-sm mb-4"></div>
 
-
       <!-- Review Form -->
       <form id="modalReviewForm" class="space-y-4">
-
         <input type="hidden" id="modalEventId" value="" />
         <input type="hidden" id="modalBookingId" value="" />
 
-
         <!-- Rating Stars -->
         <div>
-
           <label class="block text-sm font-semibold text-gray-700 mb-1.5">
             Your Rating <span class="text-red-500">*</span>
           </label>
 
           <div class="flex items-center gap-2">
-
             <div class="flex items-center gap-1" id="modalStarGroup">
               <button type="button" class="modal-rating-star text-3xl text-gray-300 hover:scale-110 transition cursor-pointer" data-rating="1">★</button>
               <button type="button" class="modal-rating-star text-3xl text-gray-300 hover:scale-110 transition cursor-pointer" data-rating="2">★</button>
@@ -304,19 +242,15 @@
             <span id="modalRatingText" class="ml-2 text-sm font-medium text-gray-500">
               Select a rating
             </span>
-
           </div>
 
           <p id="modalRatingError" class="hidden text-xs text-red-500 mt-1">
             Please select a rating.
           </p>
-
         </div>
-
 
         <!-- Comment -->
         <div>
-
           <div class="flex items-center justify-between mb-1.5">
             <label for="modalReviewComment" class="block text-sm font-semibold text-gray-700">
               Your Feedback <span class="text-red-500">*</span>
@@ -335,13 +269,10 @@
           <p id="modalCommentError" class="hidden text-xs text-red-500 mt-1">
             Review must be at least 5 characters.
           </p>
-
         </div>
-
 
         <!-- Actions -->
         <div class="mt-6 flex items-center justify-end gap-3 pt-2">
-
           <button
             type="button"
             id="cancelReviewModal"
@@ -357,79 +288,45 @@
           >
             Submit Review
           </button>
-
         </div>
-
       </form>
 
     </div>
-
   </div>
 
 
   <!-- ==============================
        FOOTER
   =============================== -->
-
-  <footer class="mt-auto border-t border-gray-200 bg-white">
-
-    <div
-        class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"
-    >
-
-        <p class="transition hover:text-primary">
-            © 2026 EventEase. All rights reserved.
-        </p>
-
-        <div class="flex gap-5">
-
-            <p class="transition hover:text-primary">
-                developed by <span class="font-bold text-[#31572c]">Rakib</span>
-            </p>
-
-        </div>
-
-    </div>
-
-</footer>
-
+  <div id="user-footer"></div>
 
 
   <!-- ==============================
        COMPONENTS
   =============================== -->
-
   <script src="../../js/components.js"></script>
 
-
   <script>
-
       Promise.all([
-
           loadComponent(
               "user-header",
               "../../components/user-header.html"
           ),
-
           loadComponent(
               "user-footer",
               "../../components/user-footer.html"
           )
-
       ]);
-
   </script>
 
 
   <!-- ==============================
        JavaScript
   =============================== -->
-
   <script src="../../js/user/event-history.js"></script>
 
-
   <!-- AI -->
-     <script src="../../js/components/ai-chatbot.js"></script>
+  <script src="../../js/components/ai-chatbot.js"></script>
 
 </body>
 </html>
