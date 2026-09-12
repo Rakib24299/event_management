@@ -35,9 +35,9 @@ const refundRoutes = require("./routes/refund.route");
 
 const uploadRoute = require("./routes/upload.route");
 
-const { startRefundJob } = require("./jobs/refund.job");
-
 const aiRoutes = require("./routes/ai.route");
+
+const chatRoute = require("./routes/chat.route");
 
 
 const app = express();
@@ -83,6 +83,8 @@ app.use("/api/v1/refunds", refundRoutes);
 app.use("/api/v1/upload", uploadRoute);
 
 app.use( "/api/v1/ai", aiRoutes);
+
+app.use("/api/v1/chat", chatRoute);
 
 
 // Home Route

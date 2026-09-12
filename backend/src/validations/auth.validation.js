@@ -25,10 +25,7 @@ const registerUserSchema = z.object(
               phone: z
                     .string()
                     .trim()
-                    .regex(
-                        /^(\+8801|01)[3-9]\d{8}$/,
-                    "Invalid  phone number"
-                ),
+                    .regex( /^(\+8801|01)[3-9]\d{8}$/,  "Invalid  phone number" ),
 
               password: z
                     .string()

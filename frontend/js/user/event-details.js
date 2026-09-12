@@ -3314,17 +3314,21 @@ if (bookEventButton) {
                             )}`;
 
                     } else {
-
                         // ----------------------------------------
-                        // PAID EVENT: redirect to payment.html
-                        // with the existing bookingId.
+                        // PAID EVENT: Check if OTP is verified first
                         // ----------------------------------------
-
-                        window.location.href =
-                            `./payment.html?bookingId=${encodeURIComponent(
-                                continuationBookingId
-                            )}`;
-
+                        const isVerified = continuationBookingData?.isOtpVerified;
+                        if (isVerified) {
+                            window.location.href =
+                                `./payment.html?bookingId=${encodeURIComponent(
+                                    continuationBookingId
+                                )}`;
+                        } else {
+                            window.location.href =
+                                `./otp-verification.html?bookingId=${encodeURIComponent(
+                                    continuationBookingId
+                                )}`;
+                        }
                     }
 
                 } catch (error) {

@@ -687,21 +687,36 @@ async function createBooking() {
 
 
         // ====================================
-        // Next Step
+        // Next Step: Redirect to OTP Verification
         // ====================================
 
-        const message =
-            result.message ||
-            "Booking created successfully. Redirecting to your bookings...";
+        const bookingId = booking._id || booking.id;
 
+        const otpData = {
+            payment: null,
+            booking: booking,
+            otp: result.otp || null,
+            otpExpiresAt: result.otpExpiresAt || null,
+            paymentMethod: eventData.eventType === "free" ? "free" : "sslcommerz"
+        };
 
-        alert(
-            message
+        sessionStorage.setItem(
+            "paymentSuccessData",
+            JSON.stringify(otpData)
         );
 
+        sessionStorage.setItem(
+            "paymentBookingId",
+            bookingId
+        );
+
+        sessionStorage.setItem(
+            "paymentBookingData",
+            JSON.stringify(booking)
+        );
 
         window.location.href =
-            "./my-bookings.html";
+            `./otp-verification.html?bookingId=${encodeURIComponent(bookingId)}`;
 
     } catch (error) {
 

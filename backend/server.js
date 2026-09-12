@@ -160,6 +160,47 @@ io.on(
     );
 
     // ==================================================
+    // CHAT TYPING INDICATORS
+    // ==================================================
+
+    socket.on(
+      "chat:typing",
+      (data) => {
+        if (!data || !data.receiverId) return;
+
+        // Emit typing indicator to receiver
+        io.to(`user_${data.receiverId}`).emit("chat:typing", {
+          senderId: data.senderId,
+          senderName: data.senderName,
+        });
+
+        if (data.isToAdmin) {
+          io.to("admin_room").emit("chat:typing", {
+            senderId: data.senderId,
+            senderName: data.senderName,
+          });
+        }
+      }
+    );
+
+    socket.on(
+      "chat:stop_typing",
+      (data) => {
+        if (!data || !data.receiverId) return;
+
+        io.to(`user_${data.receiverId}`).emit("chat:stop_typing", {
+          senderId: data.senderId,
+        });
+
+        if (data.isToAdmin) {
+          io.to("admin_room").emit("chat:stop_typing", {
+            senderId: data.senderId,
+          });
+        }
+      }
+    );
+
+    // ==================================================
     // DISCONNECT
     // ==================================================
 

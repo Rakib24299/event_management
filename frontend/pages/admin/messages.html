@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Organizer Messages | Admin Panel</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#457b9d",
+                        primaryDark: "#35627d",
+                        primaryLight: "#6b9bb8",
+                    },
+                    boxShadow: {
+                        soft: "0 10px 30px rgba(0, 0, 0, 0.06)",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        /* Custom scrollbar for chat */
+        .chat-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+
+</head>
+
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
+
+     <!-- ========================================
+         HEADER
+    ========================================= -->
+
+    <header class="border-b border-gray-200 bg-white">
+
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+
+            <!-- EventEase -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-extrabold tracking-tight text-primary" > 
+                 <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+
+                <!-- Messages -->
+                <a
+                    href="./messages.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary text-xl transition hover:bg-primary hover:text-white"
+                    title="Messages"
+                >
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span
+                        id="messagesHeaderBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white"
+                    >
+                        0
+                    </span>
+                </a>
+
+                <!-- Notification -->
+
+                <a
+                    href="./notification-management.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary text-xl transition hover:bg-primary hover:text-white"
+                    title="Notifications"  >
+
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- My Account -->
+
+                <a
+                    href="./admin-profile.html"
+                    class="hidden rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 sm:block"
+                >
+                    Admin Account
+                </a>
+
+
+                <!-- Logout -->
+
+                <!-- <button
+                    id="logoutBtn"
+                    type="button"
+                    class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
+                >
+                    Logout
+                </button> -->
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         MAIN CONTENT
+    ========================================= -->
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+
+        <!-- Page Header -->
+        <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">
+                    Organizer Messages
+                </h1>
+                <p class="mt-1 text-sm text-gray-500">
+                    Real-time direct chat and support with event organizers.
+                </p>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAT APPLICATION CONTAINER
+        ========================================= -->
+
+        <div class="h-[750px] overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-soft flex flex-col md:flex-row">
+
+            <!-- ==============================
+                 LEFT SIDEBAR: ORGANIZERS LIST
+            =============================== -->
+            <div class="w-full md:w-80 lg:w-96 border-r border-gray-100 flex flex-col bg-gray-50/50">
+
+                <!-- Search Header -->
+                <div class="p-4 border-b border-gray-100 bg-white">
+                    <div class="relative">
+                        <input
+                            id="searchOrganizerInput"
+                            type="text"
+                            placeholder="Search organizers..."
+                            class="w-full rounded-2xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10"
+                        >
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Organizers List Loading -->
+                <div id="organizersLoading" class="flex-1 flex items-center justify-center p-6 text-center">
+                    <div>
+                        <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary"></div>
+                        <p class="mt-3 text-xs font-medium text-gray-500">Loading conversations...</p>
+                    </div>
+                </div>
+
+                <!-- Organizers List Empty -->
+                <div id="organizersEmpty" class="hidden flex-1 flex items-center justify-center p-6 text-center">
+                    <div>
+                        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-gray-400">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800">No Organizers Found</p>
+                        <p class="mt-1 text-xs text-gray-400">Registered organizers will appear here.</p>
+                    </div>
+                </div>
+
+                <!-- Organizers Scrollable List -->
+                <div id="organizersList" class="flex-1 overflow-y-auto chat-scrollbar divide-y divide-gray-100">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 RIGHT AREA: CHAT CONVERSATION
+            =============================== -->
+            <div class="flex-1 flex flex-col bg-white min-w-0 min-h-0">
+
+                <!-- Empty State (No conversation selected) -->
+                <div id="noChatSelected" class="flex-1 flex items-center justify-center p-8 text-center bg-gray-50/30">
+                    <div class="max-w-md">
+                        <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary">
+                            <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">
+                            Select a Conversation
+                        </h3>
+                        <p class="mt-2 text-sm text-gray-500 leading-6">
+                            Choose an organizer from the left sidebar to start or continue a 1-on-1 direct conversation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Active Chat Panel (Initially Hidden) -->
+                <div id="activeChatPanel" class="hidden flex-1 flex flex-col h-full min-h-0">
+
+                    <!-- Chat Header -->
+                    <div class="px-6 py-4 border-b border-gray-100 bg-white flex items-center justify-between">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div class="relative shrink-0">
+                                <img
+                                    id="chatOrganizerAvatar"
+                                    src="https://via.placeholder.com/100?text=Org"
+                                    alt="Organizer"
+                                    class="h-11 w-11 rounded-2xl object-cover border border-gray-200"
+                                >
+                            </div>
+                            <div class="min-w-0">
+                                <h2 id="chatOrganizerName" class="text-base font-bold text-gray-900 truncate">
+                                    Organizer Name
+                                </h2>
+                                <p id="chatOrganizationName" class="text-xs text-gray-500 truncate">
+                                    Organization
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Header Controls -->
+                        <div class="flex items-center gap-2">
+                            <button
+                                id="refreshChatBtn"
+                                type="button"
+                                class="rounded-xl p-2.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+                                title="Refresh Messages"
+                            >
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Messages Feed -->
+                    <div id="messagesFeed" class="flex-1 p-4 sm:p-6 space-y-4 overflow-y-auto chat-scrollbar bg-[#fbfbfb]">
+                        <!-- Messages injected via JS -->
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div id="typingIndicator" class="hidden px-6 py-2 text-xs font-medium text-gray-500 italic bg-gray-50/50">
+                        <span id="typingUserName">Organizer</span> is typing...
+                    </div>
+
+                    <!-- Message Input Bar -->
+                    <div class="p-4 border-t border-gray-100 bg-white">
+                        <form id="chatMessageForm" class="flex items-center gap-3">
+                            <input
+                                id="messageTextInput"
+                                type="text"
+                                placeholder="Type a message to the organizer... (Press Enter to send)"
+                                maxlength="2000"
+                                autocomplete="off"
+                                class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition placeholder:text-gray-400"
+                            >
+                            <button
+                                id="sendMessageBtn"
+                                type="submit"
+                                title="Send message"
+                                class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white transition hover:bg-primaryDark active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-sm shrink-0"
+                            >
+                                <svg class="w-5 h-5 text-white ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+    <!-- Admin Messages JavaScript -->
+    <script src="../../js/admin/messages.js"></script>
+
+</body>
+
+</html>

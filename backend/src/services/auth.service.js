@@ -42,7 +42,7 @@ const registerUser = async (payload) => {
   user.emailVerificationOtp = otp;
 
   user.emailVerificationOtpExpires = new Date(
-    Date.now() + 10 * 60 * 1000
+    Date.now() + 5 * 60 * 1000
   );
 
   await user.save();
@@ -53,7 +53,7 @@ const registerUser = async (payload) => {
     await sendEmail({
       to: user.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your email verification OTP is ${otp}. It is valid for 10 minutes.`,
+      text: `Your email verification OTP is ${otp}. It is valid for 5 minutes.`,
     });
   } catch (emailError) {
     console.error(
@@ -122,7 +122,7 @@ const registerOrganizer = async (payload) => {
   organizer.emailVerificationOtp = otp;
 
   organizer.emailVerificationOtpExpires = new Date(
-    Date.now() + 10 * 60 * 1000
+    Date.now() + 5 * 60 * 1000
   );
   await organizer.save();
 
@@ -152,7 +152,7 @@ const registerOrganizer = async (payload) => {
     await sendEmail({
       to: organizer.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your email verification OTP is ${otp}. It is valid for 10 minutes.`,
+      text: `Your email verification OTP is ${otp}. It is valid for 5 minutes.`,
     });
   } catch (emailError) {
     console.error(
@@ -261,7 +261,7 @@ const forgotPassword = async (payload) => {
   user.resetPasswordOtp = otp;
 
   user.resetPasswordOtpExpires = new Date(
-    Date.now() + 10 * 60 * 1000
+    Date.now() + 5 * 60 * 1000
   );
 
   await user.save();
@@ -272,7 +272,7 @@ const forgotPassword = async (payload) => {
     await sendEmail({
       to: user.email,
       subject: "EventEase Password Reset OTP",
-      text: `Your password reset OTP is ${otp}. It is valid for 10 minutes.`,
+      text: `Your password reset OTP is ${otp}. It is valid for 5 minutes.`,
     });
   } catch (emailError) {
     console.error(
@@ -404,7 +404,7 @@ const sendVerificationOtp = async (userId) => {
   user.emailVerificationOtp = otp;
 
   user.emailVerificationOtpExpires = new Date(
-    Date.now() + 10 * 60 * 1000
+    Date.now() + 5 * 60 * 1000
   );
 
   await user.save();
@@ -415,7 +415,7 @@ const sendVerificationOtp = async (userId) => {
     await sendEmail({
       to: user.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your email verification OTP is ${otp}. It is valid for 10 minutes.`,
+      text: `Your email verification OTP is ${otp}. It is valid for 5 minutes.`,
     });
   } catch (emailError) {
     console.error(
@@ -509,7 +509,7 @@ const resendVerificationOtp = async (payload) => {
   user.emailVerificationOtp = otp;
 
   user.emailVerificationOtpExpires = new Date(
-    Date.now() + 10 * 60 * 1000
+    Date.now() + 5 * 60 * 1000
   );
 
   await user.save();
@@ -520,7 +520,7 @@ const resendVerificationOtp = async (payload) => {
     await sendEmail({
       to: user.email,
       subject: "EventEase Email Verification OTP",
-      text: `Your new email verification OTP is ${otp}. It is valid for 10 minutes.`,
+      text: `Your new email verification OTP is ${otp}. It is valid for 5 minutes.`,
     });
   } catch (emailError) {
     console.error(

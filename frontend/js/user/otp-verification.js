@@ -829,6 +829,8 @@ const verifyOtp = async () => {
 
 
         const isFree =
+            result?.isFree === true ||
+            result?.data?.isFree === true ||
             existingSuccessData?.paymentMethod === "free" ||
             existingSuccessData?.payment?.paymentMethod === "free" ||
             verifiedBooking?.event?.eventType === "free" ||
@@ -836,92 +838,85 @@ const verifyOtp = async () => {
             verifiedBooking?.totalAmount === 0;
 
         const finalSuccessData = {
-
             ...existingSuccessData,
-
-            booking:
-                verifiedBooking,
-
-            paymentMethod:
-                isFree
-                    ? "free"
-                    : (existingSuccessData?.paymentMethod || "sslcommerz"),
-
-            otpVerified:
-                true,
-
-            verifiedAt:
-                new Date().toISOString()
-
+            booking: verifiedBooking,
+            paymentMethod: isFree ? "free" : (existingSuccessData?.paymentMethod || "sslcommerz"),
+            otpVerified: true,
+            verifiedAt: new Date().toISOString()
         };
-
 
         sessionStorage.setItem(
             "paymentSuccessData",
-            JSON.stringify(
-                finalSuccessData
-            )
+            JSON.stringify(finalSuccessData)
         );
-
-
-        // --------------------------------------------------
-        // SUCCESS UI
-        // --------------------------------------------------
-
-        showSuccess(
-            "OTP verified successfully. Your booking is confirmed."
-        );
-
 
         if (otpInput) {
-
-            otpInput.disabled =
-                true;
-
+            otpInput.disabled = true;
         }
-
-
-        if (verifyOtpButton) {
-
-            verifyOtpButton.textContent =
-                "Booking Confirmed";
-
-        }
-
 
         if (resendOtpButton) {
-
-            resendOtpButton.disabled =
-                true;
-
+            resendOtpButton.disabled = true;
         }
-
 
         if (countdownInterval) {
-
-            clearInterval(
-                countdownInterval
-            );
-
-            countdownInterval =
-                null;
-
+            clearInterval(countdownInterval);
+            countdownInterval = null;
         }
 
+        // --------------------------------------------------
+        // FREE EVENT: Confirmed immediately
+        // --------------------------------------------------
+        if (isFree) {
+            showSuccess("OTP verified successfully! Your free booking is confirmed.");
+            if (verifyOtpButton) {
+                verifyOtpButton.textContent = "Booking Confirmed";
+            }
+            setTimeout(() => {
+                window.location.href = "./payment-success.html";
+            }, 1200);
+            return;
+        }
 
         // --------------------------------------------------
-        // REDIRECT
+        // PAID EVENT: Redirect to SSLCommerz Payment Gateway
         // --------------------------------------------------
+        showSuccess("OTP verified successfully! Connecting to SSLCommerz Payment Gateway...");
+        if (verifyOtpButton) {
+            verifyOtpButton.textContent = "Connecting to Payment...";
+        }
 
-        setTimeout(
-            () => {
+        try {
+            const token = getAuthToken();
+            const payResponse = await fetch(`${API_BASE_URL}/payments`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    booking: bookingId
+                })
+            });
 
-                window.location.href =
-                    "./payment-success.html";
+            const payResult = await payResponse.json();
 
-            },
-            1200
-        );
+            if (payResponse.ok && payResult.success && payResult.data?.gatewayPageURL) {
+                // Direct redirect to SSLCommerz Sandbox Hosted Payment Page
+                setTimeout(() => {
+                    window.location.href = payResult.data.gatewayPageURL;
+                }, 1000);
+            } else {
+                // Fallback to payment.html
+                setTimeout(() => {
+                    window.location.href = `./payment.html?bookingId=${encodeURIComponent(bookingId)}`;
+                }, 1000);
+            }
+        } catch (payError) {
+            console.warn("Direct gateway session failed, navigating to payment page:", payError);
+            setTimeout(() => {
+                window.location.href = `./payment.html?bookingId=${encodeURIComponent(bookingId)}`;
+            }, 1000);
+        }
 
     } catch (error) {
 

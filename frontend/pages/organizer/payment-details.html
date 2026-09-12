@@ -46,59 +46,60 @@
 <body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
 
 
-    <!-- ==================================================
-         HEADER
-    =================================================== -->
+      <!-- ======================================
+         NAVBAR
+    ======================================= -->
 
-    <header class="border-b border-gray-200 bg-white">
+    <header class="border-b bg-white">
 
         <div
-            class="
-                mx-auto
-                flex
-                max-w-7xl
-                items-center
-                justify-between
-                px-6
-                py-4
-            "
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
         >
 
-            <div>
-
-                <a
-                    href="../home.html"
-                    class="
-                        text-2xl
-                        font-bold
-                        text-[#e76f51]
-                    "
-                >
-                    EventEase
-                </a>
-
-                <p class="text-sm text-gray-500">
-                    Organizer Panel
-                </p>
-
-            </div>
-
+            <!-- Logo -->
 
             <a
                 href="./dashboard.html"
-                class="
-                    rounded-xl
-                    px-4
-                    py-2
-                    text-sm
-                    font-semibold
-                    text-[#e76f51]
-                    transition
-                    hover:bg-[#fce9e4]
-                "
-            >
-                Dashboard
+                class="text-2xl font-bold text-primary" >
+               
+                 <span class="text-black">Event</span>Ease
             </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Notification -->
+
+                <a
+                    href="./notifications.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
+                    title="Notifications"
+                >
+
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Account -->
+
+                <a
+                    href="./organizer-profile.html"
+                    class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+                >
+                    My Account
+                </a>
+
+            </div>
 
         </div>
 
@@ -136,9 +137,7 @@
 
                 <span class="text-lg">
                     ←
-                </span>
-
-                Back to Payments
+                </span>Payments
 
             </a>
 

@@ -11,7 +11,7 @@ const {
 
 const startBookingExpiryJob = () => {
 
-  // Run every 1 minute
+  // Run every 5 minute
   cron.schedule("0 */5 * * * *", async () => {
 
     try {

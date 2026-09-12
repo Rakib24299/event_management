@@ -50,7 +50,8 @@ const createDefaultAdmin = async () => {
     await User.create({
       name: process.env.ADMIN_NAME || "Admin",
       email: process.env.ADMIN_EMAIL,
-      password: hashedPassword,
+      // password: hashedPassword,
+      password: process.env.ADMIN_PASSWORD,
       phone: process.env.ADMIN_PHONE || "",
       role: "admin",
       address: "System",

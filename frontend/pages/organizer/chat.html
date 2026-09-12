@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Support Chat | Organizer Panel</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#e76f51",
+                        primaryDark: "#c9553b",
+                        primaryLight: "#fce9e4",
+                    },
+                    boxShadow: {
+                        soft: "0 10px 30px rgba(0, 0, 0, 0.06)",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        /* Custom scrollbar for chat */
+        .chat-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+
+</head>
+
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
+
+     <!-- ======================================
+         NAVBAR
+    ======================================= -->
+
+    <header class="border-b bg-white">
+
+        <div
+            class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+        >
+
+            <!-- Logo -->
+
+            <a
+                href="./dashboard.html"
+                class="text-2xl font-bold text-primary" >
+               
+                 <span class="text-black">Event</span>Ease
+            </a>
+
+
+            <!-- Right Side -->
+
+            <div class="flex items-center gap-3">
+
+                <!-- Support Chat -->
+                <a
+                    href="./chat.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-primary"
+                    title="Support Chat"
+                >
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span
+                        id="chatBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white"
+                    >
+                        0
+                    </span>
+                </a>
+
+                <!-- Notification -->
+
+                <a
+                    href="./notifications.html"
+                    class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gray-100 text-xl transition hover:bg-primaryLight hover:text-white"
+                    title="Notifications"
+                >
+
+                    <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+
+                    <span
+                        id="notificationBadge"
+                        class="absolute -right-1 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Account -->
+
+                <a
+                    href="./organizer-profile.html"
+                    class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-primaryLight hover:text-primary"
+                >
+                    My Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- ========================================
+         MAIN CHAT LAYOUT
+    ========================================= -->
+
+    <main class="mx-auto w-full flex-1 max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 flex flex-col">
+
+        <!-- Breadcrumb / Back button -->
+        <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="./dashboard.html" class="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-primary transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    Back to Dashboard
+                </a>
+                <span class="text-gray-300">/</span>
+                <span class="text-sm font-semibold text-gray-800">Admin Support Chat</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-semibold text-primary bg-primaryLight px-3 py-1 rounded-full">
+                Direct Live Support
+            </div>
+        </div>
+
+        <!-- Chat Container Box -->
+        <div class="flex-1 min-h-[580px] max-h-[calc(100vh-210px)] flex flex-col bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+            
+            <!-- Chat Header -->
+            <div class="p-4 sm:px-6 sm:py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50/50 via-white to-white flex items-center justify-between">
+                <div class="flex items-center gap-3.5">
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary to-orange-400 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="font-bold text-gray-900 text-base" id="adminName">Platform Admin Support</h2>
+                            <span class="bg-primary/10 text-primary text-[11px] font-bold px-2 py-0.5 rounded-md">Official</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-0.5" id="adminStatusText">Direct assistance for events, approvals & inquiries</p>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex items-center gap-2 text-xs text-gray-400">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Instant Real-Time</span>
+                </div>
+            </div>
+
+            <!-- Messages Stream Area -->
+            <div id="chatMessagesArea" class="flex-1 p-4 sm:p-6 overflow-y-auto chat-scrollbar bg-[#fbfbfb] space-y-4">
+                <!-- Loading State -->
+                <div id="messagesLoading" class="flex flex-col items-center justify-center h-64 text-gray-400">
+                    <div class="w-8 h-8 border-3 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                    <p class="text-xs font-medium mt-3">Connecting and loading messages...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyChatState" class="hidden flex flex-col items-center justify-center h-full py-16 text-center">
+                    <div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Need help or have questions?</h3>
+                    <p class="text-xs text-gray-500 max-w-sm mt-1">Send a message below to connect directly with the Platform Admin. We're here to help!</p>
+                </div>
+
+                <!-- Dynamic Message List -->
+                <div id="messagesList" class="space-y-4"></div>
+            </div>
+
+            <!-- Typing indicator -->
+            <div id="typingIndicator" class="hidden px-6 py-2 text-xs text-gray-500 bg-[#fbfbfb] flex items-center gap-2 border-t border-gray-100">
+                <span class="inline-flex gap-1 items-center">
+                    <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </span>
+                <span>Admin is typing...</span>
+            </div>
+
+            <!-- Message Input Area -->
+            <form id="chatForm" class="p-4 border-t border-gray-100 bg-white flex items-center gap-3">
+                <input
+                    type="text"
+                    id="messageInput"
+                    placeholder="Type your message to Admin..."
+                    autocomplete="off"
+                    class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition placeholder:text-gray-400"
+                />
+                <button
+                    type="submit"
+                    id="sendBtn"
+                    title="Send message"
+                    class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-white transition hover:bg-primaryDark active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-sm shrink-0"
+                >
+                    <svg class="w-5 h-5 text-white ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="../../js/organizer/chat.js"></script>
+
+</body>
+
+</html>

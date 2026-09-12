@@ -46,8 +46,8 @@ const bookingSchema = new Schema(
       ],
 
       max: [
-        10,
-        "You cannot buy more than 10 tickets at once.",
+        5,
+        "You cannot buy more than 5 tickets at once.",
       ],
     },
 
