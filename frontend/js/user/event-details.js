@@ -3136,10 +3136,6 @@ if (bookEventButton) {
         "click",
         async () => {
 
-            // ================================
-            // Event ID Check
-            // ================================
-
             if (!eventId && !isContinuationMode) {
 
                 alert(
@@ -3150,14 +3146,8 @@ if (bookEventButton) {
 
             }
 
-
-            // ================================
-            // Authentication Check
-            // ================================
-
             const token =
                 getToken();
-
 
             if (!token) {
 
@@ -3168,206 +3158,33 @@ if (bookEventButton) {
 
             }
 
+            const targetEventId =
+                eventId ||
+                currentEvent?._id ||
+                currentEvent?.id;
 
-            // ================================
-            // Continuation Mode:
-            // User already has a pending booking.
-            // ================================
+            const isFree =
+                (currentEvent?.eventType === "free" ||
+                 Number(currentEvent?.ticketPrice || currentEvent?.price || 0) === 0);
 
-            if (isContinuationMode && continuationBookingId) {
+            if (isFree) {
 
-                const bookingEvent =
-                    (continuationBookingData?.event) || {};
+                window.location.href =
+                    `./booking.html?id=${encodeURIComponent(
+                        targetEventId
+                    )}`;
 
+            } else {
 
-                const eventType =
-                    String(
-                        currentEvent?.eventType ||
-                        bookingEvent?.eventType ||
-                        "paid"
-                    ).toLowerCase();
-
-
-                const isFreeEvent =
-                    eventType === "free";
-
-
-                bookEventButton.disabled =
-                    true;
-
-
-                bookEventButton.textContent =
-                    isFreeEvent
-                        ? "Processing..."
-                        : "Connecting to Payment...";
-
-
-                try {
-
-                    if (isFreeEvent) {
-
-                        // ----------------------------------------
-                        // FREE EVENT: generate OTP and redirect
-                        // to OTP verification.
-                        // ----------------------------------------
-
-                        const response =
-                            await fetch(
-                                `${API_URL}/bookings/free-otp`,
-                                {
-                                    method: "POST",
-
-                                    headers: {
-                                        "Content-Type":
-                                            "application/json",
-
-                                        "Authorization":
-                                            `Bearer ${token}`,
-                                    },
-
-                                    body: JSON.stringify({
-                                        bookingId:
-                                            continuationBookingId,
-                                    }),
-                                }
-                            );
-
-
-                        const result =
-                            await response.json();
-
-
-                        if (
-                            !response.ok ||
-                            !result.success
-                        ) {
-
-                            throw new Error(
-                                result?.message ||
-                                "Unable to process free booking. Please try again."
-                            );
-
-                        }
-
-
-                        const otpBookingId =
-                            result?.data?.booking?._id ||
-                            continuationBookingId;
-
-
-                        const otpData = {
-
-                            payment: null,
-
-                            booking:
-                                result?.data?.booking ||
-                                continuationBookingData,
-
-                            otp:
-                                result?.data?.otp ||
-                                result?.otp ||
-                                null,
-
-                            otpExpiresAt:
-                                result?.data?.otpExpiresAt ||
-                                result?.otpExpiresAt ||
-                                null,
-
-                            paymentMethod:
-                                "free"
-
-                        };
-
-
-                        sessionStorage.setItem(
-                            "paymentSuccessData",
-                            JSON.stringify(
-                                otpData
-                            )
-                        );
-
-
-                        sessionStorage.setItem(
-                            "confirmedBookingId",
-                            otpBookingId
-                        );
-
-
-                        sessionStorage.setItem(
-                            "paymentBookingId",
-                            otpBookingId
-                        );
-
-
-                        sessionStorage.setItem(
-                            "paymentBookingData",
-                            JSON.stringify(
-                                result?.data?.booking ||
-                                continuationBookingData
-                            )
-                        );
-
-
-                        window.location.href =
-                            `./otp-verification.html?bookingId=${encodeURIComponent(
-                                otpBookingId
-                            )}`;
-
-                    } else {
-                        // ----------------------------------------
-                        // PAID EVENT: Check if OTP is verified first
-                        // ----------------------------------------
-                        const isVerified = continuationBookingData?.isOtpVerified;
-                        if (isVerified) {
-                            window.location.href =
-                                `./payment.html?bookingId=${encodeURIComponent(
-                                    continuationBookingId
-                                )}`;
-                        } else {
-                            window.location.href =
-                                `./otp-verification.html?bookingId=${encodeURIComponent(
-                                    continuationBookingId
-                                )}`;
-                        }
-                    }
-
-                } catch (error) {
-
-                    console.error(
-                        "Continuation payment error:",
-                        error
-                    );
-
-
-                    alert(
-                        error.message ||
-                        "Unable to process payment. Please try again."
-                    );
-
-
-                    bookEventButton.disabled =
-                        false;
-
-
-                    bookEventButton.textContent =
-                        "Continue to Payment";
-
-                }
-
-
-                return;
+                // ----------------------------------------
+                // PAID EVENT: Direct to payment page
+                // ----------------------------------------
+                window.location.href =
+                    `./payment.html?id=${encodeURIComponent(
+                        targetEventId
+                    )}`;
 
             }
-
-
-            // ================================
-            // Normal booking flow
-            // ================================
-
-            window.location.href =
-                `./booking.html?id=${encodeURIComponent(
-                    eventId
-                )}`;
 
         }
     );

@@ -1099,7 +1099,7 @@ const renderEvent = () => {
         if (confirmPaymentButton) {
 
             confirmPaymentButton.textContent =
-                "Continue to Payment";
+                "Make Payment & Confirm";
 
         }
 
@@ -1891,26 +1891,55 @@ const handleContinue = async () => {
         }
 
 
-        const booking =
-            await createBooking();
-
-
-        if (
-            isFreeEvent()
-        ) {
-
-            await processFreeBooking(
-                booking
-            );
-
-            return;
-
+        let booking = bookingData;
+        if (!booking || !(booking._id || booking.id)) {
+            booking = await createBooking();
         }
 
+        const targetBookingId = booking._id || booking.id;
 
-        await createSSLCommerzPayment(
-            booking
-        );
+        if (isFreeEvent()) {
+            await processFreeBooking(booking);
+            return;
+        }
+
+        // --------------------------------------------------
+        // PAID EVENT FLOW:
+        // 1. Send OTP to user email
+        // 2. Redirect to OTP verification page
+        // 3. Upon OTP verification, SSLCommerz gateway launches
+        // --------------------------------------------------
+        let otpResult = null;
+        try {
+            otpResult = await apiRequest("/bookings/send-otp", {
+                method: "POST",
+                body: JSON.stringify({ bookingId: targetBookingId })
+            });
+        } catch (otpErr) {
+            console.warn("Could not explicitly send OTP, proceeding with booking data:", otpErr);
+        }
+
+        const otpData = {
+            payment: null,
+            booking: otpResult?.data?.booking || booking,
+            otp: otpResult?.data?.otp || null,
+            otpExpiresAt: otpResult?.data?.otpExpiresAt || null,
+            paymentMethod: "sslcommerz"
+        };
+
+        sessionStorage.setItem("paymentSuccessData", JSON.stringify(otpData));
+        sessionStorage.setItem("paymentBookingId", targetBookingId);
+        sessionStorage.setItem("paymentBookingData", JSON.stringify(booking));
+        const currentEventId = getEventId() || booking?.event?._id || booking?.event || "";
+        if (currentEventId) {
+            sessionStorage.setItem("paymentEventId", currentEventId);
+            sessionStorage.setItem("selectedEventId", currentEventId);
+        }
+        if (eventData) {
+            sessionStorage.setItem("selectedEventData", JSON.stringify(eventData));
+        }
+
+        window.location.href = `./otp-verification.html?bookingId=${encodeURIComponent(targetBookingId)}`;
 
 
     } catch (error) {
@@ -1936,7 +1965,7 @@ const handleContinue = async () => {
             confirmPaymentButton.textContent =
                 isFreeEvent()
                     ? "Confirm Free Booking"
-                    : "Continue to Payment";
+                    : "Make Payment & Confirm";
 
         }
 

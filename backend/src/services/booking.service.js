@@ -646,6 +646,75 @@ const generateFreeBookingOtp = async (
 };
 
 // ======================================================
+// SEND / RESEND BOOKING OTP (Free or Paid)
+// ======================================================
+
+const sendBookingOtp = async (bookingId, userId) => {
+  const booking = await Booking.findById(bookingId);
+  if (!booking) {
+    throw createError("Booking not found.", 404);
+  }
+
+  if (booking.user.toString() !== userId.toString()) {
+    throw createError("You are not authorized to manage this booking.", 403);
+  }
+
+  if (booking.bookingStatus === "cancelled") {
+    throw createError("This booking has been cancelled.", 400);
+  }
+
+  if (booking.bookingStatus === "confirmed") {
+    return {
+      booking,
+      message: "This booking is already confirmed.",
+    };
+  }
+
+  const event = await Event.findById(booking.event);
+  if (!event) {
+    throw createError("Event not found.", 404);
+  }
+
+  const otp = generateBookingOtp();
+  const otpExpiresAt = getOtpExpiry();
+
+  booking.bookingOtp = otp;
+  booking.bookingOtpExpires = otpExpiresAt;
+  booking.isOtpVerified = false;
+  await booking.save();
+
+  const user = await User.findById(userId).select("name email");
+  if (user?.email) {
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: `EventEase Booking Verification OTP - ${event.title}`,
+        text: `Hello ${user.name}, your OTP for booking "${event.title}" is ${otp}. It is valid for 5 minutes.`,
+        html: `
+          <h2>Verify Your Booking</h2>
+          <p>Hello <strong>${user.name}</strong>,</p>
+          <p>Your booking for <strong>${event.title}</strong> is ready for verification.</p>
+          <p>Please use the following 6-digit OTP to proceed:</p>
+          <h1 style="color: #059669; letter-spacing: 5px; font-size: 32px;">${otp}</h1>
+          <p>This code is valid for <strong>5 minutes</strong>.</p>
+        `,
+      });
+    } catch (emailError) {
+      console.error("Failed to send booking OTP email:", emailError.message);
+    }
+  }
+
+  const populated = await populateBooking(Booking.findById(booking._id));
+
+  return {
+    booking: populated,
+    otp,
+    otpExpiresAt,
+    message: "Verification OTP has been sent to your email.",
+  };
+};
+
+// ======================================================
 // VERIFY BOOKING OTP
 // ======================================================
 //
@@ -1465,10 +1534,16 @@ const getBookingById = async (
   // CUSTOMER
   // --------------------------------------------------
 
+  const bookingUserId =
+    booking.user?._id
+      ? booking.user._id.toString()
+      : booking.user
+      ? booking.user.toString()
+      : null;
+
   if (
-    booking.user &&
-    booking.user._id.toString() ===
-      userId.toString()
+    bookingUserId &&
+    bookingUserId === userId.toString()
   ) {
     return booking;
   }
@@ -1477,12 +1552,17 @@ const getBookingById = async (
   // ORGANIZER
   // --------------------------------------------------
 
+  const organizerId =
+    booking.event?.organizer?._id
+      ? booking.event.organizer._id.toString()
+      : booking.event?.organizer
+      ? booking.event.organizer.toString()
+      : null;
+
   if (
     userRole === "organizer" &&
-    booking.event &&
-    booking.event.organizer &&
-    booking.event.organizer._id.toString() ===
-      userId.toString()
+    organizerId &&
+    organizerId === userId.toString()
   ) {
     return booking;
   }
@@ -1491,6 +1571,30 @@ const getBookingById = async (
     "You are not authorized to view this booking.",
     403
   );
+};
+
+// ======================================================
+// GET PUBLIC BOOKING BY ID
+// ======================================================
+
+const getPublicBookingById = async (
+  bookingId
+) => {
+  const booking =
+    await populateBooking(
+      Booking.findById(
+        bookingId
+      )
+    );
+
+  if (!booking) {
+    throw createError(
+      "Booking not found.",
+      404
+    );
+  }
+
+  return booking;
 };
 
 // ======================================================
@@ -1749,6 +1853,7 @@ const getBookingHistory = async (
 module.exports = {
   createBooking,
   generateFreeBookingOtp,
+  sendBookingOtp,
   verifyBookingOtp,
   cancelBooking,
   getMyBookings,
@@ -1756,6 +1861,7 @@ module.exports = {
   getOrganizerBookings,
   getEventBookings,
   getBookingById,
+  getPublicBookingById,
   updateBookingStatus,
   expirePendingBookings,
   getBookingHistory,

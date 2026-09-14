@@ -37,6 +37,24 @@ router.post(
   bookingController.generateFreeBookingOtp
 );
 
+// ------------------------------------------------------
+// SEND / RESEND BOOKING OTP (Free & Paid Events)
+// POST /api/v1/bookings/send-otp
+// POST /api/v1/bookings/:id/resend-otp
+// ------------------------------------------------------
+
+router.post(
+  "/send-otp",
+  authMiddleware,
+  bookingController.sendBookingOtp
+);
+
+router.post(
+  "/:id/resend-otp",
+  authMiddleware,
+  bookingController.sendBookingOtp
+);
+
 
 // ======================================================
 // USER
@@ -195,13 +213,21 @@ router.get(
 
 
 // ======================================================
+// GET PUBLIC BOOKING BY ID
+// ======================================================
+
+// GET /api/v1/bookings/public/:id
+router.get(
+  "/public/:id",
+  bookingController.getPublicBookingById
+);
+
+// ======================================================
 // GET BOOKING BY ID
 // MUST BE LAST
 // ======================================================
 
-
 // GET /api/v1/bookings/:id
-
 router.get(
   "/:id",
   authMiddleware,

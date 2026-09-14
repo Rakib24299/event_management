@@ -739,51 +739,42 @@ const renderEvent = (
         ).toLocaleString();
 
 
-    let percentage = 0;
+    if (seatPercentage) {
+        let percentage = 0;
+        if (total > 0) {
+            percentage = Math.round((available / total) * 100);
+        }
+        percentage = Math.max(0, Math.min(100, percentage));
+        seatPercentage.textContent = `${percentage}%`;
+    }
 
-
-    if (total > 0) {
-
-        percentage =
-            Math.round(
-                (available / total) * 100
-            );
-
+    if (seatProgress) {
+        let percentage = 0;
+        if (total > 0) {
+            percentage = Math.round((available / total) * 100);
+        }
+        percentage = Math.max(0, Math.min(100, percentage));
+        seatProgress.style.width = `${percentage}%`;
     }
 
 
-    percentage =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                percentage
-            )
-        );
-
-
-    seatPercentage.textContent =
-        `${percentage}%`;
-
-
-    seatProgress.style.width =
-        `${percentage}%`;
-
-
     // =====================================
-    // Rating
+    // Rating (if present)
     // =====================================
 
-    averageRating.textContent =
-        Number(
-            event.averageRating || 0
-        ).toFixed(1);
+    if (averageRating) {
+        averageRating.textContent =
+            Number(
+                event.averageRating || 0
+            ).toFixed(1);
+    }
 
-
-    totalReviews.textContent =
-        Number(
-            event.totalReviews || 0
-        ).toLocaleString();
+    if (totalReviews) {
+        totalReviews.textContent =
+            Number(
+                event.totalReviews || 0
+            ).toLocaleString();
+    }
 
 
     // =====================================

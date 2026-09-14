@@ -60,42 +60,26 @@ const sslPaymentSuccess =
 
     const frontendUrl =
       process.env.FRONTEND_URL ||
-      "http://127.0.0.1:5500";
+      "http://localhost:3000";
 
     const bookingId =
-      result.booking?._id;
+      result.booking?._id || "";
 
     const paymentId =
-      result.payment?._id;
+      result.payment?._id || "";
 
-    if (
-        result.booking?.isOtpVerified &&
-        result.booking?.bookingStatus ===
-          "confirmed"
-    ) {
+    const eventId =
+      result.booking?.event?._id ||
+      result.booking?.event ||
+      "";
 
-      return res.redirect(
-        `${frontendUrl}/frontend/pages/user/payment-success.html`
-      );
+    const basePath = frontendUrl.includes("5500")
+      ? `${frontendUrl}/frontend/pages/user/payment-success.html`
+      : `${frontendUrl}/pages/user/payment-success.html`;
 
-    }
+    const redirectUrl = `${basePath}?bookingId=${encodeURIComponent(bookingId)}&paymentId=${encodeURIComponent(paymentId)}&eventId=${encodeURIComponent(eventId)}`;
 
-
-    if (bookingId && paymentId) {
-
-      const otpPage =
-        `${frontendUrl}/frontend/pages/user/otp-verification.html?bookingId=${encodeURIComponent(bookingId)}&paymentId=${encodeURIComponent(paymentId)}`;
-
-      return res.redirect(
-        otpPage
-      );
-
-    }
-
-
-    return res.redirect(
-      `${frontendUrl}/frontend/pages/user/otp-verification.html`
-    );
+    return res.redirect(redirectUrl);
 
   });
 
@@ -112,21 +96,20 @@ const sslPaymentFail =
         req.body
       );
 
-    return res.status(200).json({
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "http://localhost:3000";
 
-      success: false,
+    const bookingId =
+      result?.booking?._id || result?.booking || "";
 
-      message:
-        "SSLCommerz payment failed.",
+    const basePath = frontendUrl.includes("5500")
+      ? `${frontendUrl}/frontend/pages/user/my-bookings.html`
+      : `${frontendUrl}/pages/user/my-bookings.html`;
 
-      data: {
-
-        payment:
-          result,
-
-      },
-
-    });
+    return res.redirect(
+      `${basePath}?paymentStatus=failed&bookingId=${encodeURIComponent(bookingId)}`
+    );
 
   });
 
@@ -143,21 +126,20 @@ const sslPaymentCancel =
         req.body
       );
 
-    return res.status(200).json({
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "http://localhost:3000";
 
-      success: false,
+    const bookingId =
+      result?.booking?._id || result?.booking || "";
 
-      message:
-        "SSLCommerz payment was cancelled.",
+    const basePath = frontendUrl.includes("5500")
+      ? `${frontendUrl}/frontend/pages/user/my-bookings.html`
+      : `${frontendUrl}/pages/user/my-bookings.html`;
 
-      data: {
-
-        payment:
-          result,
-
-      },
-
-    });
+    return res.redirect(
+      `${basePath}?paymentStatus=cancelled&bookingId=${encodeURIComponent(bookingId)}`
+    );
 
   });
 

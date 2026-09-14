@@ -81,6 +81,39 @@ const generateFreeBookingOtp = catchAsync(async (req, res) => {
 });
 
 // ======================================================
+// SEND / RESEND BOOKING OTP
+// ======================================================
+// POST /api/v1/bookings/send-otp
+// POST /api/v1/bookings/:id/resend-otp
+// ======================================================
+
+const sendBookingOtp = catchAsync(async (req, res) => {
+  const bookingId = req.body.bookingId || req.params.id;
+
+  if (!bookingId) {
+    return res.status(400).json({
+      success: false,
+      message: "Booking ID is required.",
+    });
+  }
+
+  const result = await bookingService.sendBookingOtp(
+    bookingId,
+    req.user.id
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: result.message,
+    data: {
+      booking: result.booking,
+      otp: result.otp,
+      otpExpiresAt: result.otpExpiresAt,
+    },
+  });
+});
+
+// ======================================================
 // VERIFY BOOKING OTP
 // ======================================================
 // POST /api/v1/bookings/verify-otp
@@ -329,6 +362,30 @@ const getBookingById = catchAsync(
 );
 
 // ======================================================
+// GET PUBLIC BOOKING BY ID
+// ======================================================
+// GET /api/v1/bookings/public/:id
+// ======================================================
+
+const getPublicBookingById = catchAsync(
+  async (req, res) => {
+    const result =
+      await bookingService.getPublicBookingById(
+        req.params.id
+      );
+
+    return res.status(200).json({
+      success: true,
+
+      message:
+        "Booking fetched successfully.",
+
+      data: result,
+    });
+  }
+);
+
+// ======================================================
 // UPDATE BOOKING STATUS
 // ======================================================
 // PATCH /api/v1/bookings/:id/status
@@ -455,6 +512,7 @@ const getBookingHistory = catchAsync(
 module.exports = {
   createBooking,
   generateFreeBookingOtp,
+  sendBookingOtp,
   verifyBookingOtp,
   cancelBooking,
   getMyBookings,
@@ -462,6 +520,7 @@ module.exports = {
   getOrganizerBookings,
   getEventBookings,
   getBookingById,
+  getPublicBookingById,
   updateBookingStatus,
   downloadTicketPdf,
   getBookingHistory,

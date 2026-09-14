@@ -162,7 +162,7 @@ const createPayment =
 
 
     // --------------------------------------------------
-    // BOOKING STATUS & OTP CHECK
+    // BOOKING STATUS CHECK
     // --------------------------------------------------
 
     if (
@@ -172,15 +172,6 @@ const createPayment =
 
       throw createError(
         "Payment can only be created for a pending booking.",
-        400
-      );
-
-    }
-
-    if (!booking.isOtpVerified) {
-
-      throw createError(
-        "Please verify your email OTP before proceeding to payment.",
         400
       );
 
@@ -825,62 +816,6 @@ const finalizeSSLPayment =
     await booking.save();
 
     // --------------------------------------------------
-    // USER NOTIFICATION & CONFIRMATION EMAIL
-    // --------------------------------------------------
-
-    const user =
-      await User.findById(
-        payment.user
-      ).select(
-        "name email"
-      );
-
-    const event =
-      await Event.findById(
-        payment.event
-      ).select(
-        "title eventDate"
-      );
-
-    if (user?.email) {
-      try {
-        await sendEmail({
-          to:
-            user.email,
-
-          subject:
-            "Payment Successful & Booking Confirmed - EventEase",
-
-          text:
-            `Hello ${user.name || "User"}, your payment of ৳${payment.grossAmount} was successful and your booking for ${event?.title || "the event"} is confirmed. Your venue check-in OTP is ${gateOtp}.`,
-
-          html: `
-            <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
-              <h2 style="color:#059669;">Payment & Booking Confirmed!</h2>
-              <p>Hello <strong>${user.name || "User"}</strong>,</p>
-              <p>Your payment of <strong>৳${payment.grossAmount}</strong> via SSLCommerz was successful.</p>
-              <p>Event: <strong>${event?.title || "Event"}</strong></p>
-              <p>Ticket Quantity: <strong>${booking.ticketQuantity}</strong></p>
-              <p>Transaction ID: <strong>${payment.transactionId}</strong></p>
-              <div style="background:#f3f4f6;padding:15px;border-radius:8px;margin:20px 0;text-align:center;">
-                <p style="margin:0;font-size:14px;color:#6b7280;">Your Venue Check-In OTP:</p>
-                <h1 style="color:#059669;letter-spacing:6px;margin:10px 0;">${gateOtp}</h1>
-                <p style="margin:0;font-size:12px;color:#9ca3af;">Please present this OTP at the event entrance for admission.</p>
-              </div>
-            </div>
-          `,
-        });
-      }
-      catch (error) {
-        console.error(
-          "Booking confirmation email failed:",
-          error.message
-        );
-      }
-    }
-
-
-    // --------------------------------------------------
     // UPDATED BOOKING
     // --------------------------------------------------
 
@@ -928,19 +863,10 @@ const finalizeSSLPayment =
 
 
     return {
-
       payment,
-
-      booking:
-        updatedBooking,
-
-      otp,
-
-      otpExpiresAt,
-
-      alreadyProcessed:
-        false,
-
+      booking: updatedBooking,
+      otp: gateOtp,
+      alreadyProcessed: false,
     };
 
   };

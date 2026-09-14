@@ -850,6 +850,15 @@ const verifyOtp = async () => {
             JSON.stringify(finalSuccessData)
         );
 
+        const verifiedEventId = verifiedBooking?.event?._id || verifiedBooking?.event || "";
+        if (verifiedEventId) {
+            sessionStorage.setItem("paymentEventId", verifiedEventId);
+            sessionStorage.setItem("selectedEventId", verifiedEventId);
+        }
+        if (verifiedBooking?.event && typeof verifiedBooking.event === "object") {
+            sessionStorage.setItem("selectedEventData", JSON.stringify(verifiedBooking.event));
+        }
+
         if (otpInput) {
             otpInput.disabled = true;
         }

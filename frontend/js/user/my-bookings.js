@@ -634,204 +634,86 @@ function createBookingCard(
 
       </div>
 
-
       <!-- ==========================
            Actions
       =========================== -->
+      <div class="mt-6 flex flex-wrap items-center justify-end gap-3">
+        ${
+          showMakePayment
+            ? `
+              <button
+                type="button"
+                class="make-payment-btn px-5 py-2.5 rounded-lg bg-[#31572c] text-white font-medium hover:bg-primaryDark transition"
+                data-booking-id="${booking._id}"
+              >
+                Make Payment
+              </button>
+            `
+            : ""
+        }
 
-      <div
-        class="mt-6 flex flex-wrap items-center justify-end gap-3" >
-
-         ${
-            showMakePayment
-             ? `
-
-                <button
-                  type="button"
-                  class="make-payment-btn
-                         px-5 py-2.5
-                         rounded-lg
-                         bg-[#31572c]
-                         text-white
-                         font-medium
-                         hover:bg-primaryDark
-                         transition"
-                  data-booking-id="${
-                    booking._id
-                  }"
-                >
-                  Make Payment
-                </button>
-
-             `
-             : ""
-         }
-
-         ${
-           showCancel
-             ? `
-
-               <button
-                 type="button"
-                 class="cancel-booking-btn
-                        px-5 py-2.5
-                        rounded-lg
-                        bg-red-600
-                        text-white
-                        font-medium
-                        hover:bg-red-700
-                        transition"
-                 data-booking-id="${
-                   booking._id
-                 }"
-               >
-                 Cancel
-               </button>
-
-             `
-             : ""
-         }
-
+        ${
+          showCancel
+            ? `
+              <button
+                type="button"
+                class="cancel-booking-btn px-5 py-2.5 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition"
+                data-booking-id="${booking._id}"
+              >
+                Cancel
+              </button>
+            `
+            : ""
+        }
       </div>
 
     </div>
-
   `;
 
-
-  // ====================================
   // Make Payment Button
-  // Navigates to the Event Details page first,
-  // passing the eventId and bookingId so the
-  // Event Details page can continue the payment
-  // flow (free OTP or SSLCommerz).
-  // ====================================
-
-  const makePaymentButton =
-    card.querySelector(
-      ".make-payment-btn"
-    );
-
-
+  const makePaymentButton = card.querySelector(".make-payment-btn");
   if (makePaymentButton) {
-
-    makePaymentButton.addEventListener(
-      "click",
-      () => {
-
-        const bookingId =
-          makePaymentButton.dataset
-            .bookingId;
-
-        const eventId =
-          booking?.event?._id ||
-          booking?.event?.id ||
-          booking?.eventId ||
-          "";
-
-        if (!eventId) {
-          showToast(
-            "Unable to determine the event. Please try again.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        window.location.href =
-          `./event-details.html?eventId=${encodeURIComponent(
-            eventId
-          )}&bookingId=${encodeURIComponent(
-            bookingId
-          )}`;
-
+    makePaymentButton.addEventListener("click", () => {
+      const bookingId = makePaymentButton.dataset.bookingId;
+      if (!bookingId) {
+        showToast("Unable to determine the booking. Please try again.", "error");
+        return;
       }
-    );
-
+      window.location.href = `./payment.html?bookingId=${encodeURIComponent(bookingId)}`;
+    });
   }
 
-
-  // ====================================
   // Cancel Button
-  // ====================================
-
-  const cancelButton =
-    card.querySelector(
-      ".cancel-booking-btn"
-    );
-
-
+  const cancelButton = card.querySelector(".cancel-booking-btn");
   if (cancelButton) {
-
-    cancelButton.addEventListener(
-      "click",
-      () => {
-
-        openCancelModal(
-          booking
-        );
-
-      }
-    );
-
+    cancelButton.addEventListener("click", () => {
+      openCancelModal(booking);
+    });
   }
-
 
   return card;
-
 }
 
-
-// ======================================================
-// Open Cancel Modal
-// ======================================================
-
-function openCancelModal(
-  booking
-) {
-
+function openCancelModal(booking) {
   if (!booking) {
-
-    showToast(
-      "Booking not found.",
-      "error"
-    );
-
+    showToast("Booking not found.", "error");
     return;
   }
 
+  selectedBookingId = booking._id;
 
-  selectedBookingId =
-    booking._id;
+  const bookingStatus = String(
+    booking.bookingStatus || ""
+  ).toLowerCase();
 
+  const totalAmount = Number(
+    booking.totalAmount || 0
+  );
 
-  const bookingStatus =
-    String(
-      booking.bookingStatus || ""
-    ).toLowerCase();
+  const isPending = bookingStatus === "pending";
 
-
-  const totalAmount =
-    Number(
-      booking.totalAmount || 0
-    );
-
-
-  const isPending =
-    bookingStatus === "pending";
-
-
-  const refundPercentageEl =
-    document.getElementById(
-      "refundPercentage"
-    );
-
-  const refundAmountEl =
-    document.getElementById(
-      "refundAmount"
-    );
-
+  const refundPercentageEl = document.getElementById("refundPercentage");
+  const refundAmountEl = document.getElementById("refundAmount");
 
   if (isPending) {
 
@@ -1730,6 +1612,19 @@ if (bookingFilter) {
     }
   );
 
+}
+
+if (bookingsContainer) {
+  bookingsContainer.addEventListener("click", (event) => {
+    const makePaymentBtn = event.target.closest(".make-payment-btn");
+    if (makePaymentBtn) {
+      event.preventDefault();
+      const bookingId = makePaymentBtn.dataset.bookingId;
+      if (bookingId) {
+        window.location.href = `./payment.html?bookingId=${encodeURIComponent(bookingId)}`;
+      }
+    }
+  });
 }
 
 

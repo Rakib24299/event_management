@@ -13,7 +13,16 @@ const authMiddleware =
 // CREATE PAYMENT
 // ======================================================
 
-router.post("/create",authMiddleware, paymentController.createPayment
+router.post(
+  "/create",
+  authMiddleware,
+  paymentController.createPayment
+);
+
+router.post(
+  "/",
+  authMiddleware,
+  paymentController.createPayment
 );
 
 
