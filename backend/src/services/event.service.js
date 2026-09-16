@@ -1236,6 +1236,8 @@ const createEvent = async (
   const admins = await User.find({ role: "admin" }).select("_id");
 
 
+  // অ্যাডমিনদের কাছে নোটিফিকেশন পুশ
+
   if (admins.length > 0) {
 
     await createBulkNotifications({

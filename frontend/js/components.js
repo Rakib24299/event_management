@@ -15,7 +15,8 @@ async function loadComponent(elementId, filePath) {
         const html = await response.text();
         element.innerHTML = html;
 
-        // Auto update badge and attach logout whenever header is loaded
+        // Auto update header auth state, badge, and attach logout
+        updateUserHeaderAuth();
         updateNotificationBadge();
         attachLogoutListener();
 
@@ -29,6 +30,52 @@ async function loadComponent(elementId, filePath) {
         );
     } catch (error) {
         console.error("Component loading error:", error);
+    }
+}
+
+// ========================================
+// Update User Header Auth State (Guest vs Logged-in)
+// ========================================
+
+function updateUserHeaderAuth() {
+    const token =
+        localStorage.getItem("token") ||
+        localStorage.getItem("accessToken") ||
+        sessionStorage.getItem("token") ||
+        sessionStorage.getItem("accessToken");
+
+    const authControls = document.getElementById("userHeaderAuthControls");
+    const guestControls = document.getElementById("userHeaderGuestControls");
+    const logoLink = document.getElementById("userHeaderLogoLink");
+
+    if (token) {
+        if (authControls) {
+            authControls.style.display = "flex";
+            authControls.classList.remove("hidden");
+            authControls.classList.add("flex");
+        }
+        if (guestControls) {
+            guestControls.style.display = "none";
+            guestControls.classList.add("hidden");
+            guestControls.classList.remove("flex");
+        }
+        if (logoLink) {
+            logoLink.href = "./dashboard.html";
+        }
+    } else {
+        if (authControls) {
+            authControls.style.display = "none";
+            authControls.classList.add("hidden");
+            authControls.classList.remove("flex");
+        }
+        if (guestControls) {
+            guestControls.style.display = "flex";
+            guestControls.classList.remove("hidden");
+            guestControls.classList.add("flex");
+        }
+        if (logoLink) {
+            logoLink.href = "../../index.html";
+        }
     }
 }
 
@@ -235,6 +282,7 @@ function attachLogoutListener() {
 // ========================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    updateUserHeaderAuth();
     ensureNotificationBadgesExist();
     ensureChatBadgesExist();
     updateNotificationBadge();
@@ -243,6 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("componentLoaded", () => {
+    updateUserHeaderAuth();
     ensureNotificationBadgesExist();
     ensureChatBadgesExist();
     updateNotificationBadge();
@@ -251,18 +300,20 @@ window.addEventListener("componentLoaded", () => {
 });
 
 window.addEventListener("focus", () => {
+    updateUserHeaderAuth();
     updateNotificationBadge();
     updateChatBadge();
 });
 
 // Run immediately and after small delays for async components
+updateUserHeaderAuth();
 ensureNotificationBadgesExist();
 ensureChatBadgesExist();
 updateNotificationBadge();
 updateChatBadge();
-setTimeout(() => { updateNotificationBadge(); updateChatBadge(); }, 300);
-setTimeout(() => { updateNotificationBadge(); updateChatBadge(); }, 800);
-setTimeout(() => { updateNotificationBadge(); updateChatBadge(); }, 1500);
+setTimeout(() => { updateUserHeaderAuth(); updateNotificationBadge(); updateChatBadge(); }, 300);
+setTimeout(() => { updateUserHeaderAuth(); updateNotificationBadge(); updateChatBadge(); }, 800);
+setTimeout(() => { updateUserHeaderAuth(); updateNotificationBadge(); updateChatBadge(); }, 1500);
 
 // Periodically update every 4 seconds
 setInterval(() => {
@@ -271,6 +322,7 @@ setInterval(() => {
 }, 4000);
 
 // Global export
+window.updateUserHeaderAuth = updateUserHeaderAuth;
 window.updateNotificationBadge = updateNotificationBadge;
 window.updateChatBadge = updateChatBadge;
 

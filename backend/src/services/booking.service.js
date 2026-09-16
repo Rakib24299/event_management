@@ -37,9 +37,9 @@ const getOtpExpiry = () => {
   );
 };
 
-// ======================================================
+
 // GET EVENT END DATETIME
-// ======================================================
+
 // Combines eventDate (Date) with startTime (String "HH:mm")
 // to produce the moment the event begins.
 // Returns null if event data is missing or invalid.
@@ -303,6 +303,7 @@ const createBooking = async (
     existingPendingBooking.bookingOtpExpires = otpExpiresAt;
     await existingPendingBooking.save();
 
+    
     const user = await User.findById(userId).select("name email");
     if (user?.email) {
       try {
