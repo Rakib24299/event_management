@@ -1,12 +1,8 @@
-// ======================================================
 // EventEase Booking & Payment Success Page
-// ======================================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
-// ======================================================
 // DOM ELEMENTS
-// ======================================================
 
 const successEventImage = document.getElementById("successEventImage");
 const successEventCategory = document.getElementById("successEventCategory");
@@ -52,9 +48,7 @@ const bookingStatusRow = document.getElementById("bookingStatusRow");
 const successHeading = document.getElementById("successHeading");
 const successSubheading = document.getElementById("successSubheading");
 
-// ======================================================
 // TOKEN HELPER
-// ======================================================
 
 const getToken = () => {
     return (
@@ -67,18 +61,14 @@ const getToken = () => {
     );
 };
 
-// ======================================================
 // GLOBAL STATE
-// ======================================================
 
 let successData = null;
 let completedBooking = null;
 let completedPayment = null;
 let eventData = null;
 
-// ======================================================
 // FORMAT HELPERS
-// ======================================================
 
 const formatMoney = (amount) => {
     return "৳" + Number(amount || 0).toLocaleString("en-BD");
@@ -102,9 +92,7 @@ const getId = (object) => {
     return object._id || object.id || null;
 };
 
-// ======================================================
 // GET IDS FROM URL / STORAGE
-// ======================================================
 
 const getBookingId = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -157,9 +145,7 @@ const getEventId = () => {
     );
 };
 
-// ======================================================
 // LOAD SESSION STORAGE CACHE
-// ======================================================
 
 const loadSessionCache = () => {
     try {
@@ -196,9 +182,7 @@ const loadSessionCache = () => {
     }
 };
 
-// ======================================================
 // DISPLAY EVENT DETAILS
-// ======================================================
 
 const displayEventInformation = () => {
     if (!eventData) return;
@@ -261,9 +245,7 @@ const displayEventInformation = () => {
     }
 };
 
-// ======================================================
 // DISPLAY BOOKING DETAILS
-// ======================================================
 
 const displayBookingInformation = () => {
     const bookingId = getBookingId();
@@ -349,9 +331,7 @@ const displayBookingInformation = () => {
     }
 };
 
-// ======================================================
 // DISPLAY OTP (Safe)
-// ======================================================
 
 const displayOTP = () => {
     const otp =
@@ -385,9 +365,7 @@ const displayOTP = () => {
     }
 };
 
-// ======================================================
 // API FETCH: BOOKING
-// ======================================================
 
 const fetchBookingData = async () => {
     const bookingId = getBookingId();
@@ -425,9 +403,7 @@ const fetchBookingData = async () => {
     }
 };
 
-// ======================================================
 // API FETCH: EVENT
-// ======================================================
 
 const fetchEventData = async () => {
     const eventId = getEventId();
@@ -449,9 +425,7 @@ const fetchEventData = async () => {
     }
 };
 
-// ======================================================
 // GENERATE QR
-// ======================================================
 
 const generateQRCode = async () => {
     const bookingId = getBookingId();
@@ -510,9 +484,7 @@ if (generateQrButton) {
     generateQrButton.addEventListener("click", generateQRCode);
 }
 
-// ======================================================
 // INITIALIZE
-// ======================================================
 
 const initialize = async () => {
     console.log("Initializing Booking & Payment Success Page...");

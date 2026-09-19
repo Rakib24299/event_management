@@ -2,15 +2,13 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-// ======================================================
 // BOOKING SCHEMA
-// ======================================================
 
 const bookingSchema = new Schema(
   {
-    // ==================================================
+    // 
     // USER
-    // ==================================================
+    // 
 
     user: {
       type: Schema.Types.ObjectId,
@@ -18,9 +16,7 @@ const bookingSchema = new Schema(
       required: [true, "User is required"],
     },
 
-    // ==================================================
     // EVENT
-    // ==================================================
 
     event: {
       type: Schema.Types.ObjectId,
@@ -28,9 +24,7 @@ const bookingSchema = new Schema(
       required: [true, "Event is required"],
     },
 
-    // ==================================================
     // TICKET QUANTITY
-    // ==================================================
 
     ticketQuantity: {
       type: Number,
@@ -51,9 +45,7 @@ const bookingSchema = new Schema(
       ],
     },
 
-    // ==================================================
     // TOTAL AMOUNT
-    // ==================================================
 
     totalAmount: {
       type: Number,
@@ -69,9 +61,7 @@ const bookingSchema = new Schema(
       ],
     },
 
-    // ==================================================
     // BOOKING STATUS
-    // ==================================================
 
     bookingStatus: {
       type: String,
@@ -86,54 +76,42 @@ const bookingSchema = new Schema(
       default: "pending",
     },
 
-    // ==================================================
     // BOOKING OTP
-    // ==================================================
 
     bookingOtp: {
       type: String,
       default: null,
     },
 
-    // ==================================================
     // BOOKING OTP EXPIRY
-    // ==================================================
 
     bookingOtpExpires: {
       type: Date,
       default: null,
     },
 
-    // ==================================================
     // OTP VERIFIED
-    // ==================================================
 
     isOtpVerified: {
       type: Boolean,
       default: false,
     },
 
-    // ==================================================
     // ATTENDANCE
-    // ==================================================
 
     isAttended: {
       type: Boolean,
       default: false,
     },
 
-    // ==================================================
     // ATTENDANCE TIME
-    // ==================================================
 
     attendanceTime: {
       type: Date,
       default: null,
     },
 
-    // ==================================================
     // REFUND PERCENTAGE
-    // ==================================================
 
     refundPercentage: {
       type: Number,
@@ -145,9 +123,7 @@ const bookingSchema = new Schema(
       max: 100,
     },
 
-    // ==================================================
     // REFUND AMOUNT
-    // ==================================================
 
     refundAmount: {
       type: Number,
@@ -157,9 +133,7 @@ const bookingSchema = new Schema(
       min: 0,
     },
 
-    // ==================================================
     // REFUND STATUS
-    // ==================================================
 
     refundStatus: {
       type: String,
@@ -174,18 +148,14 @@ const bookingSchema = new Schema(
       default: "none",
     },
 
-    // ==================================================
     // CANCELLED AT
-    // ==================================================
 
     cancelledAt: {
       type: Date,
       default: null,
     },
 
-    // ==================================================
     // PAYMENT
-    // ==================================================
 
     payment: {
       type: Schema.Types.ObjectId,
@@ -201,9 +171,7 @@ const bookingSchema = new Schema(
   }
 );
 
-// ======================================================
 // MODEL
-// ======================================================
 
 const Booking = mongoose.model(
   "Booking",

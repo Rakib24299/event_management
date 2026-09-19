@@ -1,13 +1,8 @@
-// ========================================
 // EventEase User Dashboard
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
-
-// ========================================
 // Elements
-// ========================================
 
 const welcomeName =
     document.getElementById("welcomeName");
@@ -36,17 +31,11 @@ const latestEventsEmpty =
 const latestEventsList =
     document.getElementById("latestEventsList");
 
-
-// ========================================
 // State
-// ========================================
 
 const userBookedEventIds = new Set();
 
-
-// ========================================
 // Token
-// ========================================
 
 function getToken() {
 
@@ -61,14 +50,10 @@ function getToken() {
 
 }
 
-
 const token =
     getToken();
 
-
-// ========================================
 // Check Authentication
-// ========================================
 
 if (!token) {
 
@@ -77,7 +62,6 @@ if (!token) {
     );
 
 }
-
 
 window.addEventListener(
     "pageshow",
@@ -97,10 +81,7 @@ window.addEventListener(
     }
 );
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -117,10 +98,7 @@ function escapeHTML(value) {
 
 }
 
-
-// ========================================
 // Get Initial
-// ========================================
 
 function getInitial(name) {
 
@@ -135,10 +113,7 @@ function getInitial(name) {
 
 }
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -164,10 +139,7 @@ function formatDate(dateValue) {
 
 }
 
-
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -187,10 +159,7 @@ function formatPrice(price) {
 
 }
 
-
-// ========================================
 // Format Location
-// ========================================
 
 function formatLocation(value) {
 
@@ -218,10 +187,7 @@ function formatLocation(value) {
 
 }
 
-
-// ========================================
 // Get Event From Booking
-// ========================================
 
 function getBookingEvent(booking) {
 
@@ -233,10 +199,7 @@ function getBookingEvent(booking) {
 
 }
 
-
-// ========================================
 // Display User
-// ========================================
 
 function displayUser(user) {
 
@@ -281,10 +244,7 @@ function displayUser(user) {
 
 }
 
-
-// ========================================
 // Create Booking Card
-// ========================================
 
 function createBookingCard(booking) {
 
@@ -393,11 +353,7 @@ function createBookingCard(booking) {
                         </div>
                     </div>
 
-                    <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-                        <span class="text-[11px] font-medium text-gray-400">
-                            ${bookingId ? `#${bookingId.slice(-6).toUpperCase()}` : ''}
-                        </span>
-
+                    <div class="mt-4 flex items-center justify-end border-t border-gray-100 pt-3">
                         ${
                             bookingId
                                 ? `
@@ -419,10 +375,7 @@ function createBookingCard(booking) {
 
 }
 
-
-// ========================================
 // Display Recent Bookings
-// ========================================
 
 function displayRecentBookings(bookings) {
 
@@ -459,8 +412,7 @@ function displayRecentBookings(bookings) {
         );
     }
 
-    const recentBookings =
-        bookings.slice(0, 3);
+    const recentBookings = bookings.slice(0, 3);
 
     if (recentBookingsList) {
         recentBookingsList.innerHTML =
@@ -475,10 +427,7 @@ function displayRecentBookings(bookings) {
 
 }
 
-
-// ========================================
 // Create Latest Event Card
-// ========================================
 
 function createLatestEventCard(event) {
 
@@ -584,10 +533,7 @@ function createLatestEventCard(event) {
 
 }
 
-
-// ========================================
 // Display Latest Events
-// ========================================
 
 function displayLatestEvents(events) {
 
@@ -640,10 +586,7 @@ function displayLatestEvents(events) {
 
 }
 
-
-// ========================================
 // Fetch Profile
-// ========================================
 
 async function loadProfile() {
 
@@ -685,10 +628,7 @@ async function loadProfile() {
 
 }
 
-
-// ========================================
 // Fetch Bookings
-// ========================================
 
 async function loadBookings() {
 
@@ -800,15 +740,9 @@ async function loadBookings() {
     bookings.sort(
         (a, b) => {
 
-            const dateA =
-                new Date(
-                    a.createdAt || 0
-                );
+            const dateA =  new Date(  a.createdAt || 0 );
 
-            const dateB =
-                new Date(
-                    b.createdAt || 0
-                );
+            const dateB = new Date(  b.createdAt || 0 );
 
             return dateB - dateA;
 
@@ -821,10 +755,7 @@ async function loadBookings() {
 
 }
 
-
-// ========================================
 // Fetch Latest Events
-// ========================================
 
 async function loadLatestEvents() {
 
@@ -970,10 +901,7 @@ async function loadLatestEvents() {
 
 }
 
-
-// ========================================
 // Update Notification Badge
-// ========================================
 
 async function updateNotificationBadge() {
 
@@ -1068,10 +996,7 @@ async function updateNotificationBadge() {
 
 }
 
-
-// ========================================
 // Load Dashboard
-// ========================================
 
 async function loadDashboard() {
 
@@ -1121,10 +1046,7 @@ async function loadDashboard() {
 
 }
 
-
-// ========================================
 // Start Dashboard
-// ========================================
 
 loadDashboard();
 

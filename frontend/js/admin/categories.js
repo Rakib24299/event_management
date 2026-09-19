@@ -1,16 +1,10 @@
-// ========================================
 // EventEase Admin Category Management
-// ========================================
 
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState = document.getElementById("loadingState");
 const errorState = document.getElementById("errorState");
@@ -28,9 +22,7 @@ const searchInput = document.getElementById("searchInput");
 const addCategoryBtn = document.getElementById("addCategoryBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// ========================================
 // Modal Elements
-// ========================================
 
 const categoryModal = document.getElementById("categoryModal");
 const modalTitle = document.getElementById("modalTitle");
@@ -46,9 +38,7 @@ const saveCategoryBtn =
 
 const formError = document.getElementById("formError");
 
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
     return (
@@ -57,9 +47,7 @@ const getToken = () => {
     );
 };
 
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
 
@@ -68,9 +56,7 @@ if (!token) {
     window.location.href = "./admin-login.html";
 }
 
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(
@@ -105,9 +91,7 @@ const apiRequest = async (endpoint, options = {}) => {
     return data;
 };
 
-// ========================================
 // Generate Slug
-// ========================================
 
 const generateSlug = (name) => {
     return name
@@ -118,9 +102,7 @@ const generateSlug = (name) => {
         .replace(/--+/g, "-");
 };
 
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (value) => {
     if (
@@ -138,9 +120,7 @@ const escapeHTML = (value) => {
         .replace(/'/g, "&#039;");
 };
 
-// ========================================
 // Update Category Count
-// ========================================
 
 const updateCategoryCount = (count) => {
     if (!categoryCount) {
@@ -155,9 +135,7 @@ const updateCategoryCount = (count) => {
         }`;
 };
 
-// ========================================
 // Open Add Modal
-// ========================================
 
 const openAddModal = () => {
     categoryForm.reset();
@@ -181,9 +159,7 @@ const openAddModal = () => {
     }, 100);
 };
 
-// ========================================
 // Open Edit Modal
-// ========================================
 
 const openEditModal = (category) => {
     categoryId.value = category._id || "";
@@ -207,9 +183,7 @@ const openEditModal = (category) => {
     }, 100);
 };
 
-// ========================================
 // Close Modal
-// ========================================
 
 const closeModal = () => {
     categoryModal.classList.add("hidden");
@@ -225,9 +199,7 @@ const closeModal = () => {
     formError.textContent = "";
 };
 
-// ========================================
 // Show Form Error
-// ========================================
 
 const showFormError = (message) => {
     formError.textContent = message;
@@ -235,9 +207,7 @@ const showFormError = (message) => {
     formError.classList.remove("hidden");
 };
 
-// ========================================
 // Get Category Status
-// ========================================
 
 const getCategoryStatus = (category) => {
     if (
@@ -256,9 +226,7 @@ const getCategoryStatus = (category) => {
     };
 };
 
-// ========================================
 // Render Empty State
-// ========================================
 
 const renderEmptyState = () => {
     categoryList.innerHTML = "";
@@ -266,9 +234,7 @@ const renderEmptyState = () => {
     emptyState.classList.remove("hidden");
 };
 
-// ========================================
 // Render Categories
-// ========================================
 
 const renderCategories = (categories) => {
     categoryList.innerHTML = "";
@@ -393,9 +359,7 @@ const renderCategories = (categories) => {
     attachCategoryListeners();
 };
 
-// ========================================
 // Attach Category Listeners
-// ========================================
 
 const attachCategoryListeners = () => {
     const editButtons =
@@ -450,9 +414,7 @@ const attachCategoryListeners = () => {
     });
 };
 
-// ========================================
 // Create / Update Category
-// ========================================
 
 const saveCategory = async (event) => {
     event.preventDefault();
@@ -463,9 +425,7 @@ const saveCategory = async (event) => {
     const id =
         categoryId.value.trim();
 
-    // =====================================
     // Validation
-    // =====================================
 
     if (!name) {
         showFormError(
@@ -497,9 +457,7 @@ const saveCategory = async (event) => {
         return;
     }
 
-    // =====================================
     // Generate Slug
-    // =====================================
 
     const slug = generateSlug(name);
 
@@ -513,9 +471,7 @@ const saveCategory = async (event) => {
         return;
     }
 
-    // =====================================
     // Disable Button
-    // =====================================
 
     saveCategoryBtn.disabled = true;
 
@@ -528,9 +484,7 @@ const saveCategory = async (event) => {
 
     try {
 
-        // =================================
         // UPDATE
-        // =================================
 
         if (id) {
             const result =
@@ -552,9 +506,7 @@ const saveCategory = async (event) => {
             );
         }
 
-        // =================================
         // CREATE
-        // =================================
 
         else {
             const result =
@@ -601,9 +553,7 @@ const saveCategory = async (event) => {
     }
 };
 
-// ========================================
 // Delete Category
-// ========================================
 
 const deleteCategory = async (
     id,
@@ -673,9 +623,7 @@ const deleteCategory = async (
     }
 };
 
-// ========================================
 // Filter Categories
-// ========================================
 
 const filterCategories = () => {
     const search =
@@ -708,9 +656,7 @@ const filterCategories = () => {
     );
 };
 
-// ========================================
 // Load Categories
-// ========================================
 
 let allCategories = [];
 
@@ -728,35 +674,27 @@ const loadCategories = async () => {
             "hidden"
         );
 
-        // =================================
         // API Request
-        // =================================
 
         const result =
             await apiRequest(
                 "/categories"
             );
 
-        // =================================
         // Store Data
-        // =================================
 
         allCategories =
             Array.isArray(result.data)
                 ? result.data
                 : [];
 
-        // =================================
         // Render
-        // =================================
 
         renderCategories(
             allCategories
         );
 
-        // =================================
         // Show Content
-        // =================================
 
         loadingState.classList.add(
             "hidden"
@@ -792,9 +730,7 @@ const loadCategories = async () => {
     }
 };
 
-// ========================================
 // Search Listener
-// ========================================
 
 if (searchInput) {
     searchInput.addEventListener(
@@ -803,9 +739,7 @@ if (searchInput) {
     );
 }
 
-// ========================================
 // Add Category
-// ========================================
 
 if (addCategoryBtn) {
     addCategoryBtn.addEventListener(
@@ -821,9 +755,7 @@ if (emptyAddCategoryBtn) {
     );
 }
 
-// ========================================
 // Close Modal
-// ========================================
 
 if (closeModalBtn) {
     closeModalBtn.addEventListener(
@@ -839,9 +771,7 @@ if (cancelModalBtn) {
     );
 }
 
-// ========================================
 // Form Submit
-// ========================================
 
 if (categoryForm) {
     categoryForm.addEventListener(
@@ -850,9 +780,7 @@ if (categoryForm) {
     );
 }
 
-// ========================================
 // Outside Modal Click
-// ========================================
 
 if (categoryModal) {
     categoryModal.addEventListener(
@@ -868,9 +796,7 @@ if (categoryModal) {
     );
 }
 
-// ========================================
 // Escape Key
-// ========================================
 
 document.addEventListener(
     "keydown",
@@ -887,9 +813,7 @@ document.addEventListener(
     }
 );
 
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
     retryBtn.addEventListener(
@@ -898,9 +822,7 @@ if (retryBtn) {
     );
 }
 
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
     logoutBtn.addEventListener(
@@ -925,8 +847,6 @@ if (logoutBtn) {
     );
 }
 
-// ========================================
 // Initial Load
-// ========================================
 
 loadCategories();

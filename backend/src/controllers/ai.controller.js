@@ -1,6 +1,4 @@
-// ========================================
 // EventEase AI Controller
-// ========================================
 
 const aiService =
     require("../services/ai.service");
@@ -9,9 +7,7 @@ const catchAsync =
     require("../utils/catchAsync");
 
 
-// ========================================
 // AI Chat
-// ========================================
 
 const chatWithAI =
     catchAsync(
@@ -22,9 +18,7 @@ const chatWithAI =
             } = req.body;
 
 
-            // ========================================
             // Validate Message
-            // ========================================
 
             if (
                 !message ||
@@ -44,15 +38,15 @@ const chatWithAI =
             }
 
 
-            // ========================================
             // Generate AI Response
-            // ========================================
+            
+            // NON USER AI RESPONSE
+            // NON USER REPLAY
+            
 
-            const isGuest =
-                !req.user;
+            const isGuest = !req.user;
 
-            const reply =
-                await aiService.generateAIResponse(
+            const reply =  await aiService.generateAIResponse(
                     message,
                     req.user?.id,
                     req.user?.role,
@@ -60,9 +54,7 @@ const chatWithAI =
                 );
 
 
-            // ========================================
             // Response
-            // ========================================
 
             return res.status(200).json({
 

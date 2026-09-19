@@ -1,15 +1,11 @@
-// ========================================
 // EventEase Organizer
 // Event Details
-// ========================================
 
 const API_URL =
     "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const eventBanner =
     document.getElementById(
@@ -107,9 +103,7 @@ const deleteEventButton =
     );
 
 
-// ========================================
 // Get Token
-// ========================================
 
 const token =
     localStorage.getItem(
@@ -117,9 +111,7 @@ const token =
     );
 
 
-// ========================================
 // Get Logged In User
-// ========================================
 
 let loggedInUser = null;
 
@@ -139,9 +131,7 @@ try {
 }
 
 
-// ========================================
 // Check Authentication
-// ========================================
 
 if (!token || !loggedInUser) {
 
@@ -151,9 +141,7 @@ if (!token || !loggedInUser) {
 }
 
 
-// ========================================
 // Check Organizer Role
-// ========================================
 
 if (
     loggedInUser &&
@@ -170,9 +158,7 @@ if (
 }
 
 
-// ========================================
 // Get Event ID
-// ========================================
 
 const urlParams =
     new URLSearchParams(
@@ -185,9 +171,7 @@ const eventId =
     );
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -206,9 +190,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -227,9 +209,7 @@ function hideError() {
 }
 
 
-// ========================================
 // Show Loading
-// ========================================
 
 function showLoading() {
 
@@ -245,9 +225,7 @@ function showLoading() {
 }
 
 
-// ========================================
 // Hide Loading
-// ========================================
 
 function hideLoading() {
 
@@ -263,9 +241,7 @@ function hideLoading() {
 }
 
 
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(date) {
 
@@ -301,9 +277,7 @@ function formatDate(date) {
 }
 
 
-// ========================================
 // Format Ticket Price
-// ========================================
 
 function formatTicketPrice(
     price,
@@ -327,9 +301,7 @@ function formatTicketPrice(
 }
 
 
-// ========================================
 // Format Status
-// ========================================
 
 function updateStatus(
     status
@@ -398,9 +370,7 @@ function updateStatus(
 }
 
 
-// ========================================
 // Display Gallery
-// ========================================
 
 function displayGallery(
     galleryImages
@@ -490,9 +460,7 @@ function displayGallery(
 }
 
 
-// ========================================
 // Display Event
-// ========================================
 
 function displayEvent(
     event
@@ -509,17 +477,13 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Payment Type
-    // ====================================
 
     const isPaidEvent =
         event.eventType === "paid";
 
 
-    // ====================================
     // Banner
-    // ====================================
 
     if (
         eventBanner &&
@@ -538,9 +502,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Title
-    // ====================================
 
     if (eventTitle) {
 
@@ -550,9 +512,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Category
-    // ====================================
 
     if (eventCategory) {
 
@@ -576,18 +536,14 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Status
-    // ====================================
 
     updateStatus(
         event.status
     );
 
 
-    // ====================================
     // Description
-    // ====================================
 
     if (eventDescription) {
 
@@ -598,9 +554,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Venue
-    // ====================================
 
     if (venueName) {
 
@@ -634,9 +588,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Date
-    // ====================================
 
     if (eventDate) {
 
@@ -648,9 +600,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Time
-    // ====================================
 
     if (eventTime) {
 
@@ -669,9 +619,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Event Type
-    // ====================================
 
     if (eventType) {
 
@@ -682,9 +630,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Ticket Price (hide for free events)
-    // ====================================
 
     if (ticketPrice) {
 
@@ -712,9 +658,7 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Seat Fields (paid events only)
-    // ====================================
 
     if (totalSeats) {
 
@@ -761,18 +705,14 @@ function displayEvent(
     }
 
 
-    // ====================================
     // Gallery
-    // ====================================
 
     displayGallery(
         event.galleryImages
     );
 
 
-    // ====================================
     // Edit Button
-    // ====================================
 
     if (editEventButton) {
 
@@ -784,9 +724,7 @@ function displayEvent(
 }
 
 
-// ========================================
 // Load Event Details
-// ========================================
 
 async function loadEventDetails() {
 
@@ -810,9 +748,7 @@ async function loadEventDetails() {
 
     try {
 
-        // ====================================
         // API Request
-        // ====================================
 
         const response =
             await fetch(
@@ -832,9 +768,7 @@ async function loadEventDetails() {
             );
 
 
-        // ====================================
         // Read Response
-        // ====================================
 
         const result =
             await response.json();
@@ -846,9 +780,7 @@ async function loadEventDetails() {
         );
 
 
-        // ====================================
         // API Error
-        // ====================================
 
         if (
             !response.ok ||
@@ -863,17 +795,13 @@ async function loadEventDetails() {
         }
 
 
-        // ====================================
         // Get Event
-        // ====================================
 
         const event =
             result.data;
 
 
-        // ====================================
         // Check Organizer
-        // ====================================
 
         if (
             event.organizer &&
@@ -900,9 +828,7 @@ async function loadEventDetails() {
         }
 
 
-        // ====================================
         // Display Event
-        // ====================================
 
         displayEvent(
             event
@@ -943,9 +869,7 @@ async function loadEventDetails() {
 }
 
 
-// ========================================
 // Delete Event
-// ========================================
 
 if (deleteEventButton) {
 
@@ -964,9 +888,7 @@ if (deleteEventButton) {
             }
 
 
-            // ====================================
             // Confirmation
-            // ====================================
 
             const confirmed =
                 confirm(
@@ -979,9 +901,7 @@ if (deleteEventButton) {
             }
 
 
-            // ====================================
             // Loading State
-            // ====================================
 
             deleteEventButton.disabled =
                 true;
@@ -995,9 +915,7 @@ if (deleteEventButton) {
 
             try {
 
-                // ====================================
                 // API Request
-                // ====================================
 
                 const response =
                     await fetch(
@@ -1017,9 +935,7 @@ if (deleteEventButton) {
                     );
 
 
-                // ====================================
                 // Read Response
-                // ====================================
 
                 const result =
                     await response.json();
@@ -1031,9 +947,7 @@ if (deleteEventButton) {
                 );
 
 
-                // ====================================
                 // API Error
-                // ====================================
 
                 if (
                     !response.ok ||
@@ -1048,9 +962,7 @@ if (deleteEventButton) {
                 }
 
 
-                // ====================================
                 // Success
-                // ====================================
 
                 deleteEventButton.textContent =
                     "Deleted";
@@ -1061,9 +973,7 @@ if (deleteEventButton) {
                 );
 
 
-                // ====================================
                 // Redirect
-                // ====================================
 
                 window.location.href =
                     "./my-events.html";
@@ -1097,8 +1007,6 @@ if (deleteEventButton) {
 }
 
 
-// ========================================
 // Load Event On Page Load
-// ========================================
 
 loadEventDetails();

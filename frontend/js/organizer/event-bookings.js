@@ -1,21 +1,11 @@
-// ========================================
 // EventEase Organizer Event Bookings
-// ========================================
 
-
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const eventTitle =
     document.getElementById(
@@ -77,11 +67,7 @@ const bookingTableBody =
         "bookingTableBody"
     );
 
-
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -92,15 +78,9 @@ const getToken = () => {
 
 };
 
-
-
-// ========================================
 // Authentication
-// ========================================
 
 const token = getToken();
-
-
 
 if (!token) {
 
@@ -113,11 +93,7 @@ if (!token) {
 
 }
 
-
-
-// ========================================
 // Get Event ID
-// ========================================
 
 const urlParams =
     new URLSearchParams(
@@ -126,8 +102,6 @@ const urlParams =
 
 const eventId =
     urlParams.get("id");
-
-
 
 if (!eventId) {
 
@@ -140,11 +114,7 @@ if (!eventId) {
 
 }
 
-
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -172,10 +142,8 @@ const apiRequest = async (
             }
         );
 
-
     const data =
         await response.json();
-
 
     if (!response.ok) {
 
@@ -186,16 +154,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -206,7 +169,6 @@ const formatDate = (
         return "-";
 
     }
-
 
     return new Date(date)
         .toLocaleString(
@@ -219,11 +181,7 @@ const formatDate = (
 
 };
 
-
-
-// ========================================
 // Format Amount
-// ========================================
 
 const formatAmount = (
     amount
@@ -241,11 +199,7 @@ const formatAmount = (
 
 };
 
-
-
-// ========================================
 // Status Badge
-// ========================================
 
 const getStatusBadge = (
     status
@@ -253,7 +207,6 @@ const getStatusBadge = (
 
     let className =
         "bg-gray-100 text-gray-600";
-
 
     switch (status) {
 
@@ -264,7 +217,6 @@ const getStatusBadge = (
 
             break;
 
-
         case "pending":
 
             className =
@@ -272,14 +224,12 @@ const getStatusBadge = (
 
             break;
 
-
         case "cancelled":
 
             className =
                 "bg-red-100 text-red-700";
 
             break;
-
 
         case "completed":
 
@@ -290,7 +240,6 @@ const getStatusBadge = (
 
     }
 
-
     return `
 
         <span
@@ -305,11 +254,7 @@ const getStatusBadge = (
 
 };
 
-
-
-// ========================================
 // Payment Badge
-// ========================================
 
 const getPaymentBadge = (
     status
@@ -317,7 +262,6 @@ const getPaymentBadge = (
 
     let className =
         "bg-gray-100 text-gray-600";
-
 
     switch (status) {
 
@@ -328,14 +272,12 @@ const getPaymentBadge = (
 
             break;
 
-
         case "pending":
 
             className =
                 "bg-yellow-100 text-yellow-700";
 
             break;
-
 
         case "failed":
 
@@ -345,7 +287,6 @@ const getPaymentBadge = (
             break;
 
     }
-
 
     return `
 
@@ -361,11 +302,7 @@ const getPaymentBadge = (
 
 };
 
-
-
-// ========================================
 // Load Event
-// ========================================
 
 const loadEvent = async () => {
 
@@ -376,10 +313,8 @@ const loadEvent = async () => {
                 `/events/${eventId}`
             );
 
-
         const event =
             result.data;
-
 
         if (!event) {
 
@@ -389,11 +324,9 @@ const loadEvent = async () => {
 
         }
 
-
         eventTitle.textContent =
             event.title ||
             "Event Bookings";
-
 
         eventDate.textContent =
             event.eventDate
@@ -402,7 +335,6 @@ const loadEvent = async () => {
                 )}`
                 : "Event date not available";
 
-
     } catch (error) {
 
         console.error(
@@ -410,10 +342,8 @@ const loadEvent = async () => {
             error
         );
 
-
         eventTitle.textContent =
             "Event Bookings";
-
 
         eventDate.textContent =
             error.message;
@@ -422,11 +352,7 @@ const loadEvent = async () => {
 
 };
 
-
-
-// ========================================
 // Load Event Bookings
-// ========================================
 
 const loadBookings = async () => {
 
@@ -444,21 +370,17 @@ const loadBookings = async () => {
             "hidden"
         );
 
-
         const result =
             await apiRequest(
                 `/bookings/event/${eventId}`
             );
 
-
         const bookings =
             result.data || [];
-
 
         renderBookings(
             bookings
         );
-
 
     } catch (error) {
 
@@ -467,11 +389,9 @@ const loadBookings = async () => {
             error
         );
 
-
         loadingState.classList.add(
             "hidden"
         );
-
 
         bookingTableBody.innerHTML = `
 
@@ -500,7 +420,6 @@ const loadBookings = async () => {
 
         `;
 
-
         bookingTableWrapper.classList.remove(
             "hidden"
         );
@@ -509,11 +428,7 @@ const loadBookings = async () => {
 
 };
 
-
-
-// ========================================
 // Render Bookings
-// ========================================
 
 const renderBookings = (
     bookings
@@ -523,10 +438,8 @@ const renderBookings = (
         "hidden"
     );
 
-
     const selectedStatus =
         statusFilter.value;
-
 
     const filteredBookings =
         selectedStatus === "all"
@@ -537,14 +450,10 @@ const renderBookings = (
                     selectedStatus
             );
 
-
-    // ====================================
     // Summary
-    // ====================================
 
     totalBookings.textContent =
         bookings.length;
-
 
     const ticketCount =
         bookings.reduce(
@@ -565,10 +474,8 @@ const renderBookings = (
             0
         );
 
-
     totalTickets.textContent =
         ticketCount;
-
 
     confirmedBookings.textContent =
         bookings.filter(
@@ -577,14 +484,12 @@ const renderBookings = (
                 "confirmed"
         ).length;
 
-
     pendingBookings.textContent =
         bookings.filter(
             (booking) =>
                 booking.bookingStatus ===
                 "pending"
         ).length;
-
 
     cancelledBookings.textContent =
         bookings.filter(
@@ -593,11 +498,7 @@ const renderBookings = (
                 "cancelled"
         ).length;
 
-
-
-    // ====================================
     // Empty State
-    // ====================================
 
     if (
         filteredBookings.length === 0
@@ -607,34 +508,25 @@ const renderBookings = (
             "hidden"
         );
 
-
         emptyState.classList.remove(
             "hidden"
         );
-
 
         return;
 
     }
 
-
     emptyState.classList.add(
         "hidden"
     );
-
 
     bookingTableWrapper.classList.remove(
         "hidden"
     );
 
-
     bookingTableBody.innerHTML = "";
 
-
-
-    // ====================================
     // Booking Rows
-    // ====================================
 
     filteredBookings.forEach(
         (booking) => {
@@ -642,16 +534,13 @@ const renderBookings = (
             const customer =
                 booking.user || {};
 
-
             const row =
                 document.createElement(
                     "tr"
                 );
 
-
             row.className =
                 "transition hover:bg-gray-50";
-
 
             row.innerHTML = `
 
@@ -687,8 +576,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Tickets -->
 
                 <td class="px-6 py-5">
@@ -705,8 +592,6 @@ const renderBookings = (
                     </span>
 
                 </td>
-
-
 
                 <!-- Amount -->
 
@@ -725,8 +610,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Payment -->
 
                 <td class="px-6 py-5">
@@ -739,8 +622,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Status -->
 
                 <td class="px-6 py-5">
@@ -752,8 +633,6 @@ const renderBookings = (
                     }
 
                 </td>
-
-
 
                 <!-- Booking Date -->
 
@@ -773,7 +652,6 @@ const renderBookings = (
 
             `;
 
-
             bookingTableBody.appendChild(
                 row
             );
@@ -783,11 +661,7 @@ const renderBookings = (
 
 };
 
-
-
-// ========================================
 // Status Filter
-// ========================================
 
 if (statusFilter) {
 
@@ -798,11 +672,7 @@ if (statusFilter) {
 
 }
 
-
-
-// ========================================
 // Initialize Page
-// ========================================
 
 const initializePage = async () => {
 
@@ -811,6 +681,5 @@ const initializePage = async () => {
     await loadBookings();
 
 };
-
 
 initializePage();

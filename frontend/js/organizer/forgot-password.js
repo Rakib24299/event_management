@@ -1,13 +1,9 @@
-// =========================================
 // Organizer Forgot Password
-// =========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
 
-// =========================================
 // Elements
-// =========================================
 
 const forgotPasswordForm =
     document.getElementById("forgotPasswordForm");
@@ -22,9 +18,7 @@ const messageBox =
     document.getElementById("message");
 
 
-// =========================================
 // Show Message
-// =========================================
 
 function showMessage(message, type = "error") {
 
@@ -62,9 +56,7 @@ function showMessage(message, type = "error") {
 }
 
 
-// =========================================
 // Forgot Password Submit
-// =========================================
 
 forgotPasswordForm.addEventListener(
     "submit",
@@ -77,9 +69,7 @@ forgotPasswordForm.addEventListener(
             emailInput.value.trim().toLowerCase();
 
 
-        // =====================================
         // Validate Email
-        // =====================================
 
         if (!email) {
 
@@ -91,9 +81,7 @@ forgotPasswordForm.addEventListener(
         }
 
 
-        // =====================================
         // Disable Button
-        // =====================================
 
         sendOtpButton.disabled = true;
 
@@ -103,9 +91,7 @@ forgotPasswordForm.addEventListener(
 
         try {
 
-            // =================================
             // API Request
-            // =================================
 
             const response = await fetch(
                 `${API_BASE_URL}/auth/forgot-password`,
@@ -123,9 +109,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // =================================
             // Read Response Safely
-            // =================================
 
             const contentType =
                 response.headers.get("content-type") || "";
@@ -152,9 +136,7 @@ forgotPasswordForm.addEventListener(
             }
 
 
-            // =================================
             // Backend Error
-            // =================================
 
             if (!response.ok) {
 
@@ -165,10 +147,8 @@ forgotPasswordForm.addEventListener(
             }
 
 
-            // =================================
             // IMPORTANT
             // Save Organizer Email
-            // =================================
 
             sessionStorage.setItem(
                 "forgotPasswordEmail",
@@ -176,9 +156,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // =================================
             // Success Message
-            // =================================
 
             showMessage(
                 data.message ||
@@ -187,9 +165,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // =================================
             // Redirect
-            // =================================
 
             setTimeout(() => {
 

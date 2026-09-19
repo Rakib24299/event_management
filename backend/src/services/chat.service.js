@@ -5,9 +5,7 @@ const { getIO } = require("../config/socket");
 
 const MAX_CONVERSATION_MESSAGES = parseInt(process.env.MAX_CONVERSATION_MESSAGES, 10) || 50;
 
-// ======================================================
 // Enforce FIFO Limit (Keep Latest X Messages per Chat)
-// ======================================================
 
 const enforceFifoLimit = async (user1Id, user2Id, maxLimit = MAX_CONVERSATION_MESSAGES) => {
   try {
@@ -37,9 +35,7 @@ const enforceFifoLimit = async (user1Id, user2Id, maxLimit = MAX_CONVERSATION_ME
 };
 
 
-// ======================================================
 // Send Message
-// ======================================================
 
 const sendMessage = async ({ senderId, receiverId, text }) => {
   if (!text || !text.trim()) {
@@ -85,9 +81,7 @@ const sendMessage = async ({ senderId, receiverId, text }) => {
 };
 
 
-// ======================================================
 // Get 1-on-1 Conversation History
-// ======================================================
 
 const getConversation = async (user1Id, user2Id, { limit = 100 } = {}) => {
   const messages = await Message.find({
@@ -117,9 +111,7 @@ const getConversation = async (user1Id, user2Id, { limit = 100 } = {}) => {
 };
 
 
-// ======================================================
 // Get Admin's Organizers Chat List
-// ======================================================
 
 const getAdminOrganizersChatList = async (adminId) => {
   // Find all organizers
@@ -167,9 +159,7 @@ const getAdminOrganizersChatList = async (adminId) => {
 };
 
 
-// ======================================================
 // Get Organizer's Chat with Admin
-// ======================================================
 
 const getOrganizerAdminChat = async (organizerId) => {
   // Find default admin
@@ -209,9 +199,7 @@ const getOrganizerAdminChat = async (organizerId) => {
 };
 
 
-// ======================================================
 // Mark Conversation As Read
-// ======================================================
 
 const markAsRead = async (userId, targetUserId) => {
   const result = await Message.updateMany(
@@ -237,9 +225,7 @@ const markAsRead = async (userId, targetUserId) => {
 };
 
 
-// ======================================================
 // Get Unread Messages Count
-// ======================================================
 
 const getUnreadCount = async (userId) => {
   const count = await Message.countDocuments({

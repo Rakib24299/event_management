@@ -1,13 +1,9 @@
-// ========================================
 // EventEase Booking
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const bookingEventImage = document.getElementById("bookingEventImage");
 const bookingEventCategory = document.getElementById("bookingEventCategory");
@@ -37,25 +33,19 @@ const confirmBookingButton = document.getElementById("confirmBookingButton");
 const bookingError = document.getElementById("bookingError");
 
 
-// ========================================
 // Get Event ID
-// ========================================
 
 const urlParams = new URLSearchParams(window.location.search);
 const eventId = urlParams.get("id");
 
 
-// ========================================
 // Variables
-// ========================================
 
 let eventData = null;
 let quantity = 1;
 
 
-// ========================================
 // Get Logged-in User
-// ========================================
 
 function getLoggedInUser() {
 
@@ -78,9 +68,7 @@ function getLoggedInUser() {
 }
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showBookingError(message) {
 
@@ -90,9 +78,7 @@ function showBookingError(message) {
 }
 
 
-// ========================================
 // Hide Error
-// ========================================
 
 function hideBookingError() {
 
@@ -102,9 +88,7 @@ function hideBookingError() {
 }
 
 
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -127,9 +111,7 @@ function formatDate(dateValue) {
 }
 
 
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -143,9 +125,7 @@ function formatPrice(price) {
 }
 
 
-// ========================================
 // Load User Information
-// ========================================
 
 function loadUserInformation() {
 
@@ -176,9 +156,7 @@ function loadUserInformation() {
 }
 
 
-// ========================================
 // Load Event
-// ========================================
 
 async function loadEvent() {
 
@@ -255,9 +233,7 @@ async function loadEvent() {
 }
 
 
-// ========================================
 // Display Event
-// ========================================
 
 function displayEvent() {
 
@@ -371,9 +347,7 @@ function displayEvent() {
 }
 
 
-// ========================================
 // Get Ticket Price
-// ========================================
 
 function getTicketPrice() {
 
@@ -385,9 +359,7 @@ function getTicketPrice() {
 }
 
 
-// ========================================
 // Get Maximum Tickets
-// ========================================
 
 function getMaximumTickets() {
 
@@ -409,9 +381,7 @@ function getMaximumTickets() {
 }
 
 
-// ========================================
 // Update Quantity Buttons
-// ========================================
 
 function updateQuantityButtons() {
 
@@ -440,9 +410,7 @@ function updateQuantityButtons() {
 }
 
 
-// ========================================
 // Update Booking Summary
-// ========================================
 
 function updateBookingSummary() {
 
@@ -483,9 +451,7 @@ function updateBookingSummary() {
 }
 
 
-// ========================================
 // Decrease Ticket
-// ========================================
 
 decreaseTicket.addEventListener(
     "click",
@@ -504,9 +470,7 @@ decreaseTicket.addEventListener(
 );
 
 
-// ========================================
 // Increase Ticket
-// ========================================
 
 increaseTicket.addEventListener(
     "click",
@@ -535,9 +499,7 @@ increaseTicket.addEventListener(
 );
 
 
-// ========================================
 // Create Booking
-// ========================================
 
 async function createBooking() {
 
@@ -589,9 +551,7 @@ async function createBooking() {
     }
 
 
-    // ====================================
     // Backend Request Body
-    // ====================================
 
     const bookingPayload = {
 
@@ -608,9 +568,7 @@ async function createBooking() {
     );
 
 
-    // ====================================
     // Loading
-    // ====================================
 
     confirmBookingButton.disabled = true;
 
@@ -656,9 +614,7 @@ async function createBooking() {
         }
 
 
-        // ====================================
         // Booking Created / Existing Pending
-        // ====================================
 
         const booking =
             result.data.booking ||
@@ -686,9 +642,7 @@ async function createBooking() {
                 : "Booking Created";
 
 
-        // ====================================
         // Next Step: Redirect to OTP Verification
-        // ====================================
 
         const bookingId = booking._id || booking.id;
 
@@ -740,9 +694,7 @@ async function createBooking() {
 }
 
 
-// ========================================
 // Continue Button
-// ========================================
 
 confirmBookingButton.addEventListener(
     "click",
@@ -755,9 +707,7 @@ confirmBookingButton.addEventListener(
 );
 
 
-// ========================================
 // Initialize
-// ========================================
 
 loadUserInformation();
 

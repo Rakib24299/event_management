@@ -5,10 +5,8 @@ const catchAsync =
   require("../utils/catchAsync");
 
 
-// ======================================================
 // Get Refund Information
 // User Only
-// ======================================================
 
 const getRefundInformation = catchAsync(
   async (req, res) => {
@@ -38,10 +36,8 @@ const getRefundInformation = catchAsync(
 );
 
 
-// ======================================================
 // Get My Refunds
 // User Only
-// ======================================================
 
 const getMyRefunds = catchAsync(
   async (req, res) => {
@@ -67,10 +63,8 @@ const getMyRefunds = catchAsync(
 );
 
 
-// ======================================================
 // Process Refund
 // Admin Only
-// ======================================================
 
 const processRefund = catchAsync(
   async (req, res) => {
@@ -103,9 +97,7 @@ const processRefund = catchAsync(
 );
 
 
-// ======================================================
 // Export
-// ======================================================
 
 module.exports = {
 

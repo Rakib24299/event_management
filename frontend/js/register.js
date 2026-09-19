@@ -1,13 +1,9 @@
-// ========================================
 // EventEase Registration
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const registerForm =
     document.getElementById("registerForm");
@@ -31,9 +27,7 @@ const tradeLicense =
     document.getElementById("tradeLicense");
 
 
-// ========================================
 // Role Change
-// ========================================
 
 const roleInputs =
     document.querySelectorAll(
@@ -68,9 +62,7 @@ roleInputs.forEach((input) => {
 });
 
 
-// ========================================
 // Error
-// ========================================
 
 function showError(message) {
 
@@ -83,9 +75,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Success
-// ========================================
 
 function showSuccess(message) {
 
@@ -98,9 +88,7 @@ function showSuccess(message) {
 }
 
 
-// ========================================
 // Form Submit
-// ========================================
 
 registerForm.addEventListener(
     "submit",
@@ -114,9 +102,7 @@ registerForm.addEventListener(
         registerSuccess.classList.add("hidden");
 
 
-        // ========================================
         // Get Values
-        // ========================================
 
         const name =
             document.getElementById("name")
@@ -153,9 +139,7 @@ registerForm.addEventListener(
             ).value;
 
 
-        // ========================================
         // Password Check
-        // ========================================
 
         if (password !== confirmPassword) {
 
@@ -177,9 +161,7 @@ registerForm.addEventListener(
         }
 
 
-        // ========================================
         // Phone Check
-        // ========================================
 
         const phoneRegex =
             /^(\+8801|01)[3-9]\d{8}$/;
@@ -195,9 +177,7 @@ registerForm.addEventListener(
         }
 
 
-        // ========================================
         // Request Data
-        // ========================================
 
         let requestData = {
 
@@ -214,9 +194,7 @@ registerForm.addEventListener(
         };
 
 
-        // ========================================
         // Organizer Data
-        // ========================================
 
         let endpoint =
             "/auth/register";
@@ -258,9 +236,7 @@ registerForm.addEventListener(
         }
 
 
-        // ========================================
         // Loading
-        // ========================================
 
         registerButton.disabled = true;
 
@@ -270,9 +246,7 @@ registerForm.addEventListener(
 
         try {
 
-            // ========================================
             // API Request
-            // ========================================
 
             const response =
                 await fetch(
@@ -307,9 +281,7 @@ registerForm.addEventListener(
             );
 
 
-            // ========================================
             // API Error
-            // ========================================
 
             if (
                 !response.ok ||
@@ -324,9 +296,7 @@ registerForm.addEventListener(
             }
 
 
-            // ========================================
             // Success
-            // ========================================
 
             showSuccess(
                 result.message ||
@@ -338,9 +308,7 @@ registerForm.addEventListener(
                 "Account Created";
 
 
-            // ========================================
             // Redirect to Verify Email
-            // ========================================
 
             setTimeout(() => {
 

@@ -1,6 +1,4 @@
-// ========================================
 // EventEase Upload Service
-// ========================================
 
 const cloudinary =
     require("../config/cloudinary");
@@ -9,9 +7,7 @@ const AppError =
     require("../utils/AppError");
 
 
-// ========================================
 // Upload Single Image
-// ========================================
 
 const uploadSingleImage =
     async (file, folder) => {
@@ -80,9 +76,7 @@ const uploadSingleImage =
     };
 
 
-// ========================================
 // Upload Multiple Images
-// ========================================
 
 const uploadMultipleImages =
     async (

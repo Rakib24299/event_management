@@ -5,9 +5,7 @@ const catchAsync =
   require("../utils/catchAsync");
 
 
-// ======================================================
 // Get Pending Organizers
-// ======================================================
 
 const getPendingOrganizers =
   catchAsync(async (req, res) => {
@@ -31,9 +29,7 @@ const getPendingOrganizers =
   });
 
 
-// ======================================================
 // Approve Organizer
-// ======================================================
 
 const approveOrganizer =
   catchAsync(async (req, res) => {
@@ -59,9 +55,7 @@ const approveOrganizer =
   });
 
 
-// ======================================================
 // Reject Organizer
-// ======================================================
 
 const rejectOrganizer =
   catchAsync(async (req, res) => {
@@ -87,9 +81,7 @@ const rejectOrganizer =
   });
 
 
-// ======================================================
 // Dashboard Statistics
-// ======================================================
 
 const getDashboardStats =
   catchAsync(async (req, res) => {
@@ -113,9 +105,7 @@ const getDashboardStats =
   });
 
 
-// ======================================================
 // Get All Users
-// ======================================================
 
 const getAllUsers =
   catchAsync(async (req, res) => {
@@ -139,9 +129,7 @@ const getAllUsers =
   });
 
 
-// ======================================================
 // Block User
-// ======================================================
 
 const blockUser =
   catchAsync(async (req, res) => {
@@ -167,9 +155,7 @@ const blockUser =
   });
 
 
-// ======================================================
 // Unblock User
-// ======================================================
 
 const unblockUser =
   catchAsync(async (req, res) => {
@@ -195,9 +181,7 @@ const unblockUser =
   });
 
 
-// ======================================================
 // Get All Events
-// ======================================================
 
 const getAllEvents =
   catchAsync(async (req, res) => {
@@ -221,9 +205,7 @@ const getAllEvents =
   });
 
 
-// ======================================================
 // Get Event History
-// ======================================================
 
 const getEventHistory =
   catchAsync(async (req, res) => {
@@ -247,9 +229,7 @@ const getEventHistory =
   });
 
 
-// ======================================================
 // Delete Event By Admin
-// ======================================================
 
 const deleteEventByAdmin =
   catchAsync(async (req, res) => {
@@ -276,9 +256,7 @@ const deleteEventByAdmin =
   });
 
 
-// ======================================================
 // Get All Payments
-// ======================================================
 
 const getAllPayments =
   catchAsync(async (req, res) => {
@@ -302,9 +280,7 @@ const getAllPayments =
   });
 
 
-// ======================================================
 // Get Payment Statistics
-// ======================================================
 
 const getPaymentStatistics =
   catchAsync(async (req, res) => {
@@ -328,9 +304,7 @@ const getPaymentStatistics =
   });
 
 
-// ======================================================
 // Get Admin Revenue History
-// ======================================================
 
 const getAdminRevenueHistory =
   catchAsync(async (req, res) => {
@@ -354,9 +328,7 @@ const getAdminRevenueHistory =
   });
 
 
-// ======================================================
 // Get Pending Refunds
-// ======================================================
 
 const getPendingRefunds =
   catchAsync(async (req, res) => {
@@ -380,9 +352,7 @@ const getPendingRefunds =
   });
 
 
-// ======================================================
 // Process Refund By Admin
-// ======================================================
 
 const processRefundByAdmin =
   catchAsync(async (req, res) => {
@@ -415,9 +385,7 @@ const processRefundByAdmin =
   });
 
 
-// ======================================================
 // Export
-// ======================================================
 
 module.exports = {
 

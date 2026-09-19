@@ -2,9 +2,7 @@ const Payment = require("../models/Payment");
 const Booking = require("../models/Booking");
 
 
-// ======================================================
 // Automatic Refund Processor
-// ======================================================
 //
 // This job checks pending refunds periodically.
 //
@@ -18,12 +16,9 @@ const Booking = require("../models/Booking");
 // The job runs every 1 hour.
 // Therefore refunds are processed automatically
 // without requiring an admin to click a button.
-// ======================================================
 
 
-// ======================================================
 // Process Pending Refunds
-// ======================================================
 
 const processPendingRefunds = async () => {
 
@@ -34,9 +29,7 @@ const processPendingRefunds = async () => {
     );
 
 
-    // --------------------------------------------------
     // Find pending refund bookings
-    // --------------------------------------------------
 
     const pendingBookings =
       await Booking.find({
@@ -70,9 +63,7 @@ const processPendingRefunds = async () => {
     );
 
 
-    // --------------------------------------------------
     // Process each refund
-    // --------------------------------------------------
 
     for (
       const booking of pendingBookings
@@ -80,9 +71,7 @@ const processPendingRefunds = async () => {
 
       try {
 
-        // ------------------------------------------------
         // Booking must have payment
-        // ------------------------------------------------
 
         if (!booking.payment) {
 
@@ -95,9 +84,7 @@ const processPendingRefunds = async () => {
         }
 
 
-        // ------------------------------------------------
         // Find Payment
-        // ------------------------------------------------
 
         const payment =
           await Payment.findById(
@@ -116,9 +103,7 @@ const processPendingRefunds = async () => {
         }
 
 
-        // ------------------------------------------------
         // Already refunded
-        // ------------------------------------------------
 
         if (
           payment.status ===
@@ -139,9 +124,7 @@ const processPendingRefunds = async () => {
         }
 
 
-        // ------------------------------------------------
         // Payment must be paid
-        // ------------------------------------------------
 
         if (
           payment.status !==
@@ -157,9 +140,7 @@ const processPendingRefunds = async () => {
         }
 
 
-        // ------------------------------------------------
         // Refund amount
-        // ------------------------------------------------
 
         const refundAmount =
           Number(
@@ -167,9 +148,7 @@ const processPendingRefunds = async () => {
           );
 
 
-        // ------------------------------------------------
         // No refund applicable
-        // ------------------------------------------------
 
         if (
           refundAmount <= 0
@@ -200,9 +179,7 @@ const processPendingRefunds = async () => {
         }
 
 
-        // ------------------------------------------------
         // Process Dummy Refund
-        // ------------------------------------------------
 
         payment.status =
           "refunded";
@@ -217,9 +194,7 @@ const processPendingRefunds = async () => {
         await payment.save();
 
 
-        // ------------------------------------------------
         // Update Booking
-        // ------------------------------------------------
 
         booking.refundStatus =
           "processed";
@@ -264,9 +239,7 @@ const processPendingRefunds = async () => {
 };
 
 
-// ======================================================
 // Start Refund Job
-// ======================================================
 
 const startRefundJob = () => {
 
@@ -275,16 +248,14 @@ const startRefundJob = () => {
   );
 
 
-  // ----------------------------------------------------
   // Run once when server starts
-  // ----------------------------------------------------
 
   processPendingRefunds();
 
 
-  // ----------------------------------------------------
-  // Run every 1 hour
-  // ----------------------------------------------------
+  // 
+  // REFUND TIME
+  // 
 
   const ONE_HOUR =
     60 * 60 * 1000;
@@ -298,9 +269,7 @@ const startRefundJob = () => {
 };
 
 
-// ======================================================
 // Export
-// ======================================================
 
 module.exports = {
 

@@ -1,14 +1,10 @@
-// ======================================================
 // EventEase
 // Verify Forgot Password OTP
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const emailInput =
     document.getElementById("email");
@@ -32,18 +28,14 @@ const verifyOtpSuccess =
     document.getElementById("verifyOtpSuccess");
 
 
-// ======================================================
 // Check JS Loaded
-// ======================================================
 
 console.log(
     "Verify Forgot OTP JS loaded successfully."
 );
 
 
-// ======================================================
 // Get Email From Session Storage
-// ======================================================
 
 const forgotPasswordEmail =
     sessionStorage.getItem(
@@ -57,9 +49,7 @@ console.log(
 );
 
 
-// ======================================================
 // If Email Not Found
-// ======================================================
 
 if (!forgotPasswordEmail) {
 
@@ -75,9 +65,7 @@ if (!forgotPasswordEmail) {
 }
 
 
-// ======================================================
 // Show Error
-// ======================================================
 
 function showError(message) {
 
@@ -95,9 +83,7 @@ function showError(message) {
 }
 
 
-// ======================================================
 // Show Success
-// ======================================================
 
 function showSuccess(message) {
 
@@ -115,17 +101,13 @@ function showSuccess(message) {
 }
 
 
-// ======================================================
 // Reset Password
-// ======================================================
 
 resetPasswordButton.addEventListener(
     "click",
     async function () {
 
-        // ----------------------------------------------
         // Clear Previous Messages
-        // ----------------------------------------------
 
         verifyOtpError.classList.add(
             "hidden"
@@ -136,9 +118,7 @@ resetPasswordButton.addEventListener(
         );
 
 
-        // ----------------------------------------------
         // Get Values
-        // ----------------------------------------------
 
         const email =
             emailInput.value.trim().toLowerCase();
@@ -159,9 +139,7 @@ resetPasswordButton.addEventListener(
         });
 
 
-        // ----------------------------------------------
         // Validate Email
-        // ----------------------------------------------
 
         if (!email) {
 
@@ -174,9 +152,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // ----------------------------------------------
         // Validate OTP
-        // ----------------------------------------------
 
         if (!/^\d{6}$/.test(otp)) {
 
@@ -189,9 +165,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // ----------------------------------------------
         // Validate Password
-        // ----------------------------------------------
 
         if (!newPassword) {
 
@@ -215,9 +189,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // ----------------------------------------------
         // Confirm Password
-        // ----------------------------------------------
 
         if (newPassword !== confirmPassword) {
 
@@ -230,9 +202,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // ----------------------------------------------
         // Loading
-        // ----------------------------------------------
 
         resetPasswordButton.disabled =
             true;
@@ -248,9 +218,7 @@ resetPasswordButton.addEventListener(
             );
 
 
-            // ------------------------------------------
             // API Request
-            // ------------------------------------------
 
             const response =
                 await fetch(
@@ -283,9 +251,7 @@ resetPasswordButton.addEventListener(
             );
 
 
-            // ------------------------------------------
             // Read Response
-            // ------------------------------------------
 
             let data = null;
 
@@ -307,9 +273,7 @@ resetPasswordButton.addEventListener(
             );
 
 
-            // ------------------------------------------
             // API Error
-            // ------------------------------------------
 
             if (!response.ok) {
 
@@ -321,9 +285,7 @@ resetPasswordButton.addEventListener(
             }
 
 
-            // ------------------------------------------
             // Success
-            // ------------------------------------------
 
             showSuccess(
                 data?.message ||
@@ -331,18 +293,14 @@ resetPasswordButton.addEventListener(
             );
 
 
-            // ------------------------------------------
             // Remove Stored Email
-            // ------------------------------------------
 
             sessionStorage.removeItem(
                 "forgotPasswordEmail"
             );
 
 
-            // ------------------------------------------
             // Redirect To Login
-            // ------------------------------------------
 
             console.log(
                 "Password reset successful."

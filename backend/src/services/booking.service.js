@@ -5,9 +5,7 @@ const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
 const notificationService = require("../services/notification.service");
 
-// ======================================================
 // ERROR HELPER
-// ======================================================
 
 const createError = (message, statusCode) => {
   const error = new Error(message);
@@ -15,9 +13,7 @@ const createError = (message, statusCode) => {
   return error;
 };
 
-// ======================================================
-// GENERATE BOOKING OTP
-// ======================================================
+// OTP GENERATE BOOKING OTP/OPT MAKER
 
 const generateBookingOtp = () => {
   return Math.floor(
@@ -25,11 +21,7 @@ const generateBookingOtp = () => {
   ).toString();
 };
 
-// ======================================================
-// OTP EXPIRY
-// ======================================================
-// 5 minutes
-// ======================================================
+// BOOKING OTP EXPIRY 5 minutes
 
 const getOtpExpiry = () => {
   return new Date(
@@ -38,7 +30,7 @@ const getOtpExpiry = () => {
 };
 
 
-// GET EVENT END DATETIME
+// GET EVENT END DATE TIME
 
 // Combines eventDate (Date) with startTime (String "HH:mm")
 // to produce the moment the event begins.
@@ -79,9 +71,7 @@ const getEventEndDateTime = (event) => {
   return dateTime;
 };
 
-// ======================================================
 // POPULATE BOOKING
-// ======================================================
 
 const populateBooking = (query) => {
   return query
@@ -106,9 +96,7 @@ const populateBooking = (query) => {
     .populate("payment");
 };
 
-// ======================================================
 // CREATE BOOKING
-// ======================================================
 //
 // FREE EVENT:
 //
@@ -141,7 +129,6 @@ const populateBooking = (query) => {
 // my-bookings.html
 //      ↓
 // [Make Payment] → Event Details → SSLCommerz → OTP → Confirm
-// ======================================================
 
 const createBooking = async (
   userId,
@@ -152,9 +139,7 @@ const createBooking = async (
     ticketQuantity,
   } = payload;
 
-  // --------------------------------------------------
   // EVENT ID
-  // --------------------------------------------------
 
   if (!eventId) {
     throw createError(
@@ -163,9 +148,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // FIND EVENT
-  // --------------------------------------------------
 
   const eventData =
     await Event.findById(eventId);
@@ -180,9 +163,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // EVENT STATUS
-  // --------------------------------------------------
 
   if (
     eventData.status !== "published"
@@ -193,9 +174,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // EVENT DATE CHECK
-  // --------------------------------------------------
 
   if (
     eventData.eventDate &&
@@ -207,9 +186,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // QUANTITY
-  // --------------------------------------------------
 
   const quantity =
     Number(ticketQuantity);
@@ -224,9 +201,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // MAX TICKETS PER USER
-  // --------------------------------------------------
 
   if (
     eventData.maxTicketsPerUser &&
@@ -239,9 +214,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // AVAILABLE SEATS (paid events only)
-  // --------------------------------------------------
 
   if (
       eventData.eventType !== "free" &&
@@ -257,9 +230,7 @@ const createBooking = async (
 
   }
 
-  // --------------------------------------------------
   // DUPLICATE BOOKING CHECK
-  // --------------------------------------------------
 
   const confirmedBooking =
     await Booking.findOne({
@@ -275,9 +246,7 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // REUSE EXISTING PENDING BOOKING
-  // --------------------------------------------------
 
   const existingPendingBooking =
     await Booking.findOne({
@@ -354,9 +323,7 @@ const createBooking = async (
     };
   }
 
-  // ==================================================
   // GENERATE OTP FOR VERIFICATION
-  // ==================================================
 
   const otp = generateBookingOtp();
   const otpExpiresAt = getOtpExpiry();
@@ -374,9 +341,9 @@ const createBooking = async (
     );
   }
 
-  // --------------------------------------------------
-  // CREATE PENDING BOOKING
-  // --------------------------------------------------
+  
+  // PENDING BOOKING (pending to confirm)
+
 
   const booking =
     await Booking.create({
@@ -395,18 +362,14 @@ const createBooking = async (
       cancelledAt: null,
     });
 
-  // --------------------------------------------------
   // RESERVE SEATS (paid events only)
-  // --------------------------------------------------
 
   if (!isFree) {
     eventData.availableSeats -= quantity;
     await eventData.save();
   }
 
-  // --------------------------------------------------
-  // SEND OTP EMAIL
-  // --------------------------------------------------
+  // SEND OTP EMAIL TEMPLATE
 
   const user = await User.findById(userId).select("name email");
   if (user?.email) {
@@ -429,9 +392,7 @@ const createBooking = async (
     }
   }
 
-  // --------------------------------------------------
   // RETURN
-  // --------------------------------------------------
 
   const result =
     await populateBooking(
@@ -449,16 +410,13 @@ const createBooking = async (
   };
 };
 
-// ======================================================
 // GENERATE FREE BOOKING OTP
-// ======================================================
 //
 // Called when the user arrives at the Event Details page
 // for a free event with an existing pending booking and
 // clicks the confirmation/payment button.
 //
 // Creates OTP, sends email, updates booking.
-// ======================================================
 
 const generateFreeBookingOtp = async (
   bookingId,
@@ -476,9 +434,7 @@ const generateFreeBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // OWNER CHECK
-  // --------------------------------------------------
 
   if (
     booking.user.toString() !==
@@ -490,9 +446,7 @@ const generateFreeBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // BOOKING STATUS
-  // --------------------------------------------------
 
   if (
     booking.bookingStatus ===
@@ -515,9 +469,7 @@ const generateFreeBookingOtp = async (
     };
   }
 
-  // --------------------------------------------------
   // ALREADY VERIFIED
-  // --------------------------------------------------
 
   if (booking.isOtpVerified) {
     return {
@@ -527,9 +479,7 @@ const generateFreeBookingOtp = async (
     };
   }
 
-  // --------------------------------------------------
   // MUST BE FREE EVENT
-  // --------------------------------------------------
 
   const event =
     await Event.findById(
@@ -550,9 +500,7 @@ const generateFreeBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // GENERATE OTP
-  // --------------------------------------------------
 
   const otp =
     generateBookingOtp();
@@ -560,9 +508,7 @@ const generateFreeBookingOtp = async (
   const otpExpiresAt =
     getOtpExpiry();
 
-  // --------------------------------------------------
   // UPDATE BOOKING
-  // --------------------------------------------------
 
   booking.bookingOtp = otp;
   booking.bookingOtpExpires = otpExpiresAt;
@@ -571,17 +517,13 @@ const generateFreeBookingOtp = async (
 
   await booking.save();
 
-  // --------------------------------------------------
   // GET USER
-  // --------------------------------------------------
 
   const user =
     await User.findById(userId)
       .select("name email");
 
-  // --------------------------------------------------
   // OTP EMAIL
-  // --------------------------------------------------
 
   if (user?.email) {
     try {
@@ -625,9 +567,7 @@ const generateFreeBookingOtp = async (
     }
   }
 
-  // --------------------------------------------------
   // RETURN
-  // --------------------------------------------------
 
   const result =
     await populateBooking(
@@ -646,9 +586,7 @@ const generateFreeBookingOtp = async (
   };
 };
 
-// ======================================================
 // SEND / RESEND BOOKING OTP (Free or Paid)
-// ======================================================
 
 const sendBookingOtp = async (bookingId, userId) => {
   const booking = await Booking.findById(bookingId);
@@ -684,6 +622,9 @@ const sendBookingOtp = async (bookingId, userId) => {
   booking.isOtpVerified = false;
   await booking.save();
 
+
+// resend email template
+
   const user = await User.findById(userId).select("name email");
   if (user?.email) {
     try {
@@ -715,9 +656,7 @@ const sendBookingOtp = async (bookingId, userId) => {
   };
 };
 
-// ======================================================
 // VERIFY BOOKING OTP
-// ======================================================
 //
 // Payment Paid
 //      ↓
@@ -728,7 +667,6 @@ const sendBookingOtp = async (bookingId, userId) => {
 // OTP Verified
 //      ↓
 // Booking Confirmed
-// ======================================================
 
 const verifyBookingOtp = async (
   bookingId,
@@ -747,9 +685,7 @@ const verifyBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // OWNER CHECK
-  // --------------------------------------------------
 
   if (
     booking.user.toString() !==
@@ -761,9 +697,7 @@ const verifyBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // CANCELLED
-  // --------------------------------------------------
 
   if (
     booking.bookingStatus ===
@@ -775,9 +709,7 @@ const verifyBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // ALREADY VERIFIED
-  // --------------------------------------------------
 
   if (booking.isOtpVerified) {
     return {
@@ -788,9 +720,7 @@ const verifyBookingOtp = async (
     };
   }
 
-  // --------------------------------------------------
   // OTP EXISTS
-  // --------------------------------------------------
 
   if (!booking.bookingOtp) {
     throw createError(
@@ -799,14 +729,11 @@ const verifyBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
-  // OTP EXPIRY
-  // --------------------------------------------------
+  // OTP EXPIRy
 
   if (
-    !booking.bookingOtpExpires ||
-    booking.bookingOtpExpires < new Date()
-  ) {
+    !booking.bookingOtpExpires || booking.bookingOtpExpires < new Date() ) 
+    {
     const event =
       await Event.findById(
         booking.event
@@ -829,6 +756,8 @@ const verifyBookingOtp = async (
       await event.save();
     }
 
+// OPT EXPIRE 2
+
     booking.bookingStatus =
       "cancelled";
     booking.bookingOtp = null;
@@ -845,9 +774,7 @@ const verifyBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // OTP MATCH
-  // --------------------------------------------------
 
   if (
     booking.bookingOtp !==
@@ -859,15 +786,13 @@ const verifyBookingOtp = async (
     );
   }
 
-  // ==================================================
   // SUCCESS: OTP VERIFIED
-  // ==================================================
 
   booking.isOtpVerified = true;
 
-  // --------------------------------------------------
-  // PAID EVENT: Keep pending until SSLCommerz payment
-  // --------------------------------------------------
+  
+  // PAID EVENT Keep pending until SSLCommerz payment
+  
   if (booking.totalAmount > 0) {
     booking.bookingStatus = "pending";
     booking.bookingOtp = null;
@@ -886,17 +811,15 @@ const verifyBookingOtp = async (
     };
   }
 
-  // --------------------------------------------------
-  // FREE EVENT: Confirm immediately & generate Gate OTP
-  // --------------------------------------------------
+  // 
+  // FREE EVENT  CONFIRM immediately & generate Gate OTP
+  
   booking.bookingStatus = "confirmed";
   booking.bookingOtp = generateBookingOtp(); // Gate attendance OTP
   booking.bookingOtpExpires = null;
   await booking.save();
 
-  // --------------------------------------------------
   // NOTIFY ORGANIZER
-  // --------------------------------------------------
 
   try {
     const eventForNotification =
@@ -929,9 +852,7 @@ const verifyBookingOtp = async (
     );
   }
 
-  // --------------------------------------------------
   // CONFIRMATION EMAIL FOR FREE BOOKING
-  // --------------------------------------------------
 
   const user =
     await User.findById(userId)
@@ -969,9 +890,7 @@ const verifyBookingOtp = async (
     }
   }
 
-  // --------------------------------------------------
   // RETURN
-  // --------------------------------------------------
 
   const result =
     await populateBooking(
@@ -988,9 +907,7 @@ const verifyBookingOtp = async (
   };
 };
 
-// ======================================================
 // CANCEL BOOKING
-// ======================================================
 
 const cancelBooking = async (
   bookingId,
@@ -1009,9 +926,7 @@ const cancelBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // CUSTOMER OWNER CHECK
-  // --------------------------------------------------
 
   if (
     userRole === "user" ||
@@ -1028,9 +943,7 @@ const cancelBooking = async (
     }
   }
 
-  // --------------------------------------------------
   // ALREADY CANCELLED
-  // --------------------------------------------------
 
   if (
     booking.bookingStatus ===
@@ -1042,9 +955,7 @@ const cancelBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // COMPLETED
-  // --------------------------------------------------
 
   if (
     booking.bookingStatus ===
@@ -1056,9 +967,7 @@ const cancelBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // ATTENDED
-  // --------------------------------------------------
 
   if (booking.isAttended) {
     throw createError(
@@ -1067,9 +976,7 @@ const cancelBooking = async (
     );
   }
 
-  // --------------------------------------------------
   // EVENT
-  // --------------------------------------------------
 
   const event =
     await Event.findById(
@@ -1083,9 +990,7 @@ const cancelBooking = async (
     );
   }
 
-  // ==================================================
   // EVENT DATETIME
-  // ==================================================
 
   let eventDateTime =
     new Date(event.eventDate);
@@ -1110,9 +1015,7 @@ const cancelBooking = async (
     }
   }
 
-  // ==================================================
   // EVENT STARTED CHECK
-  // ==================================================
 
   if (new Date() >= eventDateTime) {
     throw createError(
@@ -1121,9 +1024,7 @@ const cancelBooking = async (
     );
   }
 
-  // ==================================================
   // REFUND CALCULATION
-  // ==================================================
 
   let refundPercentage = 0;
 
@@ -1174,9 +1075,7 @@ const cancelBooking = async (
       ).toFixed(2)
     );
 
-  // ==================================================
   // RESTORE SEATS (paid events only)
-  // ==================================================
 
   if (event.eventType !== "free") {
 
@@ -1195,9 +1094,7 @@ const cancelBooking = async (
 
   await event.save();
 
-  // ==================================================
   // UPDATE BOOKING
-  // ==================================================
 
   booking.bookingStatus =
     "cancelled";
@@ -1226,9 +1123,7 @@ const cancelBooking = async (
 
   await booking.save();
 
-  // ==================================================
   // UPDATE PAYMENT
-  // ==================================================
 
   if (booking.payment) {
     const payment =
@@ -1249,9 +1144,7 @@ const cancelBooking = async (
     }
   }
 
-  // ==================================================
   // CREATE NOTIFICATION
-  // ==================================================
 
   try {
 
@@ -1298,9 +1191,7 @@ const cancelBooking = async (
   };
 };
 
-// ======================================================
 // GET MY CONFIRMED BOOKINGS
-// ======================================================
 // Returns only bookings that have been successfully
 // confirmed (bookingStatus = "confirmed").
 // Source of truth: backend only.
@@ -1335,6 +1226,8 @@ const getMyConfirmedBookings = async (
       .map(
         (event) => event._id
       );
+ 
+      // SHOW CONFIRM BOOKings
 
   return await populateBooking(
     Booking.find({
@@ -1349,9 +1242,7 @@ const getMyConfirmedBookings = async (
   );
 };
 
-// ======================================================
 // GET MY BOOKINGS
-// ======================================================
 
 const getMyBookings = async (
   userId
@@ -1402,17 +1293,13 @@ const getMyBookings = async (
   );
 };
 
-// ======================================================
 // GET ORGANIZER / ADMIN BOOKINGS
-// ======================================================
 
 const getOrganizerBookings = async (
   userId,
   userRole
 ) => {
-  // --------------------------------------------------
   // ADMIN
-  // --------------------------------------------------
 
   if (
     userRole === "admin"
@@ -1424,9 +1311,7 @@ const getOrganizerBookings = async (
     );
   }
 
-  // --------------------------------------------------
   // ORGANIZER
-  // --------------------------------------------------
 
   const events =
     await Event.find({
@@ -1450,9 +1335,7 @@ const getOrganizerBookings = async (
   );
 };
 
-// ======================================================
 // GET BOOKINGS FOR SPECIFIC EVENT
-// ======================================================
 
 const getEventBookings = async (
   eventId,
@@ -1471,9 +1354,7 @@ const getEventBookings = async (
     );
   }
 
-  // --------------------------------------------------
   // ORGANIZER CHECK
-  // --------------------------------------------------
 
   if (
     userRole === "organizer"
@@ -1498,9 +1379,7 @@ const getEventBookings = async (
   );
 };
 
-// ======================================================
 // GET BOOKING BY ID
-// ======================================================
 
 const getBookingById = async (
   bookingId,
@@ -1521,9 +1400,7 @@ const getBookingById = async (
     );
   }
 
-  // --------------------------------------------------
   // ADMIN
-  // --------------------------------------------------
 
   if (
     userRole === "admin"
@@ -1531,9 +1408,7 @@ const getBookingById = async (
     return booking;
   }
 
-  // --------------------------------------------------
   // CUSTOMER
-  // --------------------------------------------------
 
   const bookingUserId =
     booking.user?._id
@@ -1549,9 +1424,7 @@ const getBookingById = async (
     return booking;
   }
 
-  // --------------------------------------------------
   // ORGANIZER
-  // --------------------------------------------------
 
   const organizerId =
     booking.event?.organizer?._id
@@ -1574,9 +1447,7 @@ const getBookingById = async (
   );
 };
 
-// ======================================================
 // GET PUBLIC BOOKING BY ID
-// ======================================================
 
 const getPublicBookingById = async (
   bookingId
@@ -1598,9 +1469,7 @@ const getPublicBookingById = async (
   return booking;
 };
 
-// ======================================================
 // UPDATE BOOKING STATUS
-// ======================================================
 
 const updateBookingStatus = async (
   bookingId,
@@ -1638,9 +1507,7 @@ const updateBookingStatus = async (
     );
   }
 
-  // --------------------------------------------------
   // PREVENT MANUAL PENDING FOR VERIFIED BOOKING
-  // --------------------------------------------------
 
   if (
     booking.isOtpVerified &&
@@ -1652,9 +1519,7 @@ const updateBookingStatus = async (
     );
   }
 
-  // --------------------------------------------------
   // ADMIN
-  // --------------------------------------------------
 
   if (
     userRole === "admin"
@@ -1671,9 +1536,7 @@ const updateBookingStatus = async (
     );
   }
 
-  // --------------------------------------------------
   // ORGANIZER
-  // --------------------------------------------------
 
   if (
     userRole === "organizer"
@@ -1718,13 +1581,10 @@ const updateBookingStatus = async (
   );
 };
 
-// ======================================================
 // EXPIRE PENDING BOOKINGS
-// ======================================================
 // Used by bookingExpiry.job.js
 // Cancels bookings whose OTP has expired
 // and restores available seats.
-// ======================================================
 
 const expirePendingBookings =
   async () => {
@@ -1800,9 +1660,7 @@ const expirePendingBookings =
   };
 
 
-// ======================================================
 // GET BOOKING HISTORY
-// ======================================================
 // Returns bookings for events whose date has already passed.
 
 const getBookingHistory = async (
@@ -1847,9 +1705,7 @@ const getBookingHistory = async (
   );
 };
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
   createBooking,

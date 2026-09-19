@@ -2,9 +2,7 @@ const Category = require("../models/Category");
 const Event = require("../models/Event");
 const AppError = require("../utils/AppError");
 
-// ========================================
 // Generate Slug
-// ========================================
 
 const generateSlug = (name) => {
   return name
@@ -15,9 +13,7 @@ const generateSlug = (name) => {
     .replace(/-+/g, "-");
 };
 
-// ========================================
 // Create Category
-// ========================================
 
 const createCategory = async (payload) => {
   const name = payload.name.trim();
@@ -59,10 +55,8 @@ const createCategory = async (payload) => {
   return category;
 };
 
-// ========================================
 // Get All Categories
 // Only Active Categories
-// ========================================
 
 const getAllCategories = async () => {
   const categories = await Category.find({
@@ -74,9 +68,7 @@ const getAllCategories = async () => {
   return categories;
 };
 
-// ========================================
 // Get Single Category
-// ========================================
 
 const getSingleCategory = async (categoryId) => {
   const category = await Category.findById(categoryId);
@@ -88,9 +80,7 @@ const getSingleCategory = async (categoryId) => {
   return category;
 };
 
-// ========================================
 // Update Category
-// ========================================
 
 const updateCategory = async (categoryId, payload) => {
   const category = await Category.findById(categoryId);
@@ -155,10 +145,8 @@ const updateCategory = async (categoryId, payload) => {
   return updatedCategory;
 };
 
-// ========================================
 // Delete Category
 // Soft Delete
-// ========================================
 
 const deleteCategory = async (categoryId) => {
   const category = await Category.findById(categoryId);
@@ -191,9 +179,7 @@ const deleteCategory = async (categoryId) => {
   };
 };
 
-// ========================================
 // Export
-// ========================================
 
 module.exports = {
   createCategory,

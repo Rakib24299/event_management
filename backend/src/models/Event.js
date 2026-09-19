@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 
-// ========================================
+// 
 // Banner Image Schema
-// ========================================
+// 
 
 const bannerImageSchema = new Schema(
     {
@@ -24,9 +24,7 @@ const bannerImageSchema = new Schema(
 );
 
 
-// ========================================
 // Gallery Image Schema
-// ========================================
 
 const galleryImageSchema = new Schema(
     {
@@ -46,9 +44,7 @@ const galleryImageSchema = new Schema(
 );
 
 
-// ========================================
 // Venue Schema
-// ========================================
 
 const venueSchema = new Schema(
     {
@@ -82,15 +78,11 @@ const venueSchema = new Schema(
 );
 
 
-// ========================================
 // Event Schema
-// ========================================
 
 const eventSchema = new Schema(
     {
-        // ====================================
         // Event Title
-        // ====================================
 
         title: {
             type: String,
@@ -99,9 +91,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Event Slug
-        // ====================================
 
         slug: {
             type: String,
@@ -112,9 +102,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Organizer
-        // ====================================
 
         organizer: {
             type: Schema.Types.ObjectId,
@@ -123,9 +111,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Category
-        // ====================================
 
         category: {
             type: Schema.Types.ObjectId,
@@ -134,9 +120,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Description
-        // ====================================
 
         description: {
             type: String,
@@ -145,9 +129,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Venue
-        // ====================================
 
         venue: {
             type: venueSchema,
@@ -156,9 +138,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Event Date
-        // ====================================
 
         eventDate: {
             type: Date,
@@ -166,9 +146,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Start Time
-        // ====================================
 
         startTime: {
             type: String,
@@ -176,9 +154,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // End Time
-        // ====================================
 
         endTime: {
             type: String,
@@ -186,9 +162,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Event Type
-        // ====================================
 
         eventType: {
             type: String,
@@ -197,9 +171,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Ticket Price
-        // ====================================
 
         ticketPrice: {
             type: Number,
@@ -208,9 +180,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Total Seats
-        // ====================================
 
         totalSeats: {
             type: Number,
@@ -219,9 +189,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Available Seats
-        // ====================================
 
         availableSeats: {
             type: Number,
@@ -230,9 +198,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Maximum Tickets Per User
-        // ====================================
 
         maxTicketsPerUser: {
             type: Number,
@@ -241,9 +207,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Banner Image
-        // ====================================
 
         bannerImage: {
             type: bannerImageSchema,
@@ -251,9 +215,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Gallery Images
-        // ====================================
 
         galleryImages: {
             type: [galleryImageSchema],
@@ -261,9 +223,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ========================================
         // Event Status
-        // ========================================
         //
         // draft
         // published
@@ -271,7 +231,6 @@ const eventSchema = new Schema(
         // cancelled
         // rejected
         //
-        // ========================================
 
         status: {
             type: String,
@@ -288,9 +247,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Average Rating
-        // ====================================
 
         averageRating: {
             type: Number,
@@ -300,9 +257,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Total Reviews
-        // ====================================
 
         totalReviews: {
             type: Number,
@@ -311,9 +266,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Soft Delete
-        // ====================================
 
         isDeleted: {
             type: Boolean,
@@ -321,9 +274,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Deleted At
-        // ====================================
 
         deletedAt: {
             type: Date,
@@ -331,9 +282,7 @@ const eventSchema = new Schema(
         },
 
 
-        // ====================================
         // Deleted By
-        // ====================================
 
         deletedBy: {
             type: Schema.Types.ObjectId,
@@ -348,9 +297,7 @@ const eventSchema = new Schema(
 );
 
 
-// ========================================
 // Event Model
-// ========================================
 
 const Event = mongoose.model(
     "Event",

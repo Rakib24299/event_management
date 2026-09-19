@@ -1,21 +1,11 @@
-// ========================================
 // EventEase Organizer Notifications
-// ========================================
 
-
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const notificationList =
     document.getElementById(
@@ -37,11 +27,7 @@ const markAllReadBtn =
         "markAllReadBtn"
     );
 
-
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -52,15 +38,9 @@ const getToken = () => {
 
 };
 
-
-
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
-
-
 
 if (!token) {
 
@@ -73,11 +53,7 @@ if (!token) {
 
 }
 
-
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -105,12 +81,8 @@ const apiRequest = async (
             }
         );
 
-
-
     const data =
         await response.json();
-
-
 
     if (!response.ok) {
 
@@ -121,17 +93,11 @@ const apiRequest = async (
 
     }
 
-
-
     return data;
 
 };
 
-
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -142,8 +108,6 @@ const formatDate = (
         return "";
 
     }
-
-
 
     return new Date(date)
         .toLocaleString(
@@ -156,11 +120,7 @@ const formatDate = (
 
 };
 
-
-
-// ========================================
 // Get Notification Icon
-// ========================================
 
 const getNotificationIcon = (
     type
@@ -193,11 +153,7 @@ const getNotificationIcon = (
 
 };
 
-
-
-// ========================================
 // Get Type Label
-// ========================================
 
 const getTypeLabel = (
     type
@@ -209,43 +165,29 @@ const getTypeLabel = (
 
             return "Booking";
 
-
-
         case "event":
 
             return "Event";
-
-
 
         case "refund":
 
             return "Refund";
 
-
-
         case "system":
 
             return "System";
-
-
 
         case "approval":
 
             return "Approval";
 
-
-
         case "account":
 
             return "Account";
 
-
-
         case "payment":
 
             return "Payment";
-
-
 
         default:
 
@@ -255,11 +197,7 @@ const getTypeLabel = (
 
 };
 
-
-
-// ========================================
 // Render Notifications
-// ========================================
 
 const renderNotifications = (
     notifications
@@ -267,12 +205,9 @@ const renderNotifications = (
 
     notificationList.innerHTML = "";
 
-
     loadingState.classList.add(
         "hidden"
     );
-
-
 
     if (
         !notifications ||
@@ -287,13 +222,9 @@ const renderNotifications = (
 
     }
 
-
-
     emptyState.classList.add(
         "hidden"
     );
-
-
 
     notifications.forEach(
         (notification) => {
@@ -301,18 +232,12 @@ const renderNotifications = (
             const isRead =
                 notification.isRead === true;
 
-
-
             const notificationCard =
                 document.createElement(
                     "div"
                 );
 
-
-
-            // ====================================
             // Notification Card Color
-            // ====================================
 
             notificationCard.className =
                 `notification-card rounded-3xl p-5 shadow-soft transition-all duration-200 border ${
@@ -321,13 +246,9 @@ const renderNotifications = (
                         : "bg-gray-100 border-gray-200/90 hover:bg-gray-200/70"
                 }`;
 
-
-
             notificationCard.innerHTML = `
 
                 <div class="flex items-start gap-4">
-
-
 
                     <!-- Icon -->
 
@@ -343,25 +264,15 @@ const renderNotifications = (
 
                     </div>
 
-
-
-
-
                     <!-- Content -->
 
                     <div class="min-w-0 flex-1">
-
-
 
                         <div
                             class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"
                         >
 
-
-
                             <div>
-
-
 
                                 <!-- Title -->
 
@@ -375,10 +286,6 @@ const renderNotifications = (
                                     }
 
                                 </h3>
-
-
-
-
 
                                 <!-- Message -->
 
@@ -397,13 +304,7 @@ const renderNotifications = (
 
                                 </p>
 
-
-
                             </div>
-
-
-
-
 
                             <!-- New Badge -->
 
@@ -421,13 +322,7 @@ const renderNotifications = (
                                     : ""
                             }
 
-
-
                         </div>
-
-
-
-
 
                         <!-- Date and Type -->
 
@@ -457,10 +352,6 @@ const renderNotifications = (
 
                         </div>
 
-
-
-
-
                         <!-- Mark As Read -->
 
                         ${
@@ -481,17 +372,11 @@ const renderNotifications = (
                                 : ""
                         }
 
-
-
                     </div>
-
-
 
                 </div>
 
             `;
-
-
 
             notificationList.appendChild(
                 notificationCard
@@ -500,17 +385,11 @@ const renderNotifications = (
         }
     );
 
-
-
     attachMarkReadEvents();
 
 };
 
-
-
-// ========================================
 // Load Notifications
-// ========================================
 
 const loadNotifications =
     async () => {
@@ -525,25 +404,17 @@ const loadNotifications =
                 "hidden"
             );
 
-
-
             const result =
                 await apiRequest(
                     "/notifications"
                 );
 
-
-
             const notifications =
                 result.data || [];
-
-
 
             renderNotifications(
                 notifications
             );
-
-
 
         } catch (error) {
 
@@ -552,13 +423,9 @@ const loadNotifications =
                 error
             );
 
-
-
             loadingState.classList.add(
                 "hidden"
             );
-
-
 
             notificationList.innerHTML = `
 
@@ -572,15 +439,11 @@ const loadNotifications =
                         <svg class="h-5 w-5 text-amber-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     </div>
 
-
-
                     <h3
                         class="mt-4 font-bold text-gray-900"
                     >
                         Failed to Load Notifications
                     </h3>
-
-
 
                     <p
                         class="mt-2 text-sm text-gray-500"
@@ -592,8 +455,6 @@ const loadNotifications =
                         }
 
                     </p>
-
-
 
                     <button
                         id="retryBtn"
@@ -607,14 +468,10 @@ const loadNotifications =
 
             `;
 
-
-
             const retryBtn =
                 document.getElementById(
                     "retryBtn"
                 );
-
-
 
             if (retryBtn) {
 
@@ -629,11 +486,7 @@ const loadNotifications =
 
     };
 
-
-
-// ========================================
 // Mark Single Notification as Read
-// ========================================
 
 const markNotificationAsRead =
     async (
@@ -649,11 +502,7 @@ const markNotificationAsRead =
                 }
             );
 
-
-
             await loadNotifications();
-
-
 
             if (typeof updateNotificationBadge === "function") {
 
@@ -661,16 +510,12 @@ const markNotificationAsRead =
 
             }
 
-
-
         } catch (error) {
 
             console.error(
                 "Mark notification error:",
                 error
             );
-
-
 
             alert(
                 error.message ||
@@ -681,11 +526,7 @@ const markNotificationAsRead =
 
     };
 
-
-
-// ========================================
 // Attach Mark Read Events
-// ========================================
 
 const attachMarkReadEvents =
     () => {
@@ -694,8 +535,6 @@ const attachMarkReadEvents =
             document.querySelectorAll(
                 ".mark-read-btn"
             );
-
-
 
         buttons.forEach(
             (button) => {
@@ -706,8 +545,6 @@ const attachMarkReadEvents =
 
                         const notificationId =
                             button.dataset.id;
-
-
 
                         if (
                             notificationId
@@ -727,11 +564,7 @@ const attachMarkReadEvents =
 
     };
 
-
-
-// ========================================
 // Mark All Notifications as Read
-// ========================================
 
 const markAllNotificationsAsRead =
     async () => {
@@ -741,12 +574,8 @@ const markAllNotificationsAsRead =
             markAllReadBtn.disabled =
                 true;
 
-
-
             markAllReadBtn.textContent =
                 "Updating...";
-
-
 
             await apiRequest(
                 "/notifications/mark-all-read",
@@ -755,11 +584,7 @@ const markAllNotificationsAsRead =
                 }
             );
 
-
-
             await loadNotifications();
-
-
 
             if (typeof updateNotificationBadge === "function") {
 
@@ -767,16 +592,12 @@ const markAllNotificationsAsRead =
 
             }
 
-
-
         } catch (error) {
 
             console.error(
                 "Mark all read error:",
                 error
             );
-
-
 
             alert(
                 error.message ||
@@ -788,8 +609,6 @@ const markAllNotificationsAsRead =
             markAllReadBtn.disabled =
                 false;
 
-
-
             markAllReadBtn.textContent =
                 "Mark All as Read";
 
@@ -797,11 +616,7 @@ const markAllNotificationsAsRead =
 
     };
 
-
-
-// ========================================
 // Update Notification Badge
-// ========================================
 
 async function updateNotificationBadge() {
 
@@ -810,16 +625,13 @@ async function updateNotificationBadge() {
             "notificationBadge"
         );
 
-
     if (!badge) {
         return;
     }
 
-
     const token =
         localStorage.getItem("token") ||
         sessionStorage.getItem("token");
-
 
     if (!token) {
 
@@ -831,7 +643,6 @@ async function updateNotificationBadge() {
 
         return;
     }
-
 
     try {
 
@@ -850,10 +661,8 @@ async function updateNotificationBadge() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (
             response.ok &&
@@ -865,9 +674,7 @@ async function updateNotificationBadge() {
                 result.data.unreadCount ||
                 0;
 
-
             badge.textContent = count;
-
 
             if (count > 0) {
 
@@ -904,11 +711,7 @@ async function updateNotificationBadge() {
 
 }
 
-
-
-// ========================================
 // Mark All Read Button
-// ========================================
 
 if (markAllReadBtn) {
 
@@ -919,10 +722,6 @@ if (markAllReadBtn) {
 
 }
 
-
-
-// ========================================
 // Load Notifications on Page Load
-// ========================================
 
 loadNotifications();

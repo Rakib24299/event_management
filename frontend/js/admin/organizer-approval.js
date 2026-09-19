@@ -1,19 +1,11 @@
-// ========================================
 // EventEase Admin Organizer Approval
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -39,10 +31,7 @@ const pendingCount =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -53,13 +42,9 @@ const getToken = () => {
 
 };
 
-
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
-
 
 if (!token) {
 
@@ -72,10 +57,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -104,7 +86,6 @@ const apiRequest = async (
             }
         );
 
-
     let data = {};
 
     try {
@@ -118,7 +99,6 @@ const apiRequest = async (
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -128,15 +108,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -147,7 +123,6 @@ const formatDate = (
         return "N/A";
 
     }
-
 
     return new Date(date)
         .toLocaleDateString(
@@ -161,10 +136,7 @@ const formatDate = (
 
 };
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (
     value
@@ -176,7 +148,6 @@ const escapeHTML = (
 
     }
 
-
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -186,10 +157,7 @@ const escapeHTML = (
 
 };
 
-
-// ========================================
 // Update Pending Count
-// ========================================
 
 const updatePendingCount = (
     count
@@ -201,16 +169,12 @@ const updatePendingCount = (
 
     }
 
-
     pendingCount.textContent =
         `${count} Pending`;
 
 };
 
-
-// ========================================
 // Render Empty State
-// ========================================
 
 const renderEmptyState = () => {
 
@@ -226,13 +190,11 @@ const renderEmptyState = () => {
                 <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
             </div>
 
-
             <h2
                 class="mt-5 text-xl font-bold text-gray-900"
             >
                 No Pending Organizers
             </h2>
-
 
             <p
                 class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500"
@@ -246,17 +208,13 @@ const renderEmptyState = () => {
 
 };
 
-
-// ========================================
 // Render Organizer List
-// ========================================
 
 const renderOrganizers = (
     organizers
 ) => {
 
     organizerList.innerHTML = "";
-
 
     if (
         !organizers ||
@@ -271,11 +229,9 @@ const renderOrganizers = (
 
     }
 
-
     updatePendingCount(
         organizers.length
     );
-
 
     organizers.forEach(
         (organizer) => {
@@ -285,15 +241,12 @@ const renderOrganizers = (
                     "div"
                 );
 
-
             card.className =
                 "rounded-3xl bg-white p-6 shadow-soft";
-
 
             const profileImage =
                 organizer.profileImage?.url ||
                 "";
-
 
             const name =
                 escapeHTML(
@@ -301,13 +254,11 @@ const renderOrganizers = (
                     "Organizer"
                 );
 
-
             const email =
                 escapeHTML(
                     organizer.email ||
                     "No email available"
                 );
-
 
             const organizationName =
                 escapeHTML(
@@ -315,19 +266,16 @@ const renderOrganizers = (
                     "Organization not provided"
                 );
 
-
             const phone =
                 escapeHTML(
                     organizer.phone ||
                     "Not provided"
                 );
 
-
             const appliedDate =
                 formatDate(
                     organizer.createdAt
                 );
-
 
             card.innerHTML = `
 
@@ -335,9 +283,7 @@ const renderOrganizers = (
                     class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
                 >
 
-                    <!-- ==================================
-                         ORGANIZER INFORMATION
-                    =================================== -->
+                    <!-- ORGANIZER INFORMATION -->
 
                     <div
                         class="flex min-w-0 items-start gap-4"
@@ -367,7 +313,6 @@ const renderOrganizers = (
 
                         </div>
 
-
                         <!-- Details -->
 
                         <div class="min-w-0">
@@ -382,7 +327,6 @@ const renderOrganizers = (
                                     ${name}
                                 </h2>
 
-
                                 <span
                                     class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700"
                                 >
@@ -391,13 +335,11 @@ const renderOrganizers = (
 
                             </div>
 
-
                             <p
                                 class="mt-1 text-sm text-gray-500"
                             >
                                 ${email}
                             </p>
-
 
                             <div
                                 class="mt-4 grid gap-3 sm:grid-cols-2"
@@ -421,7 +363,6 @@ const renderOrganizers = (
 
                                 </div>
 
-
                                 <!-- Phone -->
 
                                 <div>
@@ -439,7 +380,6 @@ const renderOrganizers = (
                                     </p>
 
                                 </div>
-
 
                                 <!-- Applied Date -->
 
@@ -465,10 +405,7 @@ const renderOrganizers = (
 
                     </div>
 
-
-                    <!-- ==================================
-                         ACTION
-                    =================================== -->
+                    <!-- ACTION -->
 
                     <div
                         class="flex shrink-0 lg:ml-6"
@@ -488,7 +425,6 @@ const renderOrganizers = (
 
             `;
 
-
             organizerList.appendChild(
                 card
             );
@@ -496,14 +432,12 @@ const renderOrganizers = (
         }
     );
 
-
     // Attach approve listeners
 
     const approveButtons =
         organizerList.querySelectorAll(
             ".approveBtn"
         );
-
 
     approveButtons.forEach(
         (button) => {
@@ -514,7 +448,6 @@ const renderOrganizers = (
 
                     const organizerId =
                         button.dataset.id;
-
 
                     approveOrganizer(
                         organizerId,
@@ -529,10 +462,7 @@ const renderOrganizers = (
 
 };
 
-
-// ========================================
 // Load Pending Organizers
-// ========================================
 
 const loadPendingOrganizers =
     async () => {
@@ -553,7 +483,6 @@ const loadPendingOrganizers =
                 "hidden"
             );
 
-
             // API
 
             const result =
@@ -561,17 +490,14 @@ const loadPendingOrganizers =
                     "/admin/pending-organizers"
                 );
 
-
             const organizers =
                 result.data || [];
-
 
             // Render
 
             renderOrganizers(
                 organizers
             );
-
 
             // Show content
 
@@ -590,7 +516,6 @@ const loadPendingOrganizers =
                 error
             );
 
-
             loadingState.classList.add(
                 "hidden"
             );
@@ -602,7 +527,6 @@ const loadPendingOrganizers =
             errorState.classList.remove(
                 "hidden"
             );
-
 
             if (errorMessage) {
 
@@ -616,10 +540,7 @@ const loadPendingOrganizers =
 
     };
 
-
-// ========================================
 // Approve Organizer
-// ========================================
 
 const approveOrganizer =
     async (
@@ -637,19 +558,16 @@ const approveOrganizer =
 
         }
 
-
         const confirmed =
             confirm(
                 "Are you sure you want to approve this organizer?"
             );
-
 
         if (!confirmed) {
 
             return;
 
         }
-
 
         try {
 
@@ -659,7 +577,6 @@ const approveOrganizer =
 
             button.textContent =
                 "Approving...";
-
 
             // API
 
@@ -671,18 +588,15 @@ const approveOrganizer =
                     }
                 );
 
-
             console.log(
                 "Organizer approved:",
                 result
             );
 
-
             alert(
                 result.message ||
                 "Organizer approved successfully."
             );
-
 
             // Reload list
 
@@ -695,12 +609,10 @@ const approveOrganizer =
                 error
             );
 
-
             alert(
                 error.message ||
                 "Failed to approve organizer."
             );
-
 
             // Restore button
 
@@ -713,10 +625,7 @@ const approveOrganizer =
 
     };
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
 
@@ -727,10 +636,7 @@ if (retryBtn) {
 
 }
 
-
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
 
@@ -746,7 +652,6 @@ if (logoutBtn) {
                 "token"
             );
 
-
             window.location.href =
                 "./admin-login.html";
 
@@ -755,9 +660,6 @@ if (logoutBtn) {
 
 }
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadPendingOrganizers();

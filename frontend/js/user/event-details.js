@@ -1,19 +1,13 @@
-// ========================================
 // EventEase - Event Details Page
-// ========================================
 
 
-// ========================================
 // API Configuration
-// ========================================
 
 const API_URL =
     "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const eventLoading =
     document.getElementById("eventLoading");
@@ -87,9 +81,7 @@ const bookEventButton =
     document.getElementById("bookEventButton");
 
 
-// ========================================
 // Review Elements
-// ========================================
 
 const averageRating =
     document.getElementById("averageRating");
@@ -152,9 +144,7 @@ const reviewsList =
     );
 
 
-// ========================================
 // Variables
-// ========================================
 
 let selectedRating = 0;
 
@@ -169,9 +159,7 @@ let continuationBookingData = null;
 let isContinuationMode = false;
 
 
-// ========================================
 // Get Event ID From URL
-// ========================================
 
 const urlParams =
     new URLSearchParams(
@@ -202,9 +190,7 @@ const continuationBookingId =
     urlParams.get("bookingId");
 
 
-// ========================================
 // Debug Event ID
-// ========================================
 
 console.log(
     "Event Details Page URL:",
@@ -217,9 +203,7 @@ console.log(
 );
 
 
-// ========================================
 // Get Token
-// ========================================
 
 function getToken() {
 
@@ -233,9 +217,7 @@ function getToken() {
 }
 
 
-// ========================================
 // API Request Helper
-// ========================================
 
 async function apiRequest(
     endpoint,
@@ -303,9 +285,7 @@ async function apiRequest(
 }
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -331,9 +311,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -372,9 +350,7 @@ function formatDate(dateValue) {
 }
 
 
-// ========================================
 // Format Time
-// ========================================
 
 function formatTime(timeValue) {
 
@@ -432,9 +408,7 @@ function formatTime(timeValue) {
 }
 
 
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -468,9 +442,7 @@ function formatPrice(price) {
 }
 
 
-// ========================================
 // Format Location
-// ========================================
 
 function formatLocation(value) {
 
@@ -500,9 +472,7 @@ function formatLocation(value) {
 }
 
 
-// ========================================
 // Get Initial
-// ========================================
 
 function getInitial(name) {
 
@@ -521,9 +491,7 @@ function getInitial(name) {
 }
 
 
-// ========================================
 // Create Stars
-// ========================================
 
 function createStars(rating) {
 
@@ -555,9 +523,7 @@ function createStars(rating) {
 }
 
 
-// ========================================
 // Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -574,9 +540,7 @@ function escapeHTML(value) {
 }
 
 
-// ========================================
 // Get Event ID
-// ========================================
 
 function getEventObjectId(event) {
 
@@ -595,9 +559,7 @@ function getEventObjectId(event) {
 }
 
 
-// ========================================
 // Extract Single Event
-// ========================================
 
 function extractSingleEvent(result) {
 
@@ -694,9 +656,7 @@ function extractSingleEvent(result) {
 }
 
 
-// ========================================
 // Extract Events List
-// ========================================
 
 function extractEventsList(result) {
 
@@ -746,9 +706,7 @@ function extractEventsList(result) {
 }
 
 
-// ========================================
 // Display Event
-// ========================================
 
 function displayEvent(event) {
 
@@ -762,9 +720,7 @@ function displayEvent(event) {
     );
 
 
-    // ====================================
     // Image
-    // ====================================
 
     const image =
         event.bannerImage?.url ||
@@ -793,9 +749,7 @@ function displayEvent(event) {
         "Event";
 
 
-    // ====================================
     // Category
-    // ====================================
 
     if (
         typeof event.category === "string"
@@ -814,9 +768,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Title
-    // ====================================
 
     eventTitle.textContent =
         event.title ||
@@ -825,9 +777,7 @@ function displayEvent(event) {
         "Untitled Event";
 
 
-    // ====================================
     // Date
-    // ====================================
 
     eventDate.textContent =
         formatDate(
@@ -838,9 +788,7 @@ function displayEvent(event) {
         );
 
 
-    // ====================================
     // Time
-    // ====================================
 
     const timeValue =
         event.startTime ||
@@ -862,9 +810,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Category (Meta)
-    // ====================================
 
     const categoryName =
         event.category?.name ||
@@ -886,9 +832,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Location
-    // ====================================
 
     const locationValue =
         formatLocation(
@@ -904,9 +848,7 @@ function displayEvent(event) {
         "Location not available";
 
 
-    // ====================================
     // Description
-    // ====================================
 
     const descriptionText =
         event.description ||
@@ -920,9 +862,7 @@ function displayEvent(event) {
         "No description available.";
 
 
-    // ====================================
     // Organizer
-    // ====================================
 
     const organizer =
         event.organizer || {};
@@ -949,9 +889,7 @@ function displayEvent(event) {
         );
 
 
-    // ====================================
     // Event Type
-    // ====================================
 
     const eventType =
         event.eventType ||
@@ -976,9 +914,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Ticket Price (meta strip)
-    // ====================================
 
     if (eventTicketPriceContainer) {
         eventTicketPriceContainer.classList.remove(
@@ -1000,9 +936,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Right Sidebar Price + Seats
-    // ====================================
 
     const eventSeatsSection =
         document.getElementById(
@@ -1134,9 +1068,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Booking Button
-    // ====================================
 
     if (
         !isFreeEvent &&
@@ -1188,9 +1120,7 @@ function displayEvent(event) {
     }
 
 
-    // ====================================
     // Show Content
-    // ====================================
 
     eventLoading.classList.add(
         "hidden"
@@ -1214,14 +1144,11 @@ function displayEvent(event) {
 }
 
 
-// ========================================
 // Update Continuation UI
-// ========================================
 // Called when the user arrives with a
 // bookingId in the URL. Adjusts the book
 // button to reflect that a booking already
 // exists and the user is continuing to payment.
-// ========================================
 
 function updateContinuationUI() {
 
@@ -1327,9 +1254,7 @@ function updateContinuationUI() {
 }
 
 
-// ========================================
 // Find Event From Events List
-// ========================================
 
 async function findEventFromList() {
 
@@ -1408,15 +1333,11 @@ async function findEventFromList() {
 }
 
 
-// ========================================
 // Load Event
-// ========================================
 
 async function loadEvent() {
 
-    // ====================================
     // Check Event ID
-    // ====================================
 
     if (!eventId) {
 
@@ -1437,11 +1358,9 @@ async function loadEvent() {
 
     try {
 
-        // ==================================
         // Continuation Mode:
         // User arrived with ?bookingId=...
         // Load booking first, then event from booking.
-        // ==================================
 
         if (continuationBookingId) {
 
@@ -1622,10 +1541,8 @@ async function loadEvent() {
         }
 
 
-        // ==================================
         // First Try:
         // GET /events/:id
-        // ==================================
 
         const response =
             await fetch(
@@ -1665,9 +1582,7 @@ async function loadEvent() {
         );
 
 
-        // ==================================
         // Direct API Success
-        // ==================================
 
         if (
             response.ok &&
@@ -1733,9 +1648,7 @@ async function loadEvent() {
         }
 
 
-        // ==================================
         // Fallback
-        // ==================================
 
         console.warn(
             "Direct event API failed. Trying events list fallback..."
@@ -1817,9 +1730,7 @@ async function loadEvent() {
 }
 
 
-// ========================================
 // Load Reviews
-// ========================================
 
 async function loadReviews() {
 
@@ -1936,9 +1847,7 @@ async function loadReviews() {
 }
 
 
-// ========================================
 // Display Review Summary
-// ========================================
 
 function displayReviewSummary() {
 
@@ -1987,9 +1896,7 @@ function displayReviewSummary() {
 }
 
 
-// ========================================
 // Display Reviews
-// ========================================
 
 function displayReviews() {
 
@@ -2033,9 +1940,7 @@ function displayReviews() {
 }
 
 
-// ========================================
 // Create Review Element
-// ========================================
 
 function createReviewElement(
     review
@@ -2316,9 +2221,7 @@ function createReviewElement(
 }
 
 
-// ========================================
 // Get Current User ID
-// ========================================
 
 function getCurrentUserId() {
 
@@ -2364,9 +2267,7 @@ function getCurrentUserId() {
 }
 
 
-// ========================================
 // Find Pending Booking For Event
-// ========================================
 // Checks if the current authenticated user already
 // has a pending (unpaid/unconfirmed) booking for the
 // given event. Used when the user opens an event
@@ -2473,9 +2374,7 @@ async function findPendingBookingForEvent(
 }
 
 
-// ========================================
 // Setup Review Form
-// ========================================
 
 function setupReviewForm() {
 
@@ -2512,9 +2411,7 @@ function setupReviewForm() {
 }
 
 
-// ========================================
 // Rating Selection
-// ========================================
 
 ratingStars.forEach(
     star => {
@@ -2543,9 +2440,7 @@ ratingStars.forEach(
 );
 
 
-// ========================================
 // Update Rating Stars
-// ========================================
 
 function updateRatingStars() {
 
@@ -2591,9 +2486,7 @@ function updateRatingStars() {
 }
 
 
-// ========================================
 // Review Message
-// ========================================
 
 function showReviewMessage(
     message,
@@ -2634,9 +2527,7 @@ function showReviewMessage(
 }
 
 
-// ========================================
 // Clear Review Message
-// ========================================
 
 function clearReviewMessage() {
 
@@ -2649,9 +2540,7 @@ function clearReviewMessage() {
 }
 
 
-// ========================================
 // Submit Review
-// ========================================
 
 if (submitReviewButton) {
 
@@ -2913,9 +2802,7 @@ if (submitReviewButton) {
 }
 
 
-// ========================================
 // Edit / Delete Review
-// ========================================
 
 if (reviewsList) {
 
@@ -2958,9 +2845,7 @@ if (reviewsList) {
 }
 
 
-// ========================================
 // Start Edit Review
-// ========================================
 
 function startEditReview(
     reviewId
@@ -3020,9 +2905,7 @@ function startEditReview(
 }
 
 
-// ========================================
 // Delete Review
-// ========================================
 
 async function deleteReview(
     reviewId
@@ -3122,13 +3005,9 @@ async function deleteReview(
 }
 
 
-// ========================================
 // Book Event
-// ========================================
 
-// ========================================
 // Book Event
-// ========================================
 
 if (bookEventButton) {
 
@@ -3176,9 +3055,7 @@ if (bookEventButton) {
 
             } else {
 
-                // ----------------------------------------
                 // PAID EVENT: Direct to payment page
-                // ----------------------------------------
                 window.location.href =
                     `./payment.html?id=${encodeURIComponent(
                         targetEventId
@@ -3191,8 +3068,6 @@ if (bookEventButton) {
 
 }
 
-// ========================================
 // Start
-// ========================================
 
 loadEvent();

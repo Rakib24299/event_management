@@ -1,19 +1,13 @@
-// ======================================================
 // ORGANIZER PAYMENT DETAILS
-// ======================================================
 
 
-// ======================================================
 // Backend API
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loading =
     document.getElementById("loading");
@@ -25,9 +19,7 @@ const paymentDetails =
     document.getElementById("paymentDetails");
 
 
-// ======================================================
 // Get Payment ID From URL
-// ======================================================
 
 function getPaymentId() {
 
@@ -40,9 +32,7 @@ function getPaymentId() {
 }
 
 
-// ======================================================
 // Format Currency
-// ======================================================
 
 function formatCurrency(amount) {
 
@@ -57,9 +47,7 @@ function formatCurrency(amount) {
 }
 
 
-// ======================================================
 // Format Date
-// ======================================================
 
 function formatDate(date) {
 
@@ -92,9 +80,7 @@ function formatDate(date) {
 }
 
 
-// ======================================================
 // Safe Text
-// ======================================================
 
 function safeText(value) {
 
@@ -113,9 +99,7 @@ function safeText(value) {
 }
 
 
-// ======================================================
 // Get Token
-// ======================================================
 
 function getToken() {
 
@@ -136,9 +120,7 @@ function getToken() {
 }
 
 
-// ======================================================
 // Payment Status Badge
-// ======================================================
 
 function getStatusBadge(status) {
 
@@ -221,9 +203,7 @@ function getStatusBadge(status) {
 }
 
 
-// ======================================================
 // Refund Status Badge
-// ======================================================
 
 function getRefundStatusBadge(status) {
 
@@ -294,9 +274,7 @@ function getRefundStatusBadge(status) {
 }
 
 
-// ======================================================
 // Show Error
-// ======================================================
 
 function showError(message) {
 
@@ -332,9 +310,7 @@ function showError(message) {
 }
 
 
-// ======================================================
 // Display Payment
-// ======================================================
 
 function displayPayment(payment) {
 
@@ -349,9 +325,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Hide Loading
-    // ==================================================
 
     if (loading) {
 
@@ -362,9 +336,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Show Payment Details
-    // ==================================================
 
     if (paymentDetails) {
 
@@ -375,9 +347,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Transaction Information
-    // ==================================================
 
     const transactionId =
         document.getElementById(
@@ -440,9 +410,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Financial Information
-    // ==================================================
 
     const grossAmount =
         document.getElementById(
@@ -490,9 +458,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Payment Currency
-    // ==================================================
 
     const paymentCurrency =
         document.getElementById(
@@ -508,9 +474,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Customer Information
-    // ==================================================
 
     const customerName =
         document.getElementById(
@@ -555,9 +519,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Event Information
-    // ==================================================
 
     const eventName =
         document.getElementById(
@@ -626,9 +588,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Booking Information
-    // ==================================================
 
     const bookingId =
         document.getElementById(
@@ -674,9 +634,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Refund Information
-    // ==================================================
 
     const refundAmount =
         document.getElementById(
@@ -724,9 +682,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Gateway Information
-    // ==================================================
 
     const validationId =
         document.getElementById(
@@ -744,9 +700,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Created / Updated
-    // ==================================================
 
     const createdAt =
         document.getElementById(
@@ -781,9 +735,7 @@ function displayPayment(payment) {
 }
 
 
-// ======================================================
 // Load Payment Details
-// ======================================================
 
 async function loadPaymentDetails() {
 
@@ -791,9 +743,7 @@ async function loadPaymentDetails() {
         getPaymentId();
 
 
-    // ==================================================
     // Payment ID Check
-    // ==================================================
 
     if (!paymentId) {
 
@@ -806,9 +756,7 @@ async function loadPaymentDetails() {
     }
 
 
-    // ==================================================
     // Token Check
-    // ==================================================
 
     const token =
         getToken();
@@ -827,9 +775,7 @@ async function loadPaymentDetails() {
 
     try {
 
-        // ==============================================
         // Loading State
-        // ==============================================
 
         if (loading) {
 
@@ -848,9 +794,7 @@ async function loadPaymentDetails() {
         }
 
 
-        // ==============================================
         // API Request
-        // ==============================================
 
         const response =
             await fetch(
@@ -878,17 +822,13 @@ async function loadPaymentDetails() {
             );
 
 
-        // ==============================================
         // Read Response
-        // ==============================================
 
         const result =
             await response.json();
 
 
-        // ==============================================
         // Backend Error
-        // ==============================================
 
         if (!response.ok) {
 
@@ -903,17 +843,13 @@ async function loadPaymentDetails() {
         }
 
 
-        // ==============================================
         // Extract Payment
-        // ==============================================
 
         const payment =
             result.data;
 
 
-        // ==============================================
         // Display
-        // ==============================================
 
         displayPayment(
             payment
@@ -941,9 +877,7 @@ async function loadPaymentDetails() {
 }
 
 
-// ======================================================
 // Initial Load
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

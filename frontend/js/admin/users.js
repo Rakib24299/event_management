@@ -1,19 +1,11 @@
-// ========================================
 // EventEase Admin Manage Users
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -51,10 +43,7 @@ const statusFilter =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -65,13 +54,9 @@ const getToken = () => {
 
 };
 
-
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
-
 
 if (!token) {
 
@@ -84,10 +69,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -116,9 +98,7 @@ const apiRequest = async (
             }
         );
 
-
     let data = {};
-
 
     try {
 
@@ -131,7 +111,6 @@ const apiRequest = async (
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -141,15 +120,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (
     value
@@ -164,7 +139,6 @@ const escapeHTML = (
 
     }
 
-
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -174,10 +148,7 @@ const escapeHTML = (
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -189,10 +160,8 @@ const formatDate = (
 
     }
 
-
     const parsedDate =
         new Date(date);
-
 
     if (
         Number.isNaN(
@@ -203,7 +172,6 @@ const formatDate = (
         return "N/A";
 
     }
-
 
     return parsedDate.toLocaleDateString(
         "en-US",
@@ -216,10 +184,7 @@ const formatDate = (
 
 };
 
-
-// ========================================
 // Update User Count
-// ========================================
 
 const updateUserCount = (
     count
@@ -231,16 +196,12 @@ const updateUserCount = (
 
     }
 
-
     userCount.textContent =
         `${count} ${count === 1 ? "User" : "Users"}`;
 
 };
 
-
-// ========================================
 // Get Status Badge
-// ========================================
 
 const getStatusBadge = (
     status
@@ -261,7 +222,6 @@ const getStatusBadge = (
 
     }
 
-
     return `
 
         <span
@@ -275,10 +235,7 @@ const getStatusBadge = (
 
 };
 
-
-// ========================================
 // Get Role Badge
-// ========================================
 
 const getRoleBadge = (
     role
@@ -298,7 +255,6 @@ const getRoleBadge = (
 
     }
 
-
     return `
 
         <span
@@ -311,10 +267,7 @@ const getRoleBadge = (
 
 };
 
-
-// ========================================
 // Render Empty State
-// ========================================
 
 const renderEmptyState = () => {
 
@@ -326,10 +279,7 @@ const renderEmptyState = () => {
 
 };
 
-
-// ========================================
 // Render Users
-// ========================================
 
 const renderUsers = (
     users
@@ -340,7 +290,6 @@ const renderUsers = (
     emptyState.classList.add(
         "hidden"
     );
-
 
     if (
         !users ||
@@ -355,11 +304,9 @@ const renderUsers = (
 
     }
 
-
     updateUserCount(
         users.length
     );
-
 
     users.forEach(
         (user) => {
@@ -369,15 +316,12 @@ const renderUsers = (
                     "div"
                 );
 
-
             card.className =
                 "rounded-3xl bg-white p-6 shadow-soft";
-
 
             const profileImage =
                 user.profileImage?.url ||
                 "";
-
 
             const name =
                 escapeHTML(
@@ -385,13 +329,11 @@ const renderUsers = (
                     "Unnamed User"
                 );
 
-
             const email =
                 escapeHTML(
                     user.email ||
                     "No email"
                 );
-
 
             const phone =
                 escapeHTML(
@@ -399,29 +341,24 @@ const renderUsers = (
                     "Not provided"
                 );
 
-
             const address =
                 escapeHTML(
                     user.address ||
                     "Not provided"
                 );
 
-
             const role =
                 user.role ||
                 "user";
-
 
             const status =
                 user.status ||
                 "active";
 
-
             const appliedDate =
                 formatDate(
                     user.createdAt
                 );
-
 
             card.innerHTML = `
 
@@ -429,9 +366,7 @@ const renderUsers = (
                     class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
                 >
 
-                    <!-- ==================================
-                         USER INFORMATION
-                    =================================== -->
+                    <!-- USER INFORMATION -->
 
                     <div
                         class="flex min-w-0 items-start gap-4"
@@ -465,7 +400,6 @@ const renderUsers = (
 
                         </div>
 
-
                         <!-- Details -->
 
                         <div class="min-w-0">
@@ -486,7 +420,6 @@ const renderUsers = (
 
                             </div>
 
-
                             <!-- Email -->
 
                             <p
@@ -494,7 +427,6 @@ const renderUsers = (
                             >
                                 ${email}
                             </p>
-
 
                             <!-- User Details -->
 
@@ -520,7 +452,6 @@ const renderUsers = (
 
                                 </div>
 
-
                                 <!-- Address -->
 
                                 <div>
@@ -538,7 +469,6 @@ const renderUsers = (
                                     </p>
 
                                 </div>
-
 
                                 <!-- Joined -->
 
@@ -564,10 +494,7 @@ const renderUsers = (
 
                     </div>
 
-
-                    <!-- ==================================
-                         ACTION
-                    =================================== -->
+                    <!-- ACTION -->
 
                     <div
                         class="flex shrink-0 lg:ml-6"
@@ -609,7 +536,6 @@ const renderUsers = (
 
             `;
 
-
             userList.appendChild(
                 card
             );
@@ -617,15 +543,11 @@ const renderUsers = (
         }
     );
 
-
     attachStatusListeners();
 
 };
 
-
-// ========================================
 // Attach Status Button Listeners
-// ========================================
 
 const attachStatusListeners = () => {
 
@@ -633,7 +555,6 @@ const attachStatusListeners = () => {
         userList.querySelectorAll(
             ".statusBtn"
         );
-
 
     buttons.forEach(
         (button) => {
@@ -647,7 +568,6 @@ const attachStatusListeners = () => {
 
                     const currentStatus =
                         button.dataset.status;
-
 
                     updateUserStatus(
                         userId,
@@ -663,14 +583,9 @@ const attachStatusListeners = () => {
 
 };
 
-
-// ========================================
 // Update User Status
-// ========================================
 
-// ========================================
 // Update User Status
-// ========================================
 
 const updateUserStatus = async (
     userId,
@@ -678,9 +593,7 @@ const updateUserStatus = async (
     button
 ) => {
 
-    // =====================================
     // Validate User ID
-    // =====================================
 
     if (!userId) {
 
@@ -690,10 +603,7 @@ const updateUserStatus = async (
 
     }
 
-
-    // =====================================
     // Determine Action
-    // =====================================
 
     const isBlocking =
         currentStatus === "active";
@@ -703,16 +613,12 @@ const updateUserStatus = async (
             ? "block"
             : "unblock";
 
-
-    // =====================================
     // Confirmation
-    // =====================================
 
     const confirmed =
         confirm(
             `Are you sure you want to ${actionText} this user?`
         );
-
 
     if (!confirmed) {
 
@@ -720,10 +626,7 @@ const updateUserStatus = async (
 
     }
 
-
-    // =====================================
     // Disable Button
-    // =====================================
 
     try {
 
@@ -734,20 +637,14 @@ const updateUserStatus = async (
                 ? "Blocking..."
                 : "Unblocking...";
 
-
-        // =================================
         // Correct Backend Endpoint
-        // =================================
 
         const endpoint =
             isBlocking
                 ? `/admin/users/${userId}/block`
                 : `/admin/users/${userId}/unblock`;
 
-
-        // =================================
         // API Request
-        // =================================
 
         const result =
             await apiRequest(
@@ -757,23 +654,16 @@ const updateUserStatus = async (
                 }
             );
 
-
-        // =================================
         // Success Message
-        // =================================
 
         alert(
             result.message ||
             `User ${actionText}ed successfully.`
         );
 
-
-        // =================================
         // Reload Users
-        // =================================
 
         await loadUsers();
-
 
     } catch (error) {
 
@@ -782,20 +672,14 @@ const updateUserStatus = async (
             error
         );
 
-
-        // =================================
         // Error Message
-        // =================================
 
         alert(
             error.message ||
             `Failed to ${actionText} user.`
         );
 
-
-        // =================================
         // Restore Button
-        // =================================
 
         button.disabled = false;
 
@@ -808,10 +692,7 @@ const updateUserStatus = async (
 
 };
 
-
-// ========================================
 // Filter Users
-// ========================================
 
 const filterUsers = () => {
 
@@ -820,14 +701,11 @@ const filterUsers = () => {
             .trim()
             .toLowerCase();
 
-
     const selectedRole =
         roleFilter.value;
 
-
     const selectedStatus =
         statusFilter.value;
-
 
     const filteredUsers =
         allUsers.filter(
@@ -838,28 +716,23 @@ const filterUsers = () => {
                         user.name || ""
                     ).toLowerCase();
 
-
                 const email =
                     String(
                         user.email || ""
                     ).toLowerCase();
-
 
                 const matchesSearch =
                     !search ||
                     name.includes(search) ||
                     email.includes(search);
 
-
                 const matchesRole =
                     selectedRole === "all" ||
                     user.role === selectedRole;
 
-
                 const matchesStatus =
                     selectedStatus === "all" ||
                     user.status === selectedStatus;
-
 
                 return (
                     matchesSearch &&
@@ -870,20 +743,15 @@ const filterUsers = () => {
             }
         );
 
-
     renderUsers(
         filteredUsers
     );
 
 };
 
-
-// ========================================
 // Load Users
-// ========================================
 
 let allUsers = [];
-
 
 const loadUsers =
     async () => {
@@ -904,30 +772,23 @@ const loadUsers =
                 "hidden"
             );
 
-
-            // =================================
             // Get Users
-            // =================================
             //
             // IMPORTANT:
             // This endpoint must match your backend.
             //
-            // =================================
 
             const result =
                 await apiRequest(
                     "/admin/users"
                 );
 
-
             allUsers =
                 result.data || [];
-
 
             renderUsers(
                 allUsers
             );
-
 
             // Show content
 
@@ -946,7 +807,6 @@ const loadUsers =
                 error
             );
 
-
             loadingState.classList.add(
                 "hidden"
             );
@@ -958,7 +818,6 @@ const loadUsers =
             errorState.classList.remove(
                 "hidden"
             );
-
 
             if (errorMessage) {
 
@@ -972,10 +831,7 @@ const loadUsers =
 
     };
 
-
-// ========================================
 // Search Listener
-// ========================================
 
 if (searchInput) {
 
@@ -986,10 +842,7 @@ if (searchInput) {
 
 }
 
-
-// ========================================
 // Role Filter
-// ========================================
 
 if (roleFilter) {
 
@@ -1000,10 +853,7 @@ if (roleFilter) {
 
 }
 
-
-// ========================================
 // Status Filter
-// ========================================
 
 if (statusFilter) {
 
@@ -1014,10 +864,7 @@ if (statusFilter) {
 
 }
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
 
@@ -1028,10 +875,7 @@ if (retryBtn) {
 
 }
 
-
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
 
@@ -1047,7 +891,6 @@ if (logoutBtn) {
                 "token"
             );
 
-
             window.location.href =
                 "./admin-login.html";
 
@@ -1056,9 +899,6 @@ if (logoutBtn) {
 
 }
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadUsers();

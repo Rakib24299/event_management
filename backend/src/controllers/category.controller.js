@@ -1,9 +1,7 @@
 const categoryService = require("../services/category.service");
 const catchAsync = require("../utils/catchAsync");
 
-// ========================================
 // Create Category
-// ========================================
 
 const createCategory = catchAsync(async (req, res) => {
   const result = await categoryService.createCategory(req.body);
@@ -15,9 +13,7 @@ const createCategory = catchAsync(async (req, res) => {
   });
 });
 
-// ========================================
 // Get All Categories
-// ========================================
 
 const getAllCategories = catchAsync(async (req, res) => {
   const result = await categoryService.getAllCategories();
@@ -28,9 +24,7 @@ const getAllCategories = catchAsync(async (req, res) => {
   });
 });
 
-// ========================================
 // Get Single Category
-// ========================================
 
 const getSingleCategory = catchAsync(async (req, res) => {
   const result = await categoryService.getSingleCategory(req.params.id);
@@ -41,9 +35,7 @@ const getSingleCategory = catchAsync(async (req, res) => {
   });
 });
 
-// ========================================
 // Update Category
-// ========================================
 
 const updateCategory = catchAsync(async (req, res) => {
   const result = await categoryService.updateCategory(
@@ -58,9 +50,7 @@ const updateCategory = catchAsync(async (req, res) => {
   });
 });
 
-// ========================================
 // Delete Category
-// ========================================
 
 const deleteCategory = catchAsync(async (req, res) => {
   const result = await categoryService.deleteCategory(req.params.id);
@@ -71,9 +61,7 @@ const deleteCategory = catchAsync(async (req, res) => {
   });
 });
 
-// ========================================
 // Export
-// ========================================
 
 module.exports = {
   createCategory,

@@ -1,15 +1,11 @@
-// ========================================
 // EventEase Organizer
 // Create Event
-// ========================================
 
 const API_URL =
     "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const createEventForm =
     document.getElementById("createEventForm");
@@ -75,17 +71,13 @@ const eventSuccess =
     document.getElementById("eventSuccess");
 
 
-// ========================================
 // Get Token
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
 
-// ========================================
 // Get Logged In User
-// ========================================
 
 let loggedInUser = null;
 
@@ -103,9 +95,7 @@ try {
 }
 
 
-// ========================================
 // Check Authentication
-// ========================================
 
 if (!token || !loggedInUser) {
 
@@ -115,9 +105,7 @@ if (!token || !loggedInUser) {
 }
 
 
-// ========================================
 // Check Organizer Role
-// ========================================
 
 if (
     loggedInUser &&
@@ -134,9 +122,7 @@ if (
 }
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -162,9 +148,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -182,9 +166,7 @@ function hideError() {
 }
 
 
-// ========================================
 // Show Success
-// ========================================
 
 function showSuccess(message) {
 
@@ -210,9 +192,7 @@ function showSuccess(message) {
 }
 
 
-// ========================================
 // Hide Success
-// ========================================
 
 function hideSuccess() {
 
@@ -230,9 +210,7 @@ function hideSuccess() {
 }
 
 
-// ========================================
 // Load Categories
-// ========================================
 
 async function loadCategories() {
 
@@ -354,16 +332,12 @@ async function loadCategories() {
 }
 
 
-// ========================================
 // Load Categories On Page Load
-// ========================================
 
 loadCategories();
 
 
-// ========================================
 // Create Slug
-// ========================================
 
 function createSlug(text) {
 
@@ -386,9 +360,7 @@ function createSlug(text) {
 }
 
 
-// ========================================
 // Generate Slug From Title
-// ========================================
 
 if (
     titleInput &&
@@ -427,9 +399,7 @@ if (
 }
 
 
-// ========================================
 // Event Type Change
-// ========================================
 
 if (
     eventTypeInput &&
@@ -501,9 +471,7 @@ if (
 }
 
 
-// ========================================
 // Initial Ticket Price State
-// ========================================
 
 if (
     eventTypeInput &&
@@ -568,9 +536,7 @@ if (
 }
 
 
-// ========================================
 // Validate Form
-// ========================================
 
 function validateForm() {
 
@@ -617,9 +583,7 @@ function validateForm() {
         );
 
 
-    // ====================================
     // Required Fields
-    // ====================================
 
     if (!title) {
 
@@ -751,9 +715,7 @@ function validateForm() {
     }
 
 
-    // ====================================
     // Date Validation
-    // ====================================
 
     const selectedDate =
         new Date(
@@ -787,9 +749,7 @@ function validateForm() {
     }
 
 
-    // ====================================
     // Time Validation
-    // ====================================
 
     if (
         startTime >= endTime
@@ -806,9 +766,7 @@ function validateForm() {
     }
 
 
-    // ====================================
     // Ticket Validation
-    // ====================================
 
     if (eventType !== "free") {
 
@@ -897,9 +855,7 @@ function validateForm() {
 }
 
 
-// ========================================
 // Upload Single Image
-// ========================================
 
 async function uploadSingleImage(file) {
 
@@ -963,9 +919,7 @@ async function uploadSingleImage(file) {
 }
 
 
-// ========================================
 // Upload Multiple Images
-// ========================================
 
 async function uploadMultipleImages(files) {
 
@@ -1040,9 +994,7 @@ async function uploadMultipleImages(files) {
 }
 
 
-// ========================================
 // Create Event
-// ========================================
 
 if (createEventForm) {
 
@@ -1057,9 +1009,7 @@ if (createEventForm) {
             hideSuccess();
 
 
-            // ====================================
             // Validate
-            // ====================================
 
             if (!validateForm()) {
 
@@ -1068,9 +1018,7 @@ if (createEventForm) {
             }
 
 
-            // ====================================
             // Loading State
-            // ====================================
 
             createEventButton.disabled =
                 true;
@@ -1081,9 +1029,7 @@ if (createEventForm) {
 
             try {
 
-                // ====================================
                 // Get Values
-                // ====================================
 
                 const title =
                     titleInput.value.trim();
@@ -1137,9 +1083,7 @@ if (createEventForm) {
                     );
 
 
-                // ====================================
                 // Upload Images
-                // ====================================
 
                 createEventButton.textContent =
                     "Uploading Images...";
@@ -1182,9 +1126,7 @@ if (createEventForm) {
                 }
 
 
-                // ====================================
                 // Event Data
-                // ====================================
 
                 const eventData = {
 
@@ -1256,9 +1198,7 @@ if (createEventForm) {
                 );
 
 
-                // ====================================
                 // API Request
-                // ====================================
 
                 createEventButton.textContent =
                     "Creating Event...";
@@ -1290,9 +1230,7 @@ if (createEventForm) {
                     );
 
 
-                // ====================================
                 // Read Response
-                // ====================================
 
                 const result =
                     await response.json();
@@ -1304,9 +1242,7 @@ if (createEventForm) {
                 );
 
 
-                // ====================================
                 // API Error
-                // ====================================
 
                 if (
                     !response.ok ||
@@ -1321,9 +1257,7 @@ if (createEventForm) {
                 }
 
 
-                // ====================================
                 // Success
-                // ====================================
 
                 showSuccess(
                     "Event created successfully."
@@ -1334,9 +1268,7 @@ if (createEventForm) {
                     "Event Created";
 
 
-                // ====================================
                 // Redirect
-                // ====================================
 
                 setTimeout(
                     () => {
@@ -1357,9 +1289,7 @@ if (createEventForm) {
                 );
 
 
-                // ====================================
                 // Show Error
-                // ====================================
 
                 if (
                     error instanceof TypeError
@@ -1379,9 +1309,7 @@ if (createEventForm) {
                 }
 
 
-                // ====================================
                 // Reset Button
-                // ====================================
 
                 createEventButton.disabled =
                     false;

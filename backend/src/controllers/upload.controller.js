@@ -1,6 +1,4 @@
-// ========================================
 // EventEase Upload Controller
-// ========================================
 
 const uploadService =
     require("../services/upload.service");
@@ -9,9 +7,7 @@ const catchAsync =
     require("../utils/catchAsync");
 
 
-// ========================================
 // Upload Single Image
-// ========================================
 
 const uploadSingleImage =
     catchAsync(
@@ -39,9 +35,7 @@ const uploadSingleImage =
     );
 
 
-// ========================================
 // Upload Multiple Images
-// ========================================
 
 const uploadMultipleImages =
     catchAsync(

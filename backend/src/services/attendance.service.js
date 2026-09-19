@@ -3,9 +3,7 @@ const Payment = require("../models/Payment");
 const AppError = require("../utils/AppError");
 
 
-// ======================================================
 // Scan QR Code & Mark Attendance
-// ======================================================
 
 const scanQRCode = async (qrData) => {
 
@@ -73,7 +71,6 @@ const scanQRCode = async (qrData) => {
     await Payment.findById(
       booking.payment
     );
-
 
 
   if (

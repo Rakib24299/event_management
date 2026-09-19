@@ -1,11 +1,6 @@
-// ========================================
 // EventEase User Notifications
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
@@ -13,10 +8,7 @@ const API_BASE_URL =
 const SOCKET_URL =
     "http://localhost:5000";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const notificationList =
     document.getElementById(
@@ -38,10 +30,7 @@ const markAllReadBtn =
         "markAllReadBtn"
     );
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -52,10 +41,7 @@ const getToken = () => {
 
 };
 
-
-// ========================================
 // Get User ID
-// ========================================
 
 const getUserId = () => {
 
@@ -73,7 +59,6 @@ const getUserId = () => {
 
     ];
 
-
     for (
         const key of possibleKeys
     ) {
@@ -86,11 +71,9 @@ const getUserId = () => {
                 key
             );
 
-
         if (!storedUser) {
             continue;
         }
-
 
         try {
 
@@ -99,12 +82,10 @@ const getUserId = () => {
                     storedUser
                 );
 
-
             const userId =
                 parsedUser?._id ||
                 parsedUser?.id ||
                 parsedUser?.userId;
-
 
             if (userId) {
 
@@ -120,10 +101,7 @@ const getUserId = () => {
 
     }
 
-
-    // --------------------------------------
     // Direct user ID storage
-    // --------------------------------------
 
     const directUserId =
         localStorage.getItem(
@@ -133,19 +111,14 @@ const getUserId = () => {
             "userId"
         );
 
-
     return directUserId || null;
 
 };
 
-
-// ========================================
 // Authentication Check
-// ========================================
 
 const token =
     getToken();
-
 
 if (!token) {
 
@@ -158,10 +131,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest =
     async (
@@ -191,10 +161,8 @@ const apiRequest =
                 }
             );
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -205,15 +173,11 @@ const apiRequest =
 
         }
 
-
         return data;
 
     };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate =
     (
@@ -225,7 +189,6 @@ const formatDate =
             return "";
 
         }
-
 
         return new Date(date)
             .toLocaleString(
@@ -243,10 +206,7 @@ const formatDate =
 
     };
 
-
-// ========================================
 // Get Notification Icon
-// ========================================
 
 const getNotificationIcon =
     (
@@ -280,10 +240,7 @@ const getNotificationIcon =
         }
     };
 
-
-// ========================================
 // Render Notifications
-// ========================================
 
 const renderNotifications =
     (
@@ -293,11 +250,9 @@ const renderNotifications =
         notificationList.innerHTML =
             "";
 
-
         loadingState.classList.add(
             "hidden"
         );
-
 
         if (
             !notifications ||
@@ -312,11 +267,9 @@ const renderNotifications =
 
         }
 
-
         emptyState.classList.add(
             "hidden"
         );
-
 
         notifications.forEach(
             (
@@ -327,12 +280,10 @@ const renderNotifications =
                     notification.isRead ===
                     true;
 
-
                 const notificationCard =
                     document.createElement(
                         "div"
                     );
-
 
                 notificationCard.className =
                     `notification-card rounded-3xl p-5 shadow-soft transition-all duration-200 border ${
@@ -340,7 +291,6 @@ const renderNotifications =
                             ? "bg-white border-gray-100 hover:border-gray-200"
                             : "bg-gray-100 border-gray-200/90 hover:bg-gray-200/70"
                     }`;
-
 
                 notificationCard.innerHTML = `
 
@@ -359,7 +309,6 @@ const renderNotifications =
                             )}
 
                         </div>
-
 
                         <!-- Content -->
 
@@ -380,7 +329,6 @@ const renderNotifications =
                                         }
                                     </h3>
 
-
                                     <p
                                         class="mt-1 text-sm leading-6 ${isRead ? 'text-gray-500' : 'text-gray-700 font-medium'}"
                                     >
@@ -391,7 +339,6 @@ const renderNotifications =
                                     </p>
 
                                 </div>
-
 
                                 ${
                                     !isRead
@@ -407,7 +354,6 @@ const renderNotifications =
 
                             </div>
 
-
                             <!-- Date -->
 
                             <p
@@ -417,7 +363,6 @@ const renderNotifications =
                                     notification.createdAt
                                 )}
                             </p>
-
 
                             ${
                                 !isRead
@@ -439,7 +384,6 @@ const renderNotifications =
 
                 `;
 
-
                 notificationList.appendChild(
                     notificationCard
                 );
@@ -447,15 +391,11 @@ const renderNotifications =
             }
         );
 
-
         attachMarkReadEvents();
 
     };
 
-
-// ========================================
 // Load Notifications
-// ========================================
 
 const loadNotifications =
     async () => {
@@ -466,26 +406,21 @@ const loadNotifications =
                 "hidden"
             );
 
-
             emptyState.classList.add(
                 "hidden"
             );
-
 
             const result =
                 await apiRequest(
                     "/notifications"
                 );
 
-
             const notifications =
                 result.data || [];
-
 
             renderNotifications(
                 notifications
             );
-
 
         } catch (
             error
@@ -496,11 +431,9 @@ const loadNotifications =
                 error
             );
 
-
             loadingState.classList.add(
                 "hidden"
             );
-
 
             notificationList.innerHTML = `
 
@@ -514,13 +447,11 @@ const loadNotifications =
                         <svg class="h-5 w-5 text-amber-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     </div>
 
-
                     <h3
                         class="mt-4 font-bold text-gray-900"
                     >
                         Failed to Load Notifications
                     </h3>
-
 
                     <p
                         class="mt-2 text-sm text-gray-500"
@@ -530,7 +461,6 @@ const loadNotifications =
                             "Please try again later."
                         }
                     </p>
-
 
                     <button
                         id="retryBtn"
@@ -544,12 +474,10 @@ const loadNotifications =
 
             `;
 
-
             const retryBtn =
                 document.getElementById(
                     "retryBtn"
                 );
-
 
             if (retryBtn) {
 
@@ -564,10 +492,7 @@ const loadNotifications =
 
     };
 
-
-// ========================================
 // Mark Single Notification as Read
-// ========================================
 
 const markNotificationAsRead =
     async (
@@ -586,9 +511,7 @@ const markNotificationAsRead =
                 }
             );
 
-
             await loadNotifications();
-
 
             if (
                 typeof updateNotificationBadge ===
@@ -599,7 +522,6 @@ const markNotificationAsRead =
 
             }
 
-
         } catch (
             error
         ) {
@@ -608,7 +530,6 @@ const markNotificationAsRead =
                 "Mark notification error:",
                 error
             );
-
 
             alert(
                 error.message ||
@@ -619,10 +540,7 @@ const markNotificationAsRead =
 
     };
 
-
-// ========================================
 // Attach Mark Read Events
-// ========================================
 
 const attachMarkReadEvents =
     () => {
@@ -631,7 +549,6 @@ const attachMarkReadEvents =
             document.querySelectorAll(
                 ".mark-read-btn"
             );
-
 
         buttons.forEach(
             (
@@ -644,7 +561,6 @@ const attachMarkReadEvents =
 
                         const notificationId =
                             button.dataset.id;
-
 
                         if (
                             notificationId
@@ -664,10 +580,7 @@ const attachMarkReadEvents =
 
     };
 
-
-// ========================================
 // Mark All Notifications as Read
-// ========================================
 
 const markAllNotificationsAsRead =
     async () => {
@@ -677,10 +590,8 @@ const markAllNotificationsAsRead =
             markAllReadBtn.disabled =
                 true;
 
-
             markAllReadBtn.textContent =
                 "Updating...";
-
 
             await apiRequest(
                 "/notifications/mark-all-read",
@@ -692,9 +603,7 @@ const markAllNotificationsAsRead =
                 }
             );
 
-
             await loadNotifications();
-
 
             if (
                 typeof updateNotificationBadge ===
@@ -705,7 +614,6 @@ const markAllNotificationsAsRead =
 
             }
 
-
         } catch (
             error
         ) {
@@ -714,7 +622,6 @@ const markAllNotificationsAsRead =
                 "Mark all read error:",
                 error
             );
-
 
             alert(
                 error.message ||
@@ -726,7 +633,6 @@ const markAllNotificationsAsRead =
             markAllReadBtn.disabled =
                 false;
 
-
             markAllReadBtn.textContent =
                 "Mark All as Read";
 
@@ -734,10 +640,7 @@ const markAllNotificationsAsRead =
 
     };
 
-
-// ========================================
 // Mark All Read Button
-// ========================================
 
 if (
     markAllReadBtn
@@ -750,10 +653,7 @@ if (
 
 }
 
-
-// ========================================
 // SOCKET.IO CONNECTION
-// ========================================
 
 const connectNotificationSocket =
     () => {
@@ -771,10 +671,8 @@ const connectNotificationSocket =
 
         }
 
-
         const userId =
             getUserId();
-
 
         if (!userId) {
 
@@ -785,7 +683,6 @@ const connectNotificationSocket =
             return;
 
         }
-
 
         const socket =
             io(
@@ -809,10 +706,7 @@ const connectNotificationSocket =
                 }
             );
 
-
-        // --------------------------------------------
         // SOCKET CONNECTED
-        // --------------------------------------------
 
         socket.on(
             "connect",
@@ -822,12 +716,10 @@ const connectNotificationSocket =
                     `[Socket] Notification Socket connected: ${socket.id}`
                 );
 
-
                 socket.emit(
                     "joinUserRoom",
                     userId
                 );
-
 
                 console.log(
                     `[User] Joined notification room: user_${userId}`
@@ -836,10 +728,7 @@ const connectNotificationSocket =
             }
         );
 
-
-        // --------------------------------------------
         // NEW NOTIFICATION
-        // --------------------------------------------
 
         socket.on(
             "newNotification",
@@ -852,10 +741,7 @@ const connectNotificationSocket =
                     notification
                 );
 
-
-                // ----------------------------------------
                 // Ignore notification for another user
-                // ----------------------------------------
 
                 if (
                     notification?.user &&
@@ -867,17 +753,11 @@ const connectNotificationSocket =
 
                 }
 
-
-                // ----------------------------------------
                 // Reload notification list
-                // ----------------------------------------
 
                 loadNotifications();
 
-
-                // ----------------------------------------
                 // Update notification badge
-                // ----------------------------------------
 
                 if (
                     typeof updateNotificationBadge ===
@@ -888,10 +768,7 @@ const connectNotificationSocket =
 
                 }
 
-
-                // ----------------------------------------
                 // Browser notification
-                // ----------------------------------------
 
                 if (
                     "Notification" in window
@@ -921,10 +798,7 @@ const connectNotificationSocket =
             }
         );
 
-
-        // --------------------------------------------
         // SOCKET ERROR
-        // --------------------------------------------
 
         socket.on(
             "connect_error",
@@ -940,10 +814,7 @@ const connectNotificationSocket =
             }
         );
 
-
-        // --------------------------------------------
         // SOCKET DISCONNECTED
-        // --------------------------------------------
 
         socket.on(
             "disconnect",
@@ -959,10 +830,7 @@ const connectNotificationSocket =
             }
         );
 
-
-        // --------------------------------------------
         // Request Browser Notification Permission
-        // --------------------------------------------
 
         if (
             "Notification" in window &&
@@ -977,26 +845,17 @@ const connectNotificationSocket =
 
         }
 
-
-        // --------------------------------------------
         // Make socket accessible if needed
-        // --------------------------------------------
 
         window.eventEaseNotificationSocket =
             socket;
 
     };
 
-
-// ========================================
 // Start Socket Connection
-// ========================================
 
 connectNotificationSocket();
 
-
-// ========================================
 // Load Notifications on Page Load
-// ========================================
 
 loadNotifications();

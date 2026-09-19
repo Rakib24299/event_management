@@ -4,9 +4,7 @@ const objectIdSchema =
   require("./objectId.validation");
 
 
-// ========================================
 // Image Schema
-// ========================================
 
 const imageSchema = z
   .object({
@@ -25,10 +23,7 @@ const imageSchema = z
   .strict();
 
 
-
-// ========================================
 // Create Event Schema
-// ========================================
 
 const createEventSchema = z.object({
 
@@ -88,9 +83,7 @@ const createEventSchema = z.object({
         ),
 
 
-      // ====================================
       // Venue
-      // ====================================
 
       venue: z.object({
 
@@ -131,9 +124,7 @@ const createEventSchema = z.object({
       }),
 
 
-      // ====================================
       // Date & Time
-      // ====================================
 
       eventDate: z
         .string()
@@ -150,9 +141,7 @@ const createEventSchema = z.object({
         .nonempty("End time is required"),
 
 
-      // ====================================
       // Event Type
-      // ====================================
 
       eventType: z.enum(
         ["free", "paid"],
@@ -167,9 +156,7 @@ const createEventSchema = z.object({
       ),
 
 
-      // ====================================
       // Ticket
-      // ====================================
 
       ticketPrice: z
         .number()
@@ -208,17 +195,13 @@ const createEventSchema = z.object({
         .optional(),
 
 
-      // ====================================
       // Banner Image
-      // ====================================
 
       bannerImage:
         imageSchema.optional(),
 
 
-      // ====================================
       // Gallery Images
-      // ====================================
 
       galleryImages:
         z
@@ -234,16 +217,12 @@ const createEventSchema = z.object({
     .strict()
 
 
-    // ======================================
     // Create Event Validation
-    // ======================================
 
     .superRefine((data, ctx) => {
 
 
-      // ====================================
       // Free Event Price
-      // ====================================
 
       if (
         data.eventType === "free" &&
@@ -267,9 +246,7 @@ const createEventSchema = z.object({
       }
 
 
-      // ====================================
       // Paid Event Validation
-      // ====================================
 
       if (
         data.eventType === "paid"
@@ -340,9 +317,7 @@ const createEventSchema = z.object({
       }
 
 
-      // ====================================
       // Maximum Tickets
-      // ====================================
 
       if (
         data.maxTicketsPerUser &&
@@ -371,10 +346,7 @@ const createEventSchema = z.object({
 });
 
 
-
-// ========================================
 // Update Event Schema
-// ========================================
 
 const updateEventSchema = z.object({
 
@@ -382,9 +354,7 @@ const updateEventSchema = z.object({
     .object({
 
 
-      // ====================================
       // Basic Information
-      // ====================================
 
       title: z
         .string()
@@ -428,10 +398,7 @@ const updateEventSchema = z.object({
         .optional(),
 
 
-
-      // ====================================
       // Venue
-      // ====================================
 
       venue: z
         .object({
@@ -471,10 +438,7 @@ const updateEventSchema = z.object({
         .optional(),
 
 
-
-      // ====================================
       // Date & Time
-      // ====================================
 
       eventDate:
         z.string().optional(),
@@ -488,10 +452,7 @@ const updateEventSchema = z.object({
         z.string().optional(),
 
 
-
-      // ====================================
       // Event Type
-      // ====================================
 
       eventType:
         z
@@ -499,10 +460,7 @@ const updateEventSchema = z.object({
           .optional(),
 
 
-
-      // ====================================
       // Ticket
-      // ====================================
 
       ticketPrice:
         z
@@ -535,10 +493,7 @@ const updateEventSchema = z.object({
           .optional(),
 
 
-
-      // ====================================
       // Images
-      // ====================================
 
       bannerImage:
         imageSchema.optional(),
@@ -554,10 +509,7 @@ const updateEventSchema = z.object({
           .optional(),
 
 
-
-      // ====================================
       // Status
-      // ====================================
 
       status:
         z
@@ -574,9 +526,7 @@ const updateEventSchema = z.object({
     .strict()
 
 
-    // ======================================
     // At Least One Field
-    // ======================================
 
     .refine(
 
@@ -593,16 +543,12 @@ const updateEventSchema = z.object({
     )
 
 
-    // ======================================
     // Update Validation
-    // ======================================
 
     .superRefine((data, ctx) => {
 
 
-      // ====================================
       // Free Event Price
-      // ====================================
 
       if (
         data.eventType === "free" &&
@@ -626,9 +572,7 @@ const updateEventSchema = z.object({
       }
 
 
-      // ====================================
       // Paid Event Price
-      // ====================================
 
       if (
         data.eventType === "paid" &&
@@ -652,9 +596,7 @@ const updateEventSchema = z.object({
       }
 
 
-      // ====================================
       // Maximum Tickets
-      // ====================================
 
       if (
         data.totalSeats !== undefined &&
@@ -683,10 +625,7 @@ const updateEventSchema = z.object({
 });
 
 
-
-// ========================================
 // Export
-// ========================================
 
 module.exports = {
 

@@ -1,14 +1,10 @@
-// ======================================================
 // EventEase Booking / Payment Success Page
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // DOM ELEMENTS
-// ======================================================
 
 const successEventImage =
     document.getElementById("successEventImage");
@@ -62,9 +58,7 @@ const qrMessage =
     document.getElementById("qrMessage");
 
 
-// ======================================================
 // AUTH TOKEN
-// ======================================================
 
 function getAuthToken() {
 
@@ -77,9 +71,7 @@ function getAuthToken() {
 }
 
 
-// ======================================================
 // GLOBAL DATA
-// ======================================================
 
 let successData = null;
 
@@ -94,9 +86,7 @@ let bookingOtp = null;
 let otpExpiresAt = null;
 
 
-// ======================================================
 // FORMAT MONEY
-// ======================================================
 
 function formatPrice(amount) {
 
@@ -108,9 +98,7 @@ function formatPrice(amount) {
 }
 
 
-// ======================================================
 // FORMAT DATE
-// ======================================================
 
 function formatDate(value) {
 
@@ -146,9 +134,7 @@ function formatDate(value) {
 }
 
 
-// ======================================================
 // GET ID FROM OBJECT
-// ======================================================
 
 function getId(value) {
 
@@ -175,9 +161,7 @@ function getId(value) {
 }
 
 
-// ======================================================
 // LOAD SUCCESS DATA
-// ======================================================
 
 function loadSuccessData() {
 
@@ -186,9 +170,7 @@ function loadSuccessData() {
     );
 
 
-    // --------------------------------------------------
     // Main data created by payment.js
-    // --------------------------------------------------
 
     const storedSuccess =
         sessionStorage.getItem(
@@ -196,9 +178,7 @@ function loadSuccessData() {
         );
 
 
-    // --------------------------------------------------
     // Booking data
-    // --------------------------------------------------
 
     const storedBooking =
         sessionStorage.getItem(
@@ -206,9 +186,7 @@ function loadSuccessData() {
         );
 
 
-    // --------------------------------------------------
     // Payment data
-    // --------------------------------------------------
 
     const storedPayment =
         sessionStorage.getItem(
@@ -216,9 +194,7 @@ function loadSuccessData() {
         );
 
 
-    // --------------------------------------------------
     // Booking ID
-    // --------------------------------------------------
 
     const storedBookingId =
         sessionStorage.getItem(
@@ -250,9 +226,7 @@ function loadSuccessData() {
     );
 
 
-    // ==================================================
     // PARSE MAIN SUCCESS DATA
-    // ==================================================
 
     if (storedSuccess) {
 
@@ -275,9 +249,7 @@ function loadSuccessData() {
     }
 
 
-    // ==================================================
     // PARSE BOOKING DATA
-    // ==================================================
 
     if (storedBooking) {
 
@@ -300,9 +272,7 @@ function loadSuccessData() {
     }
 
 
-    // ==================================================
     // PARSE PAYMENT DATA
-    // ==================================================
 
     if (storedPayment) {
 
@@ -325,9 +295,7 @@ function loadSuccessData() {
     }
 
 
-    // ==================================================
     // EXTRACT FROM paymentSuccessData
-    // ==================================================
 
     if (successData) {
 
@@ -364,9 +332,7 @@ function loadSuccessData() {
     }
 
 
-    // ==================================================
     // FALLBACK OTP FROM BOOKING
-    // ==================================================
 
     if (!bookingOtp && completedBooking) {
 
@@ -387,9 +353,7 @@ function loadSuccessData() {
     }
 
 
-    // ==================================================
     // FALLBACK BOOKING ID
-    // ==================================================
 
     if (
         !completedBooking &&
@@ -432,9 +396,7 @@ function loadSuccessData() {
 }
 
 
-// ======================================================
 // GET BOOKING ID
-// ======================================================
 
 function getBookingId() {
 
@@ -453,9 +415,7 @@ function getBookingId() {
 }
 
 
-// ======================================================
 // GET EVENT ID
-// ======================================================
 
 function getEventId() {
 
@@ -492,9 +452,7 @@ function getEventId() {
 }
 
 
-// ======================================================
 // DISPLAY BOOKING INFORMATION
-// ======================================================
 
 function displayBookingInformation() {
 
@@ -502,9 +460,7 @@ function displayBookingInformation() {
         getBookingId();
 
 
-    // --------------------------------------------------
     // Ticket Quantity
-    // --------------------------------------------------
 
     const quantity =
         Number(
@@ -515,9 +471,7 @@ function displayBookingInformation() {
         );
 
 
-    // --------------------------------------------------
     // Amount
-    // --------------------------------------------------
 
     const totalAmount =
         Number(
@@ -530,9 +484,7 @@ function displayBookingInformation() {
         );
 
 
-    // --------------------------------------------------
     // Payment Method
-    // --------------------------------------------------
 
     const paymentMethod =
         completedPayment?.paymentMethod ||
@@ -545,9 +497,7 @@ function displayBookingInformation() {
             : "sslcommerz");
 
 
-    // --------------------------------------------------
     // Transaction ID
-    // --------------------------------------------------
 
     const transactionId =
         completedPayment?.transactionId ||
@@ -558,9 +508,7 @@ function displayBookingInformation() {
         "--";
 
 
-    // --------------------------------------------------
     // Payment Status
-    // --------------------------------------------------
 
     const paymentStatus =
         completedPayment?.paymentStatus ||
@@ -569,9 +517,7 @@ function displayBookingInformation() {
         "paid";
 
 
-    // --------------------------------------------------
     // Booking Status
-    // --------------------------------------------------
 
     const currentBookingStatus =
         completedBooking?.bookingStatus ||
@@ -579,9 +525,7 @@ function displayBookingInformation() {
         "pending";
 
 
-    // --------------------------------------------------
     // Set UI
-    // --------------------------------------------------
 
     if (successBookingId) {
 
@@ -667,9 +611,7 @@ function displayBookingInformation() {
 }
 
 
-// ======================================================
 // DISPLAY OTP
-// ======================================================
 
 function displayBookingOTP() {
 
@@ -679,9 +621,7 @@ function displayBookingOTP() {
     );
 
 
-    // --------------------------------------------------
     // Find OTP elements
-    // --------------------------------------------------
 
     const otpElement =
         document.getElementById(
@@ -712,9 +652,7 @@ function displayBookingOTP() {
     }
 
 
-    // --------------------------------------------------
     // OTP exists
-    // --------------------------------------------------
 
     if (bookingOtp) {
 
@@ -745,9 +683,7 @@ function displayBookingOTP() {
     }
 
 
-    // --------------------------------------------------
     // OTP not returned
-    // --------------------------------------------------
 
     otpElement.textContent =
         "------";
@@ -763,9 +699,7 @@ function displayBookingOTP() {
 }
 
 
-// ======================================================
 // LOAD EVENT INFORMATION
-// ======================================================
 
 async function loadEventInformation() {
 
@@ -833,9 +767,7 @@ async function loadEventInformation() {
         }
 
 
-        // ------------------------------------------------
         // Extract event
-        // ------------------------------------------------
 
         eventData =
             result.data?.event ||
@@ -861,9 +793,7 @@ async function loadEventInformation() {
 }
 
 
-// ======================================================
 // DISPLAY EVENT INFORMATION
-// ======================================================
 
 function displayEventInformation(event) {
 
@@ -874,9 +804,7 @@ function displayEventInformation(event) {
     }
 
 
-    // --------------------------------------------------
     // IMAGE
-    // --------------------------------------------------
 
     let imageUrl = "";
 
@@ -932,9 +860,7 @@ function displayEventInformation(event) {
     }
 
 
-    // --------------------------------------------------
     // CATEGORY
-    // --------------------------------------------------
 
     let categoryName =
         "Event";
@@ -970,9 +896,7 @@ function displayEventInformation(event) {
     }
 
 
-    // --------------------------------------------------
     // TITLE
-    // --------------------------------------------------
 
     if (successEventTitle) {
 
@@ -984,9 +908,7 @@ function displayEventInformation(event) {
     }
 
 
-    // --------------------------------------------------
     // DATE
-    // --------------------------------------------------
 
     if (successEventDate) {
 
@@ -1000,9 +922,7 @@ function displayEventInformation(event) {
     }
 
 
-    // --------------------------------------------------
     // LOCATION
-    // --------------------------------------------------
 
     let locationText =
         "Location not available";
@@ -1077,9 +997,7 @@ function displayEventInformation(event) {
 }
 
 
-// ======================================================
 // GENERATE QR
-// ======================================================
 
 async function generateQRCode() {
 
@@ -1283,9 +1201,7 @@ async function generateQRCode() {
 }
 
 
-// ======================================================
 // QR BUTTON
-// ======================================================
 
 if (generateQrButton) {
 
@@ -1297,9 +1213,7 @@ if (generateQrButton) {
 }
 
 
-// ======================================================
 // INITIALIZE
-// ======================================================
 
 async function initialize() {
 
@@ -1338,32 +1252,24 @@ async function initialize() {
     }
 
 
-    // --------------------------------------------------
     // Display booking
-    // --------------------------------------------------
 
     displayBookingInformation();
 
 
-    // --------------------------------------------------
     // Display OTP
-    // --------------------------------------------------
 
     displayBookingOTP();
 
 
-    // --------------------------------------------------
     // Load event
-    // --------------------------------------------------
 
     await loadEventInformation();
 
 }
 
 
-// ======================================================
 // START
-// ======================================================
 
 if (
     document.readyState ===

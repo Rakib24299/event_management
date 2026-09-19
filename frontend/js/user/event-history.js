@@ -1,23 +1,14 @@
 "use strict";
 
-
-// ======================================================
 // Configuration
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
-
-// ======================================================
 // State
-// ======================================================
 
 let historyBookings = [];
 
-
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -37,10 +28,7 @@ const emptyState =
 const historyContainer =
     document.getElementById("historyContainer");
 
-
-// ======================================================
 // Review Modal Elements & State
-// ======================================================
 
 const reviewModal =
     document.getElementById("reviewModal");
@@ -109,10 +97,7 @@ const modalRatingLabels = {
     5: "Excellent"
 };
 
-
-// ======================================================
 // Auth Token
-// ======================================================
 
 function getToken() {
 
@@ -125,10 +110,7 @@ function getToken() {
 
 }
 
-
-// ======================================================
 // Authentication Check
-// ======================================================
 
 function checkAuthentication() {
 
@@ -147,10 +129,7 @@ function checkAuthentication() {
 
 }
 
-
-// ======================================================
 // API Request Helper
-// ======================================================
 
 async function apiRequest(
     endpoint,
@@ -164,14 +143,12 @@ async function apiRequest(
         ...(options.headers || {}),
     };
 
-
     if (token) {
 
         headers.Authorization =
             `Bearer ${token}`;
 
     }
-
 
     const response =
         await fetch(
@@ -182,9 +159,7 @@ async function apiRequest(
             }
         );
 
-
     let result = null;
-
 
     try {
 
@@ -197,7 +172,6 @@ async function apiRequest(
 
     }
 
-
     if (!response.ok) {
 
         const message =
@@ -209,15 +183,11 @@ async function apiRequest(
 
     }
 
-
     return result;
 
 }
 
-
-// ======================================================
 // Date Utilities
-// ======================================================
 
 function isEventExpired(event) {
 
@@ -225,19 +195,15 @@ function isEventExpired(event) {
         return true;
     }
 
-
     const eventDate =
         event.eventDate || event.date;
-
 
     if (!eventDate) {
         return false;
     }
 
-
     const eventDateTime =
         new Date(eventDate);
-
 
     if (
         Number.isNaN(
@@ -247,10 +213,8 @@ function isEventExpired(event) {
         return false;
     }
 
-
     const startTime =
         event.startTime;
-
 
     if (startTime) {
         const timeParts =
@@ -272,15 +236,12 @@ function isEventExpired(event) {
         }
     }
 
-
     const now =
         new Date();
-
 
     return now > eventDateTime;
 
 }
-
 
 function getBookingEvent(booking) {
 
@@ -292,22 +253,18 @@ function getBookingEvent(booking) {
 
 }
 
-
 function formatDate(dateValue) {
 
     if (!dateValue) {
         return "Date not available";
     }
 
-
     const date =
         new Date(dateValue);
-
 
     if (Number.isNaN(date.getTime())) {
         return dateValue;
     }
-
 
     return date.toLocaleDateString(
         "en-US",
@@ -320,22 +277,18 @@ function formatDate(dateValue) {
 
 }
 
-
 function formatTime(dateValue) {
 
     if (!dateValue) {
         return "";
     }
 
-
     const date =
         new Date(dateValue);
-
 
     if (Number.isNaN(date.getTime())) {
         return "";
     }
-
 
     return date.toLocaleTimeString(
         "en-US",
@@ -347,7 +300,6 @@ function formatTime(dateValue) {
 
 }
 
-
 function formatPrice(price) {
 
     if (
@@ -358,40 +310,33 @@ function formatPrice(price) {
         return "Free";
     }
 
-
     if (Number(price) === 0) {
         return "Free";
     }
 
-
     return `৳${Number(price).toLocaleString()}`;
 
 }
-
 
 function escapeHTML(value) {
 
     const div =
         document.createElement("div");
 
-
     div.textContent =
         value == null
             ? ""
             : String(value);
 
-
     return div.innerHTML;
 
 }
-
 
 function capitalize(value) {
 
     if (!value) {
         return "";
     }
-
 
     return (
         value.charAt(0).toUpperCase() +
@@ -400,22 +345,17 @@ function capitalize(value) {
 
 }
 
-
-// ======================================================
 // Booking Card
-// ======================================================
 
 function createHistoryCard(booking) {
 
     const event =
         getBookingEvent(booking);
 
-
     const eventTitle =
         event.title ||
         booking.eventTitle ||
         "Event";
-
 
     const eventImage =
         event.bannerImage?.url ||
@@ -423,16 +363,13 @@ function createHistoryCard(booking) {
         booking.eventImage ||
         "https://via.placeholder.com/600x350?text=EventEase";
 
-
     const eventDate =
         event.eventDate ||
         event.date ||
         booking.eventDate;
 
-
     const venue =
         event.venue || {};
-
 
     const venueName =
         venue.venueName ||
@@ -440,11 +377,9 @@ function createHistoryCard(booking) {
         booking.location ||
         "Location not available";
 
-
     const startTime =
         event.startTime ||
         "";
-
 
     const quantity =
         Number(
@@ -455,25 +390,21 @@ function createHistoryCard(booking) {
             1
         );
 
-
     const price =
         booking.totalAmount ??
         booking.totalPrice ??
         booking.amount ??
         0;
 
-
     const bookingStatus =
         booking.bookingStatus ||
         booking.status ||
         "pending";
 
-
     const bookingId =
         booking._id ||
         booking.id ||
         "";
-
 
     const statusClass =
         bookingStatus === "confirmed"
@@ -484,7 +415,6 @@ function createHistoryCard(booking) {
                     ? "bg-blue-100 text-blue-700"
                     : "bg-yellow-100 text-yellow-700";
 
-
     const eventId =
         event._id ||
         event.id ||
@@ -492,14 +422,11 @@ function createHistoryCard(booking) {
         booking.eventId ||
         "";
 
-
     const card =
         document.createElement("div");
 
-
     card.className =
         "overflow-hidden rounded-3xl bg-white shadow-soft";
-
 
     card.innerHTML = `
 
@@ -517,7 +444,6 @@ function createHistoryCard(booking) {
                 >
 
             </div>
-
 
             <!-- Booking Information -->
 
@@ -543,7 +469,6 @@ function createHistoryCard(booking) {
 
                     </div>
 
-
                     <div class="mt-4 space-y-2">
 
                         <p class="text-sm text-gray-500">
@@ -556,7 +481,6 @@ function createHistoryCard(booking) {
 
                         </p>
 
-
                         <p class="text-sm text-gray-500">
 
                             <svg class="h-4 w-4 inline-block text-current align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -567,7 +491,6 @@ function createHistoryCard(booking) {
 
                         </p>
 
-
                         <p class="text-sm text-gray-500">
 
                             <svg class="h-5 w-5 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
@@ -577,7 +500,6 @@ function createHistoryCard(booking) {
                             </span>
 
                         </p>
-
 
                         ${
                             bookingStatus === "cancelled"
@@ -592,7 +514,6 @@ function createHistoryCard(booking) {
                     </div>
 
                 </div>
-
 
                 <div
                     class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4"
@@ -611,7 +532,6 @@ function createHistoryCard(booking) {
                         </p>
 
                     </div>
-
 
                     <div>
                         ${
@@ -636,7 +556,6 @@ function createHistoryCard(booking) {
 
     `;
 
-
     const reviewBtn =
         card.querySelector(".open-review-btn");
 
@@ -660,20 +579,15 @@ function createHistoryCard(booking) {
 
     }
 
-
     return card;
 
 }
 
-
-// ======================================================
 // Load History
-// ======================================================
 
 async function loadEventHistory() {
 
     showLoading();
-
 
     try {
 
@@ -682,9 +596,7 @@ async function loadEventHistory() {
                 "/bookings/history"
             );
 
-
         let bookings = [];
-
 
         if (
             result?.data &&
@@ -711,19 +623,15 @@ async function loadEventHistory() {
 
         }
 
-
         if (!Array.isArray(bookings)) {
 
             bookings = [];
 
         }
 
-
         historyBookings = bookings;
 
-
         hideLoading();
-
 
         /*
          * Client-side safety filter:
@@ -747,7 +655,6 @@ async function loadEventHistory() {
                 }
             );
 
-
         if (expiredBookings.length === 0) {
 
             showEmptyState();
@@ -755,7 +662,6 @@ async function loadEventHistory() {
             return;
 
         }
-
 
         renderHistory(expiredBookings);
 
@@ -772,15 +678,11 @@ async function loadEventHistory() {
 
 }
 
-
-// ======================================================
 // Render History
-// ======================================================
 
 function renderHistory(bookings) {
 
     historyContainer.innerHTML = "";
-
 
     const sorted =
         bookings.sort(
@@ -791,13 +693,11 @@ function renderHistory(bookings) {
                 const eventB =
                     getBookingEvent(b);
 
-
                 const dateA =
                     eventA?.eventDate || a.createdAt;
 
                 const dateB =
                     eventB?.eventDate || b.createdAt;
-
 
                 const timeA =
                     new Date(
@@ -809,12 +709,10 @@ function renderHistory(bookings) {
                         dateB || 0
                     ).getTime();
 
-
                 return timeB - timeA;
 
             }
         );
-
 
     sorted.forEach(
         (booking) => {
@@ -824,7 +722,6 @@ function renderHistory(bookings) {
                     booking
                 );
 
-
             historyContainer.appendChild(
                 card
             );
@@ -832,17 +729,13 @@ function renderHistory(bookings) {
         }
     );
 
-
     historyContainer.classList.remove(
         "hidden"
     );
 
 }
 
-
-// ======================================================
 // Loading State
-// ======================================================
 
 function showLoading() {
 
@@ -864,7 +757,6 @@ function showLoading() {
 
 }
 
-
 function hideLoading() {
 
     loadingState.classList.add(
@@ -873,10 +765,7 @@ function hideLoading() {
 
 }
 
-
-// ======================================================
 // Empty State
-// ======================================================
 
 function showEmptyState() {
 
@@ -894,16 +783,12 @@ function showEmptyState() {
 
 }
 
-
-// ======================================================
 // Error State
-// ======================================================
 
 function showError(message) {
 
     errorMessage.textContent =
         message;
-
 
     errorState.classList.remove(
         "hidden"
@@ -919,10 +804,7 @@ function showError(message) {
 
 }
 
-
-// ======================================================
 // Logout
-// ======================================================
 
 function logout() {
 
@@ -946,7 +828,6 @@ function logout() {
         "loggedInUser"
     );
 
-
     sessionStorage.removeItem(
         "token"
     );
@@ -967,12 +848,10 @@ function logout() {
         "loggedInUser"
     );
 
-
     window.location.href =
         "./user-login.html";
 
 }
-
 
 function setupLogoutListener() {
 
@@ -980,7 +859,6 @@ function setupLogoutListener() {
         document.getElementById(
             "logoutBtn"
         );
-
 
     if (btn && !btn.dataset.listenerAttached) {
 
@@ -994,7 +872,6 @@ function setupLogoutListener() {
     }
 
 }
-
 
 document.addEventListener(
     "componentLoaded",
@@ -1011,10 +888,7 @@ document.addEventListener(
 
 setupLogoutListener();
 
-
-// ======================================================
 // Review Modal Logic
-// ======================================================
 
 function openReviewModal(eventInfo) {
 
@@ -1082,7 +956,6 @@ function openReviewModal(eventInfo) {
 
 }
 
-
 function closeReviewModalFunc() {
 
     if (!reviewModal) return;
@@ -1091,7 +964,6 @@ function closeReviewModalFunc() {
     document.body.classList.remove("overflow-hidden");
 
 }
-
 
 function setModalRating(rating) {
 
@@ -1136,7 +1008,6 @@ function setModalRating(rating) {
 
 }
 
-
 function showModalAlert(message, type = "error") {
 
     if (!modalReviewAlert) return;
@@ -1159,7 +1030,6 @@ function showModalAlert(message, type = "error") {
 
 }
 
-
 function hideModalAlert() {
 
     if (!modalReviewAlert) return;
@@ -1168,7 +1038,6 @@ function hideModalAlert() {
     modalReviewAlert.classList.add("hidden");
 
 }
-
 
 function setupReviewModalListeners() {
 
@@ -1306,20 +1175,14 @@ function setupReviewModalListeners() {
 
 }
 
-
-// ======================================================
 // Event Listeners
-// ======================================================
 
 retryBtn.addEventListener(
     "click",
     loadEventHistory
 );
 
-
-// ======================================================
 // Initialize
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

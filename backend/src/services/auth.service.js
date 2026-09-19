@@ -126,7 +126,7 @@ const registerOrganizer = async (payload) => {
   );
   await organizer.save();
 
-
+// ORGANIZER APPROVAL
   const admins = await User.find({ role: "admin" }).select("_id");
 
 
@@ -146,7 +146,7 @@ const registerOrganizer = async (payload) => {
 
   }
 
-
+// ORGANIZER EMAIL TEMPLATE
   let emailSent = true;
   try {
     await sendEmail({
@@ -219,9 +219,9 @@ const loginUser = async (payload) => {
     );
   }
 
-  if (
-    user.role === "organizer" &&
-    user.approvalStatus !== "approved"
+  // ORGANIZER APPROVAL 2
+
+  if ( user.role === "organizer" && user.approvalStatus !== "approved"
   ) {
     throw new AppError(
       "Your organizer account is pending admin approval.",
@@ -256,6 +256,8 @@ const forgotPassword = async (payload) => {
     );
   }
 
+  //ORGANIZER OTP / OTP EXPIRE
+
   const otp = generateOTP();
 
   user.resetPasswordOtp = otp;
@@ -267,7 +269,7 @@ const forgotPassword = async (payload) => {
   await user.save();
 
   let emailSent = true;
-
+     //RESET PASSWOED OTP
   try {
     await sendEmail({
       to: user.email,
@@ -342,7 +344,7 @@ const resetPassword = async (payload) => {
 };
 
 
-// ****CHANGE_PASSWORD****
+// CHANGE_PASSWORD
 
 const changePassword = async (userId, payload) => {
   const user = await User.findById(userId).select("+password");
@@ -410,7 +412,7 @@ const sendVerificationOtp = async (userId) => {
   await user.save();
 
   let emailSent = true;
-
+// EMAIL VARIFICATION OTP
   try {
     await sendEmail({
       to: user.email,

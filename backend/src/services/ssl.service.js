@@ -1,8 +1,6 @@
 const axios = require("axios");
 
-// ======================================================
 // SSLCommerz Configuration
-// ======================================================
 
 const getSSLConfig = () => {
   const isSandbox =
@@ -23,9 +21,7 @@ const getSSLConfig = () => {
 };
 
 
-// ======================================================
 // CREATE SSLCommerz PAYMENT SESSION
-// ======================================================
 //
 // EventEase
 //    ↓
@@ -35,7 +31,6 @@ const getSSLConfig = () => {
 //    ↓
 // Hosted Checkout
 //
-// ======================================================
 
 const createSSLSession = async ({
   payment,
@@ -96,9 +91,7 @@ const createSSLSession = async ({
   } = getSSLConfig();
 
 
-  // --------------------------------------------------
   // AMOUNT
-  // --------------------------------------------------
 
   const totalAmount =
     Number(booking.totalAmount);
@@ -114,9 +107,7 @@ const createSSLSession = async ({
   }
 
 
-  // --------------------------------------------------
   // TRANSACTION ID
-  // --------------------------------------------------
 
   if (!payment.transactionId) {
     throw new Error(
@@ -125,9 +116,7 @@ const createSSLSession = async ({
   }
 
 
-  // --------------------------------------------------
   // CUSTOMER DATA
-  // --------------------------------------------------
 
   const customer =
     booking.user || {};
@@ -153,9 +142,7 @@ const createSSLSession = async ({
     "Dhaka";
 
 
-  // --------------------------------------------------
   // PRODUCT DATA
-  // --------------------------------------------------
 
   const event =
     booking.event || {};
@@ -166,17 +153,13 @@ const createSSLSession = async ({
     "Event Ticket";
 
 
-  // --------------------------------------------------
   // FORM DATA
-  // --------------------------------------------------
 
   const formData =
     new URLSearchParams();
 
 
-  // ==================================================
   // STORE INFORMATION
-  // ==================================================
 
   formData.append(
     "store_id",
@@ -190,9 +173,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // TRANSACTION INFORMATION
-  // ==================================================
 
   formData.append(
     "total_amount",
@@ -212,9 +193,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // CALLBACK URLs
-  // ==================================================
 
   formData.append(
     "success_url",
@@ -240,9 +219,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // SHIPPING
-  // ==================================================
 
   formData.append(
     "shipping_method",
@@ -250,9 +227,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // PRODUCT INFORMATION
-  // ==================================================
 
   formData.append(
     "product_name",
@@ -272,9 +247,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // CUSTOMER INFORMATION
-  // ==================================================
 
   formData.append(
     "cus_name",
@@ -330,9 +303,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // CUSTOM VALUES
-  // ==================================================
 
   formData.append(
     "value_a",
@@ -352,9 +323,7 @@ const createSSLSession = async ({
   );
 
 
-  // ==================================================
   // SEND REQUEST TO SSLCOMMERZ
-  // ==================================================
 
   try {
 
@@ -412,9 +381,7 @@ const createSSLSession = async ({
     );
 
 
-    // ------------------------------------------------
     // CHECK RESPONSE
-    // ------------------------------------------------
 
     if (
       !response.data
@@ -436,9 +403,7 @@ const createSSLSession = async ({
     }
 
 
-    // ------------------------------------------------
     // CHECK GATEWAY URL
-    // ------------------------------------------------
 
     if (
       !response.data.GatewayPageURL
@@ -471,9 +436,7 @@ const createSSLSession = async ({
 };
 
 
-// ======================================================
 // VALIDATE SSLCommerz PAYMENT
-// ======================================================
 //
 // Hosted Checkout
 //       ↓
@@ -485,7 +448,6 @@ const createSSLSession = async ({
 //       ↓
 // VALID / VALIDATED
 //
-// ======================================================
 
 const validateSSLPayment = async (
   valId
@@ -600,9 +562,7 @@ const validateSSLPayment = async (
 };
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
 

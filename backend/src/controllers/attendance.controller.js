@@ -2,9 +2,7 @@ const attendanceService = require("../services/attendance.service");
 const catchAsync = require("../utils/catchAsync");
 
 
-// ======================================================
 // Scan QR Code & Mark Attendance
-// ======================================================
 
 const scanQRCode = catchAsync(async (req, res) => {
 

@@ -1,6 +1,4 @@
-// ========================================
 // Mobile Menu
-// ========================================
 
 const mobileMenuButton =
     document.getElementById("mobileMenuButton");
@@ -20,9 +18,7 @@ if (mobileMenuButton && mobileMenu) {
 }
 
 
-// ========================================
 // Desktop Login Dropdown
-// ========================================
 
 const loginDropdownButton =
     document.getElementById("loginDropdownButton");
@@ -58,9 +54,7 @@ if (loginDropdownButton && loginDropdown) {
 }
 
 
-// ========================================
 // Mobile Login Dropdown
-// ========================================
 
 const mobileLoginButton =
     document.getElementById("mobileLoginButton");
@@ -80,9 +74,7 @@ if (mobileLoginButton && mobileLoginOptions) {
 }
 
 
-// ========================================
 // Fix Navbar Links
-// ========================================
 
 function adjustNavbarLinks() {
 

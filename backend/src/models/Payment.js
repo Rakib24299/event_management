@@ -3,16 +3,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 
-// ======================================================
 // PAYMENT SCHEMA
-// ======================================================
 
 const paymentSchema = new Schema(
   {
 
-    // ==================================================
     // USER
-    // ==================================================
 
     user: {
       type: Schema.Types.ObjectId,
@@ -21,9 +17,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // BOOKING
-    // ==================================================
 
     booking: {
       type: Schema.Types.ObjectId,
@@ -33,9 +27,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // EVENT
-    // ==================================================
 
     event: {
       type: Schema.Types.ObjectId,
@@ -44,9 +36,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // ORGANIZER
-    // ==================================================
 
     organizer: {
       type: Schema.Types.ObjectId,
@@ -55,9 +45,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // GROSS AMOUNT
-    // ==================================================
 
     grossAmount: {
       type: Number,
@@ -66,9 +54,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // PLATFORM FEE
-    // ==================================================
 
     platformFee: {
       type: Number,
@@ -78,9 +64,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // ORGANIZER AMOUNT
-    // ==================================================
 
     organizerAmount: {
       type: Number,
@@ -90,9 +74,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // PAYMENT METHOD
-    // ==================================================
 
     paymentMethod: {
       type: String,
@@ -105,9 +87,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // TRANSACTION ID
-    // ==================================================
 
     transactionId: {
       type: String,
@@ -122,9 +102,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // SSL SESSION KEY
-    // ==================================================
 
     sessionKey: {
       type: String,
@@ -135,9 +113,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // SSL VALIDATION ID
-    // ==================================================
 
     validationId: {
       type: String,
@@ -148,9 +124,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // PAYMENT STATUS
-    // ==================================================
 
     status: {
       type: String,
@@ -168,9 +142,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // PAID AT
-    // ==================================================
 
     paidAt: {
       type: Date,
@@ -179,9 +151,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // REFUND AMOUNT
-    // ==================================================
 
     refundAmount: {
       type: Number,
@@ -192,9 +162,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // REFUND STATUS
-    // ==================================================
 
     refundStatus: {
       type: String,
@@ -210,9 +178,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // REFUNDED AT
-    // ==================================================
 
     refundedAt: {
       type: Date,
@@ -221,9 +187,7 @@ const paymentSchema = new Schema(
     },
 
 
-    // ==================================================
     // GATEWAY RESPONSE
-    // ==================================================
 
     gatewayResponse: {
       type: Schema.Types.Mixed,
@@ -239,9 +203,7 @@ const paymentSchema = new Schema(
 );
 
 
-// ======================================================
 // MODEL
-// ======================================================
 
 const Payment = mongoose.model(
   "Payment",

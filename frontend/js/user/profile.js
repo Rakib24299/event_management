@@ -1,13 +1,9 @@
-// ========================================
 // EventEase User Profile
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const profileImage =
     document.getElementById("profileImage");
@@ -79,24 +75,18 @@ const viewVerification =
     document.getElementById("viewVerification");
 
 
-// ========================================
 // Variables
-// ========================================
 
 let currentUser = null;
 
 
-// ========================================
 // Token
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
 
-// ========================================
 // Authentication Check
-// ========================================
 
 if (!token) {
 
@@ -129,9 +119,7 @@ window.addEventListener(
 );
 
 
-// ========================================
 // Show Message
-// ========================================
 
 function showMessage(message, type = "success") {
 
@@ -173,9 +161,7 @@ function showMessage(message, type = "success") {
 }
 
 
-// ========================================
 // Format Empty Value
-// ========================================
 
 function displayValue(value) {
 
@@ -191,9 +177,7 @@ function displayValue(value) {
 }
 
 
-// ========================================
 // Get Profile
-// ========================================
 
 async function getMyProfile() {
 
@@ -261,15 +245,11 @@ async function getMyProfile() {
 }
 
 
-// ========================================
 // Display Profile
-// ========================================
 
 function displayProfile(user) {
 
-    // ====================================
     // Profile Image
-    // ====================================
 
     if (
         user.profileImage &&
@@ -286,9 +266,7 @@ function displayProfile(user) {
     }
 
 
-    // ====================================
     // Header Information
-    // ====================================
 
     profileName.textContent =
         displayValue(user.name);
@@ -300,9 +278,7 @@ function displayProfile(user) {
         user.role || "user";
 
 
-    // ====================================
     // View Information
-    // ====================================
 
     viewName.textContent =
         displayValue(user.name);
@@ -329,9 +305,7 @@ function displayProfile(user) {
 }
 
 
-// ========================================
 // Open Edit Mode
-// ========================================
 
 function openEditMode() {
 
@@ -367,9 +341,7 @@ function openEditMode() {
 }
 
 
-// ========================================
 // Close Edit Mode
-// ========================================
 
 function closeEditMode() {
 
@@ -389,9 +361,7 @@ function closeEditMode() {
 }
 
 
-// ========================================
 // Clear Validation Errors
-// ========================================
 
 function clearValidationErrors() {
 
@@ -417,9 +387,7 @@ function clearValidationErrors() {
 }
 
 
-// ========================================
 // Update Profile
-// ========================================
 
 async function updateProfile(event) {
 
@@ -443,9 +411,7 @@ async function updateProfile(event) {
         editAddress.value.trim();
 
 
-    // ====================================
     // Frontend Validation
-    // ====================================
 
     if (name.length < 3) {
 
@@ -523,9 +489,7 @@ async function updateProfile(event) {
     }
 
 
-    // ====================================
     // Payload
-    // ====================================
 
     const payload = {
 
@@ -643,9 +607,7 @@ async function updateProfile(event) {
 }
 
 
-// ========================================
 // Upload Profile Image
-// ========================================
 
 async function uploadProfileImage(file) {
 
@@ -654,9 +616,7 @@ async function uploadProfileImage(file) {
     }
 
 
-    // ====================================
     // File Validation
-    // ====================================
 
     if (!file.type.startsWith("image/")) {
 
@@ -764,9 +724,7 @@ async function uploadProfileImage(file) {
 }
 
 
-// ========================================
 // Delete Profile Image
-// ========================================
 
 async function deleteProfileImage() {
 
@@ -891,9 +849,7 @@ async function deleteProfileImage() {
 }
 
 
-// ========================================
 // Event Listeners
-// ========================================
 
 editProfileButton.addEventListener(
     "click",
@@ -941,9 +897,7 @@ deleteImageButton.addEventListener(
 );
 
 
-// ========================================
 // Initialize
-// ========================================
 
 async function initializeProfilePage() {
 

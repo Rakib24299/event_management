@@ -5,9 +5,8 @@ const {
 } = require("../services/booking.service");
 
 
-// ======================================================
 // BOOKING OTP EXPIRY JOB
-// ======================================================
+ 
 
 const startBookingExpiryJob = () => {
 
@@ -52,9 +51,7 @@ const startBookingExpiryJob = () => {
 };
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
   startBookingExpiryJob,

@@ -2,9 +2,7 @@ const bookingService = require("../services/booking.service");
 const ticketService = require("../services/ticket.service");
 const catchAsync = require("../utils/catchAsync");
 
-// ======================================================
 // CREATE BOOKING
-// ======================================================
 // POST /api/v1/bookings
 //
 // Paid Event:
@@ -20,7 +18,6 @@ const catchAsync = require("../utils/catchAsync");
 //      ↓
 // (No OTP generated — OTP is generated later
 //  when user confirms from Event Details)
-// ======================================================
 
 const createBooking = catchAsync(async (req, res) => {
   const result = await bookingService.createBooking(
@@ -39,15 +36,12 @@ const createBooking = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // GENERATE FREE BOOKING OTP
-// ======================================================
 // POST /api/v1/bookings/free-otp
 // Body: { bookingId }
 //
 // For free events: generates OTP, sends email,
 // and prepares booking for OTP verification.
-// ======================================================
 
 const generateFreeBookingOtp = catchAsync(async (req, res) => {
   const { bookingId } = req.body;
@@ -80,12 +74,9 @@ const generateFreeBookingOtp = catchAsync(async (req, res) => {
   });
 });
 
-// ======================================================
 // SEND / RESEND BOOKING OTP
-// ======================================================
 // POST /api/v1/bookings/send-otp
 // POST /api/v1/bookings/:id/resend-otp
-// ======================================================
 
 const sendBookingOtp = catchAsync(async (req, res) => {
   const bookingId = req.body.bookingId || req.params.id;
@@ -113,9 +104,7 @@ const sendBookingOtp = catchAsync(async (req, res) => {
   });
 });
 
-// ======================================================
 // VERIFY BOOKING OTP
-// ======================================================
 // POST /api/v1/bookings/verify-otp
 //
 // Paid Event:
@@ -126,7 +115,6 @@ const sendBookingOtp = catchAsync(async (req, res) => {
 // OTP verified
 //      ↓
 // Booking confirmed
-// ======================================================
 
 const verifyBookingOtp = catchAsync(async (req, res) => {
   const {
@@ -134,9 +122,7 @@ const verifyBookingOtp = catchAsync(async (req, res) => {
     otp,
   } = req.body;
 
-  // --------------------------------------------------
   // BOOKING ID CHECK
-  // --------------------------------------------------
 
   if (!bookingId) {
     return res.status(400).json({
@@ -145,9 +131,7 @@ const verifyBookingOtp = catchAsync(async (req, res) => {
     });
   }
 
-  // --------------------------------------------------
   // OTP CHECK
-  // --------------------------------------------------
 
   if (!otp) {
     return res.status(400).json({
@@ -156,9 +140,7 @@ const verifyBookingOtp = catchAsync(async (req, res) => {
     });
   }
 
-  // --------------------------------------------------
   // VERIFY OTP
-  // --------------------------------------------------
 
   const result =
     await bookingService.verifyBookingOtp(
@@ -178,9 +160,7 @@ const verifyBookingOtp = catchAsync(async (req, res) => {
   });
 });
 
-// ======================================================
 // CANCEL BOOKING
-// ======================================================
 // PATCH /api/v1/bookings/:id/cancel
 //
 // Booking cancelled
@@ -188,14 +168,11 @@ const verifyBookingOtp = catchAsync(async (req, res) => {
 // Seats restored
 //      ↓
 // Refund calculated
-// ======================================================
 
 const cancelBooking = catchAsync(async (req, res) => {
   const bookingId = req.params.id;
 
-  // --------------------------------------------------
   // BOOKING ID CHECK
-  // --------------------------------------------------
 
   if (!bookingId) {
     return res.status(400).json({
@@ -204,9 +181,7 @@ const cancelBooking = catchAsync(async (req, res) => {
     });
   }
 
-  // --------------------------------------------------
   // CANCEL BOOKING
-  // --------------------------------------------------
 
   const result =
     await bookingService.cancelBooking(
@@ -233,11 +208,11 @@ const cancelBooking = catchAsync(async (req, res) => {
   });
 });
 
-// ======================================================
-// GET MY CONFIRMED BOOKINGS
-// ======================================================
+
+// CONFIRMED BOOKINGS
+
 // GET /api/v1/bookings/my/confirmed
-// ======================================================
+
 
 const getMyConfirmedBookings = catchAsync(
   async (req, res) => {
@@ -257,11 +232,8 @@ const getMyConfirmedBookings = catchAsync(
   }
 );
 
-// ======================================================
 // GET MY BOOKINGS
-// ======================================================
 // GET /api/v1/bookings/my
-// ======================================================
 
 const getMyBookings = catchAsync(async (req, res) => {
   const result =
@@ -279,16 +251,13 @@ const getMyBookings = catchAsync(async (req, res) => {
   });
 });
 
-// ======================================================
 // GET ORGANIZER / ADMIN BOOKINGS
-// ======================================================
 //
 // Organizer:
 // GET /api/v1/bookings/organizer
 //
 // Admin:
 // GET /api/v1/bookings/admin
-// ======================================================
 
 const getOrganizerBookings = catchAsync(
   async (req, res) => {
@@ -309,11 +278,8 @@ const getOrganizerBookings = catchAsync(
   }
 );
 
-// ======================================================
 // GET BOOKINGS FOR SPECIFIC EVENT
-// ======================================================
 // GET /api/v1/bookings/event/:eventId
-// ======================================================
 
 const getEventBookings = catchAsync(
   async (req, res) => {
@@ -335,11 +301,8 @@ const getEventBookings = catchAsync(
   }
 );
 
-// ======================================================
 // GET BOOKING BY ID
-// ======================================================
 // GET /api/v1/bookings/:id
-// ======================================================
 
 const getBookingById = catchAsync(
   async (req, res) => {
@@ -361,11 +324,8 @@ const getBookingById = catchAsync(
   }
 );
 
-// ======================================================
 // GET PUBLIC BOOKING BY ID
-// ======================================================
 // GET /api/v1/bookings/public/:id
-// ======================================================
 
 const getPublicBookingById = catchAsync(
   async (req, res) => {
@@ -385,9 +345,7 @@ const getPublicBookingById = catchAsync(
   }
 );
 
-// ======================================================
 // UPDATE BOOKING STATUS
-// ======================================================
 // PATCH /api/v1/bookings/:id/status
 //
 // Body:
@@ -395,15 +353,12 @@ const getPublicBookingById = catchAsync(
 // {
 //   "status": "completed"
 // }
-// ======================================================
 
 const updateBookingStatus = catchAsync(
   async (req, res) => {
     const { status } = req.body;
 
-    // --------------------------------------------------
     // STATUS CHECK
-    // --------------------------------------------------
 
     if (!status) {
       return res.status(400).json({
@@ -412,9 +367,7 @@ const updateBookingStatus = catchAsync(
       });
     }
 
-    // --------------------------------------------------
     // UPDATE STATUS
-    // --------------------------------------------------
 
     const result =
       await bookingService.updateBookingStatus(
@@ -435,11 +388,8 @@ const updateBookingStatus = catchAsync(
   }
 );
 
-// ======================================================
 // DOWNLOAD TICKET PDF
-// ======================================================
 // GET /api/v1/bookings/:id/ticket/pdf
-// ======================================================
 
 const downloadTicketPdf = catchAsync(
   async (req, res) => {
@@ -478,11 +428,8 @@ const downloadTicketPdf = catchAsync(
 );
 
 
-// ======================================================
 // GET BOOKING HISTORY
-// ======================================================
 // GET /api/v1/bookings/history
-// ======================================================
 
 const getBookingHistory = catchAsync(
   async (req, res) => {
@@ -505,9 +452,7 @@ const getBookingHistory = catchAsync(
 );
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
   createBooking,

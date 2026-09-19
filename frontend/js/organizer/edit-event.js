@@ -1,16 +1,11 @@
-// ========================================
 // EventEase Edit Event
-// ========================================
 
 
 const API_URL =
     "http://localhost:5000/api/v1";
 
 
-
-// ========================================
 // Get Event ID
-// ========================================
 
 const urlParams =
     new URLSearchParams(
@@ -22,10 +17,7 @@ const eventId =
     urlParams.get("id");
 
 
-
-// ========================================
 // Elements
-// ========================================
 
 const editEventForm =
     document.getElementById(
@@ -159,10 +151,7 @@ const statusDisplay =
     );
 
 
-
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -176,10 +165,7 @@ function showError(message) {
 }
 
 
-
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -193,10 +179,7 @@ function hideError() {
 }
 
 
-
-// ========================================
 // Show Success
-// ========================================
 
 function showSuccess(message) {
 
@@ -210,10 +193,7 @@ function showSuccess(message) {
 }
 
 
-
-// ========================================
 // Hide Loading
-// ========================================
 
 function hideLoading() {
 
@@ -224,10 +204,7 @@ function hideLoading() {
 }
 
 
-
-// ========================================
 // Get Token
-// ========================================
 
 function getToken() {
 
@@ -238,10 +215,7 @@ function getToken() {
 }
 
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDateForInput(
     date
@@ -285,10 +259,7 @@ function formatDateForInput(
 }
 
 
-
-// ========================================
 // Load Categories
-// ========================================
 
 async function loadCategories(
     selectedCategory
@@ -378,10 +349,7 @@ async function loadCategories(
 }
 
 
-
-// ========================================
 // Load Event
-// ========================================
 
 async function loadEvent() {
 
@@ -473,9 +441,7 @@ async function loadEvent() {
         }
 
 
-        // ====================================
         // Load Categories
-        // ====================================
 
         await loadCategories(
             event.category?._id ||
@@ -483,9 +449,7 @@ async function loadEvent() {
         );
 
 
-        // ====================================
         // Fill Form
-        // ====================================
 
         titleInput.value =
             event.title || "";
@@ -596,9 +560,7 @@ async function loadEvent() {
                 : "Draft";
 
 
-        // ====================================
         // Show Form
-        // ====================================
 
         hideLoading();
 
@@ -627,10 +589,7 @@ async function loadEvent() {
 }
 
 
-
-// ========================================
 // Event Type Change
-// ========================================
 
 eventTypeInput.addEventListener(
     "change",
@@ -694,10 +653,7 @@ eventTypeInput.addEventListener(
 );
 
 
-
-// ========================================
 // Submit Form
-// ========================================
 
 editEventForm.addEventListener(
     "submit",
@@ -728,9 +684,7 @@ editEventForm.addEventListener(
         }
 
 
-        // ====================================
         // Get Values
-        // ====================================
 
         const title =
             titleInput.value.trim();
@@ -799,10 +753,7 @@ editEventForm.addEventListener(
             );
 
 
-
-        // ====================================
         // Basic Validation
-        // ====================================
 
         if (!title) {
 
@@ -986,10 +937,7 @@ editEventForm.addEventListener(
         }
 
 
-
-        // ====================================
         // Loading State
-        // ====================================
 
         saveButton.disabled =
             true;
@@ -999,12 +947,9 @@ editEventForm.addEventListener(
             "Saving Changes...";
 
 
-
         try {
 
-            // =================================
             // API Request
-            // =================================
 
             const response =
                 await fetch(
@@ -1084,9 +1029,7 @@ editEventForm.addEventListener(
             );
 
 
-            // =================================
             // API Error
-            // =================================
 
             if (
                 !response.ok ||
@@ -1101,9 +1044,7 @@ editEventForm.addEventListener(
             }
 
 
-            // =================================
             // Success
-            // =================================
 
             showSuccess(
                 "Event updated successfully."
@@ -1114,9 +1055,7 @@ editEventForm.addEventListener(
                 "Updated Successfully";
 
 
-            // =================================
             // Redirect
-            // =================================
 
             setTimeout(
                 () => {
@@ -1156,9 +1095,6 @@ editEventForm.addEventListener(
 );
 
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadEvent();

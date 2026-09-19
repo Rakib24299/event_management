@@ -14,31 +14,20 @@ const buildAIContext = async (userId, userRole, userMessage) => {
   const promises = [];
   const keys = [];
 
-  const isProfileIntent =
-    /\b(profile|my info|my account|who am i|about me|my details|account info)\b/.test(
-      lowerMessage
-    );
 
-  const isBookingIntent =
-    /\b(booking|bookings|my bookings|ticket|tickets|reservation|reservations)\b/.test(
-      lowerMessage
-    );
+  //  DATBASE INFORMATION(regex)
 
-  const isPaymentIntent =
-    /\b(payment|payments|paid|refund|transaction|payment status|my payment)\b/.test(
-      lowerMessage
-    );
+  const isProfileIntent = /\b(profile|my info|my account|who am i|about me|my details|account info)\b/.test( lowerMessage );
 
-  const isEventIntent =
-    /\b(event|events|upcoming|available|show me events|list events|what events)\b/.test(
-      lowerMessage
-    );
+  const isBookingIntent = /\b(booking|bookings|my bookings|ticket|tickets|reservation|reservations)\b/.test(  lowerMessage  );
 
-  const isCategoryIntent =
-    /\b(category|categories)\b/.test(lowerMessage);
+  const isPaymentIntent = /\b(payment|payments|paid|refund|transaction|payment status|my payment)\b/.test(  lowerMessage);
 
-  const isReviewIntent =
-    /\b(review|reviews|rating|ratings|feedback)\b/.test(lowerMessage);
+  const isEventIntent = /\b(event|events|upcoming|available|show me events|list events|what events)\b/.test( lowerMessage );
+
+  const isCategoryIntent = /\b(category|categories)\b/.test(lowerMessage);
+
+  const isReviewIntent = /\b(review|reviews|rating|ratings|feedback)\b/.test(lowerMessage);
 
   if (isProfileIntent && userId) {
     promises.push(

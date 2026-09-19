@@ -1,19 +1,13 @@
-// ======================================================
 // ADMIN PAYMENT DETAILS
-// ======================================================
 
 
-// ======================================================
 // Configuration
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loading =
     document.getElementById("loading");
@@ -25,9 +19,7 @@ const paymentContent =
     document.getElementById("paymentContent");
 
 
-// ======================================================
 // Get Payment ID
-// ======================================================
 
 function getPaymentId() {
 
@@ -41,9 +33,7 @@ function getPaymentId() {
 }
 
 
-// ======================================================
 // Get Token
-// ======================================================
 
 function getToken() {
 
@@ -58,9 +48,7 @@ function getToken() {
 }
 
 
-// ======================================================
 // Safe Text
-// ======================================================
 
 function safeText(value) {
 
@@ -79,9 +67,7 @@ function safeText(value) {
 }
 
 
-// ======================================================
 // Format Currency
-// ======================================================
 
 function formatCurrency(amount) {
 
@@ -96,9 +82,7 @@ function formatCurrency(amount) {
 }
 
 
-// ======================================================
 // Format Date
-// ======================================================
 
 function formatDate(date) {
 
@@ -138,9 +122,7 @@ function formatDate(date) {
 }
 
 
-// ======================================================
 // Payment Status Badge
-// ======================================================
 
 function getStatusBadge(status) {
 
@@ -242,9 +224,7 @@ function getStatusBadge(status) {
 }
 
 
-// ======================================================
 // Refund Status Badge
-// ======================================================
 
 function getRefundStatusBadge(status) {
 
@@ -328,9 +308,7 @@ function getRefundStatusBadge(status) {
 }
 
 
-// ======================================================
 // Booking Status
-// ======================================================
 
 function getBookingStatus(booking) {
 
@@ -348,9 +326,7 @@ function getBookingStatus(booking) {
 }
 
 
-// ======================================================
 // Get Customer
-// ======================================================
 
 function getCustomer(payment) {
 
@@ -359,9 +335,7 @@ function getCustomer(payment) {
 }
 
 
-// ======================================================
 // Get Organizer
-// ======================================================
 
 function getOrganizer(payment) {
 
@@ -370,9 +344,7 @@ function getOrganizer(payment) {
 }
 
 
-// ======================================================
 // Get Event
-// ======================================================
 
 function getEvent(payment) {
 
@@ -381,9 +353,7 @@ function getEvent(payment) {
 }
 
 
-// ======================================================
 // Get Booking
-// ======================================================
 
 function getBooking(payment) {
 
@@ -392,9 +362,7 @@ function getBooking(payment) {
 }
 
 
-// ======================================================
 // Display Payment
-// ======================================================
 
 function displayPayment(payment) {
 
@@ -409,9 +377,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Hide Loading
-    // ==================================================
 
     if (loading) {
 
@@ -422,9 +388,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Show Content
-    // ==================================================
 
     if (paymentContent) {
 
@@ -435,9 +399,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Objects
-    // ==================================================
 
     const user =
         getCustomer(payment);
@@ -455,9 +417,7 @@ function displayPayment(payment) {
         getBooking(payment);
 
 
-    // ==================================================
     // Transaction Information
-    // ==================================================
 
     const transactionId =
         document.getElementById(
@@ -524,9 +484,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Financial Information
-    // ==================================================
 
     const grossAmount =
         document.getElementById(
@@ -576,9 +534,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Created / Updated
-    // ==================================================
 
     const createdAt =
         document.getElementById(
@@ -612,9 +568,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // SSL Information
-    // ==================================================
 
     const sessionKey =
         document.getElementById(
@@ -648,9 +602,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Customer Information
-    // ==================================================
 
     const customerName =
         document.getElementById(
@@ -686,9 +638,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Organizer Information
-    // ==================================================
 
     const organizerName =
         document.getElementById(
@@ -724,9 +674,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Event Information
-    // ==================================================
 
     const eventName =
         document.getElementById(
@@ -793,9 +741,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Booking Information
-    // ==================================================
 
     const bookingId =
         document.getElementById(
@@ -846,9 +792,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Refund Information
-    // ==================================================
 
     const refundAmount =
         document.getElementById(
@@ -898,9 +842,7 @@ function displayPayment(payment) {
     }
 
 
-    // ==================================================
     // Gateway Response
-    // ==================================================
 
     const gatewayResponse =
         document.getElementById(
@@ -935,9 +877,7 @@ function displayPayment(payment) {
 }
 
 
-// ======================================================
 // Show Error
-// ======================================================
 
 function showError(message) {
 
@@ -973,15 +913,11 @@ function showError(message) {
 }
 
 
-// ======================================================
 // Load Payment Details
-// ======================================================
 
 async function loadPaymentDetails() {
 
-    // ==================================================
     // Get Payment ID
-    // ==================================================
 
     const paymentId =
         getPaymentId();
@@ -998,9 +934,7 @@ async function loadPaymentDetails() {
     }
 
 
-    // ==================================================
     // Get Token
-    // ==================================================
 
     const token =
         getToken();
@@ -1019,9 +953,7 @@ async function loadPaymentDetails() {
 
     try {
 
-        // ==============================================
         // API Request
-        // ==============================================
 
         const response =
             await fetch(
@@ -1049,17 +981,13 @@ async function loadPaymentDetails() {
             );
 
 
-        // ==============================================
         // Read Response
-        // ==============================================
 
         const result =
             await response.json();
 
 
-        // ==============================================
         // Backend Error
-        // ==============================================
 
         if (!response.ok) {
 
@@ -1074,17 +1002,13 @@ async function loadPaymentDetails() {
         }
 
 
-        // ==============================================
         // Extract Payment
-        // ==============================================
 
         const payment =
             result.data;
 
 
-        // ==============================================
         // Display Payment
-        // ==============================================
 
         displayPayment(
             payment
@@ -1113,9 +1037,7 @@ async function loadPaymentDetails() {
 }
 
 
-// ======================================================
 // Initial Load
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

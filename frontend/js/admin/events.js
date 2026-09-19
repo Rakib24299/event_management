@@ -1,7 +1,5 @@
 
-// ========================================
 // Helper: Is Event Expired
-// ========================================
 const isEventExpired = (event) => {
     if (!event || !event.eventDate) return false;
     const date = new Date(event.eventDate);
@@ -17,22 +15,14 @@ const isEventExpired = (event) => {
     return date < new Date();
 };
 
-// ========================================
 // EventEase Admin Manage Events
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -70,10 +60,7 @@ const typeFilter =
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -84,13 +71,9 @@ const getToken = () => {
 
 };
 
-
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
-
 
 if (!token) {
 
@@ -103,10 +86,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -135,9 +115,7 @@ const apiRequest = async (
             }
         );
 
-
     let data = {};
-
 
     try {
 
@@ -150,7 +128,6 @@ const apiRequest = async (
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -160,15 +137,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (
     value
@@ -183,7 +156,6 @@ const escapeHTML = (
 
     }
 
-
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -193,10 +165,7 @@ const escapeHTML = (
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -208,10 +177,8 @@ const formatDate = (
 
     }
 
-
     const parsedDate =
         new Date(date);
-
 
     if (
         Number.isNaN(
@@ -222,7 +189,6 @@ const formatDate = (
         return "N/A";
 
     }
-
 
     return parsedDate.toLocaleDateString(
         "en-US",
@@ -235,10 +201,7 @@ const formatDate = (
 
 };
 
-
-// ========================================
 // Format Time
-// ========================================
 
 const formatTime = (
     time
@@ -250,15 +213,11 @@ const formatTime = (
 
     }
 
-
     return escapeHTML(time);
 
 };
 
-
-// ========================================
 // Update Event Count
-// ========================================
 
 const updateEventCount = (
     count
@@ -270,16 +229,12 @@ const updateEventCount = (
 
     }
 
-
     eventCount.textContent =
         `${count} ${count === 1 ? "Event" : "Events"}`;
 
 };
 
-
-// ========================================
 // Get Status Badge
-// ========================================
 
 const getStatusBadge = (
     status
@@ -300,7 +255,6 @@ const getStatusBadge = (
 
             `;
 
-
         case "draft":
 
             return `
@@ -313,7 +267,6 @@ const getStatusBadge = (
                 </span>
 
             `;
-
 
         case "completed":
 
@@ -328,7 +281,6 @@ const getStatusBadge = (
 
             `;
 
-
         case "cancelled":
 
             return `
@@ -342,7 +294,6 @@ const getStatusBadge = (
 
             `;
 
-
         case "rejected":
 
             return `
@@ -355,7 +306,6 @@ const getStatusBadge = (
                 </span>
 
             `;
-
 
         default:
 
@@ -374,10 +324,7 @@ const getStatusBadge = (
 
 };
 
-
-// ========================================
 // Get Event Type Badge
-// ========================================
 
 const getEventTypeBadge = (
     eventType
@@ -397,7 +344,6 @@ const getEventTypeBadge = (
 
     }
 
-
     return `
 
         <span
@@ -410,10 +356,7 @@ const getEventTypeBadge = (
 
 };
 
-
-// ========================================
 // Get Organizer Name
-// ========================================
 
 const getOrganizerName = (
     event
@@ -432,15 +375,11 @@ const getOrganizerName = (
 
     }
 
-
     return "Unknown Organizer";
 
 };
 
-
-// ========================================
 // Get Category Name
-// ========================================
 
 const getCategoryName = (
     event
@@ -458,15 +397,11 @@ const getCategoryName = (
 
     }
 
-
     return "Uncategorized";
 
 };
 
-
-// ========================================
 // Render Empty State
-// ========================================
 
 const renderEmptyState = () => {
 
@@ -478,10 +413,7 @@ const renderEmptyState = () => {
 
 };
 
-
-// ========================================
 // Render Events
-// ========================================
 
 const renderEvents = (
     events
@@ -492,7 +424,6 @@ const renderEvents = (
     emptyState.classList.add(
         "hidden"
     );
-
 
     if (
         !events ||
@@ -507,11 +438,9 @@ const renderEvents = (
 
     }
 
-
     updateEventCount(
         events.length
     );
-
 
     events.forEach(
         (event) => {
@@ -521,14 +450,11 @@ const renderEvents = (
                     "div"
                 );
 
-
             card.className =
                 "flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md";
 
-
             const eventId =
                 event._id || "";
-
 
             const title =
                 escapeHTML(
@@ -536,19 +462,16 @@ const renderEvents = (
                     "Untitled Event"
                 );
 
-
             const slug =
                 escapeHTML(
                     event.slug ||
                     ""
                 );
 
-
             const organizer =
                 escapeHTML(
                     getOrganizerName(event)
                 );
-
 
             const organizerEmail =
                 event.organizer &&
@@ -559,12 +482,10 @@ const renderEvents = (
                     )
                     : "No email";
 
-
             const category =
                 escapeHTML(
                     getCategoryName(event)
                 );
-
 
             const venue =
                 event.venue &&
@@ -575,7 +496,6 @@ const renderEvents = (
                     )
                     : "Venue not specified";
 
-
             const city =
                 event.venue &&
                 typeof event.venue === "object"
@@ -585,63 +505,51 @@ const renderEvents = (
                     )
                     : "";
 
-
             const eventDate =
                 formatDate(
                     event.eventDate
                 );
-
 
             const startTime =
                 formatTime(
                     event.startTime
                 );
 
-
             const endTime =
                 formatTime(
                     event.endTime
                 );
-
 
             const totalSeats =
                 Number(
                     event.totalSeats || 0
                 );
 
-
             const availableSeats =
                 Number(
                     event.availableSeats || 0
                 );
-
 
             const ticketPrice =
                 Number(
                     event.ticketPrice || 0
                 );
 
-
             const eventType =
                 event.eventType ||
                 "paid";
-
 
             const status =
                 event.status ||
                 "draft";
 
-
             const bannerImage =
                 event.bannerImage?.url ||
                 "";
 
-
             card.innerHTML = `
 
-                <!-- ==================================
-                      EVENT BANNER
-                =================================== -->
+                <!-- EVENT BANNER -->
 
                 <div
                     class="relative h-48 w-full shrink-0 overflow-hidden bg-gray-100"
@@ -673,15 +581,11 @@ const renderEvents = (
 
                 </div>
 
-
-                <!-- ==================================
-                      EVENT CONTENT
-                =================================== -->
+                <!-- EVENT CONTENT -->
 
                 <div
                     class="flex flex-1 flex-col p-5"
                 >
-
 
                     <!-- Title / Badges -->
 
@@ -697,18 +601,15 @@ const renderEvents = (
 
                     </div>
 
-
                     <div
                         class="mt-2 flex flex-wrap items-center gap-2"
                     >
 
                         ${getStatusBadge(status)}
 
-
                         ${getEventTypeBadge(eventType)}
 
                     </div>
-
 
                     <!-- Slug -->
 
@@ -728,7 +629,6 @@ const renderEvents = (
                             : ""
                     }
 
-
                     <!-- Organizer -->
 
                     <div
@@ -741,13 +641,11 @@ const renderEvents = (
                             Organizer
                         </p>
 
-
                         <p
                             class="mt-1 text-sm font-semibold text-gray-800"
                         >
                             ${organizer}
                         </p>
-
 
                         <p
                             class="mt-0.5 text-xs text-gray-500"
@@ -756,7 +654,6 @@ const renderEvents = (
                         </p>
 
                     </div>
-
 
                     <!-- Event Details -->
 
@@ -774,7 +671,6 @@ const renderEvents = (
                                 Category
                             </p>
 
-
                             <p
                                 class="mt-1 text-sm font-semibold text-gray-800"
                             >
@@ -782,7 +678,6 @@ const renderEvents = (
                             </p>
 
                         </div>
-
 
                         <!-- Date -->
 
@@ -794,7 +689,6 @@ const renderEvents = (
                                 Event Date
                             </p>
 
-
                             <p
                                 class="mt-1 text-sm font-semibold text-gray-800"
                             >
@@ -802,7 +696,6 @@ const renderEvents = (
                             </p>
 
                         </div>
-
 
                         <!-- Time -->
 
@@ -814,7 +707,6 @@ const renderEvents = (
                                 Time
                             </p>
 
-
                             <p
                                 class="mt-1 text-sm font-semibold text-gray-800"
                             >
@@ -822,7 +714,6 @@ const renderEvents = (
                             </p>
 
                         </div>
-
 
                         ${eventType !== "free" ? `
 
@@ -836,7 +727,6 @@ const renderEvents = (
                                     Ticket Price
                                 </p>
 
-
                                 <p
                                     class="mt-1 text-sm font-semibold text-gray-800"
                                 >
@@ -848,7 +738,6 @@ const renderEvents = (
                         ` : ""}
 
                     </div>
-
 
                     <!-- Venue -->
 
@@ -862,7 +751,6 @@ const renderEvents = (
                             Venue
                         </p>
 
-
                         <p
                             class="mt-1 text-sm font-semibold text-gray-800"
                         >
@@ -875,7 +763,6 @@ const renderEvents = (
                         </p>
 
                     </div>
-
 
                     ${eventType !== "free" ? `
 
@@ -895,7 +782,6 @@ const renderEvents = (
                                     Total Seats
                                 </p>
 
-
                                 <p
                                     class="mt-0.5 text-sm font-bold text-gray-800"
                                 >
@@ -903,7 +789,6 @@ const renderEvents = (
                                 </p>
 
                             </div>
-
 
                             <div
                                 class="rounded-xl bg-green-50 px-3 py-2"
@@ -915,7 +800,6 @@ const renderEvents = (
                                     Available Seats
                                 </p>
 
-
                                 <p
                                     class="mt-0.5 text-sm font-bold text-green-700"
                                 >
@@ -923,7 +807,6 @@ const renderEvents = (
                                 </p>
 
                             </div>
-
 
                             <div
                                 class="rounded-xl bg-primaryLight/10 px-3 py-2"
@@ -934,7 +817,6 @@ const renderEvents = (
                                 >
                                     Max / User
                                 </p>
-
 
                                 <p
                                     class="mt-0.5 text-sm font-bold text-primary"
@@ -950,10 +832,7 @@ const renderEvents = (
 
                 </div>
 
-
-                <!-- ==================================
-                      ACTIONS
-                =================================== -->
+                <!-- ACTIONS -->
 
                 <div
                     class="flex shrink-0 gap-2 border-t border-gray-100 px-5 py-4"
@@ -968,7 +847,6 @@ const renderEvents = (
                     >
                         View
                     </button>
-
 
                     <!-- Activate -->
 
@@ -988,7 +866,6 @@ const renderEvents = (
                             : ""
                     }
 
-
                     <!-- Delete -->
 
                     <button
@@ -1003,7 +880,6 @@ const renderEvents = (
 
             `;
 
-
             eventList.appendChild(
                 card
             );
@@ -1011,28 +887,20 @@ const renderEvents = (
         }
     );
 
-
     attachEventListeners();
 
 };
 
-
-// ========================================
 // Attach Event Listeners
-// ========================================
 
 const attachEventListeners = () => {
 
-
-    // =====================================
     // View Buttons
-    // =====================================
 
     const viewButtons =
         eventList.querySelectorAll(
             ".viewBtn"
         );
-
 
     viewButtons.forEach(
         (button) => {
@@ -1044,7 +912,6 @@ const attachEventListeners = () => {
                     const eventId =
                         button.dataset.id;
 
-
                     if (!eventId) {
 
                         alert(
@@ -1055,7 +922,6 @@ const attachEventListeners = () => {
 
                     }
 
-
                     window.location.href =
                         `./event-details.html?id=${encodeURIComponent(eventId)}`;
 
@@ -1065,16 +931,12 @@ const attachEventListeners = () => {
         }
     );
 
-
-    // =====================================
     // Activate Buttons
-    // =====================================
 
     const activateButtons =
         eventList.querySelectorAll(
             ".activateBtn"
         );
-
 
     activateButtons.forEach(
         (button) => {
@@ -1086,7 +948,6 @@ const attachEventListeners = () => {
                     const eventId =
                         button.dataset.id;
 
-
                     if (!eventId) {
 
                         alert(
@@ -1096,7 +957,6 @@ const attachEventListeners = () => {
                         return;
 
                     }
-
 
                     activateEvent(
                         eventId,
@@ -1109,16 +969,12 @@ const attachEventListeners = () => {
         }
     );
 
-
-    // =====================================
     // Delete Buttons
-    // =====================================
 
     const deleteButtons =
         eventList.querySelectorAll(
             ".deleteBtn"
         );
-
 
     deleteButtons.forEach(
         (button) => {
@@ -1129,7 +985,6 @@ const attachEventListeners = () => {
 
                     const eventId =
                         button.dataset.id;
-
 
                     deleteEvent(
                         eventId,
@@ -1144,20 +999,14 @@ const attachEventListeners = () => {
 
 };
 
-
-// ========================================
 // Activate / Publish Event
-// ========================================
 
 const activateEvent = async (
     eventId,
     button
 ) => {
 
-
-    // =====================================
     // Validate ID
-    // =====================================
 
     if (!eventId) {
 
@@ -1169,16 +1018,12 @@ const activateEvent = async (
 
     }
 
-
-    // =====================================
     // Confirmation
-    // =====================================
 
     const confirmed =
         confirm(
             "Are you sure you want to activate this event? The event will be published and visible to users."
         );
-
 
     if (!confirmed) {
 
@@ -1186,22 +1031,16 @@ const activateEvent = async (
 
     }
 
-
     try {
 
-        // =================================
         // Disable Button
-        // =================================
 
         button.disabled = true;
 
         button.textContent =
             "Activating...";
 
-
-        // =================================
         // API Request
-        // =================================
 
         const result =
             await apiRequest(
@@ -1211,29 +1050,21 @@ const activateEvent = async (
                 }
             );
 
-
         console.log(
             "Activate Event Response:",
             result
         );
 
-
-        // =================================
         // Success Message
-        // =================================
 
         alert(
             result.message ||
             "Event published successfully."
         );
 
-
-        // =================================
         // Reload Events
-        // =================================
 
         await loadEvents();
-
 
     } catch (error) {
 
@@ -1242,16 +1073,12 @@ const activateEvent = async (
             error
         );
 
-
         alert(
             error.message ||
             "Failed to activate event."
         );
 
-
-        // =================================
         // Restore Button
-        // =================================
 
         button.disabled = false;
 
@@ -1262,20 +1089,14 @@ const activateEvent = async (
 
 };
 
-
-// ========================================
 // Delete Event
-// ========================================
 
 const deleteEvent = async (
     eventId,
     button
 ) => {
 
-
-    // =====================================
     // Validate ID
-    // =====================================
 
     if (!eventId) {
 
@@ -1287,16 +1108,12 @@ const deleteEvent = async (
 
     }
 
-
-    // =====================================
     // Confirmation
-    // =====================================
 
     const confirmed =
         confirm(
             "Are you sure you want to delete this event? This action will remove the event from the active event list."
         );
-
 
     if (!confirmed) {
 
@@ -1304,22 +1121,16 @@ const deleteEvent = async (
 
     }
 
-
     try {
 
-        // =================================
         // Disable Button
-        // =================================
 
         button.disabled = true;
 
         button.textContent =
             "Deleting...";
 
-
-        // =================================
         // API Request
-        // =================================
 
         const result =
             await apiRequest(
@@ -1329,23 +1140,16 @@ const deleteEvent = async (
                 }
             );
 
-
-        // =================================
         // Success Message
-        // =================================
 
         alert(
             result.message ||
             "Event deleted successfully."
         );
 
-
-        // =================================
         // Reload Events
-        // =================================
 
         await loadEvents();
-
 
     } catch (error) {
 
@@ -1354,16 +1158,12 @@ const deleteEvent = async (
             error
         );
 
-
         alert(
             error.message ||
             "Failed to delete event."
         );
 
-
-        // =================================
         // Restore Button
-        // =================================
 
         button.disabled = false;
 
@@ -1374,10 +1174,7 @@ const deleteEvent = async (
 
 };
 
-
-// ========================================
 // Filter Events
-// ========================================
 
 const filterEvents = () => {
 
@@ -1386,45 +1183,34 @@ const filterEvents = () => {
             .trim()
             .toLowerCase();
 
-
     const selectedStatus =
         statusFilter.value;
 
-
     const selectedType =
         typeFilter.value;
-
 
     const filteredEvents =
         allEvents.filter(
             (event) => {
 
-
-                // ==========================
                 // Search Values
-                // ==========================
 
                 const title =
                     String(
                         event.title || ""
                     ).toLowerCase();
 
-
                 const organizer =
                     getOrganizerName(
                         event
                     ).toLowerCase();
-
 
                 const category =
                     getCategoryName(
                         event
                     ).toLowerCase();
 
-
-                // ==========================
                 // Search Match
-                // ==========================
 
                 const matchesSearch =
                     !search ||
@@ -1432,24 +1218,17 @@ const filterEvents = () => {
                     organizer.includes(search) ||
                     category.includes(search);
 
-
-                // ==========================
                 // Status Match
-                // ==========================
 
                 const matchesStatus =
                     selectedStatus === "all" ||
                     event.status === selectedStatus;
 
-
-                // ==========================
                 // Type Match
-                // ==========================
 
                 const matchesType =
                     selectedType === "all" ||
                     event.eventType === selectedType;
-
 
                 return (
                     matchesSearch &&
@@ -1460,29 +1239,22 @@ const filterEvents = () => {
             }
         );
 
-
     renderEvents(
         filteredEvents
     );
 
 };
 
-
-// ========================================
 // Load Events
-// ========================================
 
 let allEvents = [];
-
 
 const loadEvents =
     async () => {
 
         try {
 
-            // =================================
             // Loading State
-            // =================================
 
             loadingState.classList.remove(
                 "hidden"
@@ -1496,37 +1268,25 @@ const loadEvents =
                 "hidden"
             );
 
-
-            // =================================
             // Get Events
-            // =================================
 
             const result =
                 await apiRequest(
                     "/admin/events"
                 );
 
-
-            // =================================
             // Store Events
-            // =================================
 
             allEvents =
                 (result.data || []).filter(event => !isEventExpired(event));
 
-
-            // =================================
             // Render Events
-            // =================================
 
             renderEvents(
                 allEvents
             );
 
-
-            // =================================
             // Show Content
-            // =================================
 
             loadingState.classList.add(
                 "hidden"
@@ -1543,33 +1303,23 @@ const loadEvents =
                 error
             );
 
-
-            // =================================
             // Loading Off
-            // =================================
 
             loadingState.classList.add(
                 "hidden"
             );
 
-
-            // =================================
             // Content Off
-            // =================================
 
             content.classList.add(
                 "hidden"
             );
 
-
-            // =================================
             // Error On
-            // =================================
 
             errorState.classList.remove(
                 "hidden"
             );
-
 
             if (errorMessage) {
 
@@ -1583,10 +1333,7 @@ const loadEvents =
 
     };
 
-
-// ========================================
 // Search Listener
-// ========================================
 
 if (searchInput) {
 
@@ -1597,10 +1344,7 @@ if (searchInput) {
 
 }
 
-
-// ========================================
 // Status Filter
-// ========================================
 
 if (statusFilter) {
 
@@ -1611,10 +1355,7 @@ if (statusFilter) {
 
 }
 
-
-// ========================================
 // Event Type Filter
-// ========================================
 
 if (typeFilter) {
 
@@ -1625,10 +1366,7 @@ if (typeFilter) {
 
 }
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
 
@@ -1639,10 +1377,7 @@ if (retryBtn) {
 
 }
 
-
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
 
@@ -1658,7 +1393,6 @@ if (logoutBtn) {
                 "token"
             );
 
-
             window.location.href =
                 "./admin-login.html";
 
@@ -1667,9 +1401,6 @@ if (logoutBtn) {
 
 }
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadEvents();

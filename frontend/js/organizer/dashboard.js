@@ -1,7 +1,5 @@
 
-// ========================================
 // Helper: Is Event Expired
-// ========================================
 const isEventExpired = (event) => {
     if (!event || !event.eventDate) return false;
     const date = new Date(event.eventDate);
@@ -17,16 +15,12 @@ const isEventExpired = (event) => {
     return date < new Date();
 };
 
-// ========================================
 // EventEase Organizer Dashboard
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const dashboardLoading =
     document.getElementById("dashboardLoading");
@@ -71,9 +65,7 @@ const recentEventsEmpty =
     document.getElementById("recentEventsEmpty");
 
 
-// ========================================
 // Check Authentication
-// ========================================
 
 function getToken() {
 
@@ -82,9 +74,7 @@ function getToken() {
 }
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showDashboardError(message) {
 
@@ -100,9 +90,7 @@ function showDashboardError(message) {
 }
 
 
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -119,9 +107,7 @@ function formatPrice(price) {
 }
 
 
-// ========================================
 // Default Image
-// ========================================
 
 function getDefaultImage(
     type = "profile"
@@ -143,9 +129,7 @@ function getDefaultImage(
 }
 
 
-// ========================================
 // Load Organizer Logo
-// ========================================
 
 async function loadOrganizerLogo() {
 
@@ -317,9 +301,7 @@ async function loadOrganizerLogo() {
 }
 
 
-// ========================================
 // Update Statistics
-// ========================================
 
 function updateStatistics(data) {
 
@@ -352,9 +334,7 @@ function updateStatistics(data) {
 }
 
 
-// ========================================
 // Display Recent Events
-// ========================================
 
 function displayRecentEvents(events) {
 
@@ -455,9 +435,7 @@ function displayRecentEvents(events) {
 }
 
 
-// ========================================
 // Update Notification Badge
-// ========================================
 
 async function updateNotificationBadge() {
 
@@ -561,9 +539,7 @@ async function updateNotificationBadge() {
 }
 
 
-// ========================================
 // Load Dashboard
-// ========================================
 
 async function loadDashboard() {
 
@@ -636,9 +612,7 @@ async function loadDashboard() {
             result.data || {};
 
 
-        // ====================================
         // Update user info
-        // ====================================
 
         const storedUser =
             localStorage.getItem("user");
@@ -673,23 +647,17 @@ async function loadDashboard() {
         }
 
 
-        // ====================================
         // Update statistics
-        // ====================================
 
         updateStatistics(data);
 
 
-        // ====================================
         // Load organizer logo
-        // ====================================
 
         await loadOrganizerLogo();
 
 
-        // ====================================
         // Update recent events
-        // ====================================
 
         if (data.recentEvents && Array.isArray(data.recentEvents)) {
             const activeRecent = (data.recentEvents || []).filter(event => !isEventExpired(event));
@@ -701,9 +669,7 @@ async function loadDashboard() {
         }
 
 
-        // ====================================
         // Show content
-        // ====================================
 
         dashboardLoading.classList.add("hidden");
 
@@ -729,9 +695,7 @@ async function loadDashboard() {
 }
 
 
-// ========================================
 // Retry
-// ========================================
 
 retryDashboardButton.addEventListener(
     "click",
@@ -739,9 +703,7 @@ retryDashboardButton.addEventListener(
 );
 
 
-// ========================================
 // Start
-// ========================================
 
 loadDashboard();
 

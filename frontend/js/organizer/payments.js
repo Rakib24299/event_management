@@ -1,19 +1,11 @@
-// ======================================================
 // ORGANIZER PAYMENT INFORMATION
-// ======================================================
 
-
-// ======================================================
 // Configuration
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loading =
     document.getElementById("loading");
@@ -39,10 +31,7 @@ const successfulPayments =
 const totalRevenue =
     document.getElementById("totalRevenue");
 
-
-// ======================================================
 // Get Token
-// ======================================================
 
 function getToken() {
 
@@ -56,10 +45,7 @@ function getToken() {
 
 }
 
-
-// ======================================================
 // Format Currency
-// ======================================================
 
 function formatCurrency(amount) {
 
@@ -76,10 +62,7 @@ function formatCurrency(amount) {
 
 }
 
-
-// ======================================================
 // Format Date
-// ======================================================
 
 function formatDate(date) {
 
@@ -89,10 +72,8 @@ function formatDate(date) {
 
     }
 
-
     const formattedDate =
         new Date(date);
-
 
     if (
         isNaN(
@@ -103,7 +84,6 @@ function formatDate(date) {
         return "N/A";
 
     }
-
 
     return formattedDate.toLocaleDateString(
         "en-BD",
@@ -116,17 +96,13 @@ function formatDate(date) {
 
 }
 
-
-// ======================================================
 // Payment Status Badge
-// ======================================================
 
 function getStatusBadge(status) {
 
     const normalizedStatus =
         String(status || "")
             .toLowerCase();
-
 
     if (normalizedStatus === "paid") {
 
@@ -149,7 +125,6 @@ function getStatusBadge(status) {
 
     }
 
-
     if (normalizedStatus === "pending") {
 
         return `
@@ -170,7 +145,6 @@ function getStatusBadge(status) {
         `;
 
     }
-
 
     if (normalizedStatus === "failed") {
 
@@ -193,7 +167,6 @@ function getStatusBadge(status) {
 
     }
 
-
     if (normalizedStatus === "cancelled") {
 
         return `
@@ -215,7 +188,6 @@ function getStatusBadge(status) {
 
     }
 
-
     if (normalizedStatus === "refunded") {
 
         return `
@@ -236,7 +208,6 @@ function getStatusBadge(status) {
         `;
 
     }
-
 
     if (
         normalizedStatus ===
@@ -262,7 +233,6 @@ function getStatusBadge(status) {
 
     }
 
-
     return `
         <span
             class="
@@ -282,16 +252,12 @@ function getStatusBadge(status) {
 
 }
 
-
-// ======================================================
 // Get Customer Name
-// ======================================================
 
 function getCustomerName(payment) {
 
     const user =
         payment.user || {};
-
 
     return (
         user.name ||
@@ -302,16 +268,12 @@ function getCustomerName(payment) {
 
 }
 
-
-// ======================================================
 // Get Customer Email
-// ======================================================
 
 function getCustomerEmail(payment) {
 
     const user =
         payment.user || {};
-
 
     return (
         user.email ||
@@ -320,16 +282,12 @@ function getCustomerEmail(payment) {
 
 }
 
-
-// ======================================================
 // Get Event Title
-// ======================================================
 
 function getEventTitle(payment) {
 
     const event =
         payment.event || {};
-
 
     // Populated Event
     if (
@@ -341,7 +299,6 @@ function getEventTitle(payment) {
 
     }
 
-
     // If event is only ObjectId
     if (
         typeof event === "string"
@@ -351,15 +308,11 @@ function getEventTitle(payment) {
 
     }
 
-
     return "Unknown Event";
 
 }
 
-
-// ======================================================
 // Get Payment Amount
-// ======================================================
 
 function getPaymentAmount(payment) {
 
@@ -380,10 +333,7 @@ function getPaymentAmount(payment) {
 
 }
 
-
-// ======================================================
 // Get Transaction ID
-// ======================================================
 
 function getTransactionId(payment) {
 
@@ -395,17 +345,13 @@ function getTransactionId(payment) {
 
 }
 
-
-// ======================================================
 // Get Payment Method
-// ======================================================
 
 function getPaymentMethod(payment) {
 
     const method =
         payment.paymentMethod ||
         "N/A";
-
 
     if (
         method === "sslcommerz"
@@ -415,15 +361,11 @@ function getPaymentMethod(payment) {
 
     }
 
-
     return method;
 
 }
 
-
-// ======================================================
 // Render Payment Row
-// ======================================================
 
 function renderPaymentRow(payment) {
 
@@ -433,48 +375,40 @@ function renderPaymentRow(payment) {
 
     }
 
-
     const transactionId =
         getTransactionId(
             payment
         );
-
 
     const customerName =
         getCustomerName(
             payment
         );
 
-
     const customerEmail =
         getCustomerEmail(
             payment
         );
-
 
     const eventTitle =
         getEventTitle(
             payment
         );
 
-
     const organizerAmount =
         getPaymentAmount(
             payment
         );
-
 
     const paymentMethod =
         getPaymentMethod(
             payment
         );
 
-
     const status =
         getStatusBadge(
             payment.status
         );
-
 
     const date =
         formatDate(
@@ -482,20 +416,16 @@ function renderPaymentRow(payment) {
             payment.createdAt
         );
 
-
     const paymentId =
         payment._id;
-
 
     const row =
         document.createElement(
             "tr"
         );
 
-
     row.className =
         "hover:bg-gray-50 transition";
-
 
     row.innerHTML = `
 
@@ -516,7 +446,6 @@ function renderPaymentRow(payment) {
             </div>
 
         </td>
-
 
         <!-- Customer -->
 
@@ -549,7 +478,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Event -->
 
         <td class="px-6 py-5">
@@ -568,7 +496,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Organizer Amount -->
 
         <td class="px-6 py-5">
@@ -586,7 +513,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Payment Method -->
 
         <td class="px-6 py-5">
@@ -602,7 +528,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Status -->
 
         <td class="px-6 py-5">
@@ -610,7 +535,6 @@ function renderPaymentRow(payment) {
             ${status}
 
         </td>
-
 
         <!-- Date -->
 
@@ -627,7 +551,6 @@ function renderPaymentRow(payment) {
             ${date}
 
         </td>
-
 
         <!-- View Details -->
 
@@ -674,23 +597,18 @@ function renderPaymentRow(payment) {
 
     `;
 
-
     paymentTableBody.appendChild(
         row
     );
 
 }
 
-
-// ======================================================
 // Update Summary
-// ======================================================
 
 function updateSummary(payments) {
 
     const total =
         payments.length;
-
 
     const paidPayments =
         payments.filter(
@@ -700,7 +618,6 @@ function updateSummary(payments) {
                 ).toLowerCase() ===
                 "paid"
         );
-
 
     /*
      * Organizer Revenue
@@ -728,7 +645,6 @@ function updateSummary(payments) {
             0
         );
 
-
     if (totalPayments) {
 
         totalPayments.textContent =
@@ -736,14 +652,12 @@ function updateSummary(payments) {
 
     }
 
-
     if (successfulPayments) {
 
         successfulPayments.textContent =
             paidPayments.length;
 
     }
-
 
     if (totalRevenue) {
 
@@ -756,10 +670,7 @@ function updateSummary(payments) {
 
 }
 
-
-// ======================================================
 // Show Error
-// ======================================================
 
 function showError(message) {
 
@@ -771,7 +682,6 @@ function showError(message) {
 
     }
 
-
     if (paymentSection) {
 
         paymentSection.classList.add(
@@ -780,7 +690,6 @@ function showError(message) {
 
     }
 
-
     if (emptyState) {
 
         emptyState.classList.add(
@@ -788,7 +697,6 @@ function showError(message) {
         );
 
     }
-
 
     if (errorMessage) {
 
@@ -803,18 +711,13 @@ function showError(message) {
 
 }
 
-
-// ======================================================
 // Fetch Organizer Payments
-// ======================================================
 
 async function loadOrganizerPayments() {
 
     try {
 
-        // ==============================================
         // Reset UI
-        // ==============================================
 
         if (loading) {
 
@@ -824,7 +727,6 @@ async function loadOrganizerPayments() {
 
         }
 
-
         if (errorMessage) {
 
             errorMessage.classList.add(
@@ -832,7 +734,6 @@ async function loadOrganizerPayments() {
             );
 
         }
-
 
         if (paymentSection) {
 
@@ -842,7 +743,6 @@ async function loadOrganizerPayments() {
 
         }
 
-
         if (emptyState) {
 
             emptyState.classList.add(
@@ -851,14 +751,10 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // Get Token
-        // ==============================================
 
         const token =
             getToken();
-
 
         if (!token) {
 
@@ -870,10 +766,7 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // API Request
-        // ==============================================
 
         const response =
             await fetch(
@@ -895,18 +788,12 @@ async function loadOrganizerPayments() {
                 }
             );
 
-
-        // ==============================================
         // Read Response
-        // ==============================================
 
         const result =
             await response.json();
 
-
-        // ==============================================
         // Backend Error
-        // ==============================================
 
         if (!response.ok) {
 
@@ -920,13 +807,9 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // Extract Payments
-        // ==============================================
 
         let payments = [];
-
 
         /*
          * Expected:
@@ -948,7 +831,6 @@ async function loadOrganizerPayments() {
                 result.data;
 
         }
-
 
         /*
          * Also handle:
@@ -973,10 +855,7 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // Hide Loading
-        // ==============================================
 
         if (loading) {
 
@@ -986,19 +865,13 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // Update Summary
-        // ==============================================
 
         updateSummary(
             payments
         );
 
-
-        // ==============================================
         // Empty State
-        // ==============================================
 
         if (
             payments.length === 0
@@ -1016,10 +889,7 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // Clear Existing Rows
-        // ==============================================
 
         if (paymentTableBody) {
 
@@ -1028,10 +898,7 @@ async function loadOrganizerPayments() {
 
         }
 
-
-        // ==============================================
         // Render Payment Rows
-        // ==============================================
 
         payments.forEach(
             payment => {
@@ -1043,10 +910,7 @@ async function loadOrganizerPayments() {
             }
         );
 
-
-        // ==============================================
         // Show Payment Section
-        // ==============================================
 
         if (paymentSection) {
 
@@ -1065,7 +929,6 @@ async function loadOrganizerPayments() {
             error
         );
 
-
         showError(
 
             error.message ||
@@ -1078,10 +941,7 @@ async function loadOrganizerPayments() {
 
 }
 
-
-// ======================================================
 // Initial Load
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

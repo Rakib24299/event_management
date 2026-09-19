@@ -1,13 +1,9 @@
-// ========================================
 // EventEase Booking Details
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -68,24 +64,18 @@ const cancelMessage =
     document.getElementById("cancelMessage");
 
 
-// ========================================
 // Variables
-// ========================================
 
 let currentBooking = null;
 
 
-// ========================================
 // Token
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
 
-// ========================================
 // Authentication
-// ========================================
 
 if (!token) {
 
@@ -94,9 +84,8 @@ if (!token) {
 }
 
 
-// ========================================
 // Get Booking ID From URL
-// ========================================
+
 
 function getBookingIdFromUrl() {
 
@@ -110,9 +99,7 @@ function getBookingIdFromUrl() {
 }
 
 
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -123,9 +110,7 @@ function formatPrice(price) {
 }
 
 
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -160,9 +145,7 @@ function formatDate(dateValue) {
 }
 
 
-// ========================================
 // Format Date + Time
-// ========================================
 
 function formatDateTime(dateValue) {
 
@@ -198,9 +181,7 @@ function formatDateTime(dateValue) {
 }
 
 
-// ========================================
 // Display Error
-// ========================================
 
 function showError(message) {
 
@@ -232,9 +213,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Load Booking
-// ========================================
 
 async function loadBooking() {
 
@@ -315,9 +294,7 @@ async function loadBooking() {
 }
 
 
-// ========================================
 // Display Booking
-// ========================================
 
 function displayBooking(booking) {
 
@@ -337,13 +314,11 @@ function displayBooking(booking) {
     }
 
 
-    // ====================================
+    // 
     // Booking Information
-    // ====================================
+    // 
 
-    bookingId.textContent =
-        booking._id ||
-        booking.id ||
+    bookingId.textContent = booking._id ||  booking.id ||
         "--";
 
 
@@ -364,9 +339,7 @@ function displayBooking(booking) {
         );
 
 
-    // ====================================
     // Ticket Price
-    // ====================================
 
     const quantity =
         Number(
@@ -404,9 +377,7 @@ function displayBooking(booking) {
     }
 
 
-    // ====================================
     // Booking Status
-    // ====================================
 
     bookingStatus.textContent =
         formatStatus(
@@ -420,9 +391,7 @@ function displayBooking(booking) {
         );
 
 
-    // ====================================
     // Payment Status
-    // ====================================
 
     paymentStatus.textContent =
         formatStatus(
@@ -436,9 +405,9 @@ function displayBooking(booking) {
         );
 
 
-    // ====================================
+    // 
     // OTP Status
-    // ====================================
+    // 
 
     if (booking.isOtpVerified) {
 
@@ -458,40 +427,36 @@ function displayBooking(booking) {
     }
 
 
-    // ====================================
     // Event
-    // ====================================
 
     displayEvent(
         booking.event
     );
 
 
-    // ====================================
+    // 
     // Cancel Button
-    // ====================================
+    // 
 
-    if (
-        booking.bookingStatus ===
-        "confirmed"
-    ) {
+    // if (
+    //     booking.bookingStatus ===
+    //     "confirmed"
+    // ) {
 
-        cancelBookingButton.classList.remove(
-            "hidden"
-        );
+    //     cancelBookingButton.classList.remove(
+    //         "hidden"
+    //     );
 
-    } else {
+    // } else {
 
-        cancelBookingButton.classList.add(
-            "hidden"
-        );
-    }
+    //     cancelBookingButton.classList.add(
+    //         "hidden"
+    //     );
+    // }
 }
 
 
-// ========================================
 // Display Event
-// ========================================
 
 function displayEvent(event) {
 
@@ -536,16 +501,16 @@ function displayEvent(event) {
         );
 
 
+    const venue = event.venue;
     bookingEventLocation.textContent =
-        event.location ||
-        event.venue ||
+        venue?.venueName ||
+        (typeof venue === "string" ? venue : null) ||
+        (typeof event.location === "string" ? event.location : null) ||
         "Location not available";
 }
 
 
-// ========================================
 // Format Status
-// ========================================
 
 function formatStatus(status) {
 
@@ -562,9 +527,7 @@ function formatStatus(status) {
 }
 
 
-// ========================================
 // Status Classes
-// ========================================
 
 function getStatusClass(status) {
 
@@ -606,8 +569,6 @@ function getStatusClass(status) {
             return `${base} bg-gray-100 text-gray-700`;
     }
 }
-
-
 
 
 async function cancelBooking() {
@@ -733,9 +694,7 @@ async function cancelBooking() {
 }
 
 
-// ========================================
 // Booking Message
-// ========================================
 
 function showBookingMessage(
     message,
@@ -777,9 +736,7 @@ function showBookingMessage(
 }
 
 
-// ========================================
 // Event Listeners
-// ========================================
 
 if (cancelBookingButton) {
 
@@ -790,9 +747,7 @@ if (cancelBookingButton) {
 }
 
 
-// ========================================
 // Initialize
-// ========================================
 
 async function initializeBookingDetails() {
 

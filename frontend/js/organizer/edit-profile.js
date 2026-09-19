@@ -1,14 +1,10 @@
-// ======================================================
 // Organizer Edit Profile
 // EventEase
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const profileLoading =
     document.getElementById("profileLoading");
@@ -82,9 +78,7 @@ const accountStatus =
     document.getElementById("accountStatus");
 
 
-// ======================================================
 // Get Logged-in User Token
-// ======================================================
 
 function getToken() {
 
@@ -96,9 +90,7 @@ function getToken() {
 }
 
 
-// ======================================================
 // API Request Helper
-// ======================================================
 
 async function apiRequest(
     endpoint,
@@ -108,9 +100,7 @@ async function apiRequest(
     const token = getToken();
 
 
-    // --------------------------------------------------
     // Token check
-    // --------------------------------------------------
 
     if (!token) {
 
@@ -126,10 +116,8 @@ async function apiRequest(
     };
 
 
-    // --------------------------------------------------
     // JSON Content-Type
     // Do not add it for FormData
-    // --------------------------------------------------
 
     if (!(options.body instanceof FormData)) {
 
@@ -139,17 +127,13 @@ async function apiRequest(
     }
 
 
-    // --------------------------------------------------
     // JWT Authorization
-    // --------------------------------------------------
 
     headers["Authorization"] =
         `Bearer ${token}`;
 
 
-    // --------------------------------------------------
     // Request
-    // --------------------------------------------------
 
     const response =
         await fetch(
@@ -161,9 +145,7 @@ async function apiRequest(
         );
 
 
-    // --------------------------------------------------
     // Response Data
-    // --------------------------------------------------
 
     let data = null;
 
@@ -180,9 +162,7 @@ async function apiRequest(
     }
 
 
-    // --------------------------------------------------
     // Error
-    // --------------------------------------------------
 
     if (!response.ok) {
 
@@ -199,9 +179,7 @@ async function apiRequest(
 }
 
 
-// ======================================================
 // Show Message
-// ======================================================
 
 function showMessage(
     message,
@@ -254,9 +232,7 @@ function showMessage(
 }
 
 
-// ======================================================
 // Default Image
-// ======================================================
 
 function getDefaultImage(
     type = "profile"
@@ -278,9 +254,7 @@ function getDefaultImage(
 }
 
 
-// ======================================================
 // Render Organizer Profile
-// ======================================================
 
 function renderProfile(user) {
 
@@ -293,9 +267,7 @@ function renderProfile(user) {
     }
 
 
-    // ==================================================
     // IMPORTANT SECURITY CHECK
-    // ==================================================
 
     if (user.role !== "organizer") {
 
@@ -312,9 +284,7 @@ function renderProfile(user) {
     );
 
 
-    // ==================================================
     // Basic Information
-    // ==================================================
 
     if (nameInput) {
 
@@ -356,9 +326,7 @@ function renderProfile(user) {
     }
 
 
-    // ==================================================
     // Profile Image
-    // ==================================================
 
     const profileImageUrl =
         user.profileImage?.url;
@@ -394,9 +362,7 @@ function renderProfile(user) {
     }
 
 
-    // ==================================================
     // Organization Logo
-    // ==================================================
 
     const organizationLogoUrl =
         user.organizationLogo?.url;
@@ -411,9 +377,7 @@ function renderProfile(user) {
     }
 
 
-    // ==================================================
     // Account Information
-    // ==================================================
 
     if (accountRole) {
 
@@ -435,17 +399,13 @@ function renderProfile(user) {
 }
 
 
-// ======================================================
 // Load Logged-in Organizer Profile
-// ======================================================
 
 async function loadProfile() {
 
     try {
 
-        // ------------------------------------------------
         // Loading
-        // ------------------------------------------------
 
         if (profileLoading) {
 
@@ -474,13 +434,11 @@ async function loadProfile() {
         }
 
 
-        // ------------------------------------------------
         // Get currently logged-in user
         //
         // Backend:
         // JWT → decoded.id → req.user.id
         // → User.findById(req.user.id)
-        // ------------------------------------------------
 
         const response =
             await apiRequest(
@@ -507,16 +465,12 @@ async function loadProfile() {
         );
 
 
-        // ------------------------------------------------
         // Render Organizer
-        // ------------------------------------------------
 
         renderProfile(user);
 
 
-        // ------------------------------------------------
         // Show Content
-        // ------------------------------------------------
 
         if (profileLoading) {
 
@@ -574,9 +528,7 @@ async function loadProfile() {
 }
 
 
-// ======================================================
 // Update Organizer Profile
-// ======================================================
 
 if (profileForm) {
 
@@ -688,9 +640,7 @@ if (profileForm) {
 }
 
 
-// ======================================================
 // Upload Profile Image
-// ======================================================
 
 if (profileImageInput) {
 
@@ -788,9 +738,7 @@ if (profileImageInput) {
 }
 
 
-// ======================================================
 // Delete Profile Image
-// ======================================================
 
 if (deleteProfileImageButton) {
 
@@ -882,9 +830,7 @@ if (deleteProfileImageButton) {
 }
 
 
-// ======================================================
 // Upload Organization Logo
-// ======================================================
 
 if (organizationLogoInput) {
 
@@ -982,9 +928,7 @@ if (organizationLogoInput) {
 }
 
 
-// ======================================================
 // Retry Profile
-// ======================================================
 
 if (retryProfileButton) {
 
@@ -1000,9 +944,7 @@ if (retryProfileButton) {
 }
 
 
-// ======================================================
 // Initial Load
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1014,9 +956,7 @@ document.addEventListener(
 );
 
 
-// ======================================================
 // Organizer Logout
-// ======================================================
 
 const logoutButton =
     document.getElementById("logoutButton");

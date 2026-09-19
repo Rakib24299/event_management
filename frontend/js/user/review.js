@@ -1,13 +1,9 @@
-// ========================================
 // EventEase Review
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -58,9 +54,7 @@ const ratingStars =
     document.querySelectorAll(".rating-star");
 
 
-// ========================================
 // Variables
-// ========================================
 
 const token =
     localStorage.getItem("token");
@@ -74,9 +68,7 @@ let bookingId = null;
 let eventData = null;
 
 
-// ========================================
 // Rating Labels
-// ========================================
 
 const ratingLabels = {
     1: "Very Bad",
@@ -87,9 +79,7 @@ const ratingLabels = {
 };
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -101,9 +91,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -121,9 +109,7 @@ function hideError() {
 }
 
 
-// ========================================
 // Show Success
-// ========================================
 
 function showSuccess(message) {
 
@@ -135,9 +121,7 @@ function showSuccess(message) {
 }
 
 
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -164,9 +148,7 @@ function formatDate(dateValue) {
 }
 
 
-// ========================================
 // Get Booking Information
-// ========================================
 
 function loadBookingInformation() {
 
@@ -306,9 +288,7 @@ function loadBookingInformation() {
 }
 
 
-// ========================================
 // Load Event
-// ========================================
 
 async function loadEventInformation() {
 
@@ -378,9 +358,7 @@ async function loadEventInformation() {
 }
 
 
-// ========================================
 // Display Event
-// ========================================
 
 function displayEventInformation(event) {
 
@@ -417,9 +395,7 @@ function displayEventInformation(event) {
 }
 
 
-// ========================================
 // Select Rating
-// ========================================
 
 function selectRating(rating) {
 
@@ -473,9 +449,7 @@ function selectRating(rating) {
 }
 
 
-// ========================================
 // Rating Events
-// ========================================
 
 ratingStars.forEach(
     (star) => {
@@ -495,9 +469,7 @@ ratingStars.forEach(
 );
 
 
-// ========================================
 // Character Counter
-// ========================================
 
 reviewComment.addEventListener(
     "input",
@@ -519,9 +491,7 @@ reviewComment.addEventListener(
 );
 
 
-// ========================================
 // Validate Review
-// ========================================
 
 function validateReview() {
 
@@ -592,9 +562,7 @@ function validateReview() {
 }
 
 
-// ========================================
 // Submit Review
-// ========================================
 
 async function submitReview() {
 
@@ -785,9 +753,7 @@ async function submitReview() {
 }
 
 
-// ========================================
 // Form Submit
-// ========================================
 
 reviewForm.addEventListener(
     "submit",
@@ -801,9 +767,7 @@ reviewForm.addEventListener(
 );
 
 
-// ========================================
 // Initialize
-// ========================================
 
 async function initializeReviewPage() {
 

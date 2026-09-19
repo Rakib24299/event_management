@@ -1,19 +1,13 @@
-// ========================================
 // EventEase - Homepage
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
-// ========================================
 // State
-// ========================================
 
 let allEvents = [];
 let allCategories = [];
 
-// ========================================
 // Category Icons
-// ========================================
 
 const categoryIcons = {
   Music:
@@ -42,15 +36,15 @@ const categoryIcons = {
     '<svg class="h-6 w-6 text-current inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" /></svg>',
 };
 
-// ========================================
+
 // Token (optional)
-// ========================================
+
 
 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-// ========================================
+
 // Elements
-// ========================================
+
 
 const featuredEventsContainer = document.getElementById("featuredEvents");
 
@@ -74,9 +68,9 @@ const searchButton = document.getElementById("searchButton");
 
 const clearFiltersBtn = document.getElementById("clearFilters");
 
-// ========================================
+
 // API Request Helper
-// ========================================
+
 
 async function apiRequest(endpoint, options = {}) {
   const headers = {
@@ -108,9 +102,7 @@ async function apiRequest(endpoint, options = {}) {
   return data;
 }
 
-// ========================================
 // Utility Functions
-// ========================================
 
 function escapeHTML(value) {
   if (value === null || value === undefined) {
@@ -256,9 +248,7 @@ function extractEvents(result) {
   return [];
 }
 
-// ========================================
 // Loading / Error / Empty States
-// ========================================
 
 function showLoading() {
   if (eventsLoading) {
@@ -333,9 +323,7 @@ function showEmptyState() {
   }
 }
 
-// ========================================
-// Render Events
-// ========================================
+// Render Events/SHOW 
 
 function createEventCard(event) {
   const id = getEventId(event);
@@ -572,6 +560,8 @@ function createEventCard(event) {
     `;
 }
 
+// RENDER EVENT
+
 function renderEvents(events) {
   if (!featuredEventsContainer) {
     return;
@@ -589,16 +579,17 @@ function renderEvents(events) {
     eventsError.classList.add("hidden");
   }
 
-  const displayEvents = events.slice(0, 8);
+  // SHOW EVENTS RENDER 4 
+  const displayEvents = events.slice(0, 4);
 
   featuredEventsContainer.innerHTML = displayEvents
     .map(createEventCard)
     .join("");
 }
 
-// ========================================
+
 // Render Categories
-// ========================================
+
 
 function createCategoryCard(category) {
   const name = escapeHTML(category.name || category.title || "Category");
@@ -705,9 +696,7 @@ function populateCategoryDropdown(categories) {
     `;
 }
 
-// ========================================
 // Fetch Categories
-// ========================================
 
 async function fetchCategories() {
   try {
@@ -746,9 +735,9 @@ async function fetchCategories() {
   }
 }
 
-// ========================================
-// Fetch Events
-// ========================================
+
+// Fetch Events /SHOW EVENTS API
+
 
 async function fetchEvents() {
   showLoading();
@@ -772,9 +761,7 @@ async function fetchEvents() {
   }
 }
 
-// ========================================
 // Filter Events
-// ========================================
 
 function filterEvents() {
   const searchTerm = searchInput?.value.trim().toLowerCase() || "";
@@ -819,9 +806,7 @@ function filterEvents() {
   renderEvents(filteredEvents);
 }
 
-// ========================================
 // Event Listeners
-// ========================================
 
 if (searchButton) {
   searchButton.addEventListener("click", filterEvents);
@@ -869,8 +854,6 @@ if (retryEventsBtn) {
   retryEventsBtn.addEventListener("click", fetchEvents);
 }
 
-// ========================================
 // Initialize
-// ========================================
 
 Promise.allSettled([fetchCategories(), fetchEvents()]);

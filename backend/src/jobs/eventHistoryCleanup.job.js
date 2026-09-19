@@ -9,12 +9,9 @@ const {
 } = require("../utils/eventDateTime");
 
 
-// ======================================================
-// EVENT HISTORY CLEANUP JOB
-// ======================================================
+// EVENT HISTORY 30 DAYS CLEANUP JOB
 // Hard-deletes events whose end datetime is older
 // than 30 days.
-// ======================================================
 
 const cleanupExpiredEvents =
     async () => {
@@ -76,8 +73,7 @@ const cleanupExpiredEvents =
 
 
             if (
-                expiredEvents.length ===
-                0
+                expiredEvents.length ===  0
             ) {
 
                 console.log(
@@ -160,11 +156,8 @@ const cleanupExpiredEvents =
     };
 
 
-// ======================================================
 // START CLEANUP JOB
-// ======================================================
 // Runs daily at 00:00
-// ======================================================
 
 const startEventHistoryCleanupJob =
     () => {
@@ -182,9 +175,7 @@ const startEventHistoryCleanupJob =
     };
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
 

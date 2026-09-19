@@ -1,14 +1,10 @@
-// ======================================================
 // EventEase
 // Forgot Password
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const forgotPasswordForm =
     document.getElementById("forgotPasswordForm");
@@ -23,9 +19,7 @@ const message =
     document.getElementById("message");
 
 
-// ======================================================
 // Show Message
-// ======================================================
 
 function showMessage(text, type = "error") {
 
@@ -65,9 +59,7 @@ function showMessage(text, type = "error") {
 }
 
 
-// ======================================================
 // Send Forgot Password OTP
-// ======================================================
 
 forgotPasswordForm.addEventListener(
     "submit",
@@ -80,9 +72,7 @@ forgotPasswordForm.addEventListener(
             emailInput.value.trim().toLowerCase();
 
 
-        // ----------------------------------------------
         // Basic Validation
-        // ----------------------------------------------
 
         if (!email) {
 
@@ -96,9 +86,7 @@ forgotPasswordForm.addEventListener(
         }
 
 
-        // ----------------------------------------------
         // Loading State
-        // ----------------------------------------------
 
         sendOtpButton.disabled = true;
 
@@ -114,9 +102,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // ------------------------------------------
             // API Request
-            // ------------------------------------------
 
             const response =
                 await fetch(
@@ -136,9 +122,7 @@ forgotPasswordForm.addEventListener(
                 );
 
 
-            // ------------------------------------------
             // Read Response
-            // ------------------------------------------
 
             let data = null;
 
@@ -160,9 +144,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // ------------------------------------------
             // Error
-            // ------------------------------------------
 
             if (!response.ok) {
 
@@ -174,9 +156,7 @@ forgotPasswordForm.addEventListener(
             }
 
 
-            // ------------------------------------------
             // Save Email
-            // ------------------------------------------
 
             /*
              * Verify page will use this email.
@@ -191,9 +171,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // ------------------------------------------
             // Success Message
-            // ------------------------------------------
 
             showMessage(
                 data?.message ||
@@ -202,9 +180,7 @@ forgotPasswordForm.addEventListener(
             );
 
 
-            // ------------------------------------------
             // Redirect to Verify OTP Page
-            // ------------------------------------------
 
             setTimeout(() => {
 

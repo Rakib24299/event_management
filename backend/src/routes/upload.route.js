@@ -1,6 +1,4 @@
-// ========================================
 // EventEase Upload Routes
-// ========================================
 
 const express =
     require("express");
@@ -22,9 +20,7 @@ const uploadController =
     require("../controllers/upload.controller");
 
 
-// ========================================
 // Upload Event Banner
-// ========================================
 
 router.post(
 
@@ -46,9 +42,7 @@ router.post(
 );
 
 
-// ========================================
 // Upload Event Gallery
-// ========================================
 
 router.post(
 

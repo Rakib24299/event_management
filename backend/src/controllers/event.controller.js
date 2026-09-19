@@ -11,9 +11,7 @@ const User =
     require("../models/User");
 
 
-// ========================================
 // Create Event
-// ========================================
 
 const createEvent =
     catchAsync(
@@ -44,10 +42,8 @@ const createEvent =
     );
 
 
-// ========================================
 // Get My Events
 // Organizer Only
-// ========================================
 
 const getMyEvents =
     catchAsync(
@@ -71,9 +67,7 @@ const getMyEvents =
     );
 
 
-// ========================================
 // Get All Events
-// ========================================
 
 const getAllEvents =
     catchAsync(
@@ -95,9 +89,8 @@ const getAllEvents =
     );
 
 
-// ========================================
 // Get Single Event
-// ========================================
+
 
 const getSingleEvent =
     catchAsync(
@@ -111,12 +104,8 @@ const getSingleEvent =
                 req.headers.authorization;
 
 
-            if (
-                authHeader &&
-                authHeader.startsWith(
-                    "Bearer "
-                )
-            ) {
+            if ( authHeader && authHeader.startsWith( "Bearer " )  ) 
+                {
 
                 try {
 
@@ -181,9 +170,7 @@ const getSingleEvent =
     );
 
 
-// ========================================
 // Update Event
-// ========================================
 
 const updateEvent =
     catchAsync(
@@ -218,10 +205,8 @@ const updateEvent =
     );
 
 
-// ========================================
 // Delete Event
 // Soft Delete
-// ========================================
 
 const deleteEvent =
     catchAsync(
@@ -252,10 +237,8 @@ const deleteEvent =
     );
 
 
-// ========================================
 // Publish / Approve Event
 // Admin Only
-// ========================================
 
 const publishEvent =
     catchAsync(
@@ -284,10 +267,8 @@ const publishEvent =
     );
 
 
-// ========================================
 // Reject Event
 // Admin Only
-// ========================================
 
 const rejectEvent =
     catchAsync(
@@ -316,9 +297,7 @@ const rejectEvent =
     );
 
     
-// ========================================
 // Cancel Event
-// ========================================
 
 const cancelEvent =
     catchAsync(
@@ -351,10 +330,8 @@ const cancelEvent =
     );
 
 
-// ========================================
 // Get Event History
 // Admin Only
-// ========================================
 
 const getEventHistory =
     catchAsync(
@@ -381,10 +358,8 @@ const getEventHistory =
     );
 
 
-// ========================================
 // Get Organizer Event History
 // Organizer Only
-// ========================================
 
 const getOrganizerEventHistory =
     catchAsync(
@@ -413,9 +388,7 @@ const getOrganizerEventHistory =
     );
 
 
-// ========================================
 // Export
-// ========================================
 
 module.exports = {
 

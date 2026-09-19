@@ -13,9 +13,7 @@ const {
 const router = express.Router();
 
 
-// ========================================
 // Get My Profile
-// ========================================
 
 router.get(
   "/me",
@@ -24,9 +22,7 @@ router.get(
 );
 
 
-// ========================================
 // Update My Profile
-// ========================================
 
 router.patch(
   "/update-profile",
@@ -36,9 +32,7 @@ router.patch(
 );
 
 
-// ========================================
 // Upload Profile Image
-// ========================================
 
 router.patch(
   "/profile-image",
@@ -48,9 +42,7 @@ router.patch(
 );
 
 
-// ========================================
 // Delete Profile Image
-// ========================================
 
 router.delete(
   "/profile-image",
@@ -59,10 +51,8 @@ router.delete(
 );
 
 
-// ========================================
 // Upload Organization Logo
 // Organizer Only
-// ========================================
 
 router.patch(
   "/organization-logo",

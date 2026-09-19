@@ -7,9 +7,7 @@ const {
 } = require("../config/socket");
 
 
-// ======================================================
 // SOCKET EMIT HELPER
-// ======================================================
 //
 // Sends a real-time notification to the user's
 // Socket.IO room.
@@ -19,7 +17,6 @@ const {
 //
 // Socket errors must never break the normal
 // notification/database operation.
-// ======================================================
 
 const emitNotification = (
     notification
@@ -81,9 +78,7 @@ const emitNotification = (
 };
 
 
-// ======================================================
 // CREATE SINGLE NOTIFICATION
-// ======================================================
 
 const createNotification =
     async (
@@ -112,9 +107,7 @@ const createNotification =
             });
 
 
-        // ------------------------------------------------
         // REAL-TIME NOTIFICATION
-        // ------------------------------------------------
 
         emitNotification(
             notification
@@ -126,9 +119,7 @@ const createNotification =
     };
 
 
-// ======================================================
 // GET MY NOTIFICATIONS
-// ======================================================
 
 const getMyNotifications =
     async (
@@ -155,9 +146,7 @@ const getMyNotifications =
     };
 
 
-// ======================================================
 // GET NOTIFICATION BY ID
-// ======================================================
 
 const getNotificationById =
     async (
@@ -185,9 +174,7 @@ const getNotificationById =
     };
 
 
-// ======================================================
 // MARK AS READ
-// ======================================================
 
 const markAsRead =
     async (
@@ -253,9 +240,7 @@ const markAsRead =
     };
 
 
-// ======================================================
 // MARK ALL AS READ
-// ======================================================
 
 const markAllAsRead =
     async (
@@ -292,9 +277,7 @@ const markAllAsRead =
     };
 
 
-// ======================================================
 // DELETE MY NOTIFICATION
-// ======================================================
 
 const deleteNotification =
     async (
@@ -344,9 +327,7 @@ const deleteNotification =
     };
 
 
-// ======================================================
 // CREATE BULK NOTIFICATIONS
-// ======================================================
 
 const createBulkNotifications =
     async ({
@@ -396,13 +377,10 @@ const createBulkNotifications =
             );
 
 
-        // ------------------------------------------------
         // REAL-TIME BULK NOTIFICATION
-        // ------------------------------------------------
         //
         // Every created notification is sent to the
         // corresponding user's room.
-        // ------------------------------------------------
 
         for (
             const notification
@@ -421,9 +399,7 @@ const createBulkNotifications =
     };
 
 
-// ======================================================
 // ADMIN: GET ALL NOTIFICATIONS
-// ======================================================
 
 const getAllNotifications =
     async () => {
@@ -449,9 +425,7 @@ const getAllNotifications =
     };
 
 
-// ======================================================
 // ADMIN: GET NOTIFICATION STATISTICS
-// ======================================================
 
 const getNotificationStats =
     async () => {
@@ -491,9 +465,7 @@ const getNotificationStats =
     };
 
 
-// ======================================================
 // ADMIN: SEND NOTIFICATION
-// ======================================================
 
 const sendAdminNotification =
     async ({
@@ -504,9 +476,7 @@ const sendAdminNotification =
         type,
     }) => {
 
-        // -----------------------------------------------
         // VALIDATE TITLE
-        // -----------------------------------------------
 
         if (
             !title ||
@@ -521,9 +491,7 @@ const sendAdminNotification =
         }
 
 
-        // -----------------------------------------------
         // VALIDATE MESSAGE
-        // -----------------------------------------------
 
         if (
             !message ||
@@ -538,9 +506,7 @@ const sendAdminNotification =
         }
 
 
-        // -----------------------------------------------
         // SPECIFIC USER
-        // -----------------------------------------------
 
         if (
             recipientType ===
@@ -608,9 +574,7 @@ const sendAdminNotification =
         }
 
 
-        // -----------------------------------------------
         // SELECT RECIPIENTS
-        // -----------------------------------------------
 
         let userQuery =
             {};
@@ -680,9 +644,7 @@ const sendAdminNotification =
         }
 
 
-        // -----------------------------------------------
         // FIND USERS
-        // -----------------------------------------------
 
         const users =
             await User.find(
@@ -711,9 +673,7 @@ const sendAdminNotification =
         }
 
 
-        // -----------------------------------------------
         // EXTRACT USER IDS
-        // -----------------------------------------------
 
         const userIds =
             users.map(
@@ -722,9 +682,7 @@ const sendAdminNotification =
             );
 
 
-        // -----------------------------------------------
         // BULK CREATE
-        // -----------------------------------------------
 
         const notifications =
             await createBulkNotifications({
@@ -757,9 +715,7 @@ const sendAdminNotification =
     };
 
 
-// ======================================================
 // GET UNREAD COUNT
-// ======================================================
 
 const getUnreadCount =
     async (
@@ -788,9 +744,7 @@ const getUnreadCount =
     };
 
 
-// ======================================================
 // ADMIN: DELETE NOTIFICATION
-// ======================================================
 
 const deleteNotificationByAdmin =
     async (
@@ -826,9 +780,7 @@ const deleteNotificationByAdmin =
     };
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
 

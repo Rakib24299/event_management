@@ -8,9 +8,7 @@ const roleMiddleware = require("../middlewares/role.middleware");
 const router = express.Router();
 
 
-// ======================================================
 // Scan QR Code & Mark Attendance
-// ======================================================
 
 router.post(
   "/scan",

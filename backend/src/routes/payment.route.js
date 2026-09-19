@@ -9,9 +9,7 @@ const authMiddleware =
   require("../middlewares/auth.middleware");
 
 
-// ======================================================
 // CREATE PAYMENT
-// ======================================================
 
 router.post(
   "/create",
@@ -26,15 +24,12 @@ router.post(
 );
 
 
-// ======================================================
 // SSLCommerz CALLBACKS
-// ======================================================
 //
 // IMPORTANT:
 // These routes must NOT require login authentication
 // because SSLCommerz calls these URLs directly.
 //
-// ======================================================
 
 
 // SSLCommerz SUCCESS
@@ -56,9 +51,7 @@ router.post("/sslcommerz/cancel", paymentController.sslPaymentCancel);
 router.post( "/sslcommerz/ipn", paymentController.sslPaymentIPN);
 
 
-// ======================================================
 // DOWNLOAD PAYMENT RECEIPT PDF
-// ======================================================
 
 router.get(
   "/booking/:bookingId/receipt",
@@ -67,9 +60,7 @@ router.get(
 );
 
 
-// ======================================================
 // GET PAYMENT BY BOOKING
-// ======================================================
 
 router.get(
   "/booking/:bookingId",
@@ -78,9 +69,7 @@ router.get(
 );
 
 
-// ======================================================
 // USER REQUEST REFUND
-// ======================================================
 
 router.post(
   "/:id/refund",
@@ -89,9 +78,7 @@ router.post(
 );
 
 
-// ======================================================
 // ORGANIZER PAYMENTS
-// ======================================================
 
 router.get(
   "/organizer/all",
@@ -100,9 +87,7 @@ router.get(
 );
 
 
-// ======================================================
 // ADMIN PAYMENTS
-// ======================================================
 
 router.get(
   "/admin/all",
@@ -111,9 +96,7 @@ router.get(
 );
 
 
-// ======================================================
 // ADMIN PENDING REFUNDS
-// ======================================================
 
 router.get(
   "/admin/refunds/pending",
@@ -122,9 +105,7 @@ router.get(
 );
 
 
-// ======================================================
 // ADMIN PROCESS REFUND
-// ======================================================
 
 router.patch(
   "/admin/refunds/:id/process",
@@ -133,9 +114,7 @@ router.patch(
 );
 
 
-// ======================================================
 // PLATFORM FEE
-// ======================================================
 
 router.get(
   "/platform-fee",
@@ -144,9 +123,7 @@ router.get(
 );
 
 
-// ======================================================
 // GET PAYMENT BY ID (must be last — generic /:id)
-// ======================================================
 
 router.get(
   "/:id",
@@ -155,8 +132,6 @@ router.get(
 );
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = router;

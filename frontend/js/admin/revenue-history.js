@@ -1,16 +1,10 @@
-// ======================================================
 // ADMIN REVENUE HISTORY
-// ======================================================
 
-// ======================================================
 // Configuration
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
-// ======================================================
 // Authentication Check
-// ======================================================
 
 const token =
     localStorage.getItem("token") ||
@@ -20,9 +14,7 @@ if (!token) {
     window.location.href = "./admin-login.html";
 }
 
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loading = document.getElementById("loading");
 const errorRetry = document.getElementById("errorRetry");
@@ -53,9 +45,7 @@ const chartCanvas = document.getElementById("revenueBarChart");
 
 let revenueChart = null;
 
-// ======================================================
 // Get Token
-// ======================================================
 
 function getToken() {
     return (
@@ -67,9 +57,7 @@ function getToken() {
     );
 }
 
-// ======================================================
 // Format Currency
-// ======================================================
 
 function formatCurrency(amount) {
     const value = Number(amount || 0);
@@ -79,9 +67,7 @@ function formatCurrency(amount) {
     })}`;
 }
 
-// ======================================================
 // Show Loading State
-// ======================================================
 
 function showLoading() {
     if (loading) loading.classList.remove("hidden");
@@ -89,9 +75,7 @@ function showLoading() {
     if (revenueContent) revenueContent.classList.add("hidden");
 }
 
-// ======================================================
 // Show Error State
-// ======================================================
 
 function showError() {
     if (loading) loading.classList.add("hidden");
@@ -99,9 +83,7 @@ function showError() {
     if (revenueContent) revenueContent.classList.add("hidden");
 }
 
-// ======================================================
 // Show Content State
-// ======================================================
 
 function showContent() {
     if (loading) loading.classList.add("hidden");
@@ -109,9 +91,7 @@ function showContent() {
     if (revenueContent) revenueContent.classList.remove("hidden");
 }
 
-// ======================================================
 // Render Summary Card
-// ======================================================
 
 function renderSummaryCard(
     totalPaymentsEl,
@@ -146,9 +126,7 @@ function renderSummaryCard(
     }
 }
 
-// ======================================================
 // Plugin: Draw Values on Top of Bars
-// ======================================================
 
 const barTopLabelsPlugin = {
     id: "barTopLabels",
@@ -192,9 +170,8 @@ const barTopLabelsPlugin = {
     }
 };
 
-// ======================================================
 // Render Revenue Bar Chart
-// ======================================================
+// BAR CHART
 
 function renderRevenueBarChart(data) {
     if (!chartCanvas || typeof Chart === "undefined") return;
@@ -203,7 +180,7 @@ function renderRevenueBarChart(data) {
         revenueChart.destroy();
         revenueChart = null;
     }
-
+// last 1,7,30 days
     const labels = ["Today", "Last 7 Days", "Last 1 Month"];
     const totalRevenueData = [
         data.today?.totalRevenue || 0,
@@ -220,7 +197,7 @@ function renderRevenueBarChart(data) {
         data.last7Days?.platformFee || 0,
         data.last1Month?.platformFee || 0
     ];
-
+// bar chart
     const ctx = chartCanvas.getContext("2d");
 
     revenueChart = new Chart(ctx, {
@@ -316,9 +293,7 @@ function renderRevenueBarChart(data) {
     });
 }
 
-// ======================================================
 // Fetch Revenue History
-// ======================================================
 
 async function fetchRevenueHistory() {
     const currentToken = getToken();
@@ -344,9 +319,7 @@ async function fetchRevenueHistory() {
     return result.data || {};
 }
 
-// ======================================================
 // Load Revenue History
-// ======================================================
 
 async function loadRevenueHistory() {
     showLoading();
@@ -395,9 +368,7 @@ async function loadRevenueHistory() {
     }
 }
 
-// ======================================================
 // Event Listeners
-// ======================================================
 
 if (retryButton) {
     retryButton.addEventListener("click", loadRevenueHistory);
@@ -411,8 +382,6 @@ if (logoutBtn) {
     });
 }
 
-// ======================================================
 // Initial Load
-// ======================================================
 
 document.addEventListener("DOMContentLoaded", loadRevenueHistory);

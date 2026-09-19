@@ -1,19 +1,11 @@
-// ========================================
 // EventEase Organizer Bookings
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const totalBookings =
     document.getElementById(
@@ -75,10 +67,7 @@ const searchInput =
         "searchInput"
     );
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -89,13 +78,9 @@ const getToken = () => {
 
 };
 
-
 const token = getToken();
 
-
-// ========================================
 // Authentication Check
-// ========================================
 
 if (!token) {
 
@@ -108,17 +93,11 @@ if (!token) {
 
 }
 
-
-// ========================================
 // Store Bookings
-// ========================================
 
 let allBookings = [];
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -146,10 +125,8 @@ const apiRequest = async (
             }
         );
 
-
     const data =
         await response.json();
-
 
     if (!response.ok) {
 
@@ -160,15 +137,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -179,7 +152,6 @@ const formatDate = (
         return "N/A";
 
     }
-
 
     return new Date(date)
         .toLocaleString(
@@ -192,10 +164,7 @@ const formatDate = (
 
 };
 
-
-// ========================================
 // Format Currency
-// ========================================
 
 const formatCurrency = (
     amount
@@ -207,10 +176,7 @@ const formatCurrency = (
 
 };
 
-
-// ========================================
 // Get Status Badge
-// ========================================
 
 const getBookingStatusBadge = (
     status
@@ -228,7 +194,6 @@ const getBookingStatusBadge = (
                 </span>
             `;
 
-
         case "pending":
 
             return `
@@ -238,7 +203,6 @@ const getBookingStatusBadge = (
                     Pending
                 </span>
             `;
-
 
         case "cancelled":
 
@@ -250,7 +214,6 @@ const getBookingStatusBadge = (
                 </span>
             `;
 
-
         case "completed":
 
             return `
@@ -260,7 +223,6 @@ const getBookingStatusBadge = (
                     Completed
                 </span>
             `;
-
 
         default:
 
@@ -276,10 +238,7 @@ const getBookingStatusBadge = (
 
 };
 
-
-// ========================================
 // Get Payment Status Badge
-// ========================================
 
 const getPaymentStatusBadge = (
     status
@@ -297,7 +256,6 @@ const getPaymentStatusBadge = (
                 </span>
             `;
 
-
         case "pending":
 
             return `
@@ -307,7 +265,6 @@ const getPaymentStatusBadge = (
                     Pending
                 </span>
             `;
-
 
         case "failed":
 
@@ -319,7 +276,6 @@ const getPaymentStatusBadge = (
                 </span>
             `;
 
-
         case "refunded":
 
             return `
@@ -329,7 +285,6 @@ const getPaymentStatusBadge = (
                     Refunded
                 </span>
             `;
-
 
         default:
 
@@ -345,10 +300,7 @@ const getPaymentStatusBadge = (
 
 };
 
-
-// ========================================
 // Update Statistics
-// ========================================
 
 const updateStatistics = (
     bookings
@@ -357,14 +309,12 @@ const updateStatistics = (
     const total =
         bookings.length;
 
-
     const confirmed =
         bookings.filter(
             (booking) =>
                 booking.bookingStatus ===
                 "confirmed"
         ).length;
-
 
     const pending =
         bookings.filter(
@@ -373,14 +323,12 @@ const updateStatistics = (
                 "pending"
         ).length;
 
-
     const cancelled =
         bookings.filter(
             (booking) =>
                 booking.bookingStatus ===
                 "cancelled"
         ).length;
-
 
     totalBookings.textContent =
         total;
@@ -396,17 +344,13 @@ const updateStatistics = (
 
 };
 
-
-// ========================================
 // Render Bookings
-// ========================================
 
 const renderBookings = (
     bookings
 ) => {
 
     bookingList.innerHTML = "";
-
 
     if (
         !bookings ||
@@ -425,7 +369,6 @@ const renderBookings = (
 
     }
 
-
     emptyState.classList.add(
         "hidden"
     );
@@ -433,7 +376,6 @@ const renderBookings = (
     bookingContainer.classList.remove(
         "hidden"
     );
-
 
     bookings.forEach(
         (booking) => {
@@ -443,18 +385,14 @@ const renderBookings = (
                     "tr"
                 );
 
-
             row.className =
                 "transition hover:bg-gray-50";
-
 
             const customer =
                 booking.user || {};
 
-
             const event =
                 booking.event || {};
-
 
             row.innerHTML = `
 
@@ -500,7 +438,6 @@ const renderBookings = (
 
                         </div>
 
-
                         <div>
 
                             <p
@@ -526,8 +463,6 @@ const renderBookings = (
                     </div>
 
                 </td>
-
-
 
                 <!-- Event -->
 
@@ -569,8 +504,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Tickets -->
 
                 <td
@@ -588,8 +521,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Amount -->
 
                 <td
@@ -606,8 +537,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Booking Status -->
 
                 <td
@@ -620,8 +549,6 @@ const renderBookings = (
 
                 </td>
 
-
-
                 <!-- Payment -->
 
                 <td
@@ -633,8 +560,6 @@ const renderBookings = (
                     )}
 
                 </td>
-
-
 
                 <!-- Date -->
 
@@ -654,7 +579,6 @@ const renderBookings = (
 
             `;
 
-
             bookingList.appendChild(
                 row
             );
@@ -664,10 +588,7 @@ const renderBookings = (
 
 };
 
-
-// ========================================
 // Search Bookings
-// ========================================
 
 const searchBookings = () => {
 
@@ -675,7 +596,6 @@ const searchBookings = () => {
         searchInput.value
             .trim()
             .toLowerCase();
-
 
     if (!searchTerm) {
 
@@ -687,7 +607,6 @@ const searchBookings = () => {
 
     }
 
-
     const filteredBookings =
         allBookings.filter(
             (booking) => {
@@ -698,13 +617,11 @@ const searchBookings = () => {
                 const event =
                     booking.event || {};
 
-
                 const customerName =
                     (
                         customer.name ||
                         ""
                     ).toLowerCase();
-
 
                 const customerEmail =
                     (
@@ -712,13 +629,11 @@ const searchBookings = () => {
                         ""
                     ).toLowerCase();
 
-
                 const eventTitle =
                     (
                         event.title ||
                         ""
                     ).toLowerCase();
-
 
                 return (
                     customerName.includes(
@@ -737,17 +652,13 @@ const searchBookings = () => {
             }
         );
 
-
     renderBookings(
         filteredBookings
     );
 
 };
 
-
-// ========================================
 // Load Organizer Bookings
-// ========================================
 
 const loadOrganizerBookings =
     async () => {
@@ -770,26 +681,21 @@ const loadOrganizerBookings =
                 "hidden"
             );
 
-
             const result =
                 await apiRequest(
                     "/bookings/organizer-bookings"
                 );
 
-
             allBookings =
                 result.data || [];
-
 
             updateStatistics(
                 allBookings
             );
 
-
             renderBookings(
                 allBookings
             );
-
 
         } catch (error) {
 
@@ -797,7 +703,6 @@ const loadOrganizerBookings =
                 "Organizer bookings error:",
                 error
             );
-
 
             bookingContainer.classList.add(
                 "hidden"
@@ -807,11 +712,9 @@ const loadOrganizerBookings =
                 "hidden"
             );
 
-
             errorState.classList.remove(
                 "hidden"
             );
-
 
             errorMessage.textContent =
                 error.message ||
@@ -827,10 +730,7 @@ const loadOrganizerBookings =
 
     };
 
-
-// ========================================
 // Search Event
-// ========================================
 
 if (searchInput) {
 
@@ -841,10 +741,7 @@ if (searchInput) {
 
 }
 
-
-// ========================================
 // Retry Button
-// ========================================
 
 if (retryBtn) {
 
@@ -855,9 +752,6 @@ if (retryBtn) {
 
 }
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadOrganizerBookings();

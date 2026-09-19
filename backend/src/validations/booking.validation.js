@@ -1,8 +1,6 @@
 const Joi = require("joi");
 
-// ======================================================
 // CREATE BOOKING
-// ======================================================
 
 const createBookingSchema = Joi.object({
   eventId: Joi.string()
@@ -30,9 +28,7 @@ const createBookingSchema = Joi.object({
     }),
 });
 
-// ======================================================
 // VERIFY BOOKING OTP
-// ======================================================
 
 const verifyBookingOtpSchema = Joi.object({
   bookingId: Joi.string()
@@ -57,9 +53,7 @@ const verifyBookingOtpSchema = Joi.object({
     }),
 });
 
-// ======================================================
 // GENERATE FREE BOOKING OTP
-// ======================================================
 
 const freeBookingOtpSchema = Joi.object({
   bookingId: Joi.string()
@@ -70,9 +64,7 @@ const freeBookingOtpSchema = Joi.object({
     }),
 });
 
-// ======================================================
 // UPDATE BOOKING STATUS
-// ======================================================
 
 const updateBookingStatusSchema = Joi.object({
   status: Joi.string()
@@ -91,9 +83,7 @@ const updateBookingStatusSchema = Joi.object({
     }),
 });
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
   createBookingSchema,

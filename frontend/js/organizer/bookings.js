@@ -1,14 +1,9 @@
-// ========================================
 // EventEase Organizer Bookings
-// ========================================
 
 const API_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // Elements
-// ========================================
 
 const errorMessage =
     document.getElementById("errorMessage");
@@ -60,17 +55,11 @@ const closeModalFooterButton =
         "closeModalFooterButton"
     );
 
-
-// ========================================
 // Global Data
-// ========================================
 
 let allBookings = [];
 
-
-// ========================================
 // Get Token
-// ========================================
 
 function getToken() {
 
@@ -78,10 +67,7 @@ function getToken() {
 
 }
 
-
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -94,10 +80,7 @@ function showError(message) {
 
 }
 
-
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -109,10 +92,7 @@ function hideError() {
 
 }
 
-
-// ========================================
 // Show Success
-// ========================================
 
 function showSuccess(message) {
 
@@ -133,10 +113,7 @@ function showSuccess(message) {
 
 }
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(date) {
 
@@ -170,10 +147,7 @@ function formatDate(date) {
 
 }
 
-
-// ========================================
 // Format Currency
-// ========================================
 
 function formatCurrency(amount) {
 
@@ -186,10 +160,7 @@ function formatCurrency(amount) {
 
 }
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -226,10 +197,7 @@ function escapeHTML(value) {
 
 }
 
-
-// ========================================
 // Get Status Badge
-// ========================================
 
 function getStatusBadge(status) {
 
@@ -237,7 +205,6 @@ function getStatusBadge(status) {
         String(
             status || ""
         ).toLowerCase();
-
 
     if (
         normalizedStatus ===
@@ -259,7 +226,6 @@ function getStatusBadge(status) {
 
     }
 
-
     if (
         normalizedStatus ===
         "pending"
@@ -279,7 +245,6 @@ function getStatusBadge(status) {
         `;
 
     }
-
 
     if (
         normalizedStatus ===
@@ -301,7 +266,6 @@ function getStatusBadge(status) {
 
     }
 
-
     if (
         normalizedStatus ===
         "completed"
@@ -322,7 +286,6 @@ function getStatusBadge(status) {
 
     }
 
-
     return `
         <span
             class="inline-flex
@@ -338,10 +301,7 @@ function getStatusBadge(status) {
 
 }
 
-
-// ========================================
 // Load Organizer Bookings
-// ========================================
 
 async function loadOrganizerBookings() {
 
@@ -359,14 +319,10 @@ async function loadOrganizerBookings() {
         "hidden"
     );
 
-
     const token =
         getToken();
 
-
-    // ====================================
     // Token Check
-    // ====================================
 
     if (!token) {
 
@@ -382,12 +338,9 @@ async function loadOrganizerBookings() {
 
     }
 
-
     try {
 
-        // =================================
         // API Request
-        // =================================
 
         const response =
             await fetch(
@@ -408,24 +361,17 @@ async function loadOrganizerBookings() {
                 }
             );
 
-
-        // =================================
         // Response
-        // =================================
 
         const result =
             await response.json();
-
 
         console.log(
             "Organizer Bookings Response:",
             result
         );
 
-
-        // =================================
         // Unauthorized
-        // =================================
 
         if (
             response.status === 401
@@ -445,10 +391,7 @@ async function loadOrganizerBookings() {
 
         }
 
-
-        // =================================
         // API Error
-        // =================================
 
         if (
             !response.ok ||
@@ -462,20 +405,14 @@ async function loadOrganizerBookings() {
 
         }
 
-
-        // =================================
         // Save Data
-        // =================================
 
         allBookings =
             Array.isArray(result.data)
                 ? result.data
                 : [];
 
-
-        // =================================
         // Render
-        // =================================
 
         populateEventFilter(
             allBookings
@@ -488,7 +425,6 @@ async function loadOrganizerBookings() {
         renderBookings(
             allBookings
         );
-
 
     } catch (error) {
 
@@ -512,10 +448,7 @@ async function loadOrganizerBookings() {
 
 }
 
-
-// ========================================
 // Populate Event Filter
-// ========================================
 
 function populateEventFilter(
     bookings
@@ -523,13 +456,11 @@ function populateEventFilter(
 
     const events = new Map();
 
-
     bookings.forEach(
         (booking) => {
 
             const event =
                 booking.event;
-
 
             if (
                 event &&
@@ -547,13 +478,11 @@ function populateEventFilter(
         }
     );
 
-
     eventFilter.innerHTML = `
         <option value="">
             All Events
         </option>
     `;
-
 
     events.forEach(
         (title, id) => {
@@ -577,10 +506,7 @@ function populateEventFilter(
 
 }
 
-
-// ========================================
 // Update Summary
-// ========================================
 
 function updateSummary(
     bookings
@@ -588,7 +514,6 @@ function updateSummary(
 
     totalBookings.textContent =
         bookings.length;
-
 
     cancelledBookings.textContent =
         bookings.filter(
@@ -599,10 +524,7 @@ function updateSummary(
 
 }
 
-
-// ========================================
 // Filter Bookings
-// ========================================
 
 function filterBookings() {
 
@@ -611,14 +533,11 @@ function filterBookings() {
             .trim()
             .toLowerCase();
 
-
     const selectedEvent =
         eventFilter.value;
 
-
     const selectedStatus =
         statusFilter.value;
-
 
     const filteredBookings =
         allBookings.filter(
@@ -630,30 +549,25 @@ function filterBookings() {
                 const event =
                     booking.event || {};
 
-
                 const customerName =
                     String(
                         user.name || ""
                     ).toLowerCase();
-
 
                 const customerEmail =
                     String(
                         user.email || ""
                     ).toLowerCase();
 
-
                 const bookingId =
                     String(
                         booking._id || ""
                     ).toLowerCase();
 
-
                 const eventTitle =
                     String(
                         event.title || ""
                     ).toLowerCase();
-
 
                 const matchesSearch =
                     !search ||
@@ -670,18 +584,15 @@ function filterBookings() {
                         search
                     );
 
-
                 const matchesEvent =
                     !selectedEvent ||
                     event._id ===
                         selectedEvent;
 
-
                 const matchesStatus =
                     !selectedStatus ||
                     booking.bookingStatus ===
                         selectedStatus;
-
 
                 return (
                     matchesSearch &&
@@ -692,17 +603,13 @@ function filterBookings() {
             }
         );
 
-
     renderBookings(
         filteredBookings
     );
 
 }
 
-
-// ========================================
 // Render Bookings
-// ========================================
 
 function renderBookings(
     bookings
@@ -710,7 +617,6 @@ function renderBookings(
 
     bookingTableBody.innerHTML =
         "";
-
 
     if (
         !bookings ||
@@ -729,7 +635,6 @@ function renderBookings(
 
     }
 
-
     emptyState.classList.add(
         "hidden"
     );
@@ -737,7 +642,6 @@ function renderBookings(
     bookingSection.classList.remove(
         "hidden"
     );
-
 
     bookings.forEach(
         (booking) => {
@@ -748,16 +652,13 @@ function renderBookings(
             const event =
                 booking.event || {};
 
-
             const row =
                 document.createElement(
                     "tr"
                 );
 
-
             row.className =
                 "hover:bg-gray-50";
-
 
             row.innerHTML = `
 
@@ -793,7 +694,6 @@ function renderBookings(
 
                 </td>
 
-
                 <!-- Event -->
 
                 <td
@@ -821,7 +721,6 @@ function renderBookings(
 
                 </td>
 
-
                 <!-- Tickets -->
 
                 <td
@@ -839,7 +738,6 @@ function renderBookings(
 
                 </td>
 
-
                 <!-- Amount -->
 
                 <td
@@ -856,7 +754,6 @@ function renderBookings(
 
                 </td>
 
-
                 <!-- Status -->
 
                 <td
@@ -868,7 +765,6 @@ function renderBookings(
                     )}
 
                 </td>
-
 
                 <!-- Booking Date -->
 
@@ -882,7 +778,6 @@ function renderBookings(
                     )}
 
                 </td>
-
 
                 <!-- Action -->
 
@@ -913,7 +808,6 @@ function renderBookings(
 
             `;
 
-
             bookingTableBody.appendChild(
                 row
             );
@@ -923,10 +817,7 @@ function renderBookings(
 
 }
 
-
-// ========================================
 // Open Booking Details
-// ========================================
 
 function openBookingDetails(
     bookingId
@@ -939,7 +830,6 @@ function openBookingDetails(
                 bookingId
         );
 
-
     if (!booking) {
 
         showError(
@@ -950,7 +840,6 @@ function openBookingDetails(
 
     }
 
-
     const user =
         booking.user || {};
 
@@ -960,10 +849,8 @@ function openBookingDetails(
     const payment =
         booking.payment || {};
 
-
     modalBookingId.textContent =
         `Booking ID: ${booking._id}`;
-
 
     bookingDetails.innerHTML = `
 
@@ -1003,7 +890,6 @@ function openBookingDetails(
             </div>
 
         </div>
-
 
         <!-- Event -->
 
@@ -1053,7 +939,6 @@ function openBookingDetails(
             </div>
 
         </div>
-
 
         <!-- Booking -->
 
@@ -1105,7 +990,6 @@ function openBookingDetails(
 
         </div>
 
-
         <!-- Payment -->
 
         <div>
@@ -1145,17 +1029,13 @@ function openBookingDetails(
 
     `;
 
-
     bookingModal.classList.remove(
         "hidden"
     );
 
 }
 
-
-// ========================================
 // Close Booking Modal
-// ========================================
 
 function closeBookingModal() {
 
@@ -1165,10 +1045,7 @@ function closeBookingModal() {
 
 }
 
-
-// ========================================
 // View Booking Button
-// ========================================
 
 bookingTableBody.addEventListener(
     "click",
@@ -1179,17 +1056,14 @@ bookingTableBody.addEventListener(
                 ".view-booking-button"
             );
 
-
         if (!button) {
 
             return;
 
         }
 
-
         const bookingId =
             button.dataset.bookingId;
-
 
         openBookingDetails(
             bookingId
@@ -1198,56 +1072,40 @@ bookingTableBody.addEventListener(
     }
 );
 
-
-// ========================================
 // Search Event
-// ========================================
 
 searchInput.addEventListener(
     "input",
     filterBookings
 );
 
-
-// ========================================
 // Event Filter
-// ========================================
 
 eventFilter.addEventListener(
     "change",
     filterBookings
 );
 
-
-// ========================================
 // Status Filter
-// ========================================
 
 statusFilter.addEventListener(
     "change",
     filterBookings
 );
 
-
-// ========================================
 // Close Modal
-// ========================================
 
 closeModalButton.addEventListener(
     "click",
     closeBookingModal
 );
 
-
 closeModalFooterButton.addEventListener(
     "click",
     closeBookingModal
 );
 
-
-// ========================================
 // Close Modal Outside
-// ========================================
 
 bookingModal.addEventListener(
     "click",
@@ -1265,10 +1123,7 @@ bookingModal.addEventListener(
     }
 );
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 document.addEventListener(
     "DOMContentLoaded",

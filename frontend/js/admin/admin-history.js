@@ -1,16 +1,10 @@
-// ========================================
 // EventEase Admin Event History
-// ========================================
 
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState = document.getElementById("loadingState");
 const errorState = document.getElementById("errorState");
@@ -38,9 +32,7 @@ const reviewsAverageStars = document.getElementById("reviewsAverageStars");
 const reviewsTotalCount = document.getElementById("reviewsTotalCount");
 const reviewsList = document.getElementById("reviewsList");
 
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
     return (
@@ -49,9 +41,7 @@ const getToken = () => {
     );
 };
 
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
 
@@ -60,9 +50,7 @@ if (!token) {
     window.location.href = "./admin-login.html";
 }
 
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -88,9 +76,7 @@ const apiRequest = async (endpoint, options = {}) => {
     return data;
 };
 
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (value) => {
     if (value === null || value === undefined) {
@@ -105,9 +91,7 @@ const escapeHTML = (value) => {
         .replace(/'/g, "&#039;");
 };
 
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (date) => {
     if (!date) {
@@ -126,9 +110,7 @@ const formatDate = (date) => {
     });
 };
 
-// ========================================
 // Format Time
-// ========================================
 
 const formatTime = (time) => {
     if (!time) {
@@ -137,18 +119,14 @@ const formatTime = (time) => {
     return escapeHTML(time);
 };
 
-// ========================================
 // Update History Count
-// ========================================
 
 const updateHistoryCount = (count) => {
     if (!historyCount) return;
     historyCount.textContent = `${count} ${count === 1 ? "Event" : "Events"}`;
 };
 
-// ========================================
 // Get Organizer Name
-// ========================================
 
 const getOrganizerName = (event) => {
     if (event.organizer && typeof event.organizer === "object") {
@@ -161,9 +139,7 @@ const getOrganizerName = (event) => {
     return "Unknown Organizer";
 };
 
-// ========================================
 // Get Category Name
-// ========================================
 
 const getCategoryName = (event) => {
     if (event.category && typeof event.category === "object") {
@@ -172,9 +148,7 @@ const getCategoryName = (event) => {
     return "Uncategorized";
 };
 
-// ========================================
 // Get Event Image
-// ========================================
 
 const getEventImage = (event) => {
     return (
@@ -186,9 +160,7 @@ const getEventImage = (event) => {
     );
 };
 
-// ========================================
 // Render Stars Helper
-// ========================================
 
 const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -207,18 +179,14 @@ const renderStars = (rating) => {
     return starsHTML;
 };
 
-// ========================================
 // Render Empty State
-// ========================================
 
 const renderEmptyState = () => {
     eventList.innerHTML = "";
     emptyState.classList.remove("hidden");
 };
 
-// ========================================
 // Render Events
-// ========================================
 
 const renderEvents = (events) => {
     eventList.innerHTML = "";
@@ -258,9 +226,7 @@ const renderEvents = (events) => {
         const eventType = event.eventType || "paid";
 
         card.innerHTML = `
-            <!-- ==================================
-                  TOP SECTION
-            =================================== -->
+            <!-- TOP SECTION -->
             <div class="flex flex-col gap-6 md:flex-row">
                 <!-- Event Image -->
                 <div class="relative h-48 w-full md:h-auto md:w-60 flex-shrink-0 overflow-hidden rounded-2xl bg-gray-100">
@@ -357,9 +323,7 @@ const renderEvents = (events) => {
     attachReviewButtonListeners();
 };
 
-// ========================================
 // Review Modal Logic
-// ========================================
 
 const openReviewsModal = async (eventId, eventTitle) => {
     if (!reviewsModal) return;
@@ -450,9 +414,7 @@ const closeReviewsModal = () => {
     document.body.classList.remove("overflow-hidden");
 };
 
-// ========================================
 // Attach Review Button Listeners
-// ========================================
 
 const attachReviewButtonListeners = () => {
     const reviewButtons = document.querySelectorAll(".view-reviews-btn");
@@ -487,9 +449,7 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// ========================================
 // Load Event History
-// ========================================
 
 const loadHistory = async () => {
     try {
@@ -516,17 +476,13 @@ const loadHistory = async () => {
     }
 };
 
-// ========================================
 // Retry Button
-// ========================================
 
 if (retryBtn) {
     retryBtn.addEventListener("click", loadHistory);
 }
 
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
@@ -536,8 +492,6 @@ if (logoutBtn) {
     });
 }
 
-// ========================================
 // Load History on Page Load
-// ========================================
 
 loadHistory();

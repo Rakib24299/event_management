@@ -1,6 +1,4 @@
-// ========================================
 // Load HTML Components
-// ========================================
 
 async function loadComponent(elementId, filePath) {
     const element = document.getElementById(elementId);
@@ -33,9 +31,7 @@ async function loadComponent(elementId, filePath) {
     }
 }
 
-// ========================================
 // Update User Header Auth State (Guest vs Logged-in)
-// ========================================
 
 function updateUserHeaderAuth() {
     const token =
@@ -79,9 +75,8 @@ function updateUserHeaderAuth() {
     }
 }
 
-// ========================================
 // Ensure Badge Element Exists In Notification Links
-// ========================================
+
 
 function ensureNotificationBadgesExist() {
     const notifLinks = document.querySelectorAll(
@@ -103,9 +98,9 @@ function ensureNotificationBadgesExist() {
     });
 }
 
-// ========================================
+
 // Update Notification Badge
-// ========================================
+
 
 async function updateNotificationBadge() {
     ensureNotificationBadgesExist();
@@ -169,9 +164,7 @@ async function updateNotificationBadge() {
     }
 }
 
-// ========================================
 // Ensure Badge Element Exists In Chat Links
-// ========================================
 
 function ensureChatBadgesExist() {
     const chatLinks = document.querySelectorAll(
@@ -193,9 +186,7 @@ function ensureChatBadgesExist() {
     });
 }
 
-// ========================================
 // Update Chat Badge
-// ========================================
 
 async function updateChatBadge() {
     ensureChatBadgesExist();
@@ -260,9 +251,7 @@ async function updateChatBadge() {
     }
 }
 
-// ========================================
 // Attach Logout Listener
-// ========================================
 
 function attachLogoutListener() {
     const logoutBtns = document.querySelectorAll("#logoutBtn, .logout-btn");
@@ -277,9 +266,7 @@ function attachLogoutListener() {
     });
 }
 
-// ========================================
 // Auto-Run and Polling for Notification & Chat Badges
-// ========================================
 
 document.addEventListener("DOMContentLoaded", () => {
     updateUserHeaderAuth();

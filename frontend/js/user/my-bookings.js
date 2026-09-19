@@ -1,16 +1,10 @@
 "use strict";
 
-
-// ======================================================
 // Configuration
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
-
-// ======================================================
 // State
-// ======================================================
 
 let bookings = [];
 
@@ -18,10 +12,7 @@ let selectedBookingId = null;
 
 let currentFilter = "all";
 
-
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loadingState =
   document.getElementById("loadingState");
@@ -65,10 +56,7 @@ const toast =
 const toastMessage =
   document.getElementById("toastMessage");
 
-
-// ======================================================
 // Get Token
-// ======================================================
 
 function getToken() {
 
@@ -80,10 +68,7 @@ function getToken() {
   );
 }
 
-
-// ======================================================
 // Get Stored User
-// ======================================================
 
 function getStoredUser() {
 
@@ -116,10 +101,7 @@ function getStoredUser() {
   return null;
 }
 
-
-// ======================================================
 // Authentication Check
-// ======================================================
 
 function checkAuthentication() {
 
@@ -136,10 +118,7 @@ function checkAuthentication() {
   return true;
 }
 
-
-// ======================================================
 // API Request Helper
-// ======================================================
 
 async function apiRequest(
   endpoint,
@@ -153,14 +132,12 @@ async function apiRequest(
     ...(options.headers || {}),
   };
 
-
   if (token) {
 
     headers.Authorization =
       `Bearer ${token}`;
 
   }
-
 
   const response =
     await fetch(
@@ -171,9 +148,7 @@ async function apiRequest(
       }
     );
 
-
   let result = null;
-
 
   try {
 
@@ -185,7 +160,6 @@ async function apiRequest(
     result = null;
   }
 
-
   if (!response.ok) {
 
     const message =
@@ -196,16 +170,12 @@ async function apiRequest(
     throw new Error(message);
   }
 
-
   return result;
 }
 
-
-// ======================================================
 // Load My Bookings
 // Only normal / unconfirmed bookings (status: pending).
 // Confirmed bookings are shown on confirm-booking.html.
-// ======================================================
 
 async function loadMyBookings() {
 
@@ -218,10 +188,8 @@ async function loadMyBookings() {
         "/bookings/my"
       );
 
-
     const allBookings =
       result?.data || [];
-
 
     bookings =
       allBookings.filter(
@@ -233,15 +201,12 @@ async function loadMyBookings() {
                 ""
             ).toLowerCase();
 
-
           return status === "pending";
 
         }
       );
 
-
     hideLoading();
-
 
     renderBookings();
 
@@ -257,15 +222,11 @@ async function loadMyBookings() {
   }
 }
 
-
-// ======================================================
 // Render Bookings
-// ======================================================
 
 function renderBookings() {
 
   bookingsContainer.innerHTML = "";
-
 
   const filteredBookings =
     bookings.filter((booking) => {
@@ -274,7 +235,6 @@ function renderBookings() {
         String(
           booking.bookingStatus || ""
         ).toLowerCase();
-
 
       if (currentFilter === "all") {
 
@@ -285,11 +245,9 @@ function renderBookings() {
 
       }
 
-
       return status === currentFilter;
 
     });
-
 
   if (
     filteredBookings.length === 0
@@ -300,7 +258,6 @@ function renderBookings() {
     return;
 
   }
-
 
   bookingsContainer.classList.remove(
     "hidden"
@@ -313,7 +270,6 @@ function renderBookings() {
   errorState.classList.add(
     "hidden"
   );
-
 
   filteredBookings.forEach(
     (booking) => {
@@ -332,9 +288,7 @@ function renderBookings() {
 
 }
 
-// ======================================================
 // Create Booking Card
-// ======================================================
 
 function createBookingCard(
   booking
@@ -343,108 +297,86 @@ function createBookingCard(
   const card =
     document.createElement("div");
 
-
   card.className =
     "bg-white rounded-2xl shadow-sm " +
     "border border-gray-100 overflow-hidden";
 
-
   const event =
     booking.event || {};
-
 
   const venue =
     event.venue || {};
 
-
   const payment =
     booking.payment || {};
-
 
   const eventTitle =
     event.title ||
     "Event";
-
 
   const eventDate =
     formatDate(
       event.eventDate
     );
 
-
   const startTime =
     event.startTime ||
     "";
 
-
   const venueName =
     venue.venueName ||
     "Venue not available";
-
 
   const totalAmount =
     Number(
       booking.totalAmount || 0
     );
 
-
   const ticketQuantity =
     Number(
       booking.ticketQuantity || 0
     );
 
-
   const bookingStatus =
     booking.bookingStatus ||
     "pending";
-
 
   const eventType =
     event.eventType ||
     "";
 
-
   const isFreeEvent =
     String(eventType).toLowerCase() === "free";
-
 
   const paymentStatus =
     payment?.paymentStatus ||
     payment?.status ||
     "";
 
-
   const isPaymentPaid =
     String(paymentStatus).toLowerCase() ===
       "paid";
-
 
   const showMakePayment =
     bookingStatus === "pending" &&
     !isPaymentPaid &&
     bookingStatus !== "cancelled";
 
-
   const canCancel =
     bookingStatus !== "cancelled" &&
     bookingStatus !== "completed";
-
 
   const eventImageUrl =
     event.bannerImage?.url ||
     event.image ||
     "https://via.placeholder.com/600x400?text=EventEase";
 
-
   const showCancel =
     canCancel;
 
-
   card.innerHTML = `
 
-    <!-- ==========================
-         Event Image
-    =========================== -->
+    <!-- Event Image -->
 
     <div class="w-full h-48 sm:h-56 overflow-hidden bg-gray-100">
 
@@ -456,10 +388,7 @@ function createBookingCard(
 
     </div>
 
-
-    <!-- ==========================
-         Card Body
-    =========================== -->
+    <!-- Card Body -->
 
     <div class="p-6">
 
@@ -484,7 +413,6 @@ function createBookingCard(
 
         </div>
 
-
         <div class="flex gap-2 flex-wrap">
 
           ${getBookingStatusSubtitle(
@@ -495,10 +423,7 @@ function createBookingCard(
 
       </div>
 
-
-      <!-- ==========================
-           Booking Details
-      =========================== -->
+      <!-- Booking Details -->
 
       <div
         class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-5"
@@ -524,7 +449,6 @@ function createBookingCard(
 
         </div>
 
-
         <!-- Venue -->
 
         <div>
@@ -539,13 +463,9 @@ function createBookingCard(
 
         </div>
 
-
       </div>
 
-
-      <!-- ==========================
-           Payment Information
-      =========================== -->
+      <!-- Payment Information -->
 
       <div
         class="mt-6 p-4 bg-gray-50 rounded-xl"
@@ -554,7 +474,6 @@ function createBookingCard(
         <h3 class="font-semibold text-gray-800">
           Payment Information
         </h3>
-
 
         <div
           class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
@@ -575,7 +494,6 @@ function createBookingCard(
 
           </div>
 
-
           <div>
 
             <p class="text-xs text-gray-400">
@@ -593,7 +511,6 @@ function createBookingCard(
 
           </div>
 
-
           <div>
 
             <p class="text-xs text-gray-400">
@@ -610,7 +527,6 @@ function createBookingCard(
             </p>
 
           </div>
-
 
           <div>
 
@@ -634,9 +550,7 @@ function createBookingCard(
 
       </div>
 
-      <!-- ==========================
-           Actions
-      =========================== -->
+      <!-- Actions -->
       <div class="mt-6 flex flex-wrap items-center justify-end gap-3">
         ${
           showMakePayment
@@ -730,19 +644,16 @@ function openCancelModal(booking) {
         booking.refundPercentage || 0
       );
 
-
     const amount =
       Number(
         booking.refundAmount || 0
       );
-
 
     let displayPercentage =
       percentage;
 
     let displayAmount =
       amount;
-
 
     if (
       booking.event &&
@@ -755,7 +666,6 @@ function openCancelModal(booking) {
           totalAmount
         );
 
-
       displayPercentage =
         calculated.refundPercentage;
 
@@ -763,7 +673,6 @@ function openCancelModal(booking) {
         calculated.refundAmount;
 
     }
-
 
     refundPercentageEl.textContent =
       `${displayPercentage}%`;
@@ -775,12 +684,10 @@ function openCancelModal(booking) {
 
   }
 
-
   const refundPreview =
     document.getElementById(
       "refundPreview"
     );
-
 
   if (refundPreview) {
 
@@ -788,7 +695,6 @@ function openCancelModal(booking) {
       isPending ? "none" : "";
 
   }
-
 
   cancelModal.classList.remove(
     "hidden"
@@ -799,10 +705,7 @@ function openCancelModal(booking) {
   );
 }
 
-
-// ======================================================
 // Close Cancel Modal
-// ======================================================
 
 function closeCancelModal() {
 
@@ -818,10 +721,7 @@ function closeCancelModal() {
   );
 }
 
-
-// ======================================================
 // Confirm Cancellation
-// ======================================================
 
 async function confirmCancellation() {
 
@@ -835,13 +735,11 @@ async function confirmCancellation() {
     return;
   }
 
-
   const booking =
     bookings.find(
       (item) =>
         item._id === selectedBookingId
     );
-
 
   if (!booking) {
 
@@ -853,24 +751,19 @@ async function confirmCancellation() {
     return;
   }
 
-
   const bookingStatus =
     String(
       booking.bookingStatus || ""
     ).toLowerCase();
 
-
   const isPending =
     bookingStatus === "pending";
-
 
   confirmCancelBtn.disabled =
     true;
 
-
   confirmCancelBtn.textContent =
     "Cancelling...";
-
 
   try {
 
@@ -882,9 +775,7 @@ async function confirmCancellation() {
         }
       );
 
-
     closeCancelModal();
-
 
     const refundPercentage =
       result?.data?.refundPercentage;
@@ -895,11 +786,9 @@ async function confirmCancellation() {
     const refundStatus =
       result?.data?.refundStatus;
 
-
     let successMessage =
       result?.message ||
       "Booking cancelled successfully.";
-
 
     if (isPending) {
 
@@ -924,12 +813,10 @@ async function confirmCancellation() {
 
     }
 
-
     showToast(
       successMessage,
       "success"
     );
-
 
     bookings =
       bookings.filter(
@@ -937,9 +824,7 @@ async function confirmCancellation() {
           item._id !== selectedBookingId
       );
 
-
     selectedBookingId = null;
-
 
     renderBookings();
 
@@ -961,9 +846,7 @@ async function confirmCancellation() {
   }
 }
 
-// ======================================================
 // Refund Preview
-// ======================================================
 
 function calculateRefundPreview(
   eventDate,
@@ -976,11 +859,9 @@ function calculateRefundPreview(
   const event =
     new Date(eventDate);
 
-
   const difference =
     event.getTime() -
     now.getTime();
-
 
   const daysRemaining =
     Math.floor(
@@ -988,9 +869,7 @@ function calculateRefundPreview(
       (1000 * 60 * 60 * 24)
     );
 
-
   let percentage = 0;
-
 
   if (daysRemaining >= 7) {
 
@@ -1014,13 +893,11 @@ function calculateRefundPreview(
 
   }
 
-
   const amount =
     (
       Number(totalAmount || 0) *
       percentage
     ) / 100;
-
 
   return {
 
@@ -1035,10 +912,7 @@ function calculateRefundPreview(
   };
 }
 
-
-// ======================================================
 // Booking Status Badge
-// ======================================================
 
 function getBookingStatusBadge(
   status
@@ -1047,7 +921,6 @@ function getBookingStatusBadge(
   const normalized =
     String(status)
       .toLowerCase();
-
 
   const styles = {
 
@@ -1065,7 +938,6 @@ function getBookingStatusBadge(
 
   };
 
-
   const labels = {
 
     pending: "Pending",
@@ -1078,7 +950,6 @@ function getBookingStatusBadge(
 
   };
 
-
   const subtitles = {
 
     pending: "Payment Required",
@@ -1090,7 +961,6 @@ function getBookingStatusBadge(
     completed: "Event Completed",
 
   };
-
 
   return `
     <span
@@ -1111,10 +981,7 @@ function getBookingStatusBadge(
   `;
 }
 
-
-// ======================================================
 // Booking Status Subtitle
-// ======================================================
 
 function getBookingStatusSubtitle(
   status
@@ -1123,7 +990,6 @@ function getBookingStatusSubtitle(
   const normalized =
     String(status)
       .toLowerCase();
-
 
   const subtitles = {
 
@@ -1137,17 +1003,14 @@ function getBookingStatusSubtitle(
 
   };
 
-
   const subtitle =
     subtitles[normalized];
-
 
   if (!subtitle) {
 
     return "";
 
   }
-
 
   return `
     <span
@@ -1171,10 +1034,7 @@ function getBookingStatusSubtitle(
 
 }
 
-
-// ======================================================
 // Refund Status
-// ======================================================
 
 function formatRefundStatus(
   status
@@ -1193,7 +1053,6 @@ function formatRefundStatus(
 
   };
 
-
   return (
     labels[status] ||
     capitalize(
@@ -1202,10 +1061,7 @@ function formatRefundStatus(
   );
 }
 
-
-// ======================================================
 // Format Date
-// ======================================================
 
 function formatDate(
   date
@@ -1215,10 +1071,8 @@ function formatDate(
     return "Not available";
   }
 
-
   const parsedDate =
     new Date(date);
-
 
   if (
     Number.isNaN(
@@ -1228,7 +1082,6 @@ function formatDate(
 
     return "Invalid date";
   }
-
 
   return parsedDate.toLocaleDateString(
     "en-GB",
@@ -1240,10 +1093,7 @@ function formatDate(
   );
 }
 
-
-// ======================================================
 // Format Date Time
-// ======================================================
 
 function formatDateTime(
   date
@@ -1253,10 +1103,8 @@ function formatDateTime(
     return "Not available";
   }
 
-
   const parsedDate =
     new Date(date);
-
 
   if (
     Number.isNaN(
@@ -1266,7 +1114,6 @@ function formatDateTime(
 
     return "Invalid date";
   }
-
 
   return parsedDate.toLocaleString(
     "en-GB",
@@ -1280,10 +1127,7 @@ function formatDateTime(
   );
 }
 
-
-// ======================================================
 // Format Money
-// ======================================================
 
 function formatMoney(
   amount
@@ -1300,10 +1144,7 @@ function formatMoney(
   );
 }
 
-
-// ======================================================
 // Capitalize
-// ======================================================
 
 function capitalize(
   value
@@ -1313,17 +1154,13 @@ function capitalize(
     return "";
   }
 
-
   return (
     value.charAt(0).toUpperCase() +
     value.slice(1)
   );
 }
 
-
-// ======================================================
 // Escape HTML
-// ======================================================
 
 function escapeHTML(
   value
@@ -1332,20 +1169,15 @@ function escapeHTML(
   const div =
     document.createElement("div");
 
-
   div.textContent =
     value == null
       ? ""
       : String(value);
 
-
   return div.innerHTML;
 }
 
-
-// ======================================================
 // Loading State
-// ======================================================
 
 function showLoading() {
 
@@ -1366,7 +1198,6 @@ function showLoading() {
   );
 }
 
-
 function hideLoading() {
 
   loadingState.classList.add(
@@ -1374,10 +1205,7 @@ function hideLoading() {
   );
 }
 
-
-// ======================================================
 // Empty State
-// ======================================================
 
 function showEmptyState() {
 
@@ -1394,10 +1222,7 @@ function showEmptyState() {
   );
 }
 
-
-// ======================================================
 // Error State
-// ======================================================
 
 function showError(
   message
@@ -1405,7 +1230,6 @@ function showError(
 
   errorMessage.textContent =
     message;
-
 
   errorState.classList.remove(
     "hidden"
@@ -1420,10 +1244,7 @@ function showError(
   );
 }
 
-
-// ======================================================
 // Toast
-// ======================================================
 
 function showToast(
   message,
@@ -1433,12 +1254,10 @@ function showToast(
   toastMessage.textContent =
     message;
 
-
   toast.className =
     "fixed bottom-5 right-5 z-[60] " +
     "max-w-sm px-5 py-4 rounded-lg " +
     "shadow-lg text-white";
-
 
   if (type === "success") {
 
@@ -1454,11 +1273,9 @@ function showToast(
 
   }
 
-
   toast.classList.remove(
     "hidden"
   );
-
 
   setTimeout(
     () => {
@@ -1472,10 +1289,7 @@ function showToast(
   );
 }
 
-
-// ======================================================
 // Logout
-// ======================================================
 
 function logout() {
 
@@ -1499,7 +1313,6 @@ function logout() {
     "loggedInUser"
   );
 
-
   sessionStorage.removeItem(
     "token"
   );
@@ -1520,11 +1333,9 @@ function logout() {
     "loggedInUser"
   );
 
-
   window.location.href =
     "./user-login.html";
 }
-
 
 function setupLogoutListener() {
 
@@ -1559,29 +1370,22 @@ document.addEventListener(
 
 setupLogoutListener();
 
-
-// ======================================================
 // Event Listeners
-// ======================================================
 
 retryBtn.addEventListener(
   "click",
   loadMyBookings
 );
 
-
-// ======================================================
 // Confirmed Bookings Button
 // Navigation only — opens confirm-booking.html.
 // Does NOT initiate OTP, payment, or any booking
 // state change.
-// ======================================================
 
 const confirmedBookingsBtn =
   document.getElementById(
     "confirmedBookingsBtn"
   );
-
 
 if (confirmedBookingsBtn) {
 
@@ -1596,7 +1400,6 @@ if (confirmedBookingsBtn) {
   );
 
 }
-
 
 if (bookingFilter) {
 
@@ -1627,18 +1430,15 @@ if (bookingsContainer) {
   });
 }
 
-
 closeCancelModalBtn.addEventListener(
   "click",
   closeCancelModal
 );
 
-
 confirmCancelBtn.addEventListener(
   "click",
   confirmCancellation
 );
-
 
 // Close modal by clicking outside
 
@@ -1658,10 +1458,7 @@ cancelModal.addEventListener(
   }
 );
 
-
-// ======================================================
 // Initialize
-// ======================================================
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -1670,7 +1467,6 @@ document.addEventListener(
     if (!checkAuthentication()) {
       return;
     }
-
 
     loadMyBookings();
 

@@ -1,28 +1,20 @@
-// ========================================
 // EventEase AI Chatbot
 // Modern Floating Gemini AI Assistant
-// ========================================
 
 (function () {
     "use strict";
 
-    // ========================================
     // Configuration
-    // ========================================
 
     const API_URL = "http://localhost:5000/api/v1/ai/chat";
 
-    // ========================================
     // State
-    // ========================================
 
     let isOpen = false;
     let isSending = false;
     let lastUserMessage = null;
 
-    // ========================================
     // SVG Icons
-    // ========================================
 
     const BOT_AVATAR_SVG = `
         <svg class="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -68,9 +60,7 @@
         </svg>
     `;
 
-    // ========================================
     // Get Authentication Token
-    // ========================================
 
     function getAuthToken() {
         return (
@@ -83,9 +73,7 @@
         );
     }
 
-    // ========================================
     // Escape HTML
-    // ========================================
 
     function escapeHTML(value) {
         const div = document.createElement("div");
@@ -93,9 +81,7 @@
         return div.innerHTML;
     }
 
-    // ========================================
     // Format AI Markdown
-    // ========================================
 
     function formatAIMarkdown(text) {
         if (!text) return "";
@@ -168,9 +154,7 @@
         return message;
     }
 
-    // ========================================
     // Scroll Messages
-    // ========================================
 
     function scrollToBottom() {
         const messages = document.getElementById("aiMessages");
@@ -181,9 +165,7 @@
         }, 50);
     }
 
-    // ========================================
     // Add User Message
-    // ========================================
 
     function addUserMessage(message) {
         const messages = document.getElementById("aiMessages");
@@ -202,9 +184,7 @@
         scrollToBottom();
     }
 
-    // ========================================
     // Add AI Message
-    // ========================================
 
     function addAIMessage(message) {
         const messages = document.getElementById("aiMessages");
@@ -272,9 +252,7 @@
         }
     }
 
-    // ========================================
     // Loading Message
-    // ========================================
 
     function addLoadingMessage() {
         const messages = document.getElementById("aiMessages");
@@ -302,9 +280,7 @@
         scrollToBottom();
     }
 
-    // ========================================
     // Remove Loading
-    // ========================================
 
     function removeLoadingMessage() {
         const loading = document.getElementById("aiLoadingMessage");
@@ -313,9 +289,7 @@
         }
     }
 
-    // ========================================
     // Send Message
-    // ========================================
 
     async function sendMessage(message) {
         if (isSending || !message || !message.trim()) {
@@ -413,9 +387,7 @@
         }
     }
 
-    // ========================================
-    // Open Chat
-    // ========================================
+    // OPEN CHAT
 
     function openChat() {
         const windowElement = document.getElementById("aiChatWindow");
@@ -436,9 +408,7 @@
         }
     }
 
-    // ========================================
     // Close Chat
-    // ========================================
 
     function closeChat() {
         const windowElement = document.getElementById("aiChatWindow");
@@ -452,9 +422,7 @@
         isOpen = false;
     }
 
-    // ========================================
     // Clear Chat
-    // ========================================
 
     function clearChat() {
         const messages = document.getElementById("aiMessages");
@@ -464,7 +432,7 @@
             <!-- Welcome Message -->
             <div class="mb-3 flex items-start gap-2.5 animate-fadeIn">
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#eaf2e8] to-[#d8ebd5] text-primary shadow-xs border border-[#31572c]/15">
-                    ${BOT_AVATAR_SVG}
+                   ${BOT_AVATAR_SVG}
                 </div>
 
                 <div class="max-w-[85%] rounded-2xl rounded-tl-xs bg-white border border-gray-100 px-4 py-3 shadow-xs text-gray-800">
@@ -519,9 +487,7 @@
         });
     }
 
-    // ========================================
     // Initialize Chatbot Events
-    // ========================================
 
     function initializeChatbot() {
         const botButton = document.getElementById("aiBotButton");
@@ -564,9 +530,7 @@
         bindSuggestionButtons();
     }
 
-    // ========================================
     // Create Chatbot HTML
-    // ========================================
 
     function createChatbot() {
         if (document.getElementById("eventease-ai-chatbot")) {
@@ -577,9 +541,8 @@
         chatbotContainer.id = "eventease-ai-chatbot";
 
         chatbotContainer.innerHTML = `
-            <!-- ======================================== -->
-            <!-- AI CHAT WINDOW -->
-            <!-- ======================================== -->
+
+            <!-- AI CHAT WINDOW/ CHAT BOx -->
 
             <div
                 id="aiChatWindow"
@@ -591,9 +554,7 @@
                        transition-all duration-300 sm:right-6"
             >
 
-                <!-- ======================================== -->
                 <!-- HEADER -->
-                <!-- ======================================== -->
 
                 <div
                     class="relative overflow-hidden bg-gradient-to-r from-[#203c1e] via-[#31572c] to-[#3d6b38]
@@ -674,9 +635,7 @@
 
                 </div>
 
-                <!-- ======================================== -->
                 <!-- CHAT MESSAGES -->
-                <!-- ======================================== -->
 
                 <div
                     id="aiMessages"
@@ -699,6 +658,7 @@
                     </div>
 
                     <!-- Suggested Questions -->
+
                     <div id="aiSuggestions" class="ml-10 space-y-2 pt-1">
 
                         <button
@@ -732,9 +692,7 @@
 
                 </div>
 
-                <!-- ======================================== -->
-                <!-- INPUT AREA -->
-                <!-- ======================================== -->
+                <!-- INPUT AREA/INPUT BOX -->
 
                 <div class="border-t border-gray-100 bg-white p-3.5">
 
@@ -747,6 +705,8 @@
                             placeholder="Ask anything about events..."
                             class="min-w-0 flex-1 rounded-2xl border border-gray-200 bg-gray-50/90 px-4 py-2.5 text-xs text-gray-800 placeholder-gray-400 outline-none transition duration-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
                         />
+
+                         <!-- SEND BUTTON-->   
 
                         <button
                             id="aiSendButton"
@@ -770,9 +730,7 @@
 
             </div>
 
-            <!-- ======================================== -->
-            <!-- FLOATING BOT BUTTON -->
-            <!-- ======================================== -->
+            <!-- FLOATING BOT BUTTON/AI BUTTON -->
 
             <button
                 id="aiBotButton"
@@ -790,7 +748,8 @@
                 <span class="relative flex items-center justify-center">
                     ${BOT_FLOATING_BUTTON_SVG}
 
-                    <!-- Online Pulse Indicator -->
+                    <!-- Online Pulse Indicator/DOT INDICATOR -->
+
                     <span class="absolute -top-1 -right-1 flex h-3 w-3">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border-2 border-white"></span>
@@ -798,6 +757,7 @@
                 </span>
 
                 <!-- Hover Tooltip -->
+
                 <span class="pointer-events-none absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-gray-900/90 px-3 py-1.5 text-xs font-semibold text-white shadow-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100 backdrop-blur-sm">
                     Ask AI Assistant
                 </span>
@@ -808,9 +768,7 @@
         initializeChatbot();
     }
 
-    // ========================================
     // Start
-    // ========================================
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", createChatbot);

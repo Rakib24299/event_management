@@ -1,7 +1,5 @@
-// ========================================
 // EventEase AI Service
 // Google Gemini API
-// ========================================
 
 const { GoogleGenAI } = require("@google/genai");
 
@@ -11,17 +9,18 @@ const AppError =
 const { buildAIContext } =
     require("./ai.context.service");
 
-// ========================================
 // Gemini Client
-// ========================================
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
-// ========================================
+
 // Generate AI Response
-// ========================================
+
+
+// USER AI RESPONSE ( if 'isGuest: true"' means non-user)
+// USER REPLAY
 
 const generateAIResponse = async (
     userMessage,
@@ -30,9 +29,9 @@ const generateAIResponse = async (
     isGuest = false
 ) => {
 
-    // ========================================
+    // 
     // Validate Message
-    // ========================================
+    // 
 
     if (
         !userMessage ||
@@ -42,9 +41,7 @@ const generateAIResponse = async (
         throw new Error("Message is required.");
     }
 
-    // ========================================
     // Build Context
-    // ========================================
 
     let contextString = "";
 
@@ -74,9 +71,7 @@ const generateAIResponse = async (
         }
     }
 
-    // ========================================
     // Gemini Request
-    // ========================================
 
     try {
 
@@ -92,6 +87,9 @@ const generateAIResponse = async (
 
                     systemInstruction: `
 You are the EventEase AI assistant for an event management platform.
+
+
+<!--GUEsT ANSWER-->
 
 You help users with:
 - Events and event categories
@@ -126,9 +124,7 @@ IMPORTANT RULES:
             });
 
 
-        // ========================================
         // Get Gemini Text Response
-        // ========================================
 
         const reply =
             response.text;
@@ -154,9 +150,7 @@ IMPORTANT RULES:
         );
 
 
-        // ========================================
         // Extract status code from error
-        // ========================================
 
         let rawStatus = null;
 
@@ -231,9 +225,7 @@ IMPORTANT RULES:
             rawStatus === "UNAVAILABLE";
 
 
-        // ========================================
         // Map to friendly message
-        // ========================================
 
         let friendlyMessage =
             "Sorry, something went wrong while processing your request. Please try again.";
@@ -304,9 +296,7 @@ IMPORTANT RULES:
 };
 
 
-// ========================================
 // Export
-// ========================================
 
 module.exports = {
 

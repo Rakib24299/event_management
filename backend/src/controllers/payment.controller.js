@@ -5,9 +5,7 @@ const catchAsync =
   require("../utils/catchAsync");
 
 
-// ======================================================
 // CREATE PAYMENT
-// ======================================================
 
 const createPayment =
   catchAsync(async (req, res) => {
@@ -33,9 +31,7 @@ const createPayment =
   });
 
 
-// ======================================================
 // SSL PAYMENT SUCCESS
-// ======================================================
 //
 // SSLCommerz:
 // Hosted Checkout
@@ -48,7 +44,6 @@ const createPayment =
 //      ↓
 // OTP Generate
 //
-// ======================================================
 
 const sslPaymentSuccess =
   catchAsync(async (req, res) => {
@@ -84,9 +79,7 @@ const sslPaymentSuccess =
   });
 
 
-// ======================================================
 // SSL PAYMENT FAILED
-// ======================================================
 
 const sslPaymentFail =
   catchAsync(async (req, res) => {
@@ -114,9 +107,7 @@ const sslPaymentFail =
   });
 
 
-// ======================================================
 // SSL PAYMENT CANCELLED
-// ======================================================
 
 const sslPaymentCancel =
   catchAsync(async (req, res) => {
@@ -144,9 +135,7 @@ const sslPaymentCancel =
   });
 
 
-// ======================================================
 // SSL IPN
-// ======================================================
 //
 // SSLCommerz IPN
 //      ↓
@@ -158,7 +147,6 @@ const sslPaymentCancel =
 //      ↓
 // Generate OTP
 //
-// ======================================================
 
 const sslPaymentIPN =
   catchAsync(async (req, res) => {
@@ -183,9 +171,7 @@ const sslPaymentIPN =
   });
 
 
-// ======================================================
 // GET PAYMENT BY ID
-// ======================================================
 
 const getPaymentById =
   catchAsync(async (req, res) => {
@@ -214,9 +200,7 @@ const getPaymentById =
   });
 
 
-// ======================================================
 // GET PAYMENT BY BOOKING
-// ======================================================
 
 const getPaymentByBooking =
   catchAsync(async (req, res) => {
@@ -245,9 +229,7 @@ const getPaymentByBooking =
   });
 
 
-// ======================================================
 // USER REFUND REQUEST
-// ======================================================
 
 const processRefund =
   catchAsync(async (req, res) => {
@@ -283,9 +265,7 @@ const processRefund =
   });
 
 
-// ======================================================
 // ORGANIZER PAYMENTS
-// ======================================================
 
 const getOrganizerPayments =
   catchAsync(async (req, res) => {
@@ -312,9 +292,7 @@ const getOrganizerPayments =
   });
 
 
-// ======================================================
 // ADMIN PAYMENTS
-// ======================================================
 
 const getAdminPayments =
   catchAsync(async (req, res) => {
@@ -337,9 +315,7 @@ const getAdminPayments =
   });
 
 
-// ======================================================
 // GET PENDING REFUNDS
-// ======================================================
 
 const getPendingRefunds =
   catchAsync(async (req, res) => {
@@ -362,9 +338,7 @@ const getPendingRefunds =
   });
 
 
-// ======================================================
 // ADMIN PROCESS REFUND
-// ======================================================
 
 const adminProcessRefund =
   catchAsync(async (req, res) => {
@@ -401,9 +375,7 @@ const adminProcessRefund =
   });
 
 
-// ======================================================
 // GET PLATFORM FEE PERCENTAGE
-// ======================================================
 
 const getPlatformFeePercentage =
   catchAsync(async (req, res) => {
@@ -429,9 +401,8 @@ const getPlatformFeePercentage =
   });
 
 
-// ======================================================
 // DOWNLOAD PAYMENT RECEIPT PDF
-// ======================================================
+
 
 const downloadPaymentReceipt = catchAsync(async (req, res) => {
   const bookingId = req.params.bookingId;
@@ -462,9 +433,7 @@ const downloadPaymentReceipt = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 
 module.exports = {

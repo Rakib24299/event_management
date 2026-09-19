@@ -1,19 +1,11 @@
-// ========================================
 // EventEase Organizer Attendance
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const eventInfo =
     document.getElementById(
@@ -65,10 +57,7 @@ const attendanceTableBody =
         "attendanceTableBody"
     );
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -79,13 +68,9 @@ const getToken = () => {
 
 };
 
-
 const token = getToken();
 
-
-// ========================================
 // Authentication
-// ========================================
 
 if (!token) {
 
@@ -98,10 +83,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // Get Event ID
-// ========================================
 
 const urlParams =
     new URLSearchParams(
@@ -110,7 +92,6 @@ const urlParams =
 
 const eventId =
     urlParams.get("id");
-
 
 if (!eventId) {
 
@@ -123,10 +104,7 @@ if (!eventId) {
 
 }
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -155,10 +133,8 @@ const apiRequest = async (
             }
         );
 
-
     const data =
         await response.json();
-
 
     if (!response.ok) {
 
@@ -169,15 +145,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -188,7 +160,6 @@ const formatDate = (
         return "-";
 
     }
-
 
     return new Date(date)
         .toLocaleString(
@@ -201,10 +172,7 @@ const formatDate = (
 
 };
 
-
-// ========================================
 // Load Event Bookings
-// ========================================
 
 const loadAttendance = async () => {
 
@@ -222,21 +190,17 @@ const loadAttendance = async () => {
             "hidden"
         );
 
-
         const result =
             await apiRequest(
                 `/bookings/event/${eventId}`
             );
 
-
         const bookings =
             result.data || [];
-
 
         renderAttendance(
             bookings
         );
-
 
     } catch (error) {
 
@@ -245,11 +209,9 @@ const loadAttendance = async () => {
             error
         );
 
-
         loadingState.classList.add(
             "hidden"
         );
-
 
         attendanceTableBody.innerHTML = `
 
@@ -278,7 +240,6 @@ const loadAttendance = async () => {
 
         `;
 
-
         attendanceTableWrapper.classList.remove(
             "hidden"
         );
@@ -287,10 +248,7 @@ const loadAttendance = async () => {
 
 };
 
-
-// ========================================
 // Render Attendance
-// ========================================
 
 const renderAttendance = (
     bookings
@@ -300,10 +258,7 @@ const renderAttendance = (
         "hidden"
     );
 
-
-    // ====================================
     // Event Information
-    // ====================================
 
     if (
         bookings.length > 0 &&
@@ -312,7 +267,6 @@ const renderAttendance = (
 
         const event =
             bookings[0].event;
-
 
         eventInfo.textContent =
             `${event.title || "Event"} • ${
@@ -323,10 +277,7 @@ const renderAttendance = (
 
     }
 
-
-    // ====================================
     // Confirmed Bookings
-    // ====================================
 
     const confirmedBookings =
         bookings.filter(
@@ -335,34 +286,26 @@ const renderAttendance = (
                 "confirmed"
         );
 
-
     const attendedBookings =
         confirmedBookings.filter(
             (booking) =>
                 booking.isScanned === true
         );
 
-
     const remaining =
         confirmedBookings.length -
         attendedBookings.length;
 
-
     confirmedCount.textContent =
         confirmedBookings.length;
-
 
     attendedCount.textContent =
         attendedBookings.length;
 
-
     remainingCount.textContent =
         remaining;
 
-
-    // ====================================
     // Empty
-    // ====================================
 
     if (
         confirmedBookings.length === 0
@@ -380,7 +323,6 @@ const renderAttendance = (
 
     }
 
-
     emptyState.classList.add(
         "hidden"
     );
@@ -389,13 +331,9 @@ const renderAttendance = (
         "hidden"
     );
 
-
     attendanceTableBody.innerHTML = "";
 
-
-    // ====================================
     // Render Rows
-    // ====================================
 
     confirmedBookings.forEach(
         (booking) => {
@@ -403,20 +341,16 @@ const renderAttendance = (
             const customer =
                 booking.user || {};
 
-
             const isScanned =
                 booking.isScanned === true;
-
 
             const row =
                 document.createElement(
                     "tr"
                 );
 
-
             row.className =
                 "transition hover:bg-gray-50";
-
 
             row.innerHTML = `
 
@@ -448,7 +382,6 @@ const renderAttendance = (
 
                 </td>
 
-
                 <!-- Tickets -->
 
                 <td class="px-6 py-5">
@@ -466,7 +399,6 @@ const renderAttendance = (
 
                 </td>
 
-
                 <!-- Booking Status -->
 
                 <td class="px-6 py-5">
@@ -480,7 +412,6 @@ const renderAttendance = (
                     </span>
 
                 </td>
-
 
                 <!-- Attendance -->
 
@@ -512,7 +443,6 @@ const renderAttendance = (
 
                 </td>
 
-
                 <!-- Booking Date -->
 
                 <td class="px-6 py-5">
@@ -531,7 +461,6 @@ const renderAttendance = (
 
             `;
 
-
             attendanceTableBody.appendChild(
                 row
             );
@@ -541,10 +470,7 @@ const renderAttendance = (
 
 };
 
-
-// ========================================
 // Handle QR Scan
-// ========================================
 
 const handleQRCode = async (
     decodedText
@@ -555,13 +481,10 @@ const handleQRCode = async (
         scannerStatus.textContent =
             "QR detected. Verifying ticket...";
 
-
         scannerStatus.className =
             "mt-5 rounded-2xl bg-yellow-50 p-4 text-sm text-yellow-700";
 
-
         let qrData;
-
 
         try {
 
@@ -578,7 +501,6 @@ const handleQRCode = async (
 
         }
 
-
         if (
             !qrData.bookingId
         ) {
@@ -589,14 +511,10 @@ const handleQRCode = async (
 
         }
 
-
         const bookingId =
             qrData.bookingId;
 
-
-        // ====================================
         // Scan API
-        // ====================================
 
         const result =
             await apiRequest(
@@ -606,14 +524,10 @@ const handleQRCode = async (
                 }
             );
 
-
         const booking =
             result.data;
 
-
-        // ====================================
         // Success
-        // ====================================
 
         scannerStatus.textContent =
             "Attendance verified successfully.";
@@ -621,10 +535,8 @@ const handleQRCode = async (
         scannerStatus.className =
             "mt-5 rounded-2xl bg-green-50 p-4 text-sm font-semibold text-green-700";
 
-
         const customer =
             booking?.user || {};
-
 
         scanResult.innerHTML = `
 
@@ -638,13 +550,11 @@ const handleQRCode = async (
                     <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </div>
 
-
                 <h3
                     class="mt-4 text-center text-lg font-bold text-green-800"
                 >
                     Attendance Verified
                 </h3>
-
 
                 <div
                     class="mt-5 space-y-3"
@@ -673,7 +583,6 @@ const handleQRCode = async (
 
                     </div>
 
-
                     <div
                         class="rounded-xl bg-white p-4"
                     >
@@ -696,7 +605,6 @@ const handleQRCode = async (
                         </p>
 
                     </div>
-
 
                     <div
                         class="rounded-xl bg-white p-4"
@@ -727,9 +635,7 @@ const handleQRCode = async (
 
         `;
 
-
         await loadAttendance();
-
 
     } catch (error) {
 
@@ -738,14 +644,12 @@ const handleQRCode = async (
             error
         );
 
-
         scannerStatus.textContent =
             error.message ||
             "Failed to verify QR code.";
 
         scannerStatus.className =
             "mt-5 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700";
-
 
         scanResult.innerHTML = `
 
@@ -759,13 +663,11 @@ const handleQRCode = async (
                     <svg class="h-4 w-4 text-red-500 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </div>
 
-
                 <h3
                     class="mt-4 font-bold text-red-800"
                 >
                     Invalid Ticket
                 </h3>
-
 
                 <p
                     class="mt-2 text-sm text-red-600"
@@ -783,10 +685,7 @@ const handleQRCode = async (
 
 };
 
-
-// ========================================
 // Start QR Scanner
-// ========================================
 
 const startScanner = () => {
 
@@ -794,7 +693,6 @@ const startScanner = () => {
         new Html5Qrcode(
             "qr-reader"
         );
-
 
     scanner.start(
 
@@ -840,7 +738,6 @@ const startScanner = () => {
             error
         );
 
-
         scannerStatus.textContent =
             "Unable to access camera. Please allow camera permission.";
 
@@ -851,10 +748,7 @@ const startScanner = () => {
 
 };
 
-
-// ========================================
 // Initialize
-// ========================================
 
 const initializePage = async () => {
 
@@ -863,6 +757,5 @@ const initializePage = async () => {
     startScanner();
 
 };
-
 
 initializePage();

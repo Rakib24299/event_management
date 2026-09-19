@@ -1,19 +1,11 @@
-// ======================================================
 // ADMIN PAYMENT MANAGEMENT
-// ======================================================
 
-
-// ======================================================
 // CONFIGURATION
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ======================================================
 // DOM ELEMENTS
-// ======================================================
 
 const loading =
     document.getElementById("loading");
@@ -42,10 +34,7 @@ const totalRevenue =
 const platformRevenue =
     document.getElementById("platformRevenue");
 
-
-// ======================================================
 // GET AUTHENTICATION TOKEN
-// ======================================================
 
 function getToken() {
 
@@ -60,10 +49,7 @@ function getToken() {
 
 }
 
-
-// ======================================================
 // SAFE HTML ESCAPE
-// ======================================================
 
 function escapeHtml(value) {
 
@@ -77,10 +63,7 @@ function escapeHtml(value) {
 
 }
 
-
-// ======================================================
 // FORMAT CURRENCY
-// ======================================================
 
 function formatCurrency(amount) {
 
@@ -94,10 +77,7 @@ function formatCurrency(amount) {
 
 }
 
-
-// ======================================================
 // FORMAT DATE
-// ======================================================
 
 function formatDate(date) {
 
@@ -127,10 +107,7 @@ function formatDate(date) {
 
 }
 
-
-// ======================================================
 // SAFE TEXT
-// ======================================================
 
 function safeText(value) {
 
@@ -146,10 +123,7 @@ function safeText(value) {
 
 }
 
-
-// ======================================================
 // NORMALIZE PAYMENT STATUS
-// ======================================================
 
 function getPaymentStatus(payment) {
 
@@ -161,10 +135,7 @@ function getPaymentStatus(payment) {
 
 }
 
-
-// ======================================================
 // GET CUSTOMER
-// ======================================================
 
 function getCustomer(payment) {
 
@@ -176,10 +147,7 @@ function getCustomer(payment) {
 
 }
 
-
-// ======================================================
 // GET ORGANIZER
-// ======================================================
 
 function getOrganizer(payment) {
 
@@ -205,10 +173,7 @@ function getOrganizer(payment) {
 
 }
 
-
-// ======================================================
 // GET EVENT
-// ======================================================
 
 function getEvent(payment) {
 
@@ -227,10 +192,7 @@ function getEvent(payment) {
 
 }
 
-
-// ======================================================
 // GET CUSTOMER NAME
-// ======================================================
 
 function getCustomerName(payment) {
 
@@ -246,10 +208,7 @@ function getCustomerName(payment) {
 
 }
 
-
-// ======================================================
 // GET ORGANIZER NAME
-// ======================================================
 
 function getOrganizerName(payment) {
 
@@ -266,10 +225,7 @@ function getOrganizerName(payment) {
 
 }
 
-
-// ======================================================
 // GET EVENT TITLE
-// ======================================================
 
 function getEventTitle(payment) {
 
@@ -283,10 +239,7 @@ function getEventTitle(payment) {
 
 }
 
-
-// ======================================================
 // GET PAYMENT METHOD
-// ======================================================
 
 function getPaymentMethod(payment) {
 
@@ -297,10 +250,7 @@ function getPaymentMethod(payment) {
 
 }
 
-
-// ======================================================
 // GET PAYMENT AMOUNT
-// ======================================================
 
 function getGrossAmount(payment) {
 
@@ -313,10 +263,7 @@ function getGrossAmount(payment) {
 
 }
 
-
-// ======================================================
 // GET PLATFORM FEE
-// ======================================================
 
 function getPlatformFee(payment) {
 
@@ -328,10 +275,7 @@ function getPlatformFee(payment) {
 
 }
 
-
-// ======================================================
 // GET ORGANIZER AMOUNT
-// ======================================================
 
 function getOrganizerAmount(payment) {
 
@@ -357,10 +301,7 @@ function getOrganizerAmount(payment) {
 
 }
 
-
-// ======================================================
 // GET TRANSACTION ID
-// ======================================================
 
 function getTransactionId(payment) {
 
@@ -373,10 +314,7 @@ function getTransactionId(payment) {
 
 }
 
-
-// ======================================================
 // STATUS BADGE
-// ======================================================
 
 function getStatusBadge(status) {
 
@@ -384,7 +322,6 @@ function getStatusBadge(status) {
         String(
             status || "pending"
         ).toLowerCase();
-
 
     const statusMap = {
 
@@ -432,7 +369,6 @@ function getStatusBadge(status) {
 
     };
 
-
     const item =
         statusMap[normalizedStatus] || {
 
@@ -443,7 +379,6 @@ function getStatusBadge(status) {
                 "bg-gray-100 text-gray-700"
 
         };
-
 
     return `
         <span
@@ -463,10 +398,7 @@ function getStatusBadge(status) {
 
 }
 
-
-// ======================================================
 // EXTRACT PAYMENT ARRAY
-// ======================================================
 
 function extractPayments(result) {
 
@@ -500,10 +432,7 @@ function extractPayments(result) {
 
 }
 
-
-// ======================================================
 // RENDER PAYMENT ROW
-// ======================================================
 
 function renderPaymentRow(payment) {
 
@@ -512,7 +441,6 @@ function renderPaymentRow(payment) {
 
     row.className =
         "hover:bg-gray-50 transition";
-
 
     const transactionId =
         getTransactionId(payment);
@@ -555,7 +483,6 @@ function renderPaymentRow(payment) {
     const paymentId =
         payment._id;
 
-
     row.innerHTML = `
 
         <!-- Transaction -->
@@ -569,7 +496,6 @@ function renderPaymentRow(payment) {
             </div>
 
         </td>
-
 
         <!-- Customer -->
 
@@ -587,7 +513,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Organizer -->
 
         <td class="px-6 py-5">
@@ -604,7 +529,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Event -->
 
         <td class="px-6 py-5">
@@ -617,7 +541,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Gross Amount -->
 
         <td class="px-6 py-5">
@@ -627,7 +550,6 @@ function renderPaymentRow(payment) {
             </span>
 
         </td>
-
 
         <!-- Platform Fee -->
 
@@ -639,7 +561,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Organizer Amount -->
 
         <td class="px-6 py-5">
@@ -649,7 +570,6 @@ function renderPaymentRow(payment) {
             </span>
 
         </td>
-
 
         <!-- Payment Method -->
 
@@ -661,7 +581,6 @@ function renderPaymentRow(payment) {
 
         </td>
 
-
         <!-- Status -->
 
         <td class="px-6 py-5">
@@ -669,7 +588,6 @@ function renderPaymentRow(payment) {
             ${getStatusBadge(status)}
 
         </td>
-
 
         <!-- Date -->
 
@@ -684,7 +602,6 @@ function renderPaymentRow(payment) {
         >
             ${formatDate(date)}
         </td>
-
 
         <!-- Action -->
 
@@ -725,21 +642,16 @@ function renderPaymentRow(payment) {
 
     `;
 
-
     paymentTableBody.appendChild(row);
 
 }
 
-
-// ======================================================
 // UPDATE SUMMARY
-// ======================================================
 
 function updateSummary(payments) {
 
     const total =
         payments.length;
-
 
     const paidPayments =
         payments.filter(
@@ -747,7 +659,6 @@ function updateSummary(payments) {
                 getPaymentStatus(payment) ===
                 "paid"
         );
-
 
     const revenue =
         paidPayments.reduce(
@@ -762,7 +673,6 @@ function updateSummary(payments) {
             0
         );
 
-
     const platformFees =
         paidPayments.reduce(
             (sum, payment) => {
@@ -775,7 +685,6 @@ function updateSummary(payments) {
             },
             0
         );
-
 
     totalPayments.textContent =
         total;
@@ -791,10 +700,7 @@ function updateSummary(payments) {
 
 }
 
-
-// ======================================================
 // SHOW ERROR
-// ======================================================
 
 function showError(message) {
 
@@ -810,7 +716,6 @@ function showError(message) {
         "hidden"
     );
 
-
     errorMessage.textContent =
         message;
 
@@ -820,10 +725,7 @@ function showError(message) {
 
 }
 
-
-// ======================================================
 // API RESPONSE ERROR HANDLING
-// ======================================================
 
 async function parseResponse(response) {
 
@@ -845,7 +747,6 @@ async function parseResponse(response) {
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -858,15 +759,11 @@ async function parseResponse(response) {
 
     }
 
-
     return result;
 
 }
 
-
-// ======================================================
 // LOAD ADMIN PAYMENTS
-// ======================================================
 
 async function loadAdminPayments() {
 
@@ -888,10 +785,8 @@ async function loadAdminPayments() {
             "hidden"
         );
 
-
         const token =
             getToken();
-
 
         if (!token) {
 
@@ -900,7 +795,6 @@ async function loadAdminPayments() {
             );
 
         }
-
 
         const response =
             await fetch(
@@ -918,28 +812,23 @@ async function loadAdminPayments() {
                 }
             );
 
-
         const result =
             await parseResponse(
                 response
             );
-
 
         const payments =
             extractPayments(
                 result
             );
 
-
         updateSummary(
             payments
         );
 
-
         loading.classList.add(
             "hidden"
         );
-
 
         if (
             payments.length === 0
@@ -953,10 +842,8 @@ async function loadAdminPayments() {
 
         }
 
-
         paymentTableBody.innerHTML =
             "";
-
 
         payments.forEach(
             payment => {
@@ -967,7 +854,6 @@ async function loadAdminPayments() {
 
             }
         );
-
 
         paymentSection.classList.remove(
             "hidden"
@@ -1001,10 +887,7 @@ async function loadAdminPayments() {
 
 }
 
-
-// ======================================================
 // INITIAL LOAD
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

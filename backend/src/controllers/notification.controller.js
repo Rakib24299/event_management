@@ -5,9 +5,7 @@ const catchAsync =
     require("../utils/catchAsync");
 
 
-// ======================================================
 // CREATE NOTIFICATION
-// ======================================================
 
 const createNotification =
     catchAsync(async (req, res) => {
@@ -32,9 +30,7 @@ const createNotification =
     });
 
 
-// ======================================================
 // GET MY NOTIFICATIONS
-// ======================================================
 
 const getMyNotifications =
     catchAsync(async (req, res) => {
@@ -56,9 +52,7 @@ const getMyNotifications =
     });
 
 
-// ======================================================
 // GET NOTIFICATION BY ID
-// ======================================================
 
 const getNotificationById =
     catchAsync(async (req, res) => {
@@ -80,9 +74,7 @@ const getNotificationById =
     });
 
 
-// ======================================================
 // MARK AS READ
-// ======================================================
 
 const markAsRead =
     catchAsync(async (req, res) => {
@@ -108,9 +100,7 @@ const markAsRead =
     });
 
 
-// ======================================================
 // MARK ALL AS READ
-// ======================================================
 
 const markAllAsRead =
     catchAsync(async (req, res) => {
@@ -132,9 +122,7 @@ const markAllAsRead =
     });
 
 
-// ======================================================
 // DELETE MY NOTIFICATION
-// ======================================================
 
 const deleteNotification =
     catchAsync(async (req, res) => {
@@ -160,9 +148,7 @@ const deleteNotification =
     });
 
 
-// ======================================================
 // GET UNREAD COUNT
-// ======================================================
 
 const getUnreadCount =
     catchAsync(async (req, res) => {
@@ -184,9 +170,7 @@ const getUnreadCount =
     });
 
 
-// ======================================================
 // ADMIN: GET ALL NOTIFICATIONS
-// ======================================================
 
 const getAllNotifications =
     catchAsync(async (req, res) => {
@@ -209,9 +193,7 @@ const getAllNotifications =
     });
 
 
-// ======================================================
 // ADMIN: GET NOTIFICATION STATS
-// ======================================================
 
 const getNotificationStats =
     catchAsync(async (req, res) => {
@@ -234,9 +216,7 @@ const getNotificationStats =
     });
 
 
-// ======================================================
 // ADMIN: SEND NOTIFICATION
-// ======================================================
 
 const sendAdminNotification =
     catchAsync(async (req, res) => {
@@ -261,9 +241,7 @@ const sendAdminNotification =
     });
 
 
-// ======================================================
 // ADMIN: DELETE NOTIFICATION
-// ======================================================
 
 const deleteNotificationByAdmin =
     catchAsync(async (req, res) => {
@@ -285,9 +263,7 @@ const deleteNotificationByAdmin =
     });
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
 

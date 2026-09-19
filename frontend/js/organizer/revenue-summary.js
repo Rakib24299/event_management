@@ -1,6 +1,4 @@
-// ======================================================
 // ORGANIZER REVENUE SUMMARY & ANALYTICS
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
@@ -265,7 +263,7 @@ function renderRevenueBarChart(data) {
         revenueChart.destroy();
         revenueChart = null;
     }
-
+// last 1,7,30 days
     const labels = ["Today", "Last 7 Days", "Last 1 Month"];
     const totalRevenueData = [
         data.today?.totalRevenue || 0,
@@ -283,6 +281,7 @@ function renderRevenueBarChart(data) {
         data.last1Month?.platformFee || 0
     ];
 
+    // BAR SHOW
     const ctx = chartCanvas.getContext("2d");
 
     revenueChart = new Chart(ctx, {

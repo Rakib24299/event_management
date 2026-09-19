@@ -1,7 +1,5 @@
 
-// ========================================
 // Helper: Is Event Expired
-// ========================================
 const isEventExpired = (event) => {
     if (!event || !event.eventDate) return false;
     const date = new Date(event.eventDate);
@@ -17,16 +15,11 @@ const isEventExpired = (event) => {
     return date < new Date();
 };
 
-// ========================================
 // EventEase Organizer - My Events
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
-
-// ========================================
 // Elements
-// ========================================
 
 const eventsLoading =
     document.getElementById("eventsLoading");
@@ -49,18 +42,12 @@ const eventsList =
 const retryEventsButton =
     document.getElementById("retryEventsButton");
 
-
-// ========================================
 // Authentication
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
-
-// ========================================
 // Redirect If Not Logged In
-// ========================================
 
 if (!token) {
 
@@ -69,10 +56,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // Helper: Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -88,10 +72,7 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -117,10 +98,7 @@ function formatDate(dateValue) {
     );
 }
 
-
-// ========================================
 // Format Location
-// ========================================
 
 function formatLocation(value) {
 
@@ -146,10 +124,7 @@ function formatLocation(value) {
 
 }
 
-
-// ========================================
 // Get Event Location
-// ========================================
 
 function getEventLocation(event) {
 
@@ -162,10 +137,7 @@ function getEventLocation(event) {
 
 }
 
-
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -181,10 +153,7 @@ function formatPrice(price) {
     return `৳${Number(price).toLocaleString()}`;
 }
 
-
-// ========================================
 // Get Event Image
-// ========================================
 
 function getEventImage(event) {
 
@@ -195,10 +164,7 @@ function getEventImage(event) {
     );
 }
 
-
-// ========================================
 // Status Badge
-// ========================================
 
 function getStatusBadge(event) {
 
@@ -208,7 +174,6 @@ function getStatusBadge(event) {
             event.eventStatus ||
             "published"
         ).toLowerCase();
-
 
     if (
         status === "draft"
@@ -231,7 +196,6 @@ function getStatusBadge(event) {
             </span>
         `;
     }
-
 
     if (
         status === "cancelled" ||
@@ -256,7 +220,6 @@ function getStatusBadge(event) {
         `;
     }
 
-
     if (
         status === "completed"
     ) {
@@ -279,7 +242,6 @@ function getStatusBadge(event) {
         `;
     }
 
-
     return `
         <span
             class="
@@ -298,15 +260,11 @@ function getStatusBadge(event) {
     `;
 }
 
-
-// ========================================
 // Display Events
-// ========================================
 
 function displayEvents(events) {
 
     eventsList.innerHTML = "";
-
 
     if (
         !Array.isArray(events) ||
@@ -320,11 +278,9 @@ function displayEvents(events) {
         return;
     }
 
-
     eventsEmpty.classList.add("hidden");
 
     eventsContent.classList.remove("hidden");
-
 
     events.forEach(event => {
 
@@ -332,22 +288,18 @@ function displayEvents(events) {
             event._id ||
             event.id;
 
-
         const title =
             event.title ||
             "Untitled Event";
-
 
         const category =
             event.category?.name ||
             event.category ||
             "Event";
 
-
         const eventDate =
             event.eventDate ||
             event.date;
-
 
         const location =
             getEventLocation(event);
@@ -356,16 +308,13 @@ function displayEvents(events) {
             event.price ??
             0;
 
-
         const isFreeEvent =
             event.eventType === "free";
-
 
         const availableSeats =
             Number(
                 event.availableSeats ?? 0
             );
-
 
         const totalSeats =
             Number(
@@ -374,9 +323,7 @@ function displayEvents(events) {
                 availableSeats
             );
 
-
         let soldSeats = 0;
-
 
         if (
             totalSeats > 0 &&
@@ -392,14 +339,11 @@ function displayEvents(events) {
 
         }
 
-
         const image =
             getEventImage(event);
 
-
         const card =
             document.createElement("article");
-
 
         card.className =
             `
@@ -410,7 +354,6 @@ function displayEvents(events) {
                 transition
                 hover:-translate-y-1
             `;
-
 
         card.innerHTML = `
 
@@ -440,7 +383,6 @@ function displayEvents(events) {
 
             </div>
 
-
             <!-- Event Information -->
 
             <div class="p-5">
@@ -459,7 +401,6 @@ function displayEvents(events) {
                     ${escapeHTML(category)}
                 </p>
 
-
                 <!-- Title -->
 
                 <h2
@@ -473,7 +414,6 @@ function displayEvents(events) {
                 >
                     ${escapeHTML(title)}
                 </h2>
-
 
                 <!-- Date -->
 
@@ -500,7 +440,6 @@ function displayEvents(events) {
 
                 </div>
 
-
                 <!-- Location -->
 
                 <div
@@ -523,7 +462,6 @@ function displayEvents(events) {
                     </span>
 
                 </div>
-
 
                 <!-- Stats -->
 
@@ -575,7 +513,6 @@ function displayEvents(events) {
 
                         </div>
 
-
                         <!-- Sold -->
 
                         <div
@@ -606,7 +543,6 @@ function displayEvents(events) {
                             </p>
 
                         </div>
-
 
                         <!-- Available -->
 
@@ -676,7 +612,6 @@ function displayEvents(events) {
 
                 </div>
 
-
                 <!-- Action -->
 
                 <div class="mt-5">
@@ -709,16 +644,12 @@ function displayEvents(events) {
             </div>
         `;
 
-
         eventsList.appendChild(card);
 
     });
 }
 
-
-// ========================================
 // Show Error
-// ========================================
 
 function showEventsError(message) {
 
@@ -735,10 +666,7 @@ function showEventsError(message) {
     eventsError.classList.remove("hidden");
 }
 
-
-// ========================================
 // Load My Events
-// ========================================
 
 async function loadMyEvents() {
 
@@ -749,7 +677,6 @@ async function loadMyEvents() {
     eventsContent.classList.add("hidden");
 
     eventsEmpty.classList.add("hidden");
-
 
     try {
 
@@ -776,16 +703,13 @@ async function loadMyEvents() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         console.log(
             "My Events Response:",
             result
         );
-
 
         if (
             !response.ok ||
@@ -797,7 +721,6 @@ async function loadMyEvents() {
                 "Failed to load your events."
             );
         }
-
 
         /*
          * Expected:
@@ -817,13 +740,10 @@ async function loadMyEvents() {
                     []
                 );
 
-
         eventsLoading.classList.add("hidden");
-
 
         const activeEvents = (events || []).filter(event => !isEventExpired(event));
         displayEvents(activeEvents);
-
 
     } catch (error) {
 
@@ -832,9 +752,7 @@ async function loadMyEvents() {
             error
         );
 
-
         eventsLoading.classList.add("hidden");
-
 
         showEventsError(
             error.message ||
@@ -843,10 +761,7 @@ async function loadMyEvents() {
     }
 }
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryEventsButton) {
 
@@ -857,9 +772,6 @@ if (retryEventsButton) {
 
 }
 
-
-// ========================================
 // Start
-// ========================================
 
 loadMyEvents();

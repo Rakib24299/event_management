@@ -1,13 +1,8 @@
-// ========================================
 // EventEase My Tickets
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
-
-// ========================================
 // Elements
-// ========================================
 
 const ticketsLoading =
     document.getElementById("ticketsLoading");
@@ -30,25 +25,16 @@ const ticketsList =
 const retryTicketsButton =
     document.getElementById("retryTicketsButton");
 
-
-// ========================================
 // Token
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
-
-// ========================================
 // State
-// ========================================
 
 let currentBookings = [];
 
-
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -58,10 +44,7 @@ function formatPrice(price) {
     return `৳${amount.toLocaleString()}`;
 }
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -87,10 +70,7 @@ function formatDate(dateValue) {
     );
 }
 
-
-// ========================================
 // Format Time
-// ========================================
 
 function formatTime(dateValue) {
 
@@ -114,10 +94,7 @@ function formatTime(dateValue) {
     );
 }
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -133,10 +110,7 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
-
-// ========================================
 // Show Loading
-// ========================================
 
 function showLoading() {
 
@@ -149,10 +123,7 @@ function showLoading() {
     ticketsContent.classList.add("hidden");
 }
 
-
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -169,10 +140,7 @@ function showError(message) {
     ticketsError.classList.remove("hidden");
 }
 
-
-// ========================================
 // Show Empty
-// ========================================
 
 function showEmpty() {
 
@@ -185,10 +153,7 @@ function showEmpty() {
     ticketsEmpty.classList.remove("hidden");
 }
 
-
-// ========================================
 // Show Tickets
-// ========================================
 
 function showTickets() {
 
@@ -201,10 +166,7 @@ function showTickets() {
     ticketsContent.classList.remove("hidden");
 }
 
-
-// ========================================
 // Get Booking ID
-// ========================================
 
 function getBookingId(booking) {
 
@@ -215,20 +177,14 @@ function getBookingId(booking) {
     );
 }
 
-
-// ========================================
 // Get Event
-// ========================================
 
 function getEvent(booking) {
 
     return booking?.event || {};
 }
 
-
-// ========================================
 // Get Event Image
-// ========================================
 
 function getEventImage(event) {
 
@@ -239,10 +195,7 @@ function getEventImage(event) {
     );
 }
 
-
-// ========================================
 // Get Quantity
-// ========================================
 
 function getQuantity(booking) {
 
@@ -254,10 +207,7 @@ function getQuantity(booking) {
     );
 }
 
-
-// ========================================
 // Get Total Amount
-// ========================================
 
 function getTotalAmount(booking) {
 
@@ -268,10 +218,7 @@ function getTotalAmount(booking) {
     );
 }
 
-
-// ========================================
 // Create Ticket Card
-// ========================================
 
 function createTicketCard(booking, index) {
 
@@ -311,18 +258,14 @@ function createTicketCard(booking, index) {
             "confirmed"
         ).toLowerCase();
 
-
     const ticketElement =
         document.createElement("article");
-
 
     ticketElement.className =
         "ticket-card overflow-hidden rounded-3xl bg-white shadow-soft";
 
-
     ticketElement.dataset.bookingId =
         bookingId;
-
 
     ticketElement.innerHTML = `
 
@@ -340,7 +283,6 @@ function createTicketCard(booking, index) {
                 class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
             ></div>
 
-
             <!-- Status -->
 
             <div
@@ -355,7 +297,6 @@ function createTicketCard(booking, index) {
                     bookingStatus.slice(1)
                 )}
             </div>
-
 
             <!-- Event Title -->
 
@@ -373,16 +314,13 @@ function createTicketCard(booking, index) {
 
         </div>
 
-
         <!-- Ticket Body -->
 
         <div class="p-5 sm:p-6">
 
-
             <!-- Event Information -->
 
             <div class="space-y-4">
-
 
                 <!-- Date -->
 
@@ -412,7 +350,6 @@ function createTicketCard(booking, index) {
 
                 </div>
 
-
                 <!-- Location -->
 
                 <div class="flex items-start gap-3">
@@ -436,7 +373,6 @@ function createTicketCard(booking, index) {
                     </div>
 
                 </div>
-
 
                 <!-- Booking -->
 
@@ -462,14 +398,11 @@ function createTicketCard(booking, index) {
 
                 </div>
 
-
             </div>
-
 
             <!-- Divider -->
 
             <div class="my-5 border-t border-dashed border-gray-200"></div>
-
 
             <!-- Ticket Summary -->
 
@@ -489,7 +422,6 @@ function createTicketCard(booking, index) {
 
                 </div>
 
-
                 <div
                     class="rounded-2xl bg-gray-50 p-4"
                 >
@@ -506,24 +438,21 @@ function createTicketCard(booking, index) {
 
             </div>
 
-
             <!-- Actions -->
 
-            <div class="mt-5 grid gap-3 sm:grid-cols-2">
-
+            <div class="mt-5  gap-3 sm:grid-cols-2">
 
                 <!-- View Ticket -->
 
-                <button
+               <!-- <button
                     type="button"
                     class="view-ticket-button rounded-xl border border-primary px-4 py-3 text-sm font-bold text-primary transition hover:bg-primary/5"
                     data-booking-id="${escapeHTML(bookingId)}"
                 >
                     View Ticket
-                </button>
+                </button> -->
 
-
-                <!-- Download -->
+                <!-- Download PDF-->
 
                 <button
                     type="button"
@@ -535,24 +464,18 @@ function createTicketCard(booking, index) {
 
             </div>
 
-
         </div>
 
     `;
 
-
     return ticketElement;
 }
 
-
-// ========================================
 // Render Tickets
-// ========================================
 
 function renderTickets(bookings) {
 
     ticketsList.innerHTML = "";
-
 
     bookings.forEach(
         (booking, index) => {
@@ -568,14 +491,10 @@ function renderTickets(bookings) {
         }
     );
 
-
     showTickets();
 }
 
-
-// ========================================
 // Attach Ticket Events
-// ========================================
 
 function attachTicketEvents(
     bookings
@@ -597,10 +516,8 @@ function attachTicketEvents(
                                 button.dataset.index
                             );
 
-
                         const booking =
                             bookings[index];
-
 
                         if (!booking) {
 
@@ -610,7 +527,6 @@ function attachTicketEvents(
 
                             return;
                         }
-
 
                         await downloadTicketPDF(
                             booking,
@@ -622,7 +538,6 @@ function attachTicketEvents(
 
             }
         );
-
 
     document
         .querySelectorAll(
@@ -638,14 +553,12 @@ function attachTicketEvents(
                         const bookingId =
                             button.dataset.bookingId;
 
-
                         const booking =
                             bookings.find(
                                 (item) =>
                                     getBookingId(item) ===
                                     bookingId
                             );
-
 
                         if (!booking) {
 
@@ -655,7 +568,6 @@ function attachTicketEvents(
 
                             return;
                         }
-
 
                         viewTicket(
                             booking
@@ -669,10 +581,7 @@ function attachTicketEvents(
 
 }
 
-
-// ========================================
 // Download Ticket PDF
-// ========================================
 
 async function downloadTicketPDF(
     booking,
@@ -681,7 +590,6 @@ async function downloadTicketPDF(
 
     const bookingId =
         getBookingId(booking);
-
 
     if (!bookingId) {
 
@@ -693,10 +601,8 @@ async function downloadTicketPDF(
 
     }
 
-
     const originalText =
         downloadButton?.textContent;
-
 
     if (downloadButton) {
 
@@ -706,7 +612,6 @@ async function downloadTicketPDF(
             "Generating PDF...";
 
     }
-
 
     try {
 
@@ -745,7 +650,6 @@ async function downloadTicketPDF(
 
         const payment =
             booking?.payment || {};
-
 
         const ticketEl =
             document.createElement("div");
@@ -975,11 +879,9 @@ async function downloadTicketPDF(
 
         `;
 
-
         document.body.appendChild(
             ticketEl
         );
-
 
         const canvas =
             await html2canvas(
@@ -992,12 +894,10 @@ async function downloadTicketPDF(
                 }
             );
 
-
         const imgData =
             canvas.toDataURL(
                 "image/png"
             );
-
 
         const pdf =
             new jspdf.jsPDF(
@@ -1012,7 +912,6 @@ async function downloadTicketPDF(
                 }
             );
 
-
         pdf.addImage(
             imgData,
             "PNG",
@@ -1022,16 +921,13 @@ async function downloadTicketPDF(
             canvas.height
         );
 
-
         pdf.save(
             `EventEase-Ticket-${bookingId}.pdf`
         );
 
-
         document.body.removeChild(
             ticketEl
         );
-
 
     } catch (error) {
 
@@ -1040,12 +936,10 @@ async function downloadTicketPDF(
             error
         );
 
-
         alert(
             error.message ||
             "Unable to generate ticket PDF. Please try again."
         );
-
 
     } finally {
 
@@ -1063,22 +957,17 @@ async function downloadTicketPDF(
 
 }
 
-
-// ========================================
 // View Ticket
-// ========================================
 
 function viewTicket(booking) {
 
     const bookingId =
         getBookingId(booking);
 
-
     sessionStorage.setItem(
         "selectedTicket",
         JSON.stringify(booking)
     );
-
 
     window.location.href =
         `./booking-details.html?id=${encodeURIComponent(
@@ -1087,10 +976,7 @@ function viewTicket(booking) {
 
 }
 
-
-// ========================================
 // Load My Tickets
-// ========================================
 
 async function loadMyTickets() {
 
@@ -1103,9 +989,7 @@ async function loadMyTickets() {
         return;
     }
 
-
     showLoading();
-
 
     try {
 
@@ -1128,10 +1012,8 @@ async function loadMyTickets() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (
             !response.ok ||
@@ -1144,12 +1026,10 @@ async function loadMyTickets() {
             );
         }
 
-
         const bookings =
             result.data?.bookings ||
             result.data ||
             [];
-
 
         const confirmedBookings =
             Array.isArray(bookings)
@@ -1164,7 +1044,6 @@ async function loadMyTickets() {
                 })
               : [];
 
-
         if (
             !Array.isArray(confirmedBookings)
         ) {
@@ -1174,7 +1053,6 @@ async function loadMyTickets() {
             );
         }
 
-
         if (confirmedBookings.length === 0) {
 
             showEmpty();
@@ -1182,12 +1060,9 @@ async function loadMyTickets() {
             return;
         }
 
-
         currentBookings = confirmedBookings;
 
-
         ticketsList.innerHTML = "";
-
 
         confirmedBookings.forEach(
             (booking, index) => {
@@ -1205,14 +1080,11 @@ async function loadMyTickets() {
             }
         );
 
-
         showTickets();
-
 
         attachTicketEvents(
             confirmedBookings
         );
-
 
     } catch (error) {
 
@@ -1221,7 +1093,6 @@ async function loadMyTickets() {
             error
         );
 
-
         showError(
             error.message ||
             "Unable to load your tickets."
@@ -1229,10 +1100,7 @@ async function loadMyTickets() {
     }
 }
 
-
-// ========================================
 // Retry
-// ========================================
 
 retryTicketsButton.addEventListener(
     "click",
@@ -1243,9 +1111,6 @@ retryTicketsButton.addEventListener(
     }
 );
 
-
-// ========================================
 // Start
-// ========================================
 
 loadMyTickets();

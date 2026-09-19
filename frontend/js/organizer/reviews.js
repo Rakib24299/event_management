@@ -1,6 +1,4 @@
-// ========================================
 // EventEase Organizer - 30-Day Expired Events Reviews
-// ========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 

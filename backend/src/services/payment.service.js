@@ -16,9 +16,7 @@ const {
 } = require("./ssl.service");
 
 
-// ======================================================
 // ERROR HELPER
-// ======================================================
 
 const createError =
   (
@@ -37,9 +35,7 @@ const createError =
   };
 
 
-// ======================================================
 // TRANSACTION ID
-// ======================================================
 
 const generateTransactionId =
   () => {
@@ -51,9 +47,7 @@ const generateTransactionId =
   };
 
 
-// ======================================================
 // BOOKING OTP
-// ======================================================
 
 const generateBookingOtp =
   () => {
@@ -66,9 +60,7 @@ const generateBookingOtp =
   };
 
 
-// ======================================================
 // OTP EXPIRY
-// ======================================================
 
 const getOtpExpiry =
   () => {
@@ -81,9 +73,7 @@ const getOtpExpiry =
   };
 
 
-// ======================================================
-// PLATFORM FEE
-// ======================================================
+// PLATFORM FEE 10%
 
 const getPlatformFeePercentage =
   () => {
@@ -96,9 +86,7 @@ const getPlatformFeePercentage =
   };
 
 
-// ======================================================
 // CREATE PAYMENT
-// ======================================================
 
 const createPayment =
   async (
@@ -144,9 +132,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // OWNER CHECK
-    // --------------------------------------------------
 
     if (
       booking.user._id.toString() !==
@@ -161,9 +147,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // BOOKING STATUS CHECK
-    // --------------------------------------------------
 
     if (
       booking.bookingStatus !==
@@ -178,9 +162,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // EVENT
-    // --------------------------------------------------
 
     if (!booking.event) {
 
@@ -192,9 +174,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // FREE EVENT
-    // --------------------------------------------------
 
     if (
       booking.event.eventType ===
@@ -209,9 +189,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // AMOUNT
-    // --------------------------------------------------
 
     const totalAmount =
       Number(
@@ -234,9 +212,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // EXISTING PAYMENT
-    // --------------------------------------------------
 
     let payment = null;
 
@@ -251,33 +227,21 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
-    // CREATE PAYMENT
-    // --------------------------------------------------
+    // CREATE PAYMENT 
 
     if (!payment) {
 
-      const feePercentage =
-        getPlatformFeePercentage();
+     const feePercentage = getPlatformFeePercentage(); // ১০%
+
+// 10% platefrom fee
+const platformFee = Number(
+  ((totalAmount * feePercentage) / 100).toFixed(2)
+);
 
 
-      const platformFee =
-        Number(
-          (
-            totalAmount *
-            feePercentage /
-            100
-          ).toFixed(2)
-        );
-
-
-      const organizerAmount =
-        Number(
-          (
-            totalAmount -
-            platformFee
-          ).toFixed(2)
-        );
+const organizerAmount = Number(
+  (totalAmount - platformFee).toFixed(2)
+);
 
 
       payment =
@@ -330,9 +294,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // EXISTING PAYMENT STATUS CHECK
-    // --------------------------------------------------
     // If a paid payment already exists but the booking
     // is still pending (OTP not yet verified), we allow
     // the payment flow to continue. finalizeSSLPayment
@@ -340,7 +302,6 @@ const createPayment =
     // duplicate VALID gateway response, so no double
     // charge can occur. This lets users with an expired
     // OTP after payment retry/re-enter the flow.
-    // --------------------------------------------------
 
     if (
       payment.status ===
@@ -354,9 +315,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // RESET FAILED / CANCELLED PAYMENT
-    // --------------------------------------------------
 
     if (
       payment.status ===
@@ -394,9 +353,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // ENSURE TRANSACTION ID
-    // --------------------------------------------------
 
     if (
       !payment.transactionId
@@ -410,9 +367,7 @@ const createPayment =
     }
 
 
-    // --------------------------------------------------
     // CREATE SSL SESSION
-    // --------------------------------------------------
 
     const sslResponse =
       await createSSLSession({
@@ -424,9 +379,7 @@ const createPayment =
       });
 
 
-    // --------------------------------------------------
     // SAVE SESSION INFORMATION
-    // --------------------------------------------------
 
     payment.sessionKey =
       sslResponse.sessionkey ||
@@ -474,9 +427,7 @@ const createPayment =
   };
 
 
-// ======================================================
 // FINALIZE SSL PAYMENT
-// ======================================================
 
 const finalizeSSLPayment =
   async (
@@ -521,9 +472,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // VALIDATE WITH SSL
-    // --------------------------------------------------
 
     const validation =
       await validateSSLPayment(
@@ -546,9 +495,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // FIND PAYMENT
-    // --------------------------------------------------
 
     const payment =
       await Payment.findOne({
@@ -567,9 +514,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // ALREADY PAID
-    // --------------------------------------------------
 
     if (
       payment.status ===
@@ -593,9 +538,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // VERIFY TRANSACTION ID
-    // --------------------------------------------------
 
     if (
       validation.tran_id !==
@@ -610,9 +553,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // VERIFY AMOUNT
-    // --------------------------------------------------
 
     const databaseAmount =
       Number(
@@ -641,9 +582,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // VERIFY CURRENCY
-    // --------------------------------------------------
 
     if (
       validation.currency &&
@@ -659,9 +598,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // FIND BOOKING
-    // --------------------------------------------------
 
     const booking =
       await Booking.findById(
@@ -692,9 +629,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // ENSURE ORGANIZER
-    // --------------------------------------------------
 
     if (
       !payment.organizer &&
@@ -705,7 +640,6 @@ const finalizeSSLPayment =
         await Event.findById(
           payment.event
         );
-
 
 
       if (
@@ -720,9 +654,7 @@ const finalizeSSLPayment =
     }
 
 
-    // --------------------------------------------------
     // UPDATE PAYMENT
-    // --------------------------------------------------
 
     payment.status =
       "paid";
@@ -791,9 +723,9 @@ const finalizeSSLPayment =
 
     await payment.save();
 
-    // --------------------------------------------------
+    
     // UPDATE BOOKING: CONFIRM BOOKING & GENERATE GATE OTP
-    // --------------------------------------------------
+     
 
     const gateOtp =
       generateBookingOtp();
@@ -810,14 +742,13 @@ const finalizeSSLPayment =
     booking.isOtpVerified =
       true;
 
+ // CONFIRM BOOKING
     booking.bookingStatus =
       "confirmed";
 
     await booking.save();
 
-    // --------------------------------------------------
     // UPDATED BOOKING
-    // --------------------------------------------------
 
     const updatedBooking =
       await Booking.findById(
@@ -872,9 +803,7 @@ const finalizeSSLPayment =
   };
 
 
-// ======================================================
 // HANDLE SSL FAIL
-// ======================================================
 
 const handleSSLFail =
   async (
@@ -946,9 +875,7 @@ const handleSSLFail =
   };
 
 
-// ======================================================
 // HANDLE SSL CANCEL
-// ======================================================
 
 const handleSSLCancel =
   async (
@@ -1020,9 +947,7 @@ const handleSSLCancel =
   };
 
 
-// ======================================================
 // HANDLE SSL IPN
-// ======================================================
 
 const handleSSLIPN =
   async (
@@ -1093,9 +1018,7 @@ const handleSSLIPN =
   };
 
 
-// ======================================================
 // GET PAYMENT BY ID
-// ======================================================
 
 const getPaymentById =
   async (
@@ -1159,9 +1082,7 @@ const getPaymentById =
   };
 
 
-// ======================================================
 // GET PAYMENT BY BOOKING
-// ======================================================
 
 const getPaymentByBooking =
   async (
@@ -1218,9 +1139,7 @@ const getPaymentByBooking =
   };
 
 
-// ======================================================
 // USER REFUND
-// ======================================================
 
 const processRefund =
   async (
@@ -1359,9 +1278,7 @@ const processRefund =
   };
 
 
-// ======================================================
 // ORGANIZER PAYMENTS
-// ======================================================
 
 const getOrganizerPayments =
   async (
@@ -1405,9 +1322,7 @@ const getOrganizerPayments =
   };
 
 
-// ======================================================
 // ADMIN PAYMENTS
-// ======================================================
 
 const getAdminPayments =
   async () => {
@@ -1436,9 +1351,7 @@ const getAdminPayments =
   };
 
 
-// ======================================================
 // PENDING REFUNDS
-// ======================================================
 
 const getPendingRefunds =
   async () => {
@@ -1472,9 +1385,7 @@ const getPendingRefunds =
   };
 
 
-// ======================================================
 // ADMIN PROCESS REFUND
-// ======================================================
 
 const adminProcessRefund =
   async (
@@ -1567,14 +1478,16 @@ const adminProcessRefund =
   };
 
 
-// ======================================================
 // GET PAYMENT RECEIPT PDF BUFFER
-// ======================================================
+
 
 const getPaymentReceiptPdfBuffer =
   async (bookingId, userId) => {
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).populate(
+      "event",
+      "title ticketPrice eventType"
+    );
 
     if (!booking) {
       throw createError("Booking not found.", 404);
@@ -1595,7 +1508,10 @@ const getPaymentReceiptPdfBuffer =
     }
 
     const payment = await Payment.findById(booking.payment)
-      .populate("event", "title eventDate venue bannerImage")
+      .populate(
+        "event",
+        "title eventDate venue bannerImage ticketPrice eventType"
+      )
       .populate("user", "name email");
 
     if (!payment) {
@@ -1687,15 +1603,41 @@ const getPaymentReceiptPdfBuffer =
 
     ensureSpace(40);
     const ticketQty = Number(booking.ticketQuantity || 1);
-    const totalAmount = Number(booking.totalAmount || 0);
-    const pricePerTicket = ticketQty > 0 ? totalAmount / ticketQty : 0;
-    const pricePerTicketFormatted = `\u09F3${pricePerTicket.toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const eventTicketPrice = Number(
+      event.ticketPrice ?? booking.event?.ticketPrice ?? 0
+    );
+    const bookingTotal = Number(booking.totalAmount || 0);
+    const paymentGross = Number(payment.grossAmount || 0);
+
+    const ticketPrice =
+      eventTicketPrice > 0
+        ? eventTicketPrice
+        : ticketQty > 0 && paymentGross > 0
+        ? paymentGross / ticketQty
+        : ticketQty > 0 && bookingTotal > 0
+        ? bookingTotal / ticketQty
+        : 0;
+
+    const paymentBill =
+      paymentGross > 0
+        ? paymentGross
+        : bookingTotal > 0
+        ? bookingTotal
+        : ticketPrice * ticketQty;
+
+    const ticketPriceFormatted = `BDT ${ticketPrice.toLocaleString("en-BD", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
     doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Ticket Price", margin, currentY);
-    doc.font("Helvetica").fontSize(14).fill(DARK).text(pricePerTicketFormatted, margin, currentY + 16, { width: contentWidth });
+    doc.font("Helvetica").fontSize(14).fill(DARK).text(ticketPriceFormatted, margin, currentY + 16, { width: contentWidth });
     currentY += 45;
 
     ensureSpace(40);
-    const grossAmountFormatted = `\u09F3${Number(payment.grossAmount || 0).toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const grossAmountFormatted = `BDT ${paymentBill.toLocaleString("en-BD", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
     doc.font("Helvetica-Bold").fontSize(11).fill(GRAY).text("Payment Bill", margin, currentY);
     doc.font("Helvetica-Bold").fontSize(16).fill(PRIMARY).text(grossAmountFormatted, margin, currentY + 16, { width: contentWidth });
     currentY += 50;
@@ -1731,9 +1673,7 @@ const getPaymentReceiptPdfBuffer =
   };
 
 
-// ======================================================
 // PLATFORM FEE
-// ======================================================
 
 
 module.exports = {

@@ -2,9 +2,7 @@ const chatService = require("../services/chat.service");
 const catchAsync = require("../utils/catchAsync");
 
 
-// ======================================================
 // Send Message
-// ======================================================
 
 const sendMessage = catchAsync(async (req, res) => {
   const { receiverId, text } = req.body;
@@ -24,9 +22,7 @@ const sendMessage = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // Get 1-on-1 Conversation
-// ======================================================
 
 const getConversation = catchAsync(async (req, res) => {
   const currentUserId = req.user.id || req.user._id;
@@ -41,9 +37,7 @@ const getConversation = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // Get Admin's Organizers Chat List
-// ======================================================
 
 const getAdminOrganizersChatList = catchAsync(async (req, res) => {
   const adminId = req.user.id || req.user._id;
@@ -57,9 +51,7 @@ const getAdminOrganizersChatList = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // Get Organizer's Chat with Admin
-// ======================================================
 
 const getOrganizerAdminChat = catchAsync(async (req, res) => {
   const organizerId = req.user.id || req.user._id;
@@ -73,9 +65,7 @@ const getOrganizerAdminChat = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // Mark Conversation As Read
-// ======================================================
 
 const markAsRead = catchAsync(async (req, res) => {
   const currentUserId = req.user.id || req.user._id;
@@ -91,9 +81,7 @@ const markAsRead = catchAsync(async (req, res) => {
 });
 
 
-// ======================================================
 // Get Unread Count
-// ======================================================
 
 const getUnreadCount = catchAsync(async (req, res) => {
   const userId = req.user.id || req.user._id;

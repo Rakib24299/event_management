@@ -1,19 +1,13 @@
-// ========================================
 // EventEase Admin Dashboard
-// ========================================
 
 
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -34,9 +28,7 @@ const logoutBtn =
     document.getElementById("logoutBtn");
 
 
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -48,9 +40,7 @@ const getToken = () => {
 };
 
 
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
 
@@ -67,9 +57,7 @@ if (!token) {
 }
 
 
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -130,9 +118,7 @@ const apiRequest = async (
 };
 
 
-// ========================================
 // Format Currency
-// ========================================
 
 const formatCurrency = (
     amount
@@ -145,9 +131,7 @@ const formatCurrency = (
 };
 
 
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -173,9 +157,7 @@ const formatDate = (
 };
 
 
-// ========================================
 // Set Element Text
-// ========================================
 
 const setText = (
     id,
@@ -196,9 +178,7 @@ const setText = (
 };
 
 
-// ========================================
 // Render Pending Organizers
-// ========================================
 
 const renderPendingOrganizers = (
     organizers
@@ -220,9 +200,7 @@ const renderPendingOrganizers = (
     container.innerHTML = "";
 
 
-    // ====================================
     // No Pending Organizers
-    // ====================================
 
     if (
         !organizers ||
@@ -260,9 +238,7 @@ const renderPendingOrganizers = (
     }
 
 
-    // ====================================
     // Render Organizers
-    // ====================================
 
     organizers
         .slice(0, 5)
@@ -372,17 +348,13 @@ const renderPendingOrganizers = (
 };
 
 
-// ========================================
 // Load Dashboard Statistics
-// ========================================
 
 const loadDashboard = async () => {
 
     try {
 
-        // ====================================
         // Show Loading
-        // ====================================
 
         if (loadingState) {
 
@@ -411,9 +383,7 @@ const loadDashboard = async () => {
         }
 
 
-        // ====================================
         // Get Dashboard Statistics
-        // ====================================
 
         const result =
             await apiRequest(
@@ -425,9 +395,7 @@ const loadDashboard = async () => {
             result.data || {};
 
 
-        // ====================================
         // Update Statistics
-        // ====================================
 
         setText(
             "totalUsers",
@@ -491,9 +459,7 @@ const loadDashboard = async () => {
         );
 
 
-        // ====================================
         // Get Pending Organizers
-        // ====================================
 
         const organizerResult =
             await apiRequest(
@@ -505,18 +471,14 @@ const loadDashboard = async () => {
             organizerResult.data || [];
 
 
-        // ====================================
         // Render Pending Organizers
-        // ====================================
 
         renderPendingOrganizers(
             organizers
         );
 
 
-        // ====================================
         // Hide Loading
-        // ====================================
 
         if (loadingState) {
 
@@ -543,9 +505,7 @@ const loadDashboard = async () => {
         );
 
 
-        // ====================================
         // Hide Loading
-        // ====================================
 
         if (loadingState) {
 
@@ -565,9 +525,7 @@ const loadDashboard = async () => {
         }
 
 
-        // ====================================
         // Show Error
-        // ====================================
 
         if (errorState) {
 
@@ -591,9 +549,7 @@ const loadDashboard = async () => {
 };
 
 
-// ========================================
 // Retry Button
-// ========================================
 
 if (retryBtn) {
 
@@ -605,9 +561,7 @@ if (retryBtn) {
 }
 
 
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
 
@@ -633,9 +587,7 @@ if (logoutBtn) {
 }
 
 
-// ========================================
 // Update Notification Badge
-// ========================================
 
 async function updateNotificationBadge() {
 
@@ -739,9 +691,7 @@ async function updateNotificationBadge() {
 }
 
 
-// ========================================
 // Load Dashboard on Page Load
-// ========================================
 
 loadDashboard();
 

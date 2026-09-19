@@ -127,9 +127,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
   const pricePerTicket =
     ticketQuantity > 0 ? totalAmount / ticketQuantity : 0;
 
-  // ====================================================
   // HEADER
-  // ====================================================
 
   doc
     .rect(margin, currentY, contentWidth, 70)
@@ -151,9 +149,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
   doc.opacity(1);
   currentY += 85;
 
-  // ====================================================
   // EVENT NAME
-  // ====================================================
 
   ensureSpace(40);
 
@@ -176,9 +172,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
 
   currentY += 15;
 
-  // ====================================================
   // BANNER IMAGE
-  // ====================================================
 
   const bannerHeight = 160;
   let bannerBuffer = null;
@@ -211,9 +205,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
     currentY += bannerHeight + 20;
   }
 
-  // ====================================================
   // EVENT DETAILS
-  // ====================================================
 
   currentY += 10;
 
@@ -259,9 +251,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
 
   currentY += 10;
 
-  // ====================================================
   // BOOKING INFORMATION SECTION
-  // ====================================================
 
   ensureSpace(50);
   doc
@@ -336,9 +326,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
 
   currentY += 10;
 
-  // ====================================================
   // BOOKING STATUS
-  // ====================================================
 
   ensureSpace(50);
 
@@ -362,9 +350,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
 
   currentY += 55;
 
-  // ====================================================
   // ATTENDEE INFORMATION
-  // ====================================================
 
   ensureSpace(50);
   doc
@@ -417,9 +403,7 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
 
   currentY += 15;
 
-  // ====================================================
   // FOOTER NOTE
-  // ====================================================
 
   ensureSpace(50);
   doc

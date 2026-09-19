@@ -1,6 +1,4 @@
-// ========================================
 // EventEase Admin Profile Management
-// ========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
@@ -59,9 +57,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 // State
 let currentAdmin = null;
 
-// ========================================
 // Authentication
-// ========================================
 const getToken = () => {
     return (
         localStorage.getItem("token") ||
@@ -77,9 +73,7 @@ if (!token) {
     window.location.href = "./admin-login.html";
 }
 
-// ========================================
 // API Request Helper
-// ========================================
 const apiRequest = async (endpoint, options = {}) => {
     const activeToken = getToken();
     const isFormData = options.body instanceof FormData;
@@ -111,9 +105,7 @@ const apiRequest = async (endpoint, options = {}) => {
     return data;
 };
 
-// ========================================
 // Utility Functions
-// ========================================
 const formatDate = (dateStr) => {
     if (!dateStr) return "--";
     return new Date(dateStr).toLocaleDateString("en-US", {
@@ -157,9 +149,7 @@ const clearErrors = () => {
     });
 };
 
-// ========================================
 // Render Profile
-// ========================================
 const renderProfile = (user) => {
     currentAdmin = user;
     if (!user) return;
@@ -236,9 +226,7 @@ const renderProfile = (user) => {
     if (editAddress) editAddress.value = user.address || "";
 };
 
-// ========================================
 // Mode Switching
-// ========================================
 const showEditMode = () => {
     clearErrors();
     profileViewSection.classList.add("hidden");
@@ -255,9 +243,7 @@ const showViewMode = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-// ========================================
 // Load Admin Profile
-// ========================================
 const loadProfile = async () => {
     try {
         if (loadingState) loadingState.classList.remove("hidden");
@@ -277,9 +263,7 @@ const loadProfile = async () => {
     }
 };
 
-// ========================================
 // Update Profile Form Submission
-// ========================================
 if (editProfileForm) {
     editProfileForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -330,9 +314,7 @@ if (editProfileForm) {
     });
 }
 
-// ========================================
 // Upload Photo (Inside Edit Profile)
-// ========================================
 if (choosePhotoBtn && photoFileInput) {
     choosePhotoBtn.addEventListener("click", () => {
         photoFileInput.click();
@@ -373,9 +355,7 @@ if (choosePhotoBtn && photoFileInput) {
     });
 }
 
-// ========================================
 // Remove Photo (Inside Edit Profile)
-// ========================================
 if (removePhotoBtn) {
     removePhotoBtn.addEventListener("click", async () => {
         if (!confirm("Are you sure you want to remove your profile picture?")) return;
@@ -397,9 +377,7 @@ if (removePhotoBtn) {
     });
 }
 
-// ========================================
 // Button Listeners
-// ========================================
 if (openEditBtn) openEditBtn.addEventListener("click", showEditMode);
 if (cancelEditTopBtn) cancelEditTopBtn.addEventListener("click", showViewMode);
 if (cancelEditBottomBtn) cancelEditBottomBtn.addEventListener("click", showViewMode);

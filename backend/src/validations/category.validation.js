@@ -39,7 +39,6 @@ const createCategorySchema = z.object({
 
 
 // Update Category Schema
-// ======================================================
 
 const updateCategorySchema = z.object({
   body: z

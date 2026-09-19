@@ -1,23 +1,14 @@
 "use strict";
 
-
-// ======================================================
 // Configuration
-// ======================================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
-
-// ======================================================
 // State
-// ======================================================
 
 let confirmedBookings = [];
 
-
-// ======================================================
 // DOM Elements
-// ======================================================
 
 const loadingState =
   document.getElementById("loadingState");
@@ -93,10 +84,7 @@ const cancelModalConfirmBtn =
     "cancelModalConfirmBtn"
   );
 
-
-// ======================================================
 // Get Token
-// ======================================================
 
 function getToken() {
 
@@ -108,10 +96,7 @@ function getToken() {
   );
 }
 
-
-// ======================================================
 // Authentication Check
-// ======================================================
 
 function checkAuthentication() {
 
@@ -128,10 +113,7 @@ function checkAuthentication() {
   return true;
 }
 
-
-// ======================================================
 // API Request Helper
-// ======================================================
 
 async function apiRequest(
   endpoint,
@@ -145,14 +127,12 @@ async function apiRequest(
     ...(options.headers || {}),
   };
 
-
   if (token) {
 
     headers.Authorization =
       `Bearer ${token}`;
 
   }
-
 
   const response =
     await fetch(
@@ -163,9 +143,7 @@ async function apiRequest(
       }
     );
 
-
   let result = null;
-
 
   try {
 
@@ -177,7 +155,6 @@ async function apiRequest(
     result = null;
   }
 
-
   if (!response.ok) {
 
     const message =
@@ -188,16 +165,12 @@ async function apiRequest(
     throw new Error(message);
   }
 
-
   return result;
 }
 
-
-// ======================================================
 // Load Confirmed Bookings
 // Fetches only bookings where the backend confirms
 // bookingStatus === "confirmed".
-// ======================================================
 
 async function loadConfirmedBookings() {
 
@@ -210,10 +183,8 @@ async function loadConfirmedBookings() {
         "/bookings/my/confirmed"
       );
 
-
     confirmedBookings =
       result?.data || [];
-
 
     hideLoading();
 
@@ -231,15 +202,11 @@ async function loadConfirmedBookings() {
   }
 }
 
-
-// ======================================================
 // Render Confirmed Bookings
-// ======================================================
 
 function renderConfirmedBookings() {
 
   confirmedBookingsContainer.innerHTML = "";
-
 
   if (
     confirmedBookings.length === 0
@@ -250,7 +217,6 @@ function renderConfirmedBookings() {
     return;
 
   }
-
 
   confirmedBookingsContainer.classList.remove(
     "hidden"
@@ -263,7 +229,6 @@ function renderConfirmedBookings() {
   errorState.classList.add(
     "hidden"
   );
-
 
   confirmedBookings.forEach(
     (booking, index) => {
@@ -283,10 +248,7 @@ function renderConfirmedBookings() {
 
 }
 
-
-// ======================================================
 // Create Confirmed Booking Card
-// ======================================================
 
 function createConfirmedBookingCard(
   booking,
@@ -299,85 +261,68 @@ function createConfirmedBookingCard(
   const event =
     booking.event || {};
 
-
   const venue =
     event.venue || {};
-
 
   const payment =
     booking.payment || {};
 
-
   const bookingId =
     booking._id || "-";
-
 
   const eventTitle =
     event.title ||
     "Event";
-
 
   const eventDate =
     formatDate(
       event.eventDate
     );
 
-
   const startTime =
     event.startTime ||
     "";
 
-
   const venueName =
     venue.venueName ||
     "Venue not available";
-
 
   const totalAmount =
     Number(
       booking.totalAmount || 0
     );
 
-
   const ticketQuantity =
     Number(
       booking.ticketQuantity || 0
     );
-
 
   const eventImageUrl =
     event.bannerImage?.url ||
     event.image ||
     "https://via.placeholder.com/600x400?text=EventEase";
 
-
   const paymentStatus =
     payment?.paymentStatus ||
     payment?.status ||
     "";
 
-
   const bookingStatus =
     String(booking.bookingStatus || "")
       .toLowerCase();
 
-
   card.className =
     "bg-white rounded-2xl shadow-sm " +
     "border border-gray-100 overflow-hidden";
-
 
   card.setAttribute(
     "data-booking-id",
     bookingId
   );
 
-
   card.innerHTML = `
 
-    <!-- ==========================
-         Event Image
-    =========================== -->
+    <!--  Event Image -->
 
     <div class="w-full h-48 sm:h-56 overflow-hidden bg-gray-100 relative">
 
@@ -387,20 +332,17 @@ function createConfirmedBookingCard(
         class="w-full h-full object-cover"
       >
 
-      <!-- Confirmed Badge -->
+      <!-- Confirm Badge -->
 
       <div class="absolute top-4 right-4">
         <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
-          <svg class="h-4 w-4 text-emerald-600 inline-block align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg> Confirmed
+          Confirmed
         </span>
       </div>
 
     </div>
 
-
-    <!-- ==========================
-         Card Body
-    =========================== -->
+    <!--  Card Body -->
 
     <div class="p-6">
 
@@ -411,26 +353,20 @@ function createConfirmedBookingCard(
         <div>
 
           <h2
-            class="text-xl font-bold text-gray-900"
-          >
+            class="text-xl font-bold text-gray-900" >
             ${escapeHTML(eventTitle)}
           </h2>
 
-          <p class="mt-1 text-sm text-gray-500">
+         <!-- <p class="mt-1 text-sm text-gray-500">
             Booking ID:
-            ${escapeHTML(
-              bookingId
-            )}
-          </p>
+            ${escapeHTML( bookingId )}
+          </p> -->
 
         </div>
 
       </div>
 
-
-      <!-- ==========================
-           Booking Details
-      =========================== -->
+      <!--  Booking Details -->
 
       <div
         class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
@@ -456,7 +392,6 @@ function createConfirmedBookingCard(
 
         </div>
 
-
         <!-- Venue -->
 
         <div>
@@ -471,7 +406,6 @@ function createConfirmedBookingCard(
 
         </div>
 
-
         <!-- Tickets -->
 
         <div>
@@ -485,7 +419,6 @@ function createConfirmedBookingCard(
           </p>
 
         </div>
-
 
         <!-- Total -->
 
@@ -503,10 +436,7 @@ function createConfirmedBookingCard(
 
       </div>
 
-
-      <!-- ==========================
-           Payment Information
-      =========================== -->
+      <!-- Payment Information -->
 
       <div
         class="mt-6 p-4 bg-gray-50 rounded-xl"
@@ -515,7 +445,6 @@ function createConfirmedBookingCard(
         <h3 class="font-semibold text-gray-800">
           Payment Information
         </h3>
-
 
         <div
           class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
@@ -536,7 +465,6 @@ function createConfirmedBookingCard(
 
           </div>
 
-
           <div>
 
             <p class="text-xs text-gray-400">
@@ -546,14 +474,10 @@ function createConfirmedBookingCard(
             <p
               class="mt-1 font-medium break-all"
             >
-              ${escapeHTML(
-                payment.transactionId ||
-                "Not available"
-              )}
+              ${escapeHTML( payment.transactionId ||  "Not available"  )}
             </p>
 
           </div>
-
 
           <div>
 
@@ -562,16 +486,10 @@ function createConfirmedBookingCard(
             </p>
 
             <p class="mt-1 font-medium">
-              ৳${formatMoney(
-                Number(
-                  payment.amount ||
-                  totalAmount
-                )
-              )}
+              BDT ${formatMoney(  Number( payment.amount || totalAmount ) )}
             </p>
 
           </div>
-
 
           <div>
 
@@ -581,11 +499,7 @@ function createConfirmedBookingCard(
 
             <p class="mt-1 font-medium">
               ${
-                payment.paidAt
-                  ? formatDateTime(
-                      payment.paidAt
-                    )
-                  : "Not paid"
+                payment.paidAt  ? formatDateTime(  payment.paidAt  ) : "Not paid"
               }
             </p>
 
@@ -595,38 +509,34 @@ function createConfirmedBookingCard(
 
       </div>
 
-
-      <!-- ==========================
-           Actions
-      =========================== -->
+      <!--  Actions -->
 
       <div
         class="mt-6 flex flex-wrap items-center justify-end gap-3"
       >
 
-        <a
+        <!--<a
           href="./booking-details.html?id=${encodeURIComponent(bookingId)}"
           class="rounded-xl border border-primary px-5 py-2.5
                  text-sm font-bold text-primary
                  hover:bg-primaryLight transition"
         >
           View Ticket
-        </a>
+        </a>-->
 
         <button
           type="button"
-          class="download-pdf-btn
-                 px-5 py-2.5
+          class="download-pdf-btn px-5 py-2.5
                  rounded-lg
-                 bg-primary
-                 text-white
-                 font-medium
-                 hover:bg-primaryDark
+                 border border-primary
+                 text-primary
+                 font-bold
+                 hover:bg-green-100
                  transition"
           data-booking-id="${escapeHTML(bookingId)}"
           data-index="${index}"
         >
-          Download PDF
+          ticket
         </button>
 
         <button
@@ -637,13 +547,13 @@ function createConfirmedBookingCard(
                  border border-primary
                  text-primary
                  font-bold
-                 hover:bg-primaryLight
+                 hover:bg-green-100
                  transition"
           data-booking-id="${escapeHTML(bookingId)}"
           data-transaction-id="${escapeHTML(payment.transactionId || "receipt")}"
           data-index="${index}"
         >
-          Payment Receipt
+         Receipt
         </button>
 
         <button
@@ -671,10 +581,7 @@ function createConfirmedBookingCard(
 
   `;
 
-
-  // ====================================
   // View Ticket — navigate to ticket page
-  // ====================================
 
   const viewTicketLink =
     card.querySelector(
@@ -697,16 +604,12 @@ function createConfirmedBookingCard(
 
   }
 
-
-  // ====================================
   // Download PDF Button
-  // ====================================
 
   const downloadPdfButton =
     card.querySelector(
       ".download-pdf-btn"
     );
-
 
   if (downloadPdfButton) {
 
@@ -719,7 +622,6 @@ function createConfirmedBookingCard(
 
         downloadPdfButton.textContent =
           "Generating...";
-
 
         try {
 
@@ -751,16 +653,12 @@ function createConfirmedBookingCard(
 
   }
 
-
-  // ====================================
   // Download Payment Receipt Button
-  // ====================================
 
   const downloadReceiptButton =
     card.querySelector(
       ".download-receipt-btn"
     );
-
 
   if (downloadReceiptButton) {
 
@@ -772,13 +670,11 @@ function createConfirmedBookingCard(
 
         e.stopPropagation();
 
-
         downloadReceiptButton.disabled =
           true;
 
         downloadReceiptButton.textContent =
-          "Generating Receipt...";
-
+          "Generating...";
 
         try {
 
@@ -810,16 +706,12 @@ function createConfirmedBookingCard(
 
   }
 
-
-  // ====================================
   // Cancel Booking Button
-  // ====================================
 
   const cancelBookingButton =
     card.querySelector(
       ".cancel-booking-btn"
     );
-
 
   if (cancelBookingButton) {
 
@@ -837,15 +729,11 @@ function createConfirmedBookingCard(
 
   }
 
-
   return card;
 
 }
 
-
-// ======================================================
 // Download Ticket PDF
-// ======================================================
 
 async function downloadTicketPDF(
   booking,
@@ -854,7 +742,6 @@ async function downloadTicketPDF(
 
   const bookingId =
     booking._id || booking.id;
-
 
   if (!bookingId) {
 
@@ -866,10 +753,8 @@ async function downloadTicketPDF(
 
   }
 
-
   const originalText =
     downloadButton?.textContent;
-
 
   if (downloadButton) {
 
@@ -879,7 +764,6 @@ async function downloadTicketPDF(
       "Generating PDF...";
 
   }
-
 
   try {
 
@@ -917,9 +801,10 @@ async function downloadTicketPDF(
     const payment =
       booking.payment || {};
 
-
     const ticketEl =
       document.createElement("div");
+      
+      // ticket PDF Formet
 
     ticketEl.style.cssText =
       "position:fixed;left:-9999px;top:0;width:800px;font-family:Arial,sans-serif;";
@@ -1132,11 +1017,9 @@ async function downloadTicketPDF(
 
     `;
 
-
     document.body.appendChild(
       ticketEl
     );
-
 
     const canvas =
       await html2canvas(
@@ -1149,12 +1032,10 @@ async function downloadTicketPDF(
         }
       );
 
-
     const imgData =
       canvas.toDataURL(
         "image/png"
       );
-
 
     const pdf =
       new jspdf.jsPDF(
@@ -1169,7 +1050,6 @@ async function downloadTicketPDF(
         }
       );
 
-
     pdf.addImage(
       imgData,
       "PNG",
@@ -1179,16 +1059,13 @@ async function downloadTicketPDF(
       canvas.height
     );
 
-
     pdf.save(
       `EventEase-Ticket-${bookingId}.pdf`
     );
 
-
     document.body.removeChild(
       ticketEl
     );
-
 
   } catch (error) {
 
@@ -1197,12 +1074,10 @@ async function downloadTicketPDF(
       error
     );
 
-
     alert(
       error.message ||
       "Unable to generate ticket PDF. Please try again."
     );
-
 
   } finally {
 
@@ -1220,10 +1095,7 @@ async function downloadTicketPDF(
 
 }
 
-
-// ======================================================
 // Download Payment Receipt PDF
-// ======================================================
 
 async function downloadPaymentReceiptPdf(
   booking,
@@ -1237,7 +1109,6 @@ async function downloadPaymentReceiptPdf(
     booking.payment?.transactionId ||
     "receipt";
 
-
   if (!bookingId) {
 
     alert(
@@ -1248,10 +1119,8 @@ async function downloadPaymentReceiptPdf(
 
   }
 
-
   const originalText =
     downloadButton?.textContent;
-
 
   if (downloadButton) {
 
@@ -1261,7 +1130,6 @@ async function downloadPaymentReceiptPdf(
       "Generating Receipt...";
 
   }
-
 
   try {
 
@@ -1275,7 +1143,6 @@ async function downloadPaymentReceiptPdf(
       );
 
     }
-
 
     const response =
       await fetch(
@@ -1292,7 +1159,6 @@ async function downloadPaymentReceiptPdf(
           },
         }
       );
-
 
     if (!response.ok) {
 
@@ -1322,16 +1188,13 @@ async function downloadPaymentReceiptPdf(
 
     }
 
-
     const blob =
       await response.blob();
-
 
     const url =
       URL.createObjectURL(
         blob
       );
-
 
     const a =
       document.createElement(
@@ -1343,7 +1206,6 @@ async function downloadPaymentReceiptPdf(
     a.download =
       `payment-receipt-${transactionId}.pdf`;
 
-
     document.body.appendChild(
       a
     );
@@ -1354,11 +1216,9 @@ async function downloadPaymentReceiptPdf(
       a
     );
 
-
     URL.revokeObjectURL(
       url
     );
-
 
   } catch (error) {
 
@@ -1366,7 +1226,6 @@ async function downloadPaymentReceiptPdf(
       "Payment Receipt Download Error:",
       error
     );
-
 
     alert(
       error.message ||
@@ -1389,10 +1248,7 @@ async function downloadPaymentReceiptPdf(
 
 }
 
-
-// ======================================================
 // Format Date
-// ======================================================
 
 function formatDate(
   date
@@ -1404,10 +1260,8 @@ function formatDate(
 
   }
 
-
   const parsedDate =
     new Date(date);
-
 
   if (
     Number.isNaN(
@@ -1419,7 +1273,7 @@ function formatDate(
 
   }
 
-
+// DATE STYLE
   return parsedDate.toLocaleDateString(
     "en-GB",
     {
@@ -1430,10 +1284,7 @@ function formatDate(
   );
 }
 
-
-// ======================================================
 // Format Date Time
-// ======================================================
 
 function formatDateTime(
   date
@@ -1445,10 +1296,8 @@ function formatDateTime(
 
   }
 
-
   const parsedDate =
     new Date(date);
-
 
   if (
     Number.isNaN(
@@ -1459,7 +1308,6 @@ function formatDateTime(
     return "Invalid date";
 
   }
-
 
   return parsedDate.toLocaleString(
     "en-GB",
@@ -1473,10 +1321,7 @@ function formatDateTime(
   );
 }
 
-
-// ======================================================
 // Format Money
-// ======================================================
 
 function formatMoney(
   amount
@@ -1493,10 +1338,7 @@ function formatMoney(
   );
 }
 
-
-// ======================================================
 // Format Price (shorthand)
-// ======================================================
 
 function formatPrice(
   amount
@@ -1505,17 +1347,13 @@ function formatPrice(
   const numericAmount =
     Number(amount || 0);
 
-
   return `৳${numericAmount.toLocaleString(
     "en-BD"
   )}`;
 
 }
 
-
-// ======================================================
 // Escape HTML
-// ======================================================
 
 function escapeHTML(
   value
@@ -1524,21 +1362,16 @@ function escapeHTML(
   const div =
     document.createElement("div");
 
-
   div.textContent =
     value == null
       ? ""
       : String(value);
 
-
   return div.innerHTML;
 
 }
 
-
-// ======================================================
 // Loading State
-// ======================================================
 
 function showLoading() {
 
@@ -1559,7 +1392,6 @@ function showLoading() {
   );
 }
 
-
 function hideLoading() {
 
   loadingState.classList.add(
@@ -1567,10 +1399,7 @@ function hideLoading() {
   );
 }
 
-
-// ======================================================
 // Empty State
-// ======================================================
 
 function showEmptyState() {
 
@@ -1587,10 +1416,7 @@ function showEmptyState() {
   );
 }
 
-
-// ======================================================
 // Error State
-// ======================================================
 
 function showError(
   message
@@ -1598,7 +1424,6 @@ function showError(
 
   errorMessage.textContent =
     message;
-
 
   errorState.classList.remove(
     "hidden"
@@ -1613,10 +1438,7 @@ function showError(
   );
 }
 
-
-// ======================================================
 // Toast
-// ======================================================
 
 function showToast(
   message,
@@ -1626,12 +1448,10 @@ function showToast(
   toastMessage.textContent =
     message;
 
-
   toast.className =
     "fixed bottom-5 right-5 z-[60] " +
     "max-w-sm px-5 py-4 rounded-lg " +
     "shadow-lg text-white";
-
 
   if (type === "success") {
 
@@ -1647,11 +1467,9 @@ function showToast(
 
   }
 
-
   toast.classList.remove(
     "hidden"
   );
-
 
   setTimeout(
     () => {
@@ -1665,14 +1483,10 @@ function showToast(
   );
 }
 
-
-// ======================================================
 // Cancel Booking Modal
-// ======================================================
 
 let activeCancelBooking = null;
 let activeCancelButton = null;
-
 
 function openCancelBookingModal(
   booking,
@@ -1681,7 +1495,6 @@ function openCancelBookingModal(
 
   activeCancelBooking = booking;
   activeCancelButton = cancelButton;
-
 
   const event =
     booking.event || {};
@@ -1697,10 +1510,8 @@ function openCancelBookingModal(
       booking.totalAmount || 0
     );
 
-
   cancelModalEventName.textContent =
     eventTitle;
-
 
   if (
     totalAmount > 0 &&
@@ -1729,7 +1540,6 @@ function openCancelBookingModal(
       "Loading...";
 
     cancelModalConfirmBtn.disabled = true;
-
 
     fetchRefundInformation(
       booking._id
@@ -1792,13 +1602,11 @@ function openCancelBookingModal(
 
   }
 
-
   cancelBookingModal.classList.remove(
     "hidden"
   );
 
 }
-
 
 function closeCancelBookingModal() {
 
@@ -1827,13 +1635,11 @@ function closeCancelBookingModal() {
 
 }
 
-
 async function handleCancelBooking() {
 
   if (!activeCancelBooking) {
     return;
   }
-
 
   const bookingId =
     activeCancelBooking._id ||
@@ -1849,13 +1655,11 @@ async function handleCancelBooking() {
     return;
   }
 
-
   const button = activeCancelButton || cancelModalConfirmBtn;
 
   button.disabled = true;
 
   button.textContent = "Cancelling...";
-
 
   try {
 
@@ -1867,7 +1671,6 @@ async function handleCancelBooking() {
         "You must be logged in to cancel a booking."
       );
     }
-
 
     const response =
       await fetch(
@@ -1883,7 +1686,6 @@ async function handleCancelBooking() {
         }
       );
 
-
     let result = null;
 
     try {
@@ -1893,7 +1695,6 @@ async function handleCancelBooking() {
       result = null;
     }
 
-
     if (!response.ok) {
       const message =
         result?.message ||
@@ -1902,7 +1703,6 @@ async function handleCancelBooking() {
 
       throw new Error(message);
     }
-
 
     const refundPercentage =
       result?.data?.refundPercentage ?? 0;
@@ -1914,7 +1714,6 @@ async function handleCancelBooking() {
       result?.data?.refundStatus ||
       (refundAmount > 0 ? "pending" : "none");
 
-
     closeCancelBookingModal();
 
     updateCardToCancelled(
@@ -1923,7 +1722,6 @@ async function handleCancelBooking() {
       refundAmount,
       refundStatus
     );
-
 
     if (refundAmount > 0) {
 
@@ -1939,14 +1737,12 @@ async function handleCancelBooking() {
 
     }
 
-
     setTimeout(
       () => {
         loadConfirmedBookings();
       },
       1500
     );
-
 
   } catch (error) {
 
@@ -1974,7 +1770,6 @@ async function handleCancelBooking() {
   }
 }
 
-
 function updateCardToCancelled(
   bookingId,
   refundPercentage,
@@ -1991,7 +1786,6 @@ function updateCardToCancelled(
     return;
   }
 
-
   const badge =
     card.querySelector(
       'span[class*="bg-green"]'
@@ -2002,7 +1796,6 @@ function updateCardToCancelled(
     badge.className =
       "px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-700";
   }
-
 
   const cancelBtn =
     card.querySelector(
@@ -2018,7 +1811,6 @@ function updateCardToCancelled(
     cancelBtn.className =
       "px-5 py-2.5 rounded-lg border-2 border-gray-300 text-gray-400 font-bold cursor-not-allowed transition";
   }
-
 
   const paymentInfoSection =
     card.querySelector(
@@ -2075,7 +1867,6 @@ function updateCardToCancelled(
 
 }
 
-
 async function fetchRefundInformation(
   bookingId
 ) {
@@ -2089,7 +1880,6 @@ async function fetchRefundInformation(
     );
   }
 
-
   const response =
     await fetch(
       `${API_BASE_URL}/refunds/booking/${encodeURIComponent(bookingId)}`,
@@ -2101,7 +1891,6 @@ async function fetchRefundInformation(
         },
       }
     );
-
 
   if (!response.ok) {
 
@@ -2127,7 +1916,6 @@ async function fetchRefundInformation(
     );
   }
 
-
   const result =
     await response.json();
 
@@ -2151,7 +1939,6 @@ async function fetchRefundInformation(
 
 }
 
-
 cancelModalOverlay.addEventListener(
   "click",
   closeCancelBookingModal
@@ -2167,20 +1954,14 @@ cancelModalConfirmBtn.addEventListener(
   handleCancelBooking
 );
 
-
-// ======================================================
 // Event Listeners
-// ======================================================
 
 retryBtn.addEventListener(
   "click",
   loadConfirmedBookings
 );
 
-
-// ======================================================
 // Initialize
-// ======================================================
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -2189,7 +1970,6 @@ document.addEventListener(
     if (!checkAuthentication()) {
       return;
     }
-
 
     loadConfirmedBookings();
 

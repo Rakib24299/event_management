@@ -1,13 +1,9 @@
-// =========================================
 // Organizer Verify Forgot Password OTP
-// =========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 
 
-// =========================================
 // Elements
-// =========================================
 
 const emailInput =
     document.getElementById("email");
@@ -31,17 +27,13 @@ const successBox =
     document.getElementById("verifyOtpSuccess");
 
 
-// =========================================
 // Get Email From Session Storage
-// =========================================
 
 const email =
     sessionStorage.getItem("forgotPasswordEmail");
 
 
-// =========================================
 // Show Error
-// =========================================
 
 function showError(message) {
 
@@ -53,9 +45,7 @@ function showError(message) {
 }
 
 
-// =========================================
 // Show Success
-// =========================================
 
 function showSuccess(message) {
 
@@ -67,9 +57,7 @@ function showSuccess(message) {
 }
 
 
-// =========================================
 // Load Email
-// =========================================
 
 if (!email) {
 
@@ -86,10 +74,8 @@ if (!email) {
 }
 
 
-// =========================================
 // OTP Input
 // Only Numbers
-// =========================================
 
 otpInput.addEventListener(
     "input",
@@ -103,17 +89,13 @@ otpInput.addEventListener(
 );
 
 
-// =========================================
 // Reset Password
-// =========================================
 
 resetPasswordButton.addEventListener(
     "click",
     async () => {
 
-        // =====================================
         // Check Email
-        // =====================================
 
         if (!email) {
 
@@ -125,9 +107,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // =====================================
         // Get Values
-        // =====================================
 
         const otp =
             otpInput.value.trim();
@@ -139,9 +119,7 @@ resetPasswordButton.addEventListener(
             confirmPasswordInput.value;
 
 
-        // =====================================
         // Validate OTP
-        // =====================================
 
         if (!otp) {
 
@@ -167,9 +145,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // =====================================
         // Validate Password
-        // =====================================
 
         if (!newPassword) {
 
@@ -195,9 +171,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // =====================================
         // Confirm Password
-        // =====================================
 
         if (!confirmPassword) {
 
@@ -223,9 +197,7 @@ resetPasswordButton.addEventListener(
         }
 
 
-        // =====================================
         // Disable Button
-        // =====================================
 
         resetPasswordButton.disabled = true;
 
@@ -235,9 +207,7 @@ resetPasswordButton.addEventListener(
 
         try {
 
-            // =================================
             // Reset Password API
-            // =================================
 
             const response = await fetch(
                 `${API_BASE_URL}/auth/reset-password`,
@@ -257,9 +227,7 @@ resetPasswordButton.addEventListener(
             );
 
 
-            // =================================
             // Read Response Safely
-            // =================================
 
             const contentType =
                 response.headers.get("content-type") || "";
@@ -286,9 +254,7 @@ resetPasswordButton.addEventListener(
             }
 
 
-            // =================================
             // Backend Error
-            // =================================
 
             if (!response.ok) {
 
@@ -299,9 +265,7 @@ resetPasswordButton.addEventListener(
             }
 
 
-            // =================================
             // Success
-            // =================================
 
             showSuccess(
                 data.message ||
@@ -309,18 +273,14 @@ resetPasswordButton.addEventListener(
             );
 
 
-            // =================================
             // Remove Stored Email
-            // =================================
 
             sessionStorage.removeItem(
                 "forgotPasswordEmail"
             );
 
 
-            // =================================
             // Go Organizer Login
-            // =================================
 
             setTimeout(() => {
 

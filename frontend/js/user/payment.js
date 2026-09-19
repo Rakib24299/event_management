@@ -1,9 +1,7 @@
 "use strict";
 
-// ======================================================
 // EventEase Payment Page
 // SSLCommerz Sandbox Hosted Checkout
-// ======================================================
 //
 // FLOW
 //
@@ -31,20 +29,15 @@
 //      ↓
 // Backend validates payment → OTP → otp-verification.html
 //
-// ======================================================
 
 
-// ======================================================
 // CONFIG
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // STATE
-// ======================================================
 
 let bookingId = null;
 
@@ -59,9 +52,7 @@ let isProcessing = false;
 let useExistingBooking = false;
 
 
-// ======================================================
 // AUTH TOKEN
-// ======================================================
 
 const getAuthToken = () => {
 
@@ -97,9 +88,7 @@ const requireAuth = () => {
 };
 
 
-// ======================================================
 // API REQUEST
-// ======================================================
 
 const apiRequest = async (
     endpoint,
@@ -184,9 +173,7 @@ const apiRequest = async (
 };
 
 
-// ======================================================
 // DOM ELEMENTS
-// ======================================================
 
 // Loading
 
@@ -341,9 +328,7 @@ const retryButton =
     );
 
 
-// ======================================================
 // GET EVENT ID FROM URL
-// ======================================================
 // Supports:
 //   payment.html?id=EVENT_ID
 //   payment.html?eventId=EVENT_ID
@@ -364,9 +349,7 @@ const getEventId = () => {
 };
 
 
-// ======================================================
 // GET BOOKING ID FROM URL
-// ======================================================
 // Supports:
 //   payment.html?bookingId=BOOKING_ID
 
@@ -383,9 +366,7 @@ const getBookingId = () => {
 };
 
 
-// ======================================================
 // UI HELPERS
-// ======================================================
 
 const hideLoading = () => {
 
@@ -466,9 +447,7 @@ const showError = (
 };
 
 
-// ======================================================
 // FORMAT MONEY
-// ======================================================
 
 const formatMoney = (
     amount
@@ -485,9 +464,7 @@ const formatMoney = (
 };
 
 
-// ======================================================
 // FORMAT DATE
-// ======================================================
 
 const formatDate = (
     date
@@ -527,9 +504,7 @@ const formatDate = (
 };
 
 
-// ======================================================
 // GET EVENT IMAGE URL
-// ======================================================
 
 const getEventImage = (
     event
@@ -592,9 +567,7 @@ const getEventImage = (
 };
 
 
-// ======================================================
 // EXTRACT EVENT FROM API RESPONSE
-// ======================================================
 // Handles multiple backend response shapes:
 //   result.data.event       → { success, data: { event: {...} } }
 //   result.data             → { success, data: {...} } where data IS the event
@@ -669,9 +642,7 @@ const extractEvent = (
 };
 
 
-// ======================================================
 // LOAD EVENT
-// ======================================================
 //
 // GET /api/v1/events/:id
 //
@@ -681,7 +652,6 @@ const extractEvent = (
 //   data: event
 // }
 //
-// ======================================================
 
 const loadEvent = async () => {
 
@@ -744,16 +714,13 @@ const loadEvent = async () => {
 };
 
 
-// ======================================================
 // LOAD BOOKING BY ID
-// ======================================================
 //
 // GET /api/v1/bookings/:id
 //
 // Used when payment.html is opened with ?bookingId=...
 // The backend validates ownership and eligibility.
 //
-// ======================================================
 
 const loadBooking = async () => {
 
@@ -864,9 +831,7 @@ const loadBooking = async () => {
 };
 
 
-// ======================================================
 // RENDER EVENT
-// ======================================================
 
 const renderEvent = () => {
 
@@ -1108,9 +1073,7 @@ const renderEvent = () => {
 };
 
 
-// ======================================================
 // GET TICKET PRICE
-// ======================================================
 
 const getTicketPrice = () => {
 
@@ -1130,9 +1093,7 @@ const getTicketPrice = () => {
 };
 
 
-// ======================================================
 // IS FREE EVENT
-// ======================================================
 
 const isFreeEvent = () => {
 
@@ -1151,9 +1112,7 @@ const isFreeEvent = () => {
 };
 
 
-// ======================================================
 // GET MAX TICKETS
-// ======================================================
 
 const getMaxTickets = () => {
 
@@ -1187,9 +1146,7 @@ const getMaxTickets = () => {
 };
 
 
-// ======================================================
 // UPDATE QUANTITY UI
-// ======================================================
 
 const updateQuantityUI = () => {
 
@@ -1378,9 +1335,7 @@ const updateQuantityUI = () => {
 };
 
 
-// ======================================================
 // INCREASE QUANTITY
-// ======================================================
 
 const increaseTicketQuantity = () => {
 
@@ -1424,9 +1379,7 @@ const increaseTicketQuantity = () => {
 };
 
 
-// ======================================================
 // DECREASE QUANTITY
-// ======================================================
 
 const decreaseTicketQuantity = () => {
 
@@ -1447,15 +1400,12 @@ const decreaseTicketQuantity = () => {
 };
 
 
-// ======================================================
 // CREATE BOOKING
-// ======================================================
 //
 // POST /api/v1/bookings
 // Body: { eventId, ticketQuantity }
 //
 // Only called when no existing bookingId is in the URL.
-// ======================================================
 
 const createBooking = async () => {
 
@@ -1599,9 +1549,7 @@ const createBooking = async () => {
 };
 
 
-// ======================================================
 // PROCESS FREE BOOKING
-// ======================================================
 
 const processFreeBooking = async (
     booking
@@ -1685,15 +1633,12 @@ const processFreeBooking = async (
 };
 
 
-// ======================================================
 // CREATE SSLCommerz PAYMENT SESSION
-// ======================================================
 //
 // Backend: POST /api/v1/payments/create
 // Body:   { booking: bookingId }
 // Returns: { success, data: { payment, gatewayPageURL, sessionkey, transactionId } }
 //
-// ======================================================
 
 const createSSLCommerzPayment = async (
     booking
@@ -1840,9 +1785,7 @@ const createSSLCommerzPayment = async (
 };
 
 
-// ======================================================
 // HANDLE CONTINUE (Pay Now button)
-// ======================================================
 
 const handleContinue = async () => {
 
@@ -1903,12 +1846,10 @@ const handleContinue = async () => {
             return;
         }
 
-        // --------------------------------------------------
         // PAID EVENT FLOW:
         // 1. Send OTP to user email
         // 2. Redirect to OTP verification page
         // 3. Upon OTP verification, SSLCommerz gateway launches
-        // --------------------------------------------------
         let otpResult = null;
         try {
             otpResult = await apiRequest("/bookings/send-otp", {
@@ -1988,9 +1929,7 @@ const handleContinue = async () => {
 };
 
 
-// ======================================================
 // BACK BUTTON
-// ======================================================
 
 const handleBack = () => {
 
@@ -1999,9 +1938,7 @@ const handleBack = () => {
 };
 
 
-// ======================================================
 // RETRY BUTTON
-// ======================================================
 
 const handleRetry = () => {
 
@@ -2010,9 +1947,7 @@ const handleRetry = () => {
 };
 
 
-// ======================================================
 // EVENT LISTENERS
-// ======================================================
 
 const setupEventListeners = () => {
 
@@ -2068,9 +2003,7 @@ const setupEventListeners = () => {
 };
 
 
-// ======================================================
 // INITIALIZE
-// ======================================================
 
 const initialize = async () => {
 
@@ -2167,14 +2100,11 @@ const initialize = async () => {
 };
 
 
-// ======================================================
 // DOM READY
-// ======================================================
 //
 // The <script> tag is at the end of <body>.
 // At that point document.readyState is usually "complete",
 // so we must call initialize() immediately in that case.
-// ======================================================
 
 if (
     document.readyState ===

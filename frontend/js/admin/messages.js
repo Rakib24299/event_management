@@ -1,15 +1,11 @@
-// ========================================
 // Admin Messages & 1-on-1 Chat with Organizers
 // EventEase Admin Panel
-// ========================================
 
 const API_BASE_URL = "http://localhost:5000/api/v1";
 const SOCKET_SERVER_URL = "http://localhost:5000";
 
 
-// ========================================
 // DOM Elements
-// ========================================
 
 const organizersLoading = document.getElementById("organizersLoading");
 const organizersEmpty = document.getElementById("organizersEmpty");
@@ -37,9 +33,7 @@ const notificationBadge = document.getElementById("notificationBadge");
 const logoutButton = document.getElementById("logoutButton");
 
 
-// ========================================
 // State
-// ========================================
 
 let socket = null;
 let currentAdmin = null;
@@ -48,9 +42,7 @@ let selectedOrganizer = null;
 let typingTimeout = null;
 
 
-// ========================================
 // Token & Auth Helper
-// ========================================
 
 function getToken() {
     return (
@@ -69,9 +61,7 @@ if (!token) {
 }
 
 
-// ========================================
 // Escape HTML Helper
-// ========================================
 
 function escapeHTML(value) {
     if (value === null || value === undefined) return "";
@@ -84,9 +74,7 @@ function escapeHTML(value) {
 }
 
 
-// ========================================
 // Format Time Helper
-// ========================================
 
 function formatMessageTime(dateValue) {
     if (!dateValue) return "";
@@ -117,9 +105,7 @@ function formatRelativeTime(dateValue) {
 }
 
 
-// ========================================
 // API Request Helper
-// ========================================
 
 async function apiRequest(endpoint, options = {}) {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -139,9 +125,7 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 
-// ========================================
 // Initialize Socket.IO
-// ========================================
 
 function initSocket() {
     if (typeof io === "undefined") {
@@ -193,9 +177,7 @@ function initSocket() {
 }
 
 
-// ========================================
 // Handle Real-Time Incoming Message
-// ========================================
 
 async function handleIncomingMessage(message) {
     const senderId = message.sender?._id || message.sender;
@@ -253,9 +235,7 @@ async function handleIncomingMessage(message) {
 }
 
 
-// ========================================
 // Fetch Admin Profile
-// ========================================
 
 async function loadAdminProfile() {
     try {
@@ -270,9 +250,7 @@ async function loadAdminProfile() {
 }
 
 
-// ========================================
 // Load Organizers Conversations List
-// ========================================
 
 async function loadOrganizersList() {
     organizersLoading.classList.remove("hidden");
@@ -298,9 +276,7 @@ async function loadOrganizersList() {
 }
 
 
-// ========================================
 // Render Organizers Sidebar List
-// ========================================
 
 function renderOrganizersList(filterQuery = "") {
     if (!organizersList) return;
@@ -401,9 +377,7 @@ function renderOrganizersList(filterQuery = "") {
 }
 
 
-// ========================================
 // Select Organizer & Load Conversation
-// ========================================
 
 async function selectOrganizer(org) {
     selectedOrganizer = org;
@@ -458,9 +432,7 @@ async function selectOrganizer(org) {
 }
 
 
-// ========================================
 // Render Messages in Chat Feed
-// ========================================
 
 function renderMessagesFeed(messages) {
     if (!messagesFeed) return;
@@ -506,9 +478,7 @@ function renderMessagesFeed(messages) {
 }
 
 
-// ========================================
 // Create Message Bubble HTML
-// ========================================
 
 function createMessageBubbleHTML(message) {
     const senderId = message.sender?._id || message.sender;
@@ -560,9 +530,7 @@ function createMessageBubbleHTML(message) {
 }
 
 
-// ========================================
 // Append Single Message to Feed
-// ========================================
 
 function appendMessageToFeed(message) {
     if (!messagesFeed) return;
@@ -583,9 +551,7 @@ function appendMessageToFeed(message) {
 }
 
 
-// ========================================
 // Scroll to Bottom Helper
-// ========================================
 
 function scrollToBottom() {
     if (messagesFeed) {
@@ -594,9 +560,7 @@ function scrollToBottom() {
 }
 
 
-// ========================================
 // Send Message
-// ========================================
 
 async function handleSendMessage(e) {
     if (e) e.preventDefault();
@@ -641,9 +605,7 @@ async function handleSendMessage(e) {
 }
 
 
-// ========================================
 // Update Header Unread Badge
-// ========================================
 
 async function updateHeaderUnreadCount() {
     try {
@@ -664,9 +626,7 @@ async function updateHeaderUnreadCount() {
 }
 
 
-// ========================================
 // Event Listeners
-// ========================================
 
 if (chatMessageForm) {
     chatMessageForm.addEventListener("submit", handleSendMessage);
@@ -717,9 +677,7 @@ if (logoutButton) {
 }
 
 
-// ========================================
 // Initialize Page
-// ========================================
 
 async function init() {
     await loadAdminProfile();

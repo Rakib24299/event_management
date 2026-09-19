@@ -1,19 +1,13 @@
-// ========================================
 // EventEase Admin Event Details
-// ========================================
 
 
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -124,9 +118,7 @@ const deleteEventBtn =
     document.getElementById("deleteEventBtn");
 
 
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -138,9 +130,7 @@ const getToken = () => {
 };
 
 
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
 
@@ -157,9 +147,7 @@ if (!token) {
 }
 
 
-// ========================================
 // Get Event ID From URL
-// ========================================
 
 const getEventIdFromURL = () => {
 
@@ -177,9 +165,7 @@ const currentEventId =
     getEventIdFromURL();
 
 
-// ========================================
 // Validate Event ID
-// ========================================
 
 if (!currentEventId) {
 
@@ -197,9 +183,7 @@ if (!currentEventId) {
 }
 
 
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -259,9 +243,7 @@ const apiRequest = async (
 };
 
 
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (
     value
@@ -287,9 +269,7 @@ const escapeHTML = (
 };
 
 
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -329,9 +309,7 @@ const formatDate = (
 };
 
 
-// ========================================
 // Format Date & Time
-// ========================================
 
 const formatDateTime = (
     date
@@ -373,9 +351,7 @@ const formatDateTime = (
 };
 
 
-// ========================================
 // Status Badge
-// ========================================
 
 const getStatusBadge = (
     status
@@ -432,9 +408,7 @@ const getStatusBadge = (
 };
 
 
-// ========================================
 // Render Banner
-// ========================================
 
 const renderBanner = (
     event
@@ -491,9 +465,7 @@ const renderBanner = (
 };
 
 
-// ========================================
 // Render Gallery
-// ========================================
 
 const renderGallery = (
     images
@@ -563,17 +535,13 @@ const renderGallery = (
 };
 
 
-// ========================================
 // Render Event Details
-// ========================================
 
 const renderEvent = (
     event
 ) => {
 
-    // =====================================
     // Basic Information
-    // =====================================
 
     eventTitle.textContent =
         event.title ||
@@ -591,9 +559,7 @@ const renderEvent = (
         );
 
 
-    // =====================================
     // Date & Time
-    // =====================================
 
     eventDate.textContent =
         formatDate(
@@ -605,9 +571,7 @@ const renderEvent = (
         `${event.startTime || "N/A"} - ${event.endTime || "N/A"}`;
 
 
-    // =====================================
     // Venue
-    // =====================================
 
     const venue =
         event.venue || {};
@@ -635,9 +599,7 @@ const renderEvent = (
             : "Address not provided";
 
 
-    // =====================================
     // Ticket
-    // =====================================
 
     const type =
         event.eventType || "paid";
@@ -672,9 +634,7 @@ const renderEvent = (
     }
 
 
-    // =====================================
     // Hide seat section for free events
-    // =====================================
 
     if (seatInfoSection) {
 
@@ -686,18 +646,14 @@ const renderEvent = (
     }
 
 
-    // =====================================
     // Description
-    // =====================================
 
     eventDescription.textContent =
         event.description ||
         "No description available.";
 
 
-    // =====================================
     // Organizer
-    // =====================================
 
     organizerName.textContent =
         event.organizer?.name ||
@@ -714,9 +670,7 @@ const renderEvent = (
         "Organization name not provided";
 
 
-    // =====================================
     // Seats
-    // =====================================
 
     const total =
         Number(event.totalSeats || 0);
@@ -758,9 +712,7 @@ const renderEvent = (
     }
 
 
-    // =====================================
     // Rating (if present)
-    // =====================================
 
     if (averageRating) {
         averageRating.textContent =
@@ -777,18 +729,14 @@ const renderEvent = (
     }
 
 
-    // =====================================
     // Gallery
-    // =====================================
 
     renderGallery(
         event.galleryImages
     );
 
 
-    // =====================================
     // System Information
-    // =====================================
 
     eventId.textContent =
         event._id ||
@@ -812,9 +760,7 @@ const renderEvent = (
         "N/A";
 
 
-    // =====================================
     // Banner
-    // =====================================
 
     renderBanner(
         event
@@ -823,9 +769,7 @@ const renderEvent = (
 };
 
 
-// ========================================
 // Load Event
-// ========================================
 
 let currentEvent = null;
 
@@ -925,9 +869,7 @@ const loadEvent = async () => {
 };
 
 
-// ========================================
 // Delete Event
-// ========================================
 
 const deleteEvent = async () => {
 
@@ -1015,9 +957,7 @@ const deleteEvent = async () => {
 };
 
 
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
 
@@ -1029,9 +969,7 @@ if (retryBtn) {
 }
 
 
-// ========================================
 // Delete Button
-// ========================================
 
 if (deleteEventBtn) {
 
@@ -1043,9 +981,7 @@ if (deleteEventBtn) {
 }
 
 
-// ========================================
 // Logout
-// ========================================
 
 if (logoutBtn) {
 
@@ -1070,9 +1006,7 @@ if (logoutBtn) {
 }
 
 
-// ========================================
 // Initial Load
-// ========================================
 
 if (currentEventId) {
 

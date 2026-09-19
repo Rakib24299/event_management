@@ -1,14 +1,10 @@
-// ========================================
 // EventEase Organizer Login
-// ========================================
 
 const API_URL =
     "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const loginForm =
     document.getElementById(
@@ -46,9 +42,7 @@ const rememberMe =
     );
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -70,9 +64,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -91,9 +83,7 @@ function hideError() {
 }
 
 
-// ========================================
 // Password Show / Hide
-// ========================================
 
 if (
     togglePassword &&
@@ -128,9 +118,7 @@ if (
 }
 
 
-// ========================================
 // Login Submit
-// ========================================
 
 if (loginForm) {
 
@@ -143,9 +131,7 @@ if (loginForm) {
             hideError();
 
 
-            // ====================================
             // Get Input Values
-            // ====================================
 
             const email =
                 emailInput.value
@@ -156,9 +142,7 @@ if (loginForm) {
                 passwordInput.value;
 
 
-            // ====================================
             // Basic Validation
-            // ====================================
 
             if (!email) {
 
@@ -184,9 +168,7 @@ if (loginForm) {
             }
 
 
-            // ====================================
             // Loading State
-            // ====================================
 
             loginButton.disabled =
                 true;
@@ -197,9 +179,7 @@ if (loginForm) {
 
             try {
 
-                // ====================================
                 // API Request
-                // ====================================
 
                 const response =
                     await fetch(
@@ -221,9 +201,7 @@ if (loginForm) {
                     );
 
 
-                // ====================================
                 // Read API Response
-                // ====================================
 
                 const result =
                     await response.json();
@@ -235,9 +213,7 @@ if (loginForm) {
                 );
 
 
-                // ====================================
                 // API Error
-                // ====================================
 
                 if (
                     !response.ok ||
@@ -252,17 +228,13 @@ if (loginForm) {
                 }
 
 
-                // ====================================
                 // Get User
-                // ====================================
 
                 const user =
                     result.data?.user;
 
 
-                // ====================================
                 // Get Token
-                // ====================================
 
                 const token =
                     result.data?.token;
@@ -286,9 +258,7 @@ if (loginForm) {
                 }
 
 
-                // ====================================
                 // Check Organizer Role
-                // ====================================
 
                 if (
                     user.role !==
@@ -302,9 +272,7 @@ if (loginForm) {
                 }
 
 
-                // ====================================
                 // Save Token
-                // ====================================
 
                 localStorage.setItem(
                     "token",
@@ -312,9 +280,7 @@ if (loginForm) {
                 );
 
 
-                // ====================================
                 // Save User Data
-                // ====================================
 
                 localStorage.setItem(
                     "user",
@@ -322,9 +288,7 @@ if (loginForm) {
                 );
 
 
-                // ====================================
                 // Remember Me
-                // ====================================
 
                 if (rememberMe) {
 
@@ -338,9 +302,7 @@ if (loginForm) {
                 }
 
 
-                // ====================================
                 // Login Successful
-                // ====================================
 
                 loginButton.textContent =
                     "Login Successful";
@@ -352,9 +314,7 @@ if (loginForm) {
                 );
 
 
-                // ====================================
                 // Redirect Organizer
-                // ====================================
 
                 setTimeout(
                     () => {
@@ -375,9 +335,7 @@ if (loginForm) {
                 );
 
 
-                // ====================================
                 // Connection Error
-                // ====================================
 
                 if (
                     error instanceof TypeError
@@ -397,9 +355,7 @@ if (loginForm) {
                 }
 
 
-                // ====================================
                 // Reset Button
-                // ====================================
 
                 loginButton.disabled =
                     false;

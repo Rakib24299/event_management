@@ -1,16 +1,12 @@
 "use strict";
 
-// ======================================================
 // CONFIG
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
 
-// ======================================================
 // ELEMENTS
-// ======================================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -28,9 +24,7 @@ const downloadTicketBtn =
     document.getElementById("downloadTicketBtn");
 
 
-// ======================================================
 // GET BOOKING ID
-// ======================================================
 
 const params =
     new URLSearchParams(
@@ -41,17 +35,13 @@ const bookingId =
     params.get("bookingId");
 
 
-// ======================================================
 // AUTH TOKEN
-// ======================================================
 
 const token =
     localStorage.getItem("token");
 
 
-// ======================================================
 // SHOW ERROR
-// ======================================================
 
 function showError(message) {
 
@@ -66,9 +56,7 @@ function showError(message) {
 }
 
 
-// ======================================================
 // FORMAT DATE
-// ======================================================
 
 function formatDate(dateValue) {
 
@@ -94,9 +82,7 @@ function formatDate(dateValue) {
 }
 
 
-// ======================================================
 // FORMAT TIME
-// ======================================================
 
 function formatTime(dateValue) {
 
@@ -121,9 +107,7 @@ function formatTime(dateValue) {
 }
 
 
-// ======================================================
 // FORMAT MONEY
-// ======================================================
 
 function formatMoney(amount) {
 
@@ -133,9 +117,7 @@ function formatMoney(amount) {
 }
 
 
-// ======================================================
 // LOAD BOOKING
-// ======================================================
 
 async function loadTicket() {
 
@@ -198,9 +180,7 @@ async function loadTicket() {
             result.data;
 
 
-        // ==================================================
         // BOOKING STATUS CHECK
-        // ==================================================
 
         if (
             booking.bookingStatus !==
@@ -215,25 +195,19 @@ async function loadTicket() {
         }
 
 
-        // ==================================================
         // EVENT
-        // ==================================================
 
         const event =
             booking.event || {};
 
 
-        // ==================================================
         // USER
-        // ==================================================
 
         const user =
             booking.user || {};
 
 
-        // ==================================================
         // DISPLAY EVENT
-        // ==================================================
 
         document.getElementById(
             "eventName"
@@ -268,9 +242,7 @@ async function loadTicket() {
             "Venue information unavailable";
 
 
-        // ==================================================
         // CUSTOMER
-        // ==================================================
 
         document.getElementById(
             "customerName"
@@ -286,9 +258,7 @@ async function loadTicket() {
             "-";
 
 
-        // ==================================================
         // BOOKING
-        // ==================================================
 
         document.getElementById(
             "bookingId"
@@ -312,9 +282,7 @@ async function loadTicket() {
             );
 
 
-        // ==================================================
         // SHOW TICKET
-        // ==================================================
 
         loadingState.classList.add(
             "hidden"
@@ -342,9 +310,7 @@ async function loadTicket() {
 }
 
 
-// ======================================================
 // DOWNLOAD PDF
-// ======================================================
 
 function downloadTicketPDF() {
 
@@ -420,9 +386,7 @@ function downloadTicketPDF() {
 }
 
 
-// ======================================================
 // DOWNLOAD BUTTON
-// ======================================================
 
 downloadTicketBtn.addEventListener(
     "click",
@@ -430,8 +394,6 @@ downloadTicketBtn.addEventListener(
 );
 
 
-// ======================================================
 // INITIALIZE
-// ======================================================
 
 loadTicket();

@@ -1,13 +1,9 @@
-// ========================================
 // EventEase Email Verification
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const verifyForm =
     document.getElementById("verifyForm");
@@ -37,9 +33,7 @@ const countdown =
     document.getElementById("countdown");
 
 
-// ========================================
 // Get Email From URL
-// ========================================
 
 const urlParams =
     new URLSearchParams(
@@ -50,9 +44,7 @@ const email =
     urlParams.get("email");
 
 
-// ========================================
 // Check Email
-// ========================================
 
 if (!email) {
 
@@ -67,9 +59,7 @@ if (!email) {
 }
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -82,9 +72,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Show Success
-// ========================================
 
 function showSuccess(message) {
 
@@ -97,10 +85,8 @@ function showSuccess(message) {
 }
 
 
-// ========================================
 // OTP Input
 // Only numbers
-// ========================================
 
 otpInput.addEventListener(
     "input",
@@ -115,9 +101,7 @@ otpInput.addEventListener(
 );
 
 
-// ========================================
 // Verify Email
-// ========================================
 
 verifyForm.addEventListener(
     "submit",
@@ -135,9 +119,7 @@ verifyForm.addEventListener(
             otpInput.value.trim();
 
 
-        // ====================================
         // Validate OTP
-        // ====================================
 
         if (!email) {
 
@@ -161,9 +143,7 @@ verifyForm.addEventListener(
         }
 
 
-        // ====================================
         // Loading
-        // ====================================
 
         verifyButton.disabled = true;
 
@@ -173,9 +153,7 @@ verifyForm.addEventListener(
 
         try {
 
-            // ====================================
             // API Request
-            // ====================================
 
             const response =
                 await fetch(
@@ -214,9 +192,7 @@ verifyForm.addEventListener(
             );
 
 
-            // ====================================
             // Error
-            // ====================================
 
             if (
                 !response.ok ||
@@ -231,9 +207,7 @@ verifyForm.addEventListener(
             }
 
 
-            // ====================================
             // Success
-            // ====================================
 
             showSuccess(
                 result.message ||
@@ -245,9 +219,7 @@ verifyForm.addEventListener(
                 "Email Verified";
 
 
-            // ====================================
             // Redirect Login
-            // ====================================
 
             setTimeout(() => {
 
@@ -282,9 +254,7 @@ verifyForm.addEventListener(
 );
 
 
-// ========================================
 // Resend Verification OTP
-// ========================================
 
 resendButton.addEventListener(
     "click",
@@ -314,9 +284,7 @@ resendButton.addEventListener(
 
         try {
 
-            // ====================================
             // API Request
-            // ====================================
 
             const response =
                 await fetch(
@@ -366,9 +334,7 @@ resendButton.addEventListener(
             }
 
 
-            // ====================================
             // Success
-            // ====================================
 
             showSuccess(
                 result.message ||
@@ -376,9 +342,7 @@ resendButton.addEventListener(
             );
 
 
-            // ====================================
             // Start Timer
-            // ====================================
 
             startResendTimer();
 
@@ -408,9 +372,7 @@ resendButton.addEventListener(
 );
 
 
-// ========================================
 // Resend Timer
-// ========================================
 
 let timer = null;
 

@@ -19,9 +19,7 @@ const {
 } = require("../utils/eventDateTime");
 
 
-// ======================================================
 // Get Pending Organizers
-// ======================================================
 
 const getPendingOrganizers = async () => {
 
@@ -39,9 +37,7 @@ const getPendingOrganizers = async () => {
 };
 
 
-// ======================================================
 // Approve Organizer
-// ======================================================
 
 const approveOrganizer = async (
   organizerId
@@ -90,9 +86,7 @@ const approveOrganizer = async (
   await organizer.save();
 
 
-  // ============================================
   // Notification To Organizer
-  // ============================================
 
   await createBulkNotifications({
 
@@ -116,9 +110,7 @@ const approveOrganizer = async (
 };
 
 
-// ======================================================
 // Reject Organizer
-// ======================================================
 
 const rejectOrganizer = async (
   organizerId
@@ -167,9 +159,7 @@ const rejectOrganizer = async (
   await organizer.save();
 
 
-  // ============================================
   // Notification To Organizer
-  // ============================================
 
   await createBulkNotifications({
 
@@ -193,9 +183,7 @@ const rejectOrganizer = async (
 };
 
 
-// ======================================================
 // Get Dashboard Statistics
-// ======================================================
 
 const getDashboardStats = async () => {
 
@@ -539,9 +527,7 @@ const getDashboardStats = async () => {
 };
 
 
-// ======================================================
 // Get All Users
-// ======================================================
 
 const getAllUsers = async () => {
 
@@ -565,9 +551,7 @@ const getAllUsers = async () => {
 };
 
 
-// ======================================================
 // Block User
-// ======================================================
 
 const blockUser = async (
   userId
@@ -619,9 +603,7 @@ const blockUser = async (
 };
 
 
-// ======================================================
 // Unblock User
-// ======================================================
 
 const unblockUser = async (
   userId
@@ -662,9 +644,7 @@ const unblockUser = async (
 };
 
 
-// ======================================================
 // Get All Events
-// ======================================================
 
 const getAllEvents = async () => {
 
@@ -692,10 +672,8 @@ const getAllEvents = async () => {
 };
 
 
-// ======================================================
 // Delete Event By Admin
 // Hard Delete
-// ======================================================
 
 const deleteEventByAdmin = async (
    eventId,
@@ -729,9 +707,7 @@ const deleteEventByAdmin = async (
    );
 
 
-   // ============================================
    // Notify Organizer
-   // ============================================
 
    if (organizerId) {
 
@@ -765,9 +741,7 @@ const deleteEventByAdmin = async (
 };
 
 
-// ======================================================
 // Get All Payments
-// ======================================================
 
 const getAllPayments = async () => {
 
@@ -802,9 +776,7 @@ const getAllPayments = async () => {
 };
 
 
-// ======================================================
 // Get Payment Statistics
-// ======================================================
 
 const getPaymentStatistics =
   async () => {
@@ -917,9 +889,7 @@ const getPaymentStatistics =
   };
 
 
-// ======================================================
 // Get Admin Revenue History
-// ======================================================
 
 const getAdminRevenueHistory =
   async () => {
@@ -1138,9 +1108,7 @@ const getAdminRevenueHistory =
   };
 
 
-// ======================================================
 // Get Pending Refunds
-// ======================================================
 
 const getPendingRefunds =
   async () => {
@@ -1179,9 +1147,7 @@ const getPendingRefunds =
   };
 
 
-// ======================================================
 // Process Refund By Admin
-// ======================================================
 
 const processRefundByAdmin =
   async (paymentId) => {
@@ -1244,17 +1210,13 @@ const processRefundByAdmin =
     }
 
 
-    // ==========================================
     // Calculate Refund
-    // ==========================================
 
     const refundAmount =
       booking.refundAmount || 0;
 
 
-    // ==========================================
     // Update Payment
-    // ==========================================
 
     payment.status =
       "refunded";
@@ -1268,9 +1230,7 @@ const processRefundByAdmin =
     await payment.save();
 
 
-    // ==========================================
     // Update Booking
-    // ==========================================
 
     booking.refundStatus =
       "processed";
@@ -1278,9 +1238,7 @@ const processRefundByAdmin =
     await booking.save();
 
 
-    // ==========================================
     // Restore Event Seats
-    // ==========================================
 
     const event =
       await Event.findById(
@@ -1305,9 +1263,7 @@ const processRefundByAdmin =
     }
 
 
-    // ==========================================
     // Notify User
-    // ==========================================
 
     await createBulkNotifications({
 
@@ -1341,10 +1297,8 @@ const processRefundByAdmin =
   };
 
 
-// ======================================================
 // Get Event History
 // Expired events within 30-day retention period
-// ======================================================
 
 const getEventHistory = async () => {
 
@@ -1374,9 +1328,7 @@ const getEventHistory = async () => {
 };
 
 
-// ======================================================
 // Export
-// ======================================================
 
 module.exports = {
 

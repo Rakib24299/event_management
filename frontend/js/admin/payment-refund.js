@@ -1,19 +1,11 @@
-// ======================================================
 // ADMIN PAYMENT & REFUND MANAGEMENT
-// ======================================================
 
-
-// ======================================================
 // API CONFIGURATION
-// ======================================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ======================================================
 // DOM ELEMENTS
-// ======================================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -51,10 +43,7 @@ const refreshButton =
 const backButton =
     document.getElementById("backButton");
 
-
-// ======================================================
 // STATISTICS
-// ======================================================
 
 const totalPayments =
     document.getElementById("totalPayments");
@@ -68,10 +57,7 @@ const pendingPayments =
 const refundedPayments =
     document.getElementById("refundedPayments");
 
-
-// ======================================================
 // MODAL
-// ======================================================
 
 const paymentModal =
     document.getElementById("paymentModal");
@@ -91,10 +77,7 @@ const paymentDetails =
 const modalRefundButton =
     document.getElementById("modalRefundButton");
 
-
-// ======================================================
 // STATE
-// ======================================================
 
 let allPayments = [];
 
@@ -102,10 +85,7 @@ let filteredPayments = [];
 
 let selectedPayment = null;
 
-
-// ======================================================
 // TOKEN
-// ======================================================
 
 function getToken() {
 
@@ -120,10 +100,7 @@ function getToken() {
 
 }
 
-
-// ======================================================
 // API REQUEST
-// ======================================================
 
 async function apiRequest(
     endpoint,
@@ -133,7 +110,6 @@ async function apiRequest(
     const token =
         getToken();
 
-
     if (!token) {
 
         throw new Error(
@@ -141,7 +117,6 @@ async function apiRequest(
         );
 
     }
-
 
     const response =
         await fetch(
@@ -163,13 +138,10 @@ async function apiRequest(
             }
         );
 
-
     const text =
         await response.text();
 
-
     let result = null;
-
 
     try {
 
@@ -184,7 +156,6 @@ async function apiRequest(
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -197,15 +168,11 @@ async function apiRequest(
 
     }
 
-
     return result;
 
 }
 
-
-// ======================================================
 // EXTRACT PAYMENTS
-// ======================================================
 
 function extractPayments(result) {
 
@@ -215,7 +182,6 @@ function extractPayments(result) {
 
     }
 
-
     if (
         result &&
         Array.isArray(result.data)
@@ -224,7 +190,6 @@ function extractPayments(result) {
         return result.data;
 
     }
-
 
     if (
         result &&
@@ -236,7 +201,6 @@ function extractPayments(result) {
 
     }
 
-
     if (
         result &&
         Array.isArray(result.payments)
@@ -246,15 +210,11 @@ function extractPayments(result) {
 
     }
 
-
     return [];
 
 }
 
-
-// ======================================================
 // FORMAT CURRENCY
-// ======================================================
 
 function formatCurrency(amount) {
 
@@ -271,10 +231,7 @@ function formatCurrency(amount) {
 
 }
 
-
-// ======================================================
 // FORMAT DATE
-// ======================================================
 
 function formatDate(date) {
 
@@ -284,10 +241,8 @@ function formatDate(date) {
 
     }
 
-
     const parsedDate =
         new Date(date);
-
 
     if (
         Number.isNaN(
@@ -298,7 +253,6 @@ function formatDate(date) {
         return "N/A";
 
     }
-
 
     return parsedDate.toLocaleDateString(
         "en-BD",
@@ -311,10 +265,7 @@ function formatDate(date) {
 
 }
 
-
-// ======================================================
 // ESCAPE HTML
-// ======================================================
 
 function escapeHtml(value) {
 
@@ -330,10 +281,7 @@ function escapeHtml(value) {
 
 }
 
-
-// ======================================================
 // CAPITALIZE
-// ======================================================
 
 function capitalize(text) {
 
@@ -343,7 +291,6 @@ function capitalize(text) {
 
     }
 
-
     return (
         text.charAt(0).toUpperCase() +
         text.slice(1)
@@ -351,10 +298,7 @@ function capitalize(text) {
 
 }
 
-
-// ======================================================
 // GET PAYMENT STATUS
-// ======================================================
 
 function getPaymentStatus(payment) {
 
@@ -366,10 +310,7 @@ function getPaymentStatus(payment) {
 
 }
 
-
-// ======================================================
 // GET USER
-// ======================================================
 
 function getUser(payment) {
 
@@ -381,16 +322,12 @@ function getUser(payment) {
 
 }
 
-
-// ======================================================
 // GET USER NAME
-// ======================================================
 
 function getUserName(payment) {
 
     const user =
         getUser(payment);
-
 
     return (
         user.name ||
@@ -402,25 +339,18 @@ function getUserName(payment) {
 
 }
 
-
-// ======================================================
 // GET USER EMAIL
-// ======================================================
 
 function getUserEmail(payment) {
 
     const user =
         getUser(payment);
 
-
     return user.email || "";
 
 }
 
-
-// ======================================================
 // GET EVENT
-// ======================================================
 
 function getEvent(payment) {
 
@@ -429,7 +359,6 @@ function getEvent(payment) {
         return payment.event;
 
     }
-
 
     if (
         payment?.booking &&
@@ -440,21 +369,16 @@ function getEvent(payment) {
 
     }
 
-
     return {};
 
 }
 
-
-// ======================================================
 // GET EVENT NAME
-// ======================================================
 
 function getEventName(payment) {
 
     const event =
         getEvent(payment);
-
 
     return (
         event.title ||
@@ -464,10 +388,7 @@ function getEventName(payment) {
 
 }
 
-
-// ======================================================
 // GET PAYMENT AMOUNT
-// ======================================================
 
 function getPaymentAmount(payment) {
 
@@ -480,10 +401,7 @@ function getPaymentAmount(payment) {
 
 }
 
-
-// ======================================================
 // GET REFUND AMOUNT
-// ======================================================
 
 function getRefundAmount(payment) {
 
@@ -495,10 +413,7 @@ function getRefundAmount(payment) {
 
 }
 
-
-// ======================================================
 // GET TRANSACTION ID
-// ======================================================
 
 function getTransactionId(payment) {
 
@@ -512,10 +427,7 @@ function getTransactionId(payment) {
 
 }
 
-
-// ======================================================
 // STATUS BADGE
-// ======================================================
 
 function getStatusBadge(status) {
 
@@ -523,7 +435,6 @@ function getStatusBadge(status) {
         String(
             status || "pending"
         ).toLowerCase();
-
 
     const config = {
 
@@ -578,11 +489,9 @@ function getStatusBadge(status) {
 
     };
 
-
     const current =
         config[normalizedStatus] ||
         config.pending;
-
 
     return `
 
@@ -609,10 +518,7 @@ function getStatusBadge(status) {
 
 }
 
-
-// ======================================================
 // UPDATE STATISTICS
-// ======================================================
 
 function updateStatistics(
     payments
@@ -621,14 +527,12 @@ function updateStatistics(
     const total =
         payments.length;
 
-
     const paid =
         payments.filter(
             payment =>
                 getPaymentStatus(payment) ===
                 "paid"
         ).length;
-
 
     const pending =
         payments.filter(
@@ -647,7 +551,6 @@ function updateStatistics(
             }
         ).length;
 
-
     const refunded =
         payments.filter(
             payment => {
@@ -665,7 +568,6 @@ function updateStatistics(
             }
         ).length;
 
-
     totalPayments.textContent =
         total;
 
@@ -680,10 +582,7 @@ function updateStatistics(
 
 }
 
-
-// ======================================================
 // RENDER PAYMENTS
-// ======================================================
 
 function renderPayments(
     payments
@@ -691,7 +590,6 @@ function renderPayments(
 
     paymentTableBody.innerHTML =
         "";
-
 
     if (
         !Array.isArray(payments) ||
@@ -709,11 +607,9 @@ function renderPayments(
 
     }
 
-
     emptyState.classList.add(
         "hidden"
     );
-
 
     paymentCountText.textContent =
         `${payments.length} ${
@@ -721,7 +617,6 @@ function renderPayments(
                 ? "payment"
                 : "payments"
         } found`;
-
 
     payments.forEach(
         payment => {
@@ -731,66 +626,54 @@ function renderPayments(
                     "tr"
                 );
 
-
             row.className =
                 "hover:bg-gray-50 transition";
-
 
             const userName =
                 getUserName(
                     payment
                 );
 
-
             const userEmail =
                 getUserEmail(
                     payment
                 );
-
 
             const eventName =
                 getEventName(
                     payment
                 );
 
-
             const paymentMethod =
                 payment.paymentMethod ||
                 payment.method ||
                 "N/A";
-
 
             const paymentStatus =
                 getPaymentStatus(
                     payment
                 );
 
-
             const amount =
                 getPaymentAmount(
                     payment
                 );
-
 
             const refundAmount =
                 getRefundAmount(
                     payment
                 );
 
-
             const paymentDate =
                 payment.paymentDate ||
                 payment.paidAt ||
                 payment.createdAt;
 
-
             const paymentId =
                 payment._id;
 
-
             const canRefund =
                 paymentStatus === "paid";
-
 
             row.innerHTML = `
 
@@ -820,7 +703,6 @@ function renderPayments(
 
                 </td>
 
-
                 <!-- Event -->
 
                 <td class="px-5 py-4">
@@ -846,7 +728,6 @@ function renderPayments(
 
                 </td>
 
-
                 <!-- Amount -->
 
                 <td class="px-5 py-4">
@@ -860,7 +741,6 @@ function renderPayments(
                     </span>
 
                 </td>
-
 
                 <!-- Method -->
 
@@ -880,7 +760,6 @@ function renderPayments(
 
                 </td>
 
-
                 <!-- Status -->
 
                 <td class="px-5 py-4">
@@ -890,7 +769,6 @@ function renderPayments(
                     )}
 
                 </td>
-
 
                 <!-- Refund -->
 
@@ -920,7 +798,6 @@ function renderPayments(
 
                 </td>
 
-
                 <!-- Action -->
 
                 <td class="px-5 py-4 text-right">
@@ -944,7 +821,6 @@ function renderPayments(
                             View
 
                         </button>
-
 
                         ${
                             canRefund
@@ -976,7 +852,6 @@ function renderPayments(
 
             `;
 
-
             paymentTableBody.appendChild(
                 row
             );
@@ -986,10 +861,7 @@ function renderPayments(
 
 }
 
-
-// ======================================================
 // FILTER PAYMENTS
-// ======================================================
 
 function applyFilters() {
 
@@ -998,10 +870,8 @@ function applyFilters() {
             .trim()
             .toLowerCase();
 
-
     const selectedStatus =
         statusFilter.value;
-
 
     filteredPayments =
         allPayments.filter(
@@ -1013,20 +883,17 @@ function applyFilters() {
                     )
                     .toLowerCase();
 
-
                 const userEmail =
                     getUserEmail(
                         payment
                     )
                     .toLowerCase();
 
-
                 const eventName =
                     getEventName(
                         payment
                     )
                     .toLowerCase();
-
 
                 const transactionId =
                     String(
@@ -1036,7 +903,6 @@ function applyFilters() {
                     )
                     .toLowerCase();
 
-
                 const matchesSearch =
                     !search ||
                     userName.includes(search) ||
@@ -1044,17 +910,14 @@ function applyFilters() {
                     eventName.includes(search) ||
                     transactionId.includes(search);
 
-
                 const status =
                     getPaymentStatus(
                         payment
                     );
 
-
                 const matchesStatus =
                     selectedStatus === "all" ||
                     status === selectedStatus;
-
 
                 return (
                     matchesSearch &&
@@ -1064,17 +927,13 @@ function applyFilters() {
             }
         );
 
-
     renderPayments(
         filteredPayments
     );
 
 }
 
-
-// ======================================================
 // LOAD PAYMENTS
-// ======================================================
 
 async function loadPayments() {
 
@@ -1092,32 +951,26 @@ async function loadPayments() {
             "hidden"
         );
 
-
         const result =
             await apiRequest(
                 "/payments/admin"
             );
-
 
         allPayments =
             extractPayments(
                 result
             );
 
-
         updateStatistics(
             allPayments
         );
 
-
         filteredPayments =
             [...allPayments];
-
 
         renderPayments(
             filteredPayments
         );
-
 
         paymentSection.classList.remove(
             "hidden"
@@ -1132,11 +985,9 @@ async function loadPayments() {
             error
         );
 
-
         errorMessage.textContent =
             error.message ||
             "Failed to load payments.";
-
 
         errorState.classList.remove(
             "hidden"
@@ -1154,10 +1005,7 @@ async function loadPayments() {
 
 }
 
-
-// ======================================================
 // OPEN PAYMENT DETAILS
-// ======================================================
 
 async function openPaymentDetails(
     paymentId
@@ -1183,11 +1031,9 @@ async function openPaymentDetails(
 
         `;
 
-
         paymentModal.classList.remove(
             "hidden"
         );
-
 
         const result =
             await apiRequest(
@@ -1196,17 +1042,14 @@ async function openPaymentDetails(
                 )}`
             );
 
-
         const payment =
             result?.data?.payment ||
             result?.data ||
             result?.payment ||
             result;
 
-
         selectedPayment =
             payment;
-
 
         renderPaymentDetails(
             payment
@@ -1220,7 +1063,6 @@ async function openPaymentDetails(
             "Payment details error:",
             error
         );
-
 
         paymentDetails.innerHTML = `
 
@@ -1241,10 +1083,7 @@ async function openPaymentDetails(
 
 }
 
-
-// ======================================================
 // RENDER PAYMENT DETAILS
-// ======================================================
 
 function renderPaymentDetails(
     payment
@@ -1255,23 +1094,19 @@ function renderPaymentDetails(
             payment
         );
 
-
     const userEmail =
         getUserEmail(
             payment
         );
-
 
     const eventName =
         getEventName(
             payment
         );
 
-
     const booking =
         payment?.booking ||
         {};
-
 
     const ticketQuantity =
         booking.ticketQuantity ??
@@ -1280,47 +1115,39 @@ function renderPaymentDetails(
         payment.quantity ??
         0;
 
-
     const refundAmount =
         getRefundAmount(
             payment
         );
-
 
     const paymentStatus =
         getPaymentStatus(
             payment
         );
 
-
     const canRefund =
         paymentStatus === "paid";
-
 
     const transactionId =
         getTransactionId(
             payment
         );
 
-
     const paymentDate =
         payment.paymentDate ||
         payment.paidAt ||
         payment.createdAt;
-
 
     const paymentMethod =
         payment.paymentMethod ||
         payment.method ||
         "N/A";
 
-
     paymentDetails.innerHTML = `
 
         <div
             class="grid grid-cols-1 gap-5 md:grid-cols-2"
         >
-
 
             <!-- Customer -->
 
@@ -1352,7 +1179,6 @@ function renderPaymentDetails(
 
             </div>
 
-
             <!-- Event -->
 
             <div
@@ -1374,7 +1200,6 @@ function renderPaymentDetails(
                 </p>
 
             </div>
-
 
             <!-- Amount -->
 
@@ -1400,7 +1225,6 @@ function renderPaymentDetails(
 
             </div>
 
-
             <!-- Ticket Quantity -->
 
             <div
@@ -1422,7 +1246,6 @@ function renderPaymentDetails(
                 </p>
 
             </div>
-
 
             <!-- Payment Method -->
 
@@ -1450,7 +1273,6 @@ function renderPaymentDetails(
 
             </div>
 
-
             <!-- Status -->
 
             <div
@@ -1468,7 +1290,6 @@ function renderPaymentDetails(
                 )}
 
             </div>
-
 
             <!-- Transaction -->
 
@@ -1492,7 +1313,6 @@ function renderPaymentDetails(
 
             </div>
 
-
             <!-- Payment Date -->
 
             <div
@@ -1514,7 +1334,6 @@ function renderPaymentDetails(
                 </p>
 
             </div>
-
 
             <!-- Refund -->
 
@@ -1538,11 +1357,9 @@ function renderPaymentDetails(
 
             </div>
 
-
         </div>
 
     `;
-
 
     if (canRefund) {
 
@@ -1565,10 +1382,7 @@ function renderPaymentDetails(
 
 }
 
-
-// ======================================================
 // PROCESS REFUND
-// ======================================================
 
 async function processRefund(
     paymentId
@@ -1580,12 +1394,10 @@ async function processRefund(
 
     }
 
-
     const confirmed =
         window.confirm(
             "Are you sure you want to process this refund?"
         );
-
 
     if (!confirmed) {
 
@@ -1593,14 +1405,12 @@ async function processRefund(
 
     }
 
-
     const tableButton =
         document.querySelector(
             `.refund-payment-btn[data-id="${CSS.escape(
                 String(paymentId)
             )}"]`
         );
-
 
     try {
 
@@ -1621,10 +1431,8 @@ async function processRefund(
 
         }
 
-
         modalRefundButton.disabled =
             true;
-
 
         modalRefundButton.innerHTML = `
 
@@ -1636,7 +1444,6 @@ async function processRefund(
 
         `;
 
-
         const result =
             await apiRequest(
                 `/payments/admin/${encodeURIComponent(
@@ -1647,18 +1454,14 @@ async function processRefund(
                 }
             );
 
-
         alert(
             result?.message ||
             "Refund processed successfully."
         );
 
-
         closeModal();
 
-
         await loadPayments();
-
 
     }
 
@@ -1668,7 +1471,6 @@ async function processRefund(
             "Refund error:",
             error
         );
-
 
         alert(
             error.message ||
@@ -1713,10 +1515,7 @@ async function processRefund(
 
 }
 
-
-// ======================================================
 // CLOSE MODAL
-// ======================================================
 
 function closeModal() {
 
@@ -1724,14 +1523,11 @@ function closeModal() {
         "hidden"
     );
 
-
     selectedPayment =
         null;
 
-
     paymentDetails.innerHTML =
         "";
-
 
     modalRefundButton.classList.add(
         "hidden"
@@ -1739,11 +1535,7 @@ function closeModal() {
 
 }
 
-
-// ======================================================
 // EVENT LISTENERS
-// ======================================================
-
 
 // Search
 
@@ -1752,14 +1544,12 @@ searchInput.addEventListener(
     applyFilters
 );
 
-
 // Status Filter
 
 statusFilter.addEventListener(
     "change",
     applyFilters
 );
-
 
 // Refresh
 
@@ -1768,14 +1558,12 @@ refreshButton.addEventListener(
     loadPayments
 );
 
-
 // Retry
 
 retryButton.addEventListener(
     "click",
     loadPayments
 );
-
 
 // Back
 
@@ -1788,7 +1576,6 @@ backButton.addEventListener(
     }
 );
 
-
 // Close modal
 
 closeModalButton.addEventListener(
@@ -1796,18 +1583,15 @@ closeModalButton.addEventListener(
     closeModal
 );
 
-
 modalCloseButton.addEventListener(
     "click",
     closeModal
 );
 
-
 modalOverlay.addEventListener(
     "click",
     closeModal
 );
-
 
 // Escape key
 
@@ -1829,7 +1613,6 @@ document.addEventListener(
     }
 );
 
-
 // Modal refund
 
 modalRefundButton.addEventListener(
@@ -1850,7 +1633,6 @@ modalRefundButton.addEventListener(
     }
 );
 
-
 // Table actions
 
 paymentTableBody.addEventListener(
@@ -1862,12 +1644,10 @@ paymentTableBody.addEventListener(
                 ".view-payment-btn"
             );
 
-
         const refundButton =
             event.target.closest(
                 ".refund-payment-btn"
             );
-
 
         // View
 
@@ -1875,7 +1655,6 @@ paymentTableBody.addEventListener(
 
             const paymentId =
                 viewButton.dataset.id;
-
 
             if (paymentId) {
 
@@ -1889,14 +1668,12 @@ paymentTableBody.addEventListener(
 
         }
 
-
         // Refund
 
         if (refundButton) {
 
             const paymentId =
                 refundButton.dataset.id;
-
 
             if (paymentId) {
 
@@ -1911,10 +1688,7 @@ paymentTableBody.addEventListener(
     }
 );
 
-
-// ======================================================
 // INITIAL LOAD
-// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",

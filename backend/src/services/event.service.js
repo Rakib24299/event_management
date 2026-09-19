@@ -15,9 +15,7 @@ const {
 } = require("../utils/eventDateTime");
 
 
-// ========================================
 // Get Pending Organizers
-// ========================================
 
 const getPendingOrganizers = async () => {
 
@@ -34,9 +32,7 @@ const getPendingOrganizers = async () => {
 };
 
 
-// ========================================
 // Approve Organizer
-// ========================================
 
 const approveOrganizer = async (
   organizerId
@@ -93,9 +89,7 @@ const approveOrganizer = async (
   }
 
 
-  // ======================================
   // Approve Organizer
-  // ======================================
 
   organizer.approvalStatus =
     "approved";
@@ -104,9 +98,7 @@ const approveOrganizer = async (
   await organizer.save();
 
 
-  // ======================================
   // Notification To Organizer
-  // ======================================
 
   await createBulkNotifications({
 
@@ -130,9 +122,7 @@ const approveOrganizer = async (
 };
 
 
-// ========================================
 // Reject Organizer
-// ========================================
 
 const rejectOrganizer = async (
   organizerId
@@ -189,9 +179,7 @@ const rejectOrganizer = async (
   }
 
 
-  // ======================================
   // Reject Organizer
-  // ======================================
 
   organizer.approvalStatus =
     "rejected";
@@ -200,9 +188,7 @@ const rejectOrganizer = async (
   await organizer.save();
 
 
-  // ======================================
   // Notification To Organizer
-  // ======================================
 
   await createBulkNotifications({
 
@@ -226,15 +212,11 @@ const rejectOrganizer = async (
 };
 
 
-// ========================================
 // Get Admin Dashboard Statistics
-// ========================================
 
 const getDashboardStats = async () => {
 
-  // ======================================
   // Total Users
-  // ======================================
 
   const totalUsers =
     await User.countDocuments({
@@ -246,9 +228,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Total Organizers
-  // ======================================
 
   const totalOrganizers =
     await User.countDocuments({
@@ -258,9 +238,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Pending Organizers
-  // ======================================
 
   const pendingOrganizers =
     await User.countDocuments({
@@ -272,9 +250,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Total Events
-  // ======================================
 
   const totalEvents =
     await Event.countDocuments({
@@ -284,9 +260,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Active / Published Events
-  // ======================================
 
   const activeEvents =
     await Event.countDocuments({
@@ -298,9 +272,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Completed Events
-  // ======================================
 
   const completedEvents =
     await Event.countDocuments({
@@ -312,9 +284,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Pending Events
-  // ======================================
 
   const pendingEvents =
     await Event.countDocuments({
@@ -326,9 +296,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Rejected Events
-  // ======================================
 
   const rejectedEvents =
     await Event.countDocuments({
@@ -340,17 +308,13 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Total Bookings
-  // ======================================
 
   const totalBookings =
     await Booking.countDocuments();
 
 
-  // ======================================
   // Confirmed Bookings
-  // ======================================
 
   const confirmedBookings =
     await Booking.countDocuments({
@@ -361,9 +325,7 @@ const getDashboardStats = async () => {
     });
 
 
-  // ======================================
   // Total Tickets Sold
-  // ======================================
 
   const ticketResult =
     await Booking.aggregate([
@@ -403,9 +365,7 @@ const getDashboardStats = async () => {
       : 0;
 
 
-  // ======================================
   // Total Revenue
-  // ======================================
 
   const revenueResult =
     await Booking.aggregate([
@@ -445,9 +405,7 @@ const getDashboardStats = async () => {
       : 0;
 
 
-  // ======================================
   // Return Statistics
-  // ======================================
 
   return {
 
@@ -480,9 +438,7 @@ const getDashboardStats = async () => {
 };
 
 
-// ========================================
 // Get All Users
-// ========================================
 
 const getAllUsers = async () => {
 
@@ -508,9 +464,7 @@ const getAllUsers = async () => {
 };
 
 
-// ========================================
 // Block User
-// ========================================
 
 const blockUser = async (
   userId
@@ -565,9 +519,7 @@ const blockUser = async (
 };
 
 
-// ========================================
 // Unblock User
-// ========================================
 
 const unblockUser = async (
   userId
@@ -612,9 +564,7 @@ const unblockUser = async (
 };
 
 
-// ========================================
 // Get Single Event
-// ========================================
 
 const getSingleEvent = async (
   eventId,
@@ -674,9 +624,10 @@ const getSingleEvent = async (
 };
 
 
-// ========================================
+// SHOW PUBLISH EVENTS
+
 // Get All Events For Admin
-// ========================================
+
 
 const getAllEvents = async () => {
 
@@ -700,22 +651,20 @@ const getAllEvents = async () => {
         createdAt: -1,
       });
 
+      // EXPIRED EVENTS
 
-  return allEvents.filter(
-    (event) =>
-      !isEventExpired(event)
-  );
+  return allEvents.filter( (event) => !isEventExpired(event) );
 
 };
 
 
-// ========================================
+//SHOW DARFT EVENTS
 // Get Pending Events
-// ========================================
+ 
 // Organizer created events have
 // status = "draft"
 // Admin can approve or reject them.
-// ========================================
+
 
 const getPendingEvents = async () => {
 
@@ -743,9 +692,8 @@ const getPendingEvents = async () => {
 };
 
 
-// ========================================
 // Approve Event
-// ========================================
+
 
 const approveEvent = async (
   eventId
@@ -805,9 +753,7 @@ const approveEvent = async (
   }
 
 
-  // ======================================
   // Publish Event
-  // ======================================
 
   event.status =
     "published";
@@ -816,9 +762,7 @@ const approveEvent = async (
   await event.save();
 
 
-  // ======================================
   // Notify All Active Users
-  // ======================================
 
   const users =
     await User.find({
@@ -860,9 +804,7 @@ const approveEvent = async (
   }
 
 
-  // ======================================
   // Notify Organizer
-  // ======================================
 
   await createBulkNotifications({
 
@@ -886,9 +828,7 @@ const approveEvent = async (
 };
 
 
-// ========================================
 // Reject Event
-// ========================================
 
 const rejectEvent = async (
   eventId
@@ -948,9 +888,7 @@ const rejectEvent = async (
   }
 
 
-  // ======================================
   // Reject Event
-  // ======================================
 
   event.status =
     "rejected";
@@ -959,9 +897,7 @@ const rejectEvent = async (
   await event.save();
 
 
-  // ======================================
   // Notify Organizer
-  // ======================================
 
   await createBulkNotifications({
 
@@ -985,10 +921,8 @@ const rejectEvent = async (
 };
 
 
-// ========================================
 // Delete Event By Admin
 // Soft Delete
-// ========================================
 
 const deleteEventByAdmin = async (
   eventId,
@@ -1013,9 +947,7 @@ const deleteEventByAdmin = async (
   }
 
 
-  // ======================================
   // Soft Delete
-  // ======================================
 
   event.isDeleted =
     true;
@@ -1040,10 +972,8 @@ const deleteEventByAdmin = async (
 };
 
 
-// ========================================
 // Create Event
 // Organizer + Admin
-// ========================================
 
 const createEvent = async (
   data,
@@ -1086,9 +1016,7 @@ const createEvent = async (
       : maxTicketsPerUser || 5;
 
 
-  // ======================================
   // Verify Category Exists
-  // ======================================
 
   const categoryExists =
     await Category.findById(
@@ -1108,9 +1036,7 @@ const createEvent = async (
   }
 
 
-  // ======================================
   // Generate Safe, Unique Slug
-  // ======================================
 
   const baseSlug =
     slug &&
@@ -1141,9 +1067,7 @@ const createEvent = async (
   }
 
 
-  // ======================================
   // Create Event
-  // ======================================
 
   const event = await Event.create({
 
@@ -1217,9 +1141,7 @@ const createEvent = async (
   });
 
 
-  // ======================================
   // Notify Organizer
-  // ======================================
   await createBulkNotifications({
 
     users: [organizerId],
@@ -1260,10 +1182,8 @@ const createEvent = async (
 };
 
 
-// ========================================
 // Get My Events
 // Organizer Only
-// ========================================
 
 const getMyEvents = async (
   organizerId
@@ -1292,10 +1212,8 @@ const getMyEvents = async (
 };
 
 
-// ========================================
 // Update Event
 // Organizer (own) + Admin
-// ========================================
 
 const updateEvent = async (
   eventId,
@@ -1322,9 +1240,7 @@ const updateEvent = async (
   }
 
 
-  // ======================================
   // Authorization
-  // ======================================
 
   if (
     userRole !== "admin" &&
@@ -1340,9 +1256,7 @@ const updateEvent = async (
   }
 
 
-  // ======================================
   // Verify Category If Changed
-  // ======================================
 
   if (data.category) {
 
@@ -1366,9 +1280,7 @@ const updateEvent = async (
   }
 
 
-  // ======================================
   // Slug Uniqueness
-  // ======================================
 
   if (
     data.slug &&
@@ -1437,11 +1349,9 @@ const updateEvent = async (
 };
 
 
-// ========================================
 // Delete Event
 // Organizer (own) + Admin
 // Hard Delete
-// ========================================
 
 const deleteEvent = async (
    eventId,
@@ -1464,9 +1374,7 @@ const deleteEvent = async (
    }
 
 
-   // ======================================
    // Authorization
-   // ======================================
 
    if (
      userRole !== "admin" &&
@@ -1496,10 +1404,8 @@ const deleteEvent = async (
 
 };
 
-// ========================================
 // Cancel Event
 // Organizer (own) + Admin
-// ========================================
 
 const cancelEvent = async (
   eventId,
@@ -1525,9 +1431,7 @@ const cancelEvent = async (
   }
 
 
-  // ======================================
   // Authorization
-  // ======================================
 
   if (
     userRole !== "admin" &&
@@ -1553,10 +1457,8 @@ const cancelEvent = async (
 };
 
 
-// ========================================
 // Get Event History
 // Expired events within 30-day retention period
-// ========================================
 
 const getEventHistory = async () => {
 
@@ -1588,10 +1490,8 @@ const getEventHistory = async () => {
 };
 
 
-// ========================================
 // Get Organizer Event History
 // Expired events for the current organizer
-// ========================================
 
 const getOrganizerEventHistory = async (
   organizerId
@@ -1624,9 +1524,7 @@ const getOrganizerEventHistory = async (
 };
 
 
-// ========================================
 // Export
-// ========================================
 
 module.exports = {
 

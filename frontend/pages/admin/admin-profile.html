@@ -41,9 +41,7 @@
 
 <body class="flex min-h-screen flex-col bg-gray-50 text-gray-800">
 
-      <!-- ========================================
-         HEADER
-    ========================================= -->
+      <!-- HEADER -->
 
     <header class="border-b border-gray-200 bg-white">
 
@@ -115,9 +113,7 @@
 
     </header>
 
-    <!-- ========================================
-         MAIN CONTENT
-    ========================================= -->
+    <!-- MAIN CONTENT -->
     <main class="mx-auto w-full flex-1 max-w-4xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
 
         <!-- Page Header -->
@@ -147,18 +143,14 @@
         <!-- Alert Notification Box -->
         <div id="alertBox" class="mb-6 hidden rounded-2xl p-4 text-xs sm:text-sm font-medium transition-all shadow-sm"></div>
 
-        <!-- ========================================
-             LOADING STATE
-        ========================================= -->
+        <!-- LOADING STATE -->
         <div id="loadingState" class="rounded-3xl bg-white p-10 sm:p-16 text-center shadow-soft border border-gray-100">
             <div class="mx-auto h-10 w-10 sm:h-12 sm:w-12 animate-spin rounded-full border-4 border-gray-200 border-t-primary"></div>
             <p class="mt-4 text-sm sm:text-base font-semibold text-gray-700">Loading profile...</p>
             <p class="mt-1 text-xs text-gray-400">Please wait while we fetch your profile data</p>
         </div>
 
-        <!-- ========================================
-             ERROR STATE
-        ========================================= -->
+        <!-- ERROR STATE -->
         <div id="errorState" class="hidden rounded-3xl bg-white p-8 sm:p-12 text-center shadow-soft border border-gray-100">
             <div class="mx-auto flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-red-50 text-red-500 mb-4">
                 <svg class="h-7 w-7 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -178,14 +170,10 @@
             </button>
         </div>
 
-        <!-- ========================================
-             PROFILE CONTENT CONTAINER
-        ========================================= -->
+        <!-- PROFILE CONTENT CONTAINER -->
         <div id="profileContent" class="hidden space-y-5 sm:space-y-6">
 
-            <!-- ====================================
-                 VIEW MODE
-            ====================================== -->
+            <!-- VIEW MODE -->
             <div id="profileViewSection" class="space-y-5 sm:space-y-6">
 
                 <!-- Profile Top Summary Card -->
@@ -284,9 +272,7 @@
 
             </div>
 
-            <!-- ====================================
-                 EDIT MODE
-            ====================================== -->
+            <!-- EDIT MODE -->
             <div id="profileEditSection" class="hidden space-y-5 sm:space-y-6">
 
                 <section class="rounded-3xl bg-white p-5 sm:p-7 md:p-8 shadow-soft border border-gray-100">
@@ -396,9 +382,7 @@
 
     </main>
 
-    <!-- ========================================
-         FOOTER
-    ========================================= -->
+    <!-- FOOTER -->
     <footer class="mt-12 border-t border-gray-200 bg-white">
         <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-5 text-xs sm:text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-6 lg:px-8">
             <p>© 2026 EventEase. All rights reserved.</p>

@@ -1,13 +1,8 @@
-// ========================================
 // EventEase Organizer - Event History
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
-
-// ========================================
 // Elements
-// ========================================
 
 const historyLoading =
     document.getElementById("historyLoading");
@@ -33,18 +28,12 @@ const historyCount =
 const retryHistoryButton =
     document.getElementById("retryHistoryButton");
 
-
-// ========================================
 // Authentication
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
-
-// ========================================
 // Redirect If Not Logged In
-// ========================================
 
 if (!token) {
 
@@ -53,10 +42,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // Helper: Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -72,10 +58,7 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -101,10 +84,7 @@ function formatDate(dateValue) {
     );
 }
 
-
-// ========================================
 // Format Location
-// ========================================
 
 function formatLocation(value) {
 
@@ -130,10 +110,7 @@ function formatLocation(value) {
 
 }
 
-
-// ========================================
 // Get Event Location
-// ========================================
 
 function getEventLocation(event) {
 
@@ -146,10 +123,7 @@ function getEventLocation(event) {
 
 }
 
-
-// ========================================
 // Format Price
-// ========================================
 
 function formatPrice(price) {
 
@@ -165,10 +139,7 @@ function formatPrice(price) {
     return `৳${Number(price).toLocaleString()}`;
 }
 
-
-// ========================================
 // Get Event Image
-// ========================================
 
 function getEventImage(event) {
 
@@ -179,10 +150,7 @@ function getEventImage(event) {
     );
 }
 
-
-// ========================================
 // Status Badge
-// ========================================
 
 function getStatusBadge(event) {
 
@@ -192,7 +160,6 @@ function getStatusBadge(event) {
             event.eventStatus ||
             "published"
         ).toLowerCase();
-
 
     if (
         status === "draft"
@@ -215,7 +182,6 @@ function getStatusBadge(event) {
             </span>
         `;
     }
-
 
     if (
         status === "cancelled" ||
@@ -240,7 +206,6 @@ function getStatusBadge(event) {
         `;
     }
 
-
     if (
         status === "completed"
     ) {
@@ -263,7 +228,6 @@ function getStatusBadge(event) {
         `;
     }
 
-
     return `
         <span
             class="
@@ -282,15 +246,11 @@ function getStatusBadge(event) {
     `;
 }
 
-
-// ========================================
 // Display Events
-// ========================================
 
 function displayEvents(events) {
 
     historyList.innerHTML = "";
-
 
     if (
         !Array.isArray(events) ||
@@ -311,11 +271,9 @@ function displayEvents(events) {
         return;
     }
 
-
     historyEmpty.classList.add("hidden");
 
     historyContent.classList.remove("hidden");
-
 
     if (historyCount) {
         historyCount.innerHTML = `
@@ -324,45 +282,37 @@ function displayEvents(events) {
         `;
     }
 
-
     events.forEach(event => {
 
         const eventId =
             event._id ||
             event.id;
 
-
         const title =
             event.title ||
             "Untitled Event";
-
 
         const category =
             event.category?.name ||
             event.category ||
             "Event";
 
-
         const eventDate =
             event.eventDate ||
             event.date;
 
-
         const location =
             getEventLocation(event);
-
 
         const price =
             event.ticketPrice ??
             event.price ??
             0;
 
-
         const availableSeats =
             Number(
                 event.availableSeats ?? 0
             );
-
 
         const totalSeats =
             Number(
@@ -370,7 +320,6 @@ function displayEvents(events) {
                 event.capacity ??
                 availableSeats
             );
-
 
         let soldSeats = 0;
 
@@ -384,14 +333,11 @@ function displayEvents(events) {
 
         }
 
-
         const image =
             getEventImage(event);
 
-
         const card =
             document.createElement("article");
-
 
         card.className =
             `
@@ -402,7 +348,6 @@ function displayEvents(events) {
                 transition
                 hover:-translate-y-1
             `;
-
 
         card.innerHTML = `
 
@@ -432,7 +377,6 @@ function displayEvents(events) {
 
             </div>
 
-
             <!-- Event Information -->
 
             <div class="p-5">
@@ -451,7 +395,6 @@ function displayEvents(events) {
                     ${escapeHTML(category)}
                 </p>
 
-
                 <!-- Title -->
 
                 <h2
@@ -465,7 +408,6 @@ function displayEvents(events) {
                 >
                     ${escapeHTML(title)}
                 </h2>
-
 
                 <!-- Date -->
 
@@ -492,7 +434,6 @@ function displayEvents(events) {
 
                 </div>
 
-
                 <!-- Time -->
 
                 <div
@@ -516,7 +457,6 @@ function displayEvents(events) {
 
                 </div>
 
-
                 <!-- Location -->
 
                 <div
@@ -539,7 +479,6 @@ function displayEvents(events) {
                     </span>
 
                 </div>
-
 
                 <!-- Stats -->
 
@@ -587,7 +526,6 @@ function displayEvents(events) {
 
                         </div>
 
-
                         <!-- Sold -->
 
                         <div
@@ -618,7 +556,6 @@ function displayEvents(events) {
                             </p>
 
                         </div>
-
 
                         <!-- Available -->
 
@@ -655,7 +592,6 @@ function displayEvents(events) {
 
                 ` : ""}
 
-
                 <!-- Action -->
 
                 <div class="mt-5">
@@ -688,16 +624,12 @@ function displayEvents(events) {
             </div>
         `;
 
-
         historyList.appendChild(card);
 
     });
 }
 
-
-// ========================================
 // Show Error
-// ========================================
 
 function showHistoryError(message) {
 
@@ -714,10 +646,7 @@ function showHistoryError(message) {
     historyError.classList.remove("hidden");
 }
 
-
-// ========================================
 // Load Event History
-// ========================================
 
 async function loadEventHistory() {
 
@@ -728,7 +657,6 @@ async function loadEventHistory() {
     historyContent.classList.add("hidden");
 
     historyEmpty.classList.add("hidden");
-
 
     try {
 
@@ -748,16 +676,13 @@ async function loadEventHistory() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         console.log(
             "Organizer History Response:",
             result
         );
-
 
         if (
             !response.ok ||
@@ -770,7 +695,6 @@ async function loadEventHistory() {
             );
         }
 
-
         const events =
             Array.isArray(result.data)
                 ? result.data
@@ -779,12 +703,9 @@ async function loadEventHistory() {
                     []
                 );
 
-
         historyLoading.classList.add("hidden");
 
-
         displayEvents(events);
-
 
     } catch (error) {
 
@@ -793,9 +714,7 @@ async function loadEventHistory() {
             error
         );
 
-
         historyLoading.classList.add("hidden");
-
 
         showHistoryError(
             error.message ||
@@ -804,10 +723,7 @@ async function loadEventHistory() {
     }
 }
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryHistoryButton) {
 
@@ -818,9 +734,6 @@ if (retryHistoryButton) {
 
 }
 
-
-// ========================================
 // Start
-// ========================================
 
 loadEventHistory();

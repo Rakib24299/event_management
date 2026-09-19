@@ -3,9 +3,7 @@ const { z } = require("zod");
 const objectIdSchema = require("./objectId.validation");
 
 
-// ======================================================
 // Create Notification Schema
-// ======================================================
 
 const createNotificationSchema = z.object({
   body: z
@@ -62,9 +60,7 @@ const createNotificationSchema = z.object({
 });
 
 
-// ======================================================
 // Update Notification Read Status Schema
-// ======================================================
 
 const updateNotificationSchema = z.object({
   body: z

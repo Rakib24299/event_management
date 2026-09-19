@@ -4,9 +4,7 @@ const Event = require("../models/Event");
 const AppError = require("../utils/AppError");
 
 
-// ======================================================
 // Calculate Refund
-// ======================================================
 
 const calculateRefund = (eventDateTime, totalAmount) => {
 
@@ -61,10 +59,8 @@ const calculateRefund = (eventDateTime, totalAmount) => {
 };
 
 
-// ======================================================
 // Get Refund Information
 // User Only
-// ======================================================
 
 const getRefundInformation = async (
   bookingId,
@@ -84,9 +80,7 @@ const getRefundInformation = async (
   }
 
 
-  // ----------------------------------------------------
   // User Ownership
-  // ----------------------------------------------------
 
   if (
     booking.user.toString() !==
@@ -99,9 +93,7 @@ const getRefundInformation = async (
   }
 
 
-  // ----------------------------------------------------
   // Already cancelled
-  // ----------------------------------------------------
 
   if (
     booking.bookingStatus === "cancelled"
@@ -121,9 +113,7 @@ const getRefundInformation = async (
   }
 
 
-  // ----------------------------------------------------
   // Event Check
-  // ----------------------------------------------------
 
   if (!booking.event) {
 
@@ -135,9 +125,7 @@ const getRefundInformation = async (
   }
 
 
-  // ----------------------------------------------------
   // Event DateTime
-  // ----------------------------------------------------
 
    let eventDateTime = new Date(booking.event.eventDate);
 
@@ -162,9 +150,7 @@ const getRefundInformation = async (
   }
 
 
-  // ----------------------------------------------------
   // Calculate Refund
-  // ----------------------------------------------------
 
   const refund = calculateRefund(
     eventDateTime,
@@ -200,10 +186,8 @@ const getRefundInformation = async (
 };
 
 
-// ======================================================
 // Get My Refunds
 // User Only
-// ======================================================
 
 const getMyRefunds = async (userId) => {
 
@@ -235,10 +219,8 @@ const getMyRefunds = async (userId) => {
 };
 
 
-// ======================================================
 // Process Refund
 // Admin Only
-// ======================================================
 
 const processRefund = async (
   paymentId
@@ -257,9 +239,7 @@ const processRefund = async (
   }
 
 
-  // ----------------------------------------------------
   // Already refunded
-  // ----------------------------------------------------
 
   if (
     payment.status === "refunded"
@@ -272,9 +252,7 @@ const processRefund = async (
   }
 
 
-  // ----------------------------------------------------
   // Payment must be paid
-  // ----------------------------------------------------
 
   if (
     payment.status !== "paid"
@@ -287,9 +265,7 @@ const processRefund = async (
   }
 
 
-  // ----------------------------------------------------
   // Find Booking
-  // ----------------------------------------------------
 
   const booking = await Booking.findById(
     payment.booking
@@ -304,9 +280,7 @@ const processRefund = async (
   }
 
 
-  // ----------------------------------------------------
   // Refund must be pending
-  // ----------------------------------------------------
 
   if (
     booking.refundStatus !== "pending"
@@ -319,17 +293,13 @@ const processRefund = async (
   }
 
 
-  // ----------------------------------------------------
   // Refund Amount
-  // ----------------------------------------------------
 
   const refundAmount =
     Number(booking.refundAmount || 0);
 
 
-  // ----------------------------------------------------
   // No Refund
-  // ----------------------------------------------------
 
   if (refundAmount <= 0) {
 
@@ -361,9 +331,7 @@ const processRefund = async (
   }
 
 
-  // ----------------------------------------------------
   // Process Dummy Refund
-  // ----------------------------------------------------
 
   payment.status =
     "refunded";
@@ -378,9 +346,7 @@ const processRefund = async (
   await payment.save();
 
 
-  // ----------------------------------------------------
   // Update Booking
-  // ----------------------------------------------------
 
   booking.refundStatus =
     "processed";
@@ -402,9 +368,7 @@ const processRefund = async (
 };
 
 
-// ======================================================
 // Export
-// ======================================================
 
 module.exports = {
 

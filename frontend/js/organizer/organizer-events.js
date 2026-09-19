@@ -1,7 +1,5 @@
 
-// ========================================
 // Helper: Is Event Expired
-// ========================================
 const isEventExpired = (event) => {
     if (!event || !event.eventDate) return false;
     const date = new Date(event.eventDate);
@@ -17,22 +15,14 @@ const isEventExpired = (event) => {
     return date < new Date();
 };
 
-// ========================================
 // EventEase Organizer Events
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const eventsContainer =
     document.getElementById(
@@ -64,7 +54,6 @@ const retryBtn =
         "retryBtn"
     );
 
-
 // Statistics
 
 const totalEvents =
@@ -92,10 +81,7 @@ const cancelledEvents =
         "cancelledEvents"
     );
 
-
-// ========================================
 // Get Token
-// ========================================
 
 const getToken = () => {
 
@@ -106,13 +92,9 @@ const getToken = () => {
 
 };
 
-
-// ========================================
 // Authentication Check
-// ========================================
 
 const token = getToken();
-
 
 if (!token) {
 
@@ -125,10 +107,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // API Request Helper
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -156,7 +135,6 @@ const apiRequest = async (
             }
         );
 
-
     let data;
 
     try {
@@ -172,7 +150,6 @@ const apiRequest = async (
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -182,16 +159,12 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Escape HTML
 // Prevent unsafe HTML injection
-// ========================================
 
 const escapeHTML = (
     value
@@ -205,7 +178,6 @@ const escapeHTML = (
         return "";
 
     }
-
 
     return String(value)
         .replace(
@@ -231,10 +203,7 @@ const escapeHTML = (
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDate = (
     date
@@ -246,10 +215,8 @@ const formatDate = (
 
     }
 
-
     const parsedDate =
         new Date(date);
-
 
     if (
         Number.isNaN(
@@ -260,7 +227,6 @@ const formatDate = (
         return "Date not available";
 
     }
-
 
     return parsedDate.toLocaleDateString(
         "en-US",
@@ -273,10 +239,7 @@ const formatDate = (
 
 };
 
-
-// ========================================
 // Format Time
-// ========================================
 
 const formatTime = (
     time
@@ -288,17 +251,13 @@ const formatTime = (
 
     }
 
-
     return escapeHTML(
         time
     );
 
 };
 
-
-// ========================================
 // Get Status Classes
-// ========================================
 
 const getStatusClasses = (
     status
@@ -313,14 +272,12 @@ const getStatusClasses = (
                     "bg-green-100 text-green-700",
             };
 
-
         case "draft":
 
             return {
                 badge:
                     "bg-yellow-100 text-yellow-700",
             };
-
 
         case "completed":
 
@@ -329,14 +286,12 @@ const getStatusClasses = (
                     "bg-blue-100 text-blue-700",
             };
 
-
         case "cancelled":
 
             return {
                 badge:
                     "bg-red-100 text-red-700",
             };
-
 
         default:
 
@@ -349,10 +304,7 @@ const getStatusClasses = (
 
 };
 
-
-// ========================================
 // Get Event Image
-// ========================================
 
 const getEventImage = (
     event
@@ -367,15 +319,11 @@ const getEventImage = (
 
     }
 
-
     return null;
 
 };
 
-
-// ========================================
 // Render Statistics
-// ========================================
 
 const renderStatistics = (
     events
@@ -384,14 +332,12 @@ const renderStatistics = (
     totalEvents.textContent =
         events.length;
 
-
     publishedEvents.textContent =
         events.filter(
             event =>
                 event.status ===
                 "published"
         ).length;
-
 
     draftEvents.textContent =
         events.filter(
@@ -400,14 +346,12 @@ const renderStatistics = (
                 "draft"
         ).length;
 
-
     completedEvents.textContent =
         events.filter(
             event =>
                 event.status ===
                 "completed"
         ).length;
-
 
     cancelledEvents.textContent =
         events.filter(
@@ -418,10 +362,7 @@ const renderStatistics = (
 
 };
 
-
-// ========================================
 // Create Event Card
-// ========================================
 
 const createEventCard = (
     event
@@ -430,18 +371,15 @@ const createEventCard = (
     const status =
         event.status || "draft";
 
-
     const statusClasses =
         getStatusClasses(
             status
         );
 
-
     const eventImage =
         getEventImage(
             event
         );
-
 
     const imageHTML =
         eventImage
@@ -467,7 +405,6 @@ const createEventCard = (
 
             `;
 
-
     const categoryName =
         event.category &&
         event.category.name
@@ -475,7 +412,6 @@ const createEventCard = (
             ? event.category.name
 
             : "Uncategorized";
-
 
     const venueName =
         event.venue &&
@@ -485,7 +421,6 @@ const createEventCard = (
 
             : "Venue not specified";
 
-
     const city =
         event.venue &&
         event.venue.city
@@ -494,18 +429,15 @@ const createEventCard = (
 
             : "";
 
-
     const locationText =
         city
             ? `${venueName}, ${city}`
             : venueName;
 
-
     const ticketPrice =
         Number(
             event.ticketPrice || 0
         );
-
 
     const availableSeats =
         event.availableSeats !==
@@ -515,7 +447,6 @@ const createEventCard = (
 
             : 0;
 
-
     const totalSeats =
         event.totalSeats !==
         undefined
@@ -524,16 +455,13 @@ const createEventCard = (
 
             : 0;
 
-
     const card =
         document.createElement(
             "article"
         );
 
-
     card.className =
         "overflow-hidden rounded-3xl bg-white shadow-soft transition hover:-translate-y-1 hover:shadow-lg";
-
 
     card.innerHTML = `
 
@@ -542,7 +470,6 @@ const createEventCard = (
         <div class="relative">
 
             ${imageHTML}
-
 
             <!-- Status -->
 
@@ -554,11 +481,9 @@ const createEventCard = (
 
         </div>
 
-
         <!-- Content -->
 
         <div class="p-5">
-
 
             <!-- Category -->
 
@@ -567,7 +492,6 @@ const createEventCard = (
             >
                 ${escapeHTML(categoryName)}
             </p>
-
 
             <!-- Title -->
 
@@ -579,7 +503,6 @@ const createEventCard = (
                     "Untitled Event"
                 )}
             </h2>
-
 
             <!-- Date -->
 
@@ -612,7 +535,6 @@ const createEventCard = (
                 </div>
 
             </div>
-
 
             <!-- Time -->
 
@@ -653,7 +575,6 @@ const createEventCard = (
 
             </div>
 
-
             <!-- Venue -->
 
             <div
@@ -686,7 +607,6 @@ const createEventCard = (
 
             </div>
 
-
             <!-- Seats -->
 
             ${event.eventType !== "free" ? `
@@ -713,7 +633,6 @@ const createEventCard = (
 
                     </div>
 
-
                     <div
                         class="rounded-2xl bg-green-50 p-3"
                     >
@@ -735,7 +654,6 @@ const createEventCard = (
                 </div>
 
             ` : ""}
-
 
             <!-- Price -->
 
@@ -765,7 +683,6 @@ const createEventCard = (
 
             ` : ""}
 
-
             <!-- Actions -->
 
             <div
@@ -780,7 +697,6 @@ const createEventCard = (
                     View
                 </button>
 
-
                 <button
                     type="button"
                     class="edit-event-btn rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primaryDark"
@@ -790,7 +706,6 @@ const createEventCard = (
                 </button>
 
             </div>
-
 
             <!-- Danger Actions -->
 
@@ -820,7 +735,6 @@ const createEventCard = (
                         `
                 }
 
-
                 <button
                     type="button"
                     class="delete-event-btn rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
@@ -835,15 +749,11 @@ const createEventCard = (
 
     `;
 
-
     return card;
 
 };
 
-
-// ========================================
 // Render Events
-// ========================================
 
 const renderEvents = (
     events
@@ -857,10 +767,8 @@ const renderEvents = (
         "hidden"
     );
 
-
     eventsContainer.innerHTML =
         "";
-
 
     if (
         !events ||
@@ -875,16 +783,13 @@ const renderEvents = (
 
     }
 
-
     emptyState.classList.add(
         "hidden"
     );
 
-
     renderStatistics(
         events
     );
-
 
     events.forEach(
         event => {
@@ -898,15 +803,11 @@ const renderEvents = (
         }
     );
 
-
     attachEventActions();
 
 };
 
-
-// ========================================
 // Load My Events
-// ========================================
 
 const loadMyEvents =
     async () => {
@@ -928,21 +829,17 @@ const loadMyEvents =
             eventsContainer.innerHTML =
                 "";
 
-
             const result =
                 await apiRequest(
                     "/events/my-events"
                 );
 
-
             const events =
                 (result.data || []).filter(event => !isEventExpired(event));
-
 
             renderEvents(
                 events
             );
-
 
         } catch (error) {
 
@@ -950,7 +847,6 @@ const loadMyEvents =
                 "Organizer events error:",
                 error
             );
-
 
             loadingState.classList.add(
                 "hidden"
@@ -963,7 +859,6 @@ const loadMyEvents =
                 "hidden"
             );
 
-
             errorMessage.textContent =
                 error.message ||
                 "Unable to load your events.";
@@ -972,10 +867,7 @@ const loadMyEvents =
 
     };
 
-
-// ========================================
 // View Event
-// ========================================
 
 const viewEvent = (
     eventId
@@ -985,7 +877,6 @@ const viewEvent = (
         return;
     }
 
-
     window.location.href =
         `./event-details.html?id=${encodeURIComponent(
             eventId
@@ -993,10 +884,7 @@ const viewEvent = (
 
 };
 
-
-// ========================================
 // Edit Event
-// ========================================
 
 const editEvent = (
     eventId
@@ -1006,7 +894,6 @@ const editEvent = (
         return;
     }
 
-
     window.location.href =
         `./edit-event.html?id=${encodeURIComponent(
             eventId
@@ -1014,10 +901,7 @@ const editEvent = (
 
 };
 
-
-// ========================================
 // Cancel Event
-// ========================================
 
 const cancelEvent = async (
     eventId
@@ -1027,17 +911,14 @@ const cancelEvent = async (
         return;
     }
 
-
     const confirmed =
         window.confirm(
             "Are you sure you want to cancel this event?"
         );
 
-
     if (!confirmed) {
         return;
     }
-
 
     try {
 
@@ -1048,14 +929,11 @@ const cancelEvent = async (
             }
         );
 
-
         alert(
             "Event cancelled successfully."
         );
 
-
         await loadMyEvents();
-
 
     } catch (error) {
 
@@ -1063,7 +941,6 @@ const cancelEvent = async (
             "Cancel event error:",
             error
         );
-
 
         alert(
             error.message ||
@@ -1074,10 +951,7 @@ const cancelEvent = async (
 
 };
 
-
-// ========================================
 // Delete Event
-// ========================================
 
 const deleteEvent = async (
     eventId
@@ -1087,17 +961,14 @@ const deleteEvent = async (
         return;
     }
 
-
     const confirmed =
         window.confirm(
             "Are you sure you want to delete this event? This action cannot be undone."
         );
 
-
     if (!confirmed) {
         return;
     }
-
 
     try {
 
@@ -1108,14 +979,11 @@ const deleteEvent = async (
             }
         );
 
-
         alert(
             "Event deleted successfully."
         );
 
-
         await loadMyEvents();
-
 
     } catch (error) {
 
@@ -1123,7 +991,6 @@ const deleteEvent = async (
             "Delete event error:",
             error
         );
-
 
         alert(
             error.message ||
@@ -1134,13 +1001,9 @@ const deleteEvent = async (
 
 };
 
-
-// ========================================
 // Attach Event Actions
-// ========================================
 
 const attachEventActions = () => {
-
 
     // View
 
@@ -1165,7 +1028,6 @@ const attachEventActions = () => {
             }
         );
 
-
     // Edit
 
     document
@@ -1189,7 +1051,6 @@ const attachEventActions = () => {
             }
         );
 
-
     // Cancel
 
     document
@@ -1212,7 +1073,6 @@ const attachEventActions = () => {
 
             }
         );
-
 
     // Delete
 
@@ -1239,10 +1099,7 @@ const attachEventActions = () => {
 
 };
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
 
@@ -1253,9 +1110,6 @@ if (retryBtn) {
 
 }
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadMyEvents();

@@ -1,11 +1,6 @@
-// ========================================
 // EventEase - Events Page
-// ========================================
 
-
-// ========================================
 // API Configuration
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
@@ -15,10 +10,7 @@ const BOOKINGS_ENDPOINT = `${API_URL}/bookings`;
 
 const MY_BOOKINGS_ENDPOINT = `${API_URL}/bookings/my`;
 
-
-// ========================================
 // Elements
-// ========================================
 
 const eventsContainer =
     document.getElementById("eventsContainer");
@@ -56,10 +48,7 @@ const closeUnbookModalBtn =
 const confirmUnbookBtn =
     document.getElementById("confirmUnbookBtn");
 
-
-// ========================================
 // State
-// ========================================
 
 let allEvents = [];
 
@@ -71,18 +60,12 @@ let selectedUnbookBookingId = null;
 
 let activeUnbookButton = null;
 
-
-// ========================================
 // Authentication
-// ========================================
 
 const token =
     localStorage.getItem("token");
 
-
-// ========================================
 // Check Login
-// ========================================
 
 if (!token) {
 
@@ -91,10 +74,7 @@ if (!token) {
 
 }
 
-
-// ========================================
 // Toast
-// ========================================
 
 function showToast(
     message,
@@ -111,16 +91,13 @@ function showToast(
 
     }
 
-
     toastMessage.textContent =
         message;
-
 
     toast.className =
         "fixed bottom-5 right-5 z-[60] " +
         "max-w-sm px-5 py-4 rounded-lg " +
         "shadow-lg text-white";
-
 
     if (type === "success") {
 
@@ -136,11 +113,9 @@ function showToast(
 
     }
 
-
     toast.classList.remove(
         "hidden"
     );
-
 
     setTimeout(
         () => {
@@ -155,10 +130,7 @@ function showToast(
 
 }
 
-
-// ========================================
 // Loading State
-// ========================================
 
 function showLoading() {
 
@@ -210,10 +182,7 @@ function showLoading() {
     `;
 }
 
-
-// ========================================
 // Error State
-// ========================================
 
 function showError(message) {
 
@@ -284,10 +253,8 @@ function showError(message) {
 
     `;
 
-
     const retryButton =
         document.getElementById("retryButton");
-
 
     if (retryButton) {
 
@@ -300,10 +267,7 @@ function showError(message) {
 
 }
 
-
-// ========================================
 // Empty State
-// ========================================
 
 function showEmptyState() {
 
@@ -355,10 +319,7 @@ function showEmptyState() {
 
 }
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 function escapeHTML(value) {
 
@@ -371,7 +332,6 @@ function escapeHTML(value) {
 
     }
 
-
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -381,17 +341,13 @@ function escapeHTML(value) {
 
 }
 
-
-// ========================================
 // Get Event ID
-// ========================================
 
 function getEventId(event) {
 
     if (!event) {
         return "";
     }
-
 
     return String(
         event._id ||
@@ -402,10 +358,7 @@ function getEventId(event) {
 
 }
 
-
-// ========================================
 // Format Date
-// ========================================
 
 function formatDate(dateValue) {
 
@@ -415,10 +368,8 @@ function formatDate(dateValue) {
 
     }
 
-
     const date =
         new Date(dateValue);
-
 
     if (
         Number.isNaN(
@@ -429,7 +380,6 @@ function formatDate(dateValue) {
         return "Date not available";
 
     }
-
 
     return date.toLocaleDateString(
         "en-GB",
@@ -442,10 +392,7 @@ function formatDate(dateValue) {
 
 }
 
-
-// ========================================
 // Get Event Name
-// ========================================
 
 function getEventName(event) {
 
@@ -458,10 +405,7 @@ function getEventName(event) {
 
 }
 
-
-// ========================================
 // Get Event Category
-// ========================================
 
 function getCategory(event) {
 
@@ -472,7 +416,6 @@ function getCategory(event) {
         return event.category;
 
     }
-
 
     if (
         event.category &&
@@ -487,15 +430,11 @@ function getCategory(event) {
 
     }
 
-
     return "Event";
 
 }
 
-
-// ========================================
 // Get Event Image
-// ========================================
 
 function getEventImage(event) {
 
@@ -509,13 +448,11 @@ function getEventImage(event) {
 
     }
 
-
     if (event.bannerImage) {
 
         return event.bannerImage;
 
     }
-
 
     if (event.image) {
 
@@ -523,22 +460,17 @@ function getEventImage(event) {
 
     }
 
-
     if (event.imageUrl) {
 
         return event.imageUrl;
 
     }
 
-
     return null;
 
 }
 
-
-// ========================================
 // Get Event Price
-// ========================================
 
 function getEventPrice(event) {
 
@@ -548,15 +480,11 @@ function getEventPrice(event) {
         event.registrationFee ??
         0;
 
-
     return Number(price) || 0;
 
 }
 
-
-// ========================================
 // Get Event Date
-// ========================================
 
 function getEventDate(event) {
 
@@ -569,10 +497,7 @@ function getEventDate(event) {
 
 }
 
-
-// ========================================
 // Get Event DateTime (combines date + startTime)
-// ========================================
 
 function getEventDateTime(event) {
 
@@ -580,14 +505,12 @@ function getEventDateTime(event) {
         return null;
     }
 
-
     const eventDate =
         event.eventDate || event.date;
 
     if (!eventDate) {
         return null;
     }
-
 
     const dateTime =
         new Date(eventDate);
@@ -599,7 +522,6 @@ function getEventDateTime(event) {
     ) {
         return null;
     }
-
 
     const startTime =
         event.startTime;
@@ -624,15 +546,11 @@ function getEventDateTime(event) {
         }
     }
 
-
     return dateTime;
 
 }
 
-
-// ========================================
 // Format Location
-// ========================================
 
 function formatLocation(value) {
 
@@ -640,11 +558,9 @@ function formatLocation(value) {
         return null;
     }
 
-
     if (typeof value === "string") {
         return value;
     }
-
 
     if (typeof value === "object") {
         return (
@@ -656,15 +572,11 @@ function formatLocation(value) {
         );
     }
 
-
     return null;
 
 }
 
-
-// ========================================
 // Get Event Location
-// ========================================
 
 function getEventLocation(event) {
 
@@ -677,17 +589,13 @@ function getEventLocation(event) {
 
 }
 
-
-// ========================================
 // Capitalize
-// ========================================
 
 function capitalize(value) {
 
     if (!value) {
         return "";
     }
-
 
     return (
         value.charAt(0).toUpperCase() +
@@ -696,10 +604,7 @@ function capitalize(value) {
 
 }
 
-
-// ========================================
 // Button HTML Helpers
-// ========================================
 
 function bookButtonHTML(eventId) {
 
@@ -725,7 +630,6 @@ function bookButtonHTML(eventId) {
     `;
 
 }
-
 
 function unbookButtonHTML(eventId, bookingId) {
 
@@ -755,7 +659,6 @@ function unbookButtonHTML(eventId, bookingId) {
 
 }
 
-
 function soldOutButtonHTML() {
 
     return `
@@ -778,7 +681,6 @@ function soldOutButtonHTML() {
     `;
 
 }
-
 
 function unavailableButtonHTML() {
 
@@ -803,17 +705,13 @@ function unavailableButtonHTML() {
 
 }
 
-
-// ========================================
 // Fetch User Bookings
-// ========================================
 
 async function fetchUserBookings() {
 
     if (!token) {
         return;
     }
-
 
     try {
 
@@ -836,10 +734,8 @@ async function fetchUserBookings() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (
             response.ok &&
@@ -848,7 +744,6 @@ async function fetchUserBookings() {
         ) {
 
             userBookings.clear();
-
 
             result.data.forEach(
                 (booking) => {
@@ -865,7 +760,6 @@ async function fetchUserBookings() {
 
                         const bookingId =
                             String(booking._id);
-
 
                         userBookings.set(
                             eventId,
@@ -894,23 +788,18 @@ async function fetchUserBookings() {
 
 }
 
-
-// ========================================
 // Get Book Button HTML
-// ========================================
 
 function getBookButtonHTML(event) {
 
     const eventId =
         getEventId(event);
 
-
     if (!eventId) {
 
         return unavailableButtonHTML();
 
     }
-
 
     const availableSeats =
         Number(event.availableSeats ?? 0);
@@ -932,10 +821,7 @@ function getBookButtonHTML(event) {
     const isFree =
         event.eventType === "free";
 
-
-    // ------------------------------------------------
     // Active Booking -> Show Unbook
-    // ------------------------------------------------
 
     if (isActiveBooking) {
 
@@ -946,10 +832,7 @@ function getBookButtonHTML(event) {
 
     }
 
-
-    // ------------------------------------------------
     // Sold Out
-    // ------------------------------------------------
 
     if (!isFree && availableSeats <= 0) {
 
@@ -957,10 +840,7 @@ function getBookButtonHTML(event) {
 
     }
 
-
-    // ------------------------------------------------
     // Event Status Check
-    // ------------------------------------------------
 
     if (
         eventStatus &&
@@ -971,10 +851,7 @@ function getBookButtonHTML(event) {
 
     }
 
-
-    // ------------------------------------------------
     // Event Date Check
-    // ------------------------------------------------
 
     if (
         eventDateTime &&
@@ -985,10 +862,7 @@ function getBookButtonHTML(event) {
 
     }
 
-
-    // ------------------------------------------------
     // Available for Booking
-    // ------------------------------------------------
 
     return bookButtonHTML(
         eventId
@@ -996,10 +870,7 @@ function getBookButtonHTML(event) {
 
 }
 
-
-// ========================================
 // Handle Book Event
-// ========================================
 
 async function handleBookEvent(
     event,
@@ -1020,10 +891,8 @@ async function handleBookEvent(
 
     }
 
-
     const eventId =
         getEventId(event);
-
 
     if (!eventId) {
 
@@ -1035,7 +904,6 @@ async function handleBookEvent(
         return;
 
     }
-
 
     const availableSeats =
         Number(event.availableSeats ?? 0);
@@ -1049,7 +917,6 @@ async function handleBookEvent(
     const isFree =
         event.eventType === "free";
 
-
     if (!isFree && availableSeats <= 0) {
 
         showToast(
@@ -1060,7 +927,6 @@ async function handleBookEvent(
         return;
 
     }
-
 
     if (
         eventStatus &&
@@ -1076,7 +942,6 @@ async function handleBookEvent(
 
     }
 
-
     if (
         eventDateTime &&
         eventDateTime <= new Date()
@@ -1091,13 +956,11 @@ async function handleBookEvent(
 
     }
 
-
     bookButton.disabled =
         true;
 
     bookButton.textContent =
         "Booking...";
-
 
     try {
 
@@ -1127,10 +990,8 @@ async function handleBookEvent(
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (response.status === 401) {
 
@@ -1153,7 +1014,6 @@ async function handleBookEvent(
 
         }
 
-
         if (!response.ok || !result.success) {
 
             throw new Error(
@@ -1163,12 +1023,10 @@ async function handleBookEvent(
 
         }
 
-
         showToast(
             "Booking created successfully.",
             "success"
         );
-
 
         const newBookingId =
             String(result.data.booking._id);
@@ -1184,7 +1042,6 @@ async function handleBookEvent(
             }
         );
 
-
         renderEvents(
             allEvents
         );
@@ -1196,13 +1053,11 @@ async function handleBookEvent(
             error
         );
 
-
         showToast(
             error.message ||
             "Something went wrong while booking.",
             "error"
         );
-
 
         bookButton.disabled =
             false;
@@ -1214,10 +1069,7 @@ async function handleBookEvent(
 
 }
 
-
-// ========================================
 // Handle Unbook Event
-// ========================================
 
 function handleUnbookEvent(
     eventId,
@@ -1239,7 +1091,6 @@ function handleUnbookEvent(
 
     }
 
-
     activeUnbookButton =
         unbookButton;
 
@@ -1249,7 +1100,6 @@ function handleUnbookEvent(
     unbookButton.textContent =
         "Unbooking...";
 
-
     openUnbookModal(
         eventId,
         bookingId
@@ -1257,10 +1107,7 @@ function handleUnbookEvent(
 
 }
 
-
-// ========================================
 // Unbook Modal
-// ========================================
 
 function openUnbookModal(eventId, bookingId) {
 
@@ -1276,7 +1123,6 @@ function openUnbookModal(eventId, bookingId) {
         "overflow-hidden"
     );
 
-
     document.querySelectorAll(
         ".unbook-event-btn"
     ).forEach(
@@ -1289,7 +1135,6 @@ function openUnbookModal(eventId, bookingId) {
     );
 
 }
-
 
 function closeUnbookModal() {
 
@@ -1305,7 +1150,6 @@ function closeUnbookModal() {
         "overflow-hidden"
     );
 
-
     if (activeUnbookButton) {
 
         activeUnbookButton.disabled =
@@ -1319,7 +1163,6 @@ function closeUnbookModal() {
 
     }
 
-
     document.querySelectorAll(
         ".unbook-event-btn"
     ).forEach(
@@ -1331,9 +1174,7 @@ function closeUnbookModal() {
         }
     );
 
-
 }
-
 
 async function confirmUnbook() {
 
@@ -1345,20 +1186,17 @@ async function confirmUnbook() {
 
     }
 
-
     const bookingId =
         selectedUnbookBookingId;
 
     const eventId =
         selectedUnbookEventId;
 
-
     confirmUnbookBtn.disabled =
         true;
 
     confirmUnbookBtn.textContent =
         "Unbooking...";
-
 
     try {
 
@@ -1381,10 +1219,8 @@ async function confirmUnbook() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (response.status === 401) {
 
@@ -1407,7 +1243,6 @@ async function confirmUnbook() {
 
         }
 
-
         if (!response.ok || !result.success) {
 
             throw new Error(
@@ -1417,11 +1252,9 @@ async function confirmUnbook() {
 
         }
 
-
         userBookings.delete(
             eventId
         );
-
 
         let successMessage =
             result.message ||
@@ -1435,7 +1268,6 @@ async function confirmUnbook() {
 
         const refundStatus =
             result.data?.refundStatus;
-
 
         if (refundAmount > 0) {
 
@@ -1453,17 +1285,14 @@ async function confirmUnbook() {
 
         }
 
-
         showToast(
             successMessage,
             "success"
         );
 
-
         renderEvents(
             allEvents
         );
-
 
     } catch (error) {
 
@@ -1477,8 +1306,6 @@ async function confirmUnbook() {
             "Something went wrong while unbooking.",
             "error"
         );
-
-
 
         if (activeUnbookButton) {
 
@@ -1504,17 +1331,13 @@ async function confirmUnbook() {
 
 }
 
-
-// ========================================
 // Render Events
-// ========================================
 
 function renderEvents(events) {
 
     if (!eventsContainer) {
         return;
     }
-
 
     if (
         !Array.isArray(events) ||
@@ -1529,12 +1352,10 @@ function renderEvents(events) {
 
     }
 
-
     eventsContainer.innerHTML =
         events
             .map(createEventCard)
             .join("");
-
 
     updateEventCount(
         events.length
@@ -1542,51 +1363,40 @@ function renderEvents(events) {
 
 }
 
-
-// ========================================
 // Create Event Card
-// ========================================
 
 function createEventCard(event) {
 
     const id =
         getEventId(event);
 
-
     const title =
         escapeHTML(
             getEventName(event)
         );
-
 
     const category =
         escapeHTML(
             getCategory(event)
         );
 
-
     const location =
         escapeHTML(
             getEventLocation(event)
         );
-
 
     const date =
         formatDate(
             getEventDate(event)
         );
 
-
     const price =
         getEventPrice(event);
-
 
     const image =
         getEventImage(event);
 
-
     let imageHTML;
-
 
     if (image) {
 
@@ -1627,7 +1437,6 @@ function createEventCard(event) {
 
     }
 
-
     /*
      * IMPORTANT
      *
@@ -1640,7 +1449,6 @@ function createEventCard(event) {
     const bookingInfo =
         userBookings.get(id);
 
-
     const detailsURL =
         bookingInfo &&
             String(bookingInfo.bookingStatus).toLowerCase() ===
@@ -1648,16 +1456,13 @@ function createEventCard(event) {
             ? `./event-details.html?id=${encodeURIComponent(id)}&bookingId=${encodeURIComponent(bookingInfo.bookingId)}`
             : `./event-details.html?id=${encodeURIComponent(id)}`;
 
-
     const bookButtonHTML =
         getBookButtonHTML(event);
-
 
     const priceDisplay =
         price > 0
             ? `৳${price.toLocaleString()}`
             : "Free";
-
 
     return `
 
@@ -1686,7 +1491,6 @@ function createEventCard(event) {
             >
 
                 ${imageHTML}
-
 
                 <span
                     class="
@@ -1728,7 +1532,6 @@ function createEventCard(event) {
 
             </div>
 
-
             <!-- Content -->
 
             <div class="p-5">
@@ -1744,7 +1547,6 @@ function createEventCard(event) {
                 >
                     ${title}
                 </h3>
-
 
                 <div
                     class="
@@ -1764,7 +1566,6 @@ function createEventCard(event) {
                     </p>
 
                 </div>
-
 
                 <div
                     class="
@@ -1838,17 +1639,13 @@ function createEventCard(event) {
 
 }
 
-
-// ========================================
 // Update Event Count
-// ========================================
 
 function updateEventCount(count) {
 
     if (!eventCount) {
         return;
     }
-
 
     if (count === 0) {
 
@@ -1859,23 +1656,18 @@ function updateEventCount(count) {
 
     }
 
-
     eventCount.textContent =
         `${count} event${count > 1 ? "s" : ""} found.`;
 
 }
 
-
-// ========================================
 // Extract Events From API Response
-// ========================================
 
 function extractEvents(result) {
 
     if (!result) {
         return [];
     }
-
 
     if (
         Array.isArray(result.data)
@@ -1885,7 +1677,6 @@ function extractEvents(result) {
 
     }
 
-
     if (
         Array.isArray(result.data?.events)
     ) {
@@ -1893,7 +1684,6 @@ function extractEvents(result) {
         return result.data.events;
 
     }
-
 
     if (
         Array.isArray(result.data?.data)
@@ -1903,7 +1693,6 @@ function extractEvents(result) {
 
     }
 
-
     if (
         Array.isArray(result.events)
     ) {
@@ -1912,20 +1701,15 @@ function extractEvents(result) {
 
     }
 
-
     return [];
 
 }
 
-
-// ========================================
 // Fetch Events
-// ========================================
 
 async function fetchEvents() {
 
     showLoading();
-
 
     try {
 
@@ -1948,16 +1732,13 @@ async function fetchEvents() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         console.log(
             "Events Response:",
             result
         );
-
 
         if (!response.ok) {
 
@@ -1968,10 +1749,8 @@ async function fetchEvents() {
 
         }
 
-
         const events =
             extractEvents(result);
-
 
         if (!Array.isArray(events)) {
 
@@ -1981,10 +1760,8 @@ async function fetchEvents() {
 
         }
 
-
         allEvents =
             events;
-
 
         /*
          * Debug:
@@ -1999,11 +1776,9 @@ async function fetchEvents() {
             )
         );
 
-
         renderEvents(
             allEvents
         );
-
 
     } catch (error) {
 
@@ -2011,7 +1786,6 @@ async function fetchEvents() {
             "Fetch Events Error:",
             error
         );
-
 
         showError(
             error.message ||
@@ -2022,10 +1796,7 @@ async function fetchEvents() {
 
 }
 
-
-// ========================================
 // Filter Events
-// ========================================
 
 function filterEvents() {
 
@@ -2034,18 +1805,15 @@ function filterEvents() {
             .trim()
             .toLowerCase() || "";
 
-
     const selectedCategory =
         categoryFilter?.value
             .trim()
             .toLowerCase() || "";
 
-
     const selectedType =
         eventTypeFilter?.value
             .trim()
             .toLowerCase() || "";
-
 
     const filteredEvents =
         allEvents.filter(
@@ -2055,20 +1823,16 @@ function filterEvents() {
                     getEventName(event)
                         .toLowerCase();
 
-
                 const category =
                     getCategory(event)
                         .toLowerCase();
 
-
                 const price =
                     getEventPrice(event);
-
 
                 const matchesSearch =
                     !searchTerm ||
                     title.includes(searchTerm);
-
 
                 const matchesCategory =
                     !selectedCategory ||
@@ -2076,9 +1840,7 @@ function filterEvents() {
                         selectedCategory
                     );
 
-
                 let matchesType = true;
-
 
                 if (
                     selectedType === "free"
@@ -2089,7 +1851,6 @@ function filterEvents() {
 
                 }
 
-
                 if (
                     selectedType === "paid"
                 ) {
@@ -2098,7 +1859,6 @@ function filterEvents() {
                         price > 0;
 
                 }
-
 
                 return (
                     matchesSearch &&
@@ -2109,17 +1869,13 @@ function filterEvents() {
             }
         );
 
-
     renderEvents(
         filteredEvents
     );
 
 }
 
-
-// ========================================
 // Search Button
-// ========================================
 
 if (searchButton) {
 
@@ -2130,10 +1886,7 @@ if (searchButton) {
 
 }
 
-
-// ========================================
 // Search While Typing
-// ========================================
 
 if (searchInput) {
 
@@ -2144,10 +1897,7 @@ if (searchInput) {
 
 }
 
-
-// ========================================
 // Category Filter
-// ========================================
 
 if (categoryFilter) {
 
@@ -2158,10 +1908,7 @@ if (categoryFilter) {
 
 }
 
-
-// ========================================
 // Event Type Filter
-// ========================================
 
 if (eventTypeFilter) {
 
@@ -2172,10 +1919,7 @@ if (eventTypeFilter) {
 
 }
 
-
-// ========================================
 // Clear Filters
-// ========================================
 
 if (clearFilters) {
 
@@ -2187,16 +1931,13 @@ if (clearFilters) {
                 searchInput.value = "";
             }
 
-
             if (categoryFilter) {
                 categoryFilter.value = "";
             }
 
-
             if (eventTypeFilter) {
                 eventTypeFilter.value = "";
             }
-
 
             renderEvents(
                 allEvents
@@ -2207,10 +1948,7 @@ if (clearFilters) {
 
 }
 
-
-// ========================================
 // Book Button Event Delegation
-// ========================================
 
 if (eventsContainer) {
 
@@ -2228,22 +1966,18 @@ if (eventsContainer) {
                     ".unbook-event-btn"
                 );
 
-
             if (bookButton) {
 
                 if (bookButton.disabled) {
                     return;
                 }
 
-
                 const eventId =
                     bookButton.dataset.eventId;
-
 
                 if (!eventId) {
                     return;
                 }
-
 
                 const event =
                     allEvents.find(
@@ -2252,11 +1986,9 @@ if (eventsContainer) {
                             String(eventId)
                     );
 
-
                 if (!event) {
                     return;
                 }
-
 
                 handleBookEvent(
                     event,
@@ -2264,7 +1996,6 @@ if (eventsContainer) {
                 );
 
             }
-
 
             if (unbookButton) {
 
@@ -2275,18 +2006,15 @@ if (eventsContainer) {
                     return;
                 }
 
-
                 const eventId =
                     unbookButton.dataset.eventId;
 
                 const bookingId =
                     unbookButton.dataset.bookingId;
 
-
                 if (!eventId || !bookingId) {
                     return;
                 }
-
 
                 handleUnbookEvent(
                     eventId,
@@ -2301,10 +2029,7 @@ if (eventsContainer) {
 
 }
 
-
-// ========================================
 // Unbook Modal Event Listeners
-// ========================================
 
 if (closeUnbookModalBtn) {
 
@@ -2315,7 +2040,6 @@ if (closeUnbookModalBtn) {
 
 }
 
-
 if (confirmUnbookBtn) {
 
     confirmUnbookBtn.addEventListener(
@@ -2324,7 +2048,6 @@ if (confirmUnbookBtn) {
     );
 
 }
-
 
 if (unbookModal) {
 
@@ -2346,15 +2069,11 @@ if (unbookModal) {
 
 }
 
-
-// ========================================
 // Initialize
-// ========================================
 
 async function initializePage() {
 
     showLoading();
-
 
     try {
 
@@ -2377,6 +2096,5 @@ async function initializePage() {
     }
 
 }
-
 
 initializePage();

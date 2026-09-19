@@ -1,19 +1,11 @@
-// ========================================
 // EventEase Admin Notification Management
-// ========================================
 
-
-// ========================================
 // Configuration
-// ========================================
 
 const API_BASE_URL =
     "http://localhost:5000/api/v1";
 
-
-// ========================================
 // DOM Elements
-// ========================================
 
 const loadingState =
     document.getElementById("loadingState");
@@ -39,10 +31,7 @@ const emptyState =
 const notificationCountText =
     document.getElementById("notificationCountText");
 
-
-// ========================================
 // Statistics
-// ========================================
 
 const totalNotifications =
     document.getElementById("totalNotifications");
@@ -53,10 +42,7 @@ const unreadNotifications =
 const readNotifications =
     document.getElementById("readNotifications");
 
-
-// ========================================
 // Filters
-// ========================================
 
 const searchInput =
     document.getElementById("searchInput");
@@ -67,10 +53,7 @@ const typeFilter =
 const clearFiltersBtn =
     document.getElementById("clearFiltersBtn");
 
-
-// ========================================
 // Buttons
-// ========================================
 
 const refreshBtn =
     document.getElementById("refreshBtn");
@@ -78,10 +61,7 @@ const refreshBtn =
 const markAllReadBtn =
     document.getElementById("markAllReadBtn");
 
-
-// ========================================
 // Modal
-// ========================================
 
 const notificationModal =
     document.getElementById("notificationModal");
@@ -98,10 +78,7 @@ const closeModalBtn =
 const closeModalFooterBtn =
     document.getElementById("closeModalFooterBtn");
 
-
-// ========================================
 // Token
-// ========================================
 
 const getToken = () => {
 
@@ -112,13 +89,9 @@ const getToken = () => {
 
 };
 
-
-// ========================================
 // Authentication
-// ========================================
 
 const token = getToken();
-
 
 if (!token) {
 
@@ -131,17 +104,11 @@ if (!token) {
 
 }
 
-
-// ========================================
 // Global Data
-// ========================================
 
 let allNotifications = [];
 
-
-// ========================================
 // API Request
-// ========================================
 
 const apiRequest = async (
     endpoint,
@@ -151,7 +118,6 @@ const apiRequest = async (
     const currentToken =
         getToken();
 
-
     if (!currentToken) {
 
         throw new Error(
@@ -159,7 +125,6 @@ const apiRequest = async (
         );
 
     }
-
 
     const response =
         await fetch(
@@ -183,9 +148,7 @@ const apiRequest = async (
             }
         );
 
-
     let data = {};
-
 
     try {
 
@@ -198,7 +161,6 @@ const apiRequest = async (
 
     }
 
-
     if (!response.ok) {
 
         throw new Error(
@@ -209,15 +171,11 @@ const apiRequest = async (
 
     }
 
-
     return data;
 
 };
 
-
-// ========================================
 // Escape HTML
-// ========================================
 
 const escapeHTML = (value) => {
 
@@ -230,7 +188,6 @@ const escapeHTML = (value) => {
 
     }
 
-
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -240,10 +197,7 @@ const escapeHTML = (value) => {
 
 };
 
-
-// ========================================
 // Format Date
-// ========================================
 
 const formatDateTime = (date) => {
 
@@ -253,10 +207,8 @@ const formatDateTime = (date) => {
 
     }
 
-
     const parsedDate =
         new Date(date);
-
 
     if (
         Number.isNaN(
@@ -267,7 +219,6 @@ const formatDateTime = (date) => {
         return "N/A";
 
     }
-
 
     return parsedDate.toLocaleString(
         "en-BD",
@@ -288,10 +239,7 @@ const formatDateTime = (date) => {
 
 };
 
-
-// ========================================
 // Normalize Type
-// ========================================
 
 const normalizeType = (type) => {
 
@@ -301,10 +249,7 @@ const normalizeType = (type) => {
 
 };
 
-
-// ========================================
 // Notification Type
-// ========================================
 
 const getNotificationType =
     (notification) => {
@@ -315,10 +260,7 @@ const getNotificationType =
 
     };
 
-
-// ========================================
 // Type Configuration
-// ========================================
 
 const getTypeConfig = (type) => {
 
@@ -357,7 +299,6 @@ const getTypeConfig = (type) => {
 
     };
 
-
     return (
         configs[type] || {
 
@@ -369,10 +310,7 @@ const getTypeConfig = (type) => {
 
 };
 
-
-// ========================================
 // Extract Notifications
-// ========================================
 
 const extractNotifications =
     (result) => {
@@ -385,7 +323,6 @@ const extractNotifications =
 
         }
 
-
         if (
             Array.isArray(result.data)
         ) {
@@ -393,7 +330,6 @@ const extractNotifications =
             return result.data;
 
         }
-
 
         if (
             result.data &&
@@ -406,7 +342,6 @@ const extractNotifications =
 
         }
 
-
         if (
             Array.isArray(
                 result.notifications
@@ -417,15 +352,11 @@ const extractNotifications =
 
         }
 
-
         return [];
 
     };
 
-
-// ========================================
 // Update Statistics
-// ========================================
 
 const updateStatistics =
     (notifications) => {
@@ -435,20 +366,17 @@ const updateStatistics =
         const total =
             notifications.length;
 
-
         const unread =
             notifications.filter(
                 notification =>
                     notification.isRead !== true
             ).length;
 
-
         const read =
             notifications.filter(
                 notification =>
                     notification.isRead === true
             ).length;
-
 
         if (totalNotifications) {
             totalNotifications.textContent = total;
@@ -464,10 +392,7 @@ const updateStatistics =
 
     };
 
-
-// ========================================
 // Render Empty State
-// ========================================
 
 const renderEmptyState = () => {
 
@@ -481,17 +406,13 @@ const renderEmptyState = () => {
 
 };
 
-
-// ========================================
 // Render Notifications
-// ========================================
 
 const renderNotifications =
     (notifications) => {
 
         notificationsContainer.innerHTML =
             "";
-
 
         if (
             !notifications ||
@@ -504,7 +425,6 @@ const renderNotifications =
 
         }
 
-
         emptyState.classList.add(
             "hidden"
         );
@@ -513,14 +433,12 @@ const renderNotifications =
             "hidden"
         );
 
-
         notificationCountText.textContent =
             `${notifications.length} ${
                 notifications.length === 1
                     ? "notification"
                     : "notifications"
             }`;
-
 
         notifications.forEach(
             notification => {
@@ -530,20 +448,16 @@ const renderNotifications =
                         "div"
                     );
 
-
                 const type =
                     getNotificationType(
                         notification
                     );
 
-
                 const config =
                     getTypeConfig(type);
 
-
                 const isUnread =
                     notification.isRead !== true;
-
 
                 card.className =
                     `
@@ -557,12 +471,10 @@ const renderNotifications =
                     }
                     `;
 
-
                 const id =
                     notification._id ||
                     notification.id ||
                     "";
-
 
                 card.innerHTML =
                     `
@@ -578,7 +490,6 @@ const renderNotifications =
                         >
                             ${config.icon}
                         </div>
-
 
                         <!-- CONTENT -->
 
@@ -603,9 +514,7 @@ const renderNotifications =
                                     )}
                                 </h3>
 
-
                             </div>
-
 
                             <p
                                 class="mt-2 text-sm leading-6 ${
@@ -620,7 +529,6 @@ const renderNotifications =
                                 )}
                             </p>
 
-
                             <div
                                 class="mt-3 flex flex-wrap items-center gap-3"
                             >
@@ -632,7 +540,6 @@ const renderNotifications =
                                         config.label
                                     )}
                                 </span>
-
 
                                 <span
                                     class="text-xs text-gray-400"
@@ -647,7 +554,6 @@ const renderNotifications =
                             </div>
 
                         </div>
-
 
                         <!-- ACTIONS -->
 
@@ -675,7 +581,6 @@ const renderNotifications =
 
                     `;
 
-
                 notificationsContainer.appendChild(
                     card
                 );
@@ -683,15 +588,11 @@ const renderNotifications =
             }
         );
 
-
         attachNotificationListeners();
 
     };
 
-
-// ========================================
 // Attach Listeners
-// ========================================
 
 const attachNotificationListeners =
     () => {
@@ -700,7 +601,6 @@ const attachNotificationListeners =
             document.querySelectorAll(
                 ".markReadBtn"
             );
-
 
         readButtons.forEach(
             button => {
@@ -721,10 +621,7 @@ const attachNotificationListeners =
 
     };
 
-
-// ========================================
 // Open Notification
-// ========================================
 
 const openNotification =
     (id) => {
@@ -738,7 +635,6 @@ const openNotification =
                     ) === String(id)
             );
 
-
         if (!notification) {
 
             alert(
@@ -749,21 +645,17 @@ const openNotification =
 
         }
 
-
         const type =
             getNotificationType(
                 notification
             );
 
-
         const config =
             getTypeConfig(type);
-
 
         modalTitle.textContent =
             notification.title ||
             "Notification";
-
 
         modalContent.innerHTML =
             `
@@ -776,7 +668,6 @@ const openNotification =
                     ${config.icon}
                 </div>
 
-
                 <span
                     class="mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${config.className}"
                 >
@@ -786,7 +677,6 @@ const openNotification =
                 </span>
 
             </div>
-
 
             <div class="mt-6">
 
@@ -800,7 +690,6 @@ const openNotification =
                 </p>
 
             </div>
-
 
             <div
                 class="mt-6 rounded-xl bg-gray-50 p-4"
@@ -826,7 +715,6 @@ const openNotification =
 
             `;
 
-
         notificationModal.classList.remove(
             "hidden"
         );
@@ -834,7 +722,6 @@ const openNotification =
         notificationModal.classList.add(
             "flex"
         );
-
 
         if (
             notification.isRead !== true
@@ -848,10 +735,7 @@ const openNotification =
 
     };
 
-
-// ========================================
 // Close Modal
-// ========================================
 
 const closeModal = () => {
 
@@ -865,10 +749,7 @@ const closeModal = () => {
 
 };
 
-
-// ========================================
 // Mark As Read
-// ========================================
 
 const markAsRead = async (
     id
@@ -883,7 +764,6 @@ const markAsRead = async (
                 ) === String(id)
         );
 
-
     if (
         !notification ||
         notification.isRead === true
@@ -892,7 +772,6 @@ const markAsRead = async (
         return;
 
     }
-
 
     const button = Array.from(
         document.querySelectorAll(
@@ -903,7 +782,6 @@ const markAsRead = async (
             btn.dataset.id ===
             String(id)
     );
-
 
     if (button) {
 
@@ -919,7 +797,6 @@ const markAsRead = async (
 
     }
 
-
     try {
 
         await apiRequest(
@@ -929,10 +806,8 @@ const markAsRead = async (
             }
         );
 
-
         notification.isRead =
             true;
-
 
         if (button) {
 
@@ -940,7 +815,6 @@ const markAsRead = async (
                 button.closest(
                     ".group"
                 );
-
 
             if (card) {
 
@@ -956,12 +830,10 @@ const markAsRead = async (
 
             }
 
-
             const titleEl =
                 card?.querySelector(
                     "h3"
                 );
-
 
             if (titleEl) {
 
@@ -975,12 +847,10 @@ const markAsRead = async (
 
             }
 
-
             const messageEl =
                 card?.querySelector(
                     "p.leading-6"
                 );
-
 
             if (messageEl) {
 
@@ -994,16 +864,13 @@ const markAsRead = async (
 
             }
 
-
             button.remove();
 
         }
 
-
         updateStatistics(
             allNotifications
         );
-
 
         if (
             typeof updateNotificationBadge ===
@@ -1021,7 +888,6 @@ const markAsRead = async (
             error
         );
 
-
         if (button) {
 
             button.disabled =
@@ -1037,7 +903,6 @@ const markAsRead = async (
 
         }
 
-
         alert(
             error.message ||
             "Failed to mark notification as read."
@@ -1047,10 +912,7 @@ const markAsRead = async (
 
 };
 
-
-// ========================================
 // Mark All As Read
-// ========================================
 
 const markAllAsRead = async () => {
 
@@ -1063,9 +925,7 @@ const markAllAsRead = async () => {
             }
         );
 
-
         await loadNotifications();
-
 
         if (
             typeof updateNotificationBadge ===
@@ -1092,10 +952,7 @@ const markAllAsRead = async () => {
 
 };
 
-
-// ========================================
 // Filter Notifications
-// ========================================
 
 const filterNotifications = () => {
 
@@ -1104,12 +961,10 @@ const filterNotifications = () => {
             .trim()
             .toLowerCase();
 
-
     const selectedType =
         typeFilter
             ? normalizeType(typeFilter.value)
             : "all";
-
 
     const filtered =
         allNotifications.filter(
@@ -1121,30 +976,25 @@ const filterNotifications = () => {
                         ""
                     ).toLowerCase();
 
-
                 const message =
                     String(
                         notification.message ||
                         ""
                     ).toLowerCase();
 
-
                 const type =
                     getNotificationType(
                         notification
                     );
-
 
                 const matchesSearch =
                     !search ||
                     title.includes(search) ||
                     message.includes(search);
 
-
                 const matchesType =
                     selectedType === "all" ||
                     type === selectedType;
-
 
                 return (
                     matchesSearch &&
@@ -1154,17 +1004,13 @@ const filterNotifications = () => {
             }
         );
 
-
     renderNotifications(
         filtered
     );
 
 };
 
-
-// ========================================
 // Clear Filters
-// ========================================
 
 const clearFilters = () => {
 
@@ -1178,10 +1024,7 @@ const clearFilters = () => {
 
 };
 
-
-// ========================================
 // Load Notifications
-// ========================================
 
 const loadNotifications = async () => {
 
@@ -1205,7 +1048,6 @@ const loadNotifications = async () => {
             "hidden"
         );
 
-
         // API
 
         console.log(
@@ -1213,18 +1055,15 @@ const loadNotifications = async () => {
             `${API_BASE_URL}/notifications`
         );
 
-
         const result =
             await apiRequest(
                 "/notifications"
             );
 
-
         console.log(
             "Notifications API response:",
             result
         );
-
 
         // Extract
 
@@ -1233,12 +1072,10 @@ const loadNotifications = async () => {
                 result
             );
 
-
         console.log(
             "Notifications:",
             allNotifications
         );
-
 
         // Statistics
 
@@ -1246,20 +1083,17 @@ const loadNotifications = async () => {
             allNotifications
         );
 
-
         // Render
 
         renderNotifications(
             allNotifications
         );
 
-
         // Hide Loading
 
         loadingState.classList.add(
             "hidden"
         );
-
 
     } catch (error) {
 
@@ -1268,26 +1102,21 @@ const loadNotifications = async () => {
             error
         );
 
-
         loadingState.classList.add(
             "hidden"
         );
-
 
         notificationsSection.classList.add(
             "hidden"
         );
 
-
         emptyState.classList.add(
             "hidden"
         );
 
-
         errorState.classList.remove(
             "hidden"
         );
-
 
         errorMessage.textContent =
             error.message ||
@@ -1297,10 +1126,7 @@ const loadNotifications = async () => {
 
 };
 
-
-// ========================================
 // Search
-// ========================================
 
 if (searchInput) {
 
@@ -1311,10 +1137,7 @@ if (searchInput) {
 
 }
 
-
-// ========================================
 // Type Filter
-// ========================================
 
 if (typeFilter) {
 
@@ -1325,10 +1148,7 @@ if (typeFilter) {
 
 }
 
-
-// ========================================
 // Clear Filter
-// ========================================
 
 if (clearFiltersBtn) {
 
@@ -1339,10 +1159,7 @@ if (clearFiltersBtn) {
 
 }
 
-
-// ========================================
 // Refresh
-// ========================================
 
 if (refreshBtn) {
 
@@ -1353,10 +1170,7 @@ if (refreshBtn) {
 
 }
 
-
-// ========================================
 // Mark All Read
-// ========================================
 
 if (markAllReadBtn) {
 
@@ -1367,10 +1181,7 @@ if (markAllReadBtn) {
 
 }
 
-
-// ========================================
 // Modal Close
-// ========================================
 
 if (closeModalBtn) {
 
@@ -1381,7 +1192,6 @@ if (closeModalBtn) {
 
 }
 
-
 if (closeModalFooterBtn) {
 
     closeModalFooterBtn.addEventListener(
@@ -1391,10 +1201,7 @@ if (closeModalFooterBtn) {
 
 }
 
-
-// ========================================
 // Outside Modal Click
-// ========================================
 
 if (notificationModal) {
 
@@ -1416,10 +1223,7 @@ if (notificationModal) {
 
 }
 
-
-// ========================================
 // Escape Key
-// ========================================
 
 document.addEventListener(
     "keydown",
@@ -1440,10 +1244,7 @@ document.addEventListener(
     }
 );
 
-
-// ========================================
 // Retry
-// ========================================
 
 if (retryBtn) {
 
@@ -1454,9 +1255,6 @@ if (retryBtn) {
 
 }
 
-
-// ========================================
 // Initial Load
-// ========================================
 
 loadNotifications();

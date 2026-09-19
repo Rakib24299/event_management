@@ -1,13 +1,9 @@
-// ========================================
 // EventEase Login
-// ========================================
 
 const API_URL = "http://localhost:5000/api/v1";
 
 
-// ========================================
 // Elements
-// ========================================
 
 const loginForm =
     document.getElementById("loginForm");
@@ -31,9 +27,7 @@ const rememberMe =
     document.getElementById("rememberMe");
 
 
-// ========================================
 // Show Error
-// ========================================
 
 function showError(message) {
 
@@ -43,9 +37,7 @@ function showError(message) {
 }
 
 
-// ========================================
 // Hide Error
-// ========================================
 
 function hideError() {
 
@@ -55,9 +47,7 @@ function hideError() {
 }
 
 
-// ========================================
 // Password Show / Hide
-// ========================================
 
 togglePassword.addEventListener(
     "click",
@@ -84,9 +74,7 @@ togglePassword.addEventListener(
 );
 
 
-// ========================================
 // Login Submit
-// ========================================
 
 loginForm.addEventListener(
     "submit",
@@ -97,9 +85,7 @@ loginForm.addEventListener(
         hideError();
 
 
-        // ====================================
         // Get Input Values
-        // ====================================
 
         const email =
             emailInput.value.trim().toLowerCase();
@@ -108,9 +94,7 @@ loginForm.addEventListener(
             passwordInput.value;
 
 
-        // ====================================
         // Basic Validation
-        // ====================================
 
         if (!email) {
 
@@ -136,9 +120,7 @@ loginForm.addEventListener(
         }
 
 
-        // ====================================
         // Loading State
-        // ====================================
 
         loginButton.disabled = true;
 
@@ -148,9 +130,7 @@ loginForm.addEventListener(
 
         try {
 
-            // ====================================
             // API Request
-            // ====================================
 
             const response =
                 await fetch(
@@ -181,9 +161,7 @@ loginForm.addEventListener(
             );
 
 
-            // ====================================
             // API Error
-            // ====================================
 
             if (
                 !response.ok ||
@@ -198,17 +176,13 @@ loginForm.addEventListener(
             }
 
 
-            // ====================================
             // Get User
-            // ====================================
 
             const user =
                 result.data?.user;
 
 
-            // ====================================
             // Get Token
-            // ====================================
 
             const token =
                 result.data?.token;
@@ -232,9 +206,7 @@ loginForm.addEventListener(
             }
 
 
-            // ====================================
             // Save Token
-            // ====================================
 
             localStorage.setItem(
                 "token",
@@ -242,9 +214,7 @@ loginForm.addEventListener(
             );
 
 
-            // ====================================
             // Save User Data
-            // ====================================
 
             localStorage.setItem(
                 "user",
@@ -252,9 +222,7 @@ loginForm.addEventListener(
             );
 
 
-            // ====================================
             // Remember Me
-            // ====================================
 
             localStorage.setItem(
                 "rememberMe",
@@ -264,9 +232,7 @@ loginForm.addEventListener(
             );
 
 
-            // ====================================
             // Get User Role
-            // ====================================
 
             const role =
                 user.role;
@@ -283,24 +249,18 @@ loginForm.addEventListener(
             );
 
 
-            // ====================================
             // Login Successful
-            // ====================================
 
             loginButton.textContent =
                 "Login Successful";
 
 
-            // ====================================
             // Role Based Redirect
-            // ====================================
 
             setTimeout(() => {
 
 
-                // ================================
                 // Admin
-                // ================================
 
                 if (role === "admin") {
 
@@ -311,9 +271,7 @@ loginForm.addEventListener(
                 }
 
 
-                // ================================
                 // Organizer
-                // ================================
 
                 if (role === "organizer") {
 
@@ -324,9 +282,7 @@ loginForm.addEventListener(
                 }
 
 
-                // ================================
                 // User
-                // ================================
 
                 if (role === "user") {
 
@@ -337,9 +293,7 @@ loginForm.addEventListener(
                 }
 
 
-                // ================================
                 // Unknown Role
-                // ================================
 
                 showError(
                     "Your account role is not recognized."

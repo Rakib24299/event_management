@@ -1,9 +1,7 @@
 const Joi = require("joi");
 
 
-// ======================================================
 // CREATE PAYMENT
-// ======================================================
 //
 // POST /api/v1/payments/create
 //
@@ -15,7 +13,6 @@ const Joi = require("joi");
 // Free Event:
 // Payment is not allowed
 // Booking directly uses OTP flow
-// ======================================================
 
 const createPaymentSchema = Joi.object({
 
@@ -38,65 +35,51 @@ const createPaymentSchema = Joi.object({
 });
 
 
-// ======================================================
 // SSLCommerz SUCCESS
-// ======================================================
 //
 // SSLCommerz sends payment information to this endpoint.
 // No authentication is required.
 //
-// ======================================================
 
 const sslPaymentSuccessSchema =
   Joi.object()
     .unknown(true);
 
 
-// ======================================================
 // SSLCommerz FAIL
-// ======================================================
 //
 // SSLCommerz sends failed payment information.
 //
-// ======================================================
 
 const sslPaymentFailSchema =
   Joi.object()
     .unknown(true);
 
 
-// ======================================================
 // SSLCommerz CANCEL
-// ======================================================
 //
 // SSLCommerz sends cancelled payment information.
 //
-// ======================================================
 
 const sslPaymentCancelSchema =
   Joi.object()
     .unknown(true);
 
 
-// ======================================================
 // SSLCommerz IPN
-// ======================================================
 //
 // SSLCommerz server sends IPN data here.
 //
 // Unknown fields are allowed because SSLCommerz
 // can send additional gateway fields.
 //
-// ======================================================
 
 const sslPaymentIPNSchema =
   Joi.object()
     .unknown(true);
 
 
-// ======================================================
 // EXPORT
-// ======================================================
 
 module.exports = {
 
