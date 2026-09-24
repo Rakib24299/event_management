@@ -39,7 +39,7 @@ const verifyBookingOtpSchema = Joi.object({
       "any.required":
         "Booking ID is required.",
     }),
-
+//  otp length(booking)
   otp: Joi.string()
     .pattern(/^\d{6}$/)
     .required()

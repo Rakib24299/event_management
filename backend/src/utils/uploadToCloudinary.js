@@ -12,7 +12,7 @@ const uploadToCloudinary = (fileBuffer, folder) => {
         if (error) {
           return reject(error);
         }
-
+// image url
         resolve({
           url: result.secure_url,
           publicId: result.public_id,

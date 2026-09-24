@@ -302,6 +302,9 @@ async function loadOrganizerLogo() {
 
 
 // Update Statistics
+// published event//event published
+// update event
+// show total event
 
 function updateStatistics(data) {
 
@@ -311,7 +314,8 @@ function updateStatistics(data) {
                 ? data.totalEvents
                 : 0;
     }
-
+// published event
+// event published
     if (publishedEventsEl) {
         publishedEventsEl.textContent =
             data.publishedEvents !== undefined
@@ -371,7 +375,7 @@ function displayRecentEvents(events) {
 
             const status =
                 event.status || "draft";
-
+// status color
             const statusClasses = {
                 published: "bg-green-100 text-green-700",
                 draft: "bg-yellow-100 text-yellow-700",

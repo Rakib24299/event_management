@@ -2,11 +2,15 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
+// verify token
+
 const authMiddleware = async (req, res, next) => {
   try {
     
     const authorization = req.headers.authorization;
 
+    // cheak berear
+    //berear cheak
    if (!authorization || !authorization.startsWith("Bearer ")) 
     {
         return res.status(401).json(
@@ -16,10 +20,12 @@ const authMiddleware = async (req, res, next) => {
         });
 }
 
-    
+    //AUTHORIZE TOKEN
+
     const token = authorization.split(" ")[1];
 
-   
+  //  verify  token
+  //token verify
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
    

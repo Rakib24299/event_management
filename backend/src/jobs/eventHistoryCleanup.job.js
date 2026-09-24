@@ -37,7 +37,7 @@ const cleanupExpiredEvents =
                         1000
                 );
 
-
+//  more tehn 30 days
             const events =
                 await Event.find({
                     isDeleted: false,
@@ -49,14 +49,10 @@ const cleanupExpiredEvents =
                     (event) => {
 
                         const endDateTime =
-                            getEventEndDateTime(
-                                event
-                            );
+                            getEventEndDateTime( event);
 
 
-                        if (
-                            !endDateTime
-                        ) {
+                        if ( !endDateTime   ) {
 
                             return false;
 
@@ -96,6 +92,7 @@ const cleanupExpiredEvents =
             let deletedCount =
                 0;
 
+// hard delete event
 
             for (
                 const event of
@@ -158,6 +155,7 @@ const cleanupExpiredEvents =
 
 // START CLEANUP JOB
 // Runs daily at 00:00
+//history clean time
 
 const startEventHistoryCleanupJob =
     () => {

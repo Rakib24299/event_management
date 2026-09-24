@@ -2,7 +2,7 @@ const {z} = require("zod")
 
 
 
-// REGISTERUSER SCHEMA****
+// REGISTER USER SCHEMA****
 
 const registerUserSchema = z.object(
 
@@ -21,7 +21,7 @@ const registerUserSchema = z.object(
                     .trim()
                     .email("Invalid email address")
                     .toLowerCase(),
-
+// phone number
               phone: z
                     .string()
                     .trim()
@@ -62,7 +62,7 @@ const registerOrganizerSchema = z.object
             .trim()
             .email("Invalid email address")
             .toLowerCase(),
-
+// phone number
      phone: z
             .string()
             .trim()
@@ -144,11 +144,12 @@ const resetPasswordSchema = z.object
                 .trim()
                 .email("Invalid email address")
                 .toLowerCase(),
-
+// otp length (resset password) 
+// length otp
              otp: z
                 .string()
                 .length(6, "OTP must be exactly 6 digits"),
-
+// password length
               newPassword: z
                 .string()
                 .min(8, "Password must be at least 8 characters")
@@ -185,7 +186,7 @@ const verifyEmailSchema = z.object({
       .trim()
       .email("Invalid email address")
       .toLowerCase(),
-
+// opt length /length opt(mail)
     otp: z
       .string()
       .length(6, "OTP must be exactly 6 digits"),

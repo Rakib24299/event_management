@@ -48,6 +48,8 @@ const generateAIResponse = async (
     if (userId) {
         try {
 
+//chatbot database
+//database chat bot
             const context =
                 await buildAIContext(
                     userId,
@@ -72,15 +74,17 @@ const generateAIResponse = async (
     }
 
     // Gemini Request
+    //Ai model
+    // CHAT BOT MODEL
 
     try {
 
         const response =
             await ai.models.generateContent({
 
-                // model: "gemini-3.7-flash",
                 model: 'gemini-3.1-flash-lite', // Model name updated
 
+            //  CHAT BOT USER QUESCTION 
                 contents: `${contextString}\n\nUSER QUESTION:\n${userMessage.trim()}`,
 
                 config: {
@@ -89,7 +93,7 @@ const generateAIResponse = async (
 You are the EventEase AI assistant for an event management platform.
 
 
-<!--GUEsT ANSWER-->
+<!--GUEST ANSWER-->
 
 You help users with:
 - Events and event categories

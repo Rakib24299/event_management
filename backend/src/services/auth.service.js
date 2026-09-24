@@ -21,12 +21,13 @@ const registerUser = async (payload) => {
   if (existingUser) {
     throw new AppError("User already exists with this email.",409);
   }
-
+//PASSWORD HASING(25-30) / PASSWORD HASHING
+//HASING PASSWORD /HASHING PASSWORD
   const hashedPassword = await bcrypt.hash(
     payload.password,
     Number(process.env.BCRYPT_SALT_ROUNDS || 10)
   );
-
+//PASSWORD IN DATABASE
   const user = await User.create({
     ...payload,
     password: hashedPassword,
@@ -40,6 +41,8 @@ const registerUser = async (payload) => {
  const otp = generateOTP();
 
   user.emailVerificationOtp = otp;
+  // otp generate (mail)
+  // generate otp
 
   user.emailVerificationOtpExpires = new Date(
     Date.now() + 5 * 60 * 1000
@@ -192,7 +195,8 @@ const loginUser = async (payload) => {
       401
     );
   }
-
+// INDENTY PASSWORD
+//PASSWORD INDENTY
   const isPasswordMatched = await bcrypt.compare(
     payload.password,
     user.password
@@ -229,6 +233,8 @@ const loginUser = async (payload) => {
     );
   }
 
+ //BEREAR LOGIN
+ //LOGIN BEREAR
   const token = generateToken(user);
 
   const userResponse = user.toObject();
@@ -256,7 +262,7 @@ const forgotPassword = async (payload) => {
     );
   }
 
-  //ORGANIZER OTP / OTP EXPIRE
+  //ORGANIZER OTP / OTP EXPIRE //expire otp (forget password)
 
   const otp = generateOTP();
 
@@ -316,6 +322,8 @@ const resetPassword = async (payload) => {
     );
   }
 
+  // otp expire cheak
+  // cheak otp expire
   if (
     !user.resetPasswordOtpExpires ||
     user.resetPasswordOtpExpires < new Date()

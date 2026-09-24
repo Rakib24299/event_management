@@ -1510,26 +1510,6 @@ function createEventCard(event) {
                     ${category}
                 </span>
 
-                ${event.eventType === "free" || price === 0 ? `
-                    <span
-                        class="
-                            absolute
-                            right-4
-                            top-4
-                            rounded-full
-                            bg-emerald-600
-                            px-3
-                            py-1
-                            text-xs
-                            font-bold
-                            text-white
-                            shadow-sm
-                        "
-                    >
-                        Free
-                    </span>
-                ` : ""}
-
             </div>
 
             <!-- Content -->

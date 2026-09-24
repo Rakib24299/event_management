@@ -827,6 +827,10 @@ const verifyOtp = async () => {
 
         try {
             const token = getAuthToken();
+            const frontendBaseUrl =
+                window.location.origin +
+                (window.location.pathname.includes("/frontend/") ? "/frontend" : "");
+
             const payResponse = await fetch(`${API_BASE_URL}/payments`, {
                 method: "POST",
                 headers: {
@@ -834,7 +838,8 @@ const verifyOtp = async () => {
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    booking: bookingId
+                    booking: bookingId,
+                    frontendUrl: frontendBaseUrl
                 })
             });
 

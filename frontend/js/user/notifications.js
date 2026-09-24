@@ -729,6 +729,8 @@ const connectNotificationSocket =
         );
 
         // NEW NOTIFICATION
+        //push 
+        //notification real time
 
         socket.on(
             "newNotification",
@@ -780,7 +782,7 @@ const connectNotificationSocket =
                     ) {
 
                         new Notification(
-                            notification.title ||
+                            ntification.title ||
                             "New Notification",
                             {
 

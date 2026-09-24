@@ -311,6 +311,8 @@ const getOrganizerDashboard = async (organizerId) => {
         },
       }),
 
+      // published event
+      // event published
       Event.countDocuments({
         organizer: organizerId,
         isDeleted: false,

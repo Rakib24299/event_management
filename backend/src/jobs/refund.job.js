@@ -106,8 +106,7 @@ const processPendingRefunds = async () => {
         // Already refunded
 
         if (
-          payment.status ===
-          "refunded"
+          payment.status ==="refunded"
         ) {
 
           booking.refundStatus =
@@ -253,9 +252,9 @@ const startRefundJob = () => {
   processPendingRefunds();
 
 
-  // 
+   
   // REFUND TIME
-  // 
+ //1 HOUR /60 MINUITS
 
   const ONE_HOUR =
     60 * 60 * 1000;

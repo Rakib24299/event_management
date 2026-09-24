@@ -14,8 +14,8 @@ const buildAIContext = async (userId, userRole, userMessage) => {
   const promises = [];
   const keys = [];
 
-
   //  DATBASE INFORMATION(regex)
+  // Chat bot databse information
 
   const isProfileIntent = /\b(profile|my info|my account|who am i|about me|my details|account info)\b/.test( lowerMessage );
 

@@ -2,6 +2,9 @@ const Message = require("../models/Message");
 const User = require("../models/User");
 const { getIO } = require("../config/socket");
 
+//CHAT DELETE (MAX 50 CHAT)
+//MASSAGE DELETE
+//DELETE MASSAGE
 
 const MAX_CONVERSATION_MESSAGES = parseInt(process.env.MAX_CONVERSATION_MESSAGES, 10) || 50;
 
@@ -23,6 +26,7 @@ const enforceFifoLimit = async (user1Id, user2Id, maxLimit = MAX_CONVERSATION_ME
         .sort({ createdAt: 1 })
         .limit(excess)
         .select("_id");
+        //MASSAGE DELETE FROM DATABASE
 
       if (oldestMessages.length > 0) {
         const idsToDelete = oldestMessages.map((m) => m._id);
@@ -53,14 +57,16 @@ const sendMessage = async ({ senderId, receiverId, text }) => {
     throw new Error("Sender not found.");
   }
 
-  // Create message
+  // Create message 
+
   const newMessage = await Message.create({
     sender: senderId,
     receiver: receiverId,
     text: text.trim(),
   });
 
-  // Enforce FIFO limit in background (delete oldest messages exceeding limit)
+  // Enforce FIFO limit in background (delete oldest messages exceeding limit) 
+  //DELETE MASSAGEE
   enforceFifoLimit(senderId, receiverId, MAX_CONVERSATION_MESSAGES);
 
   const populatedMessage = await Message.findById(newMessage._id)
@@ -80,7 +86,7 @@ const sendMessage = async ({ senderId, receiverId, text }) => {
   return populatedMessage;
 };
 
-
+// p2p
 // Get 1-on-1 Conversation History
 
 const getConversation = async (user1Id, user2Id, { limit = 100 } = {}) => {
@@ -95,6 +101,7 @@ const getConversation = async (user1Id, user2Id, { limit = 100 } = {}) => {
     .populate("sender", "name email role profileImage organizationLogo organizationName")
     .populate("receiver", "name email role profileImage organizationLogo organizationName");
 
+    // unread massage
   // Mark incoming messages as read
   await Message.updateMany(
     {

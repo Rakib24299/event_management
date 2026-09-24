@@ -399,8 +399,11 @@ function loadSuccessData() {
 // GET BOOKING ID
 
 function getBookingId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlBookingId = urlParams.get("bookingId") || urlParams.get("id");
 
     return (
+        urlBookingId ||
         completedBooking?._id ||
         completedBooking?.id ||
         sessionStorage.getItem(
@@ -418,6 +421,9 @@ function getBookingId() {
 // GET EVENT ID
 
 function getEventId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlEventId = urlParams.get("eventId") || urlParams.get("event");
+    if (urlEventId) return urlEventId;
 
     const event =
         completedBooking?.event;
@@ -446,6 +452,8 @@ function getEventId() {
     return (
         completedBooking?.eventId ||
         completedBooking?.eventID ||
+        sessionStorage.getItem("selectedEventId") ||
+        sessionStorage.getItem("paymentEventId") ||
         null
     );
 
@@ -1230,8 +1238,41 @@ async function initialize() {
     );
 
 
-    const hasData =
+    let hasData =
         loadSuccessData();
+
+    const bookingId =
+        getBookingId();
+
+    if (!hasData && bookingId) {
+        try {
+            const token = getAuthToken();
+            const headers = { "Content-Type": "application/json" };
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+
+            let response = await fetch(`${API_BASE_URL}/bookings/public/${encodeURIComponent(bookingId)}`, { headers });
+            if (!response.ok) {
+                response = await fetch(`${API_BASE_URL}/bookings/${encodeURIComponent(bookingId)}`, { headers });
+            }
+
+            if (response.ok) {
+                const result = await response.json();
+                const booking = result?.data || result;
+                if (booking && (booking._id || booking.id)) {
+                    completedBooking = booking;
+                    if (booking.event && typeof booking.event === "object") {
+                        eventData = booking.event;
+                    }
+                    if (booking.payment && typeof booking.payment === "object") {
+                        completedPayment = booking.payment;
+                    }
+                    hasData = true;
+                }
+            }
+        } catch (err) {
+            console.warn("Could not fetch booking from API:", err);
+        }
+    }
 
 
     if (!hasData) {

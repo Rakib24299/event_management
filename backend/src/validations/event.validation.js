@@ -4,6 +4,8 @@ const objectIdSchema =
   require("./objectId.validation");
 
 
+  // required (nonempty)
+
 // Image Schema
 
 const imageSchema = z
@@ -23,13 +25,13 @@ const imageSchema = z
   .strict();
 
 
-// Create Event Schema
+// Create Event logic Schema
 
 const createEventSchema = z.object({
 
   body: z
     .object({
-
+// event ceate logic
       title: z
         .string()
         .trim()
@@ -43,7 +45,7 @@ const createEventSchema = z.object({
           "Event title cannot exceed 100 characters"
         ),
 
-
+// slug logic
       slug: z
         .string()
         .trim()
@@ -87,14 +89,7 @@ const createEventSchema = z.object({
 
       venue: z.object({
 
-        venueName: z
-          .string()
-          .trim()
-          .nonempty("Venue name is required")
-          .min(
-            2,
-            "Venue name must be at least 2 characters"
-          )
+        venueName: z .string() .trim() .nonempty("Venue name is required") .min(  2, "Venue name must be at least 2 characters" )
           .max(
             100,
             "Venue name cannot exceed 100 characters"
@@ -160,13 +155,10 @@ const createEventSchema = z.object({
 
       ticketPrice: z
         .number()
-        .min(
-          0,
-          "Ticket price cannot be negative"
-        )
+        .min( 0, "Ticket price cannot be negative" )
         .optional(),
 
-
+//seat <0
       totalSeats: z
         .number()
         .int(
@@ -247,15 +239,17 @@ const createEventSchema = z.object({
 
 
       // Paid Event Validation
+      // logic paid event
+      // paid event logic
 
       if (
         data.eventType === "paid"
       ) {
+// price <0 logic
 
         if (
-          data.ticketPrice === undefined ||
-          data.ticketPrice <= 0
-        ) {
+          data.ticketPrice === undefined ||  data.ticketPrice <= 0                //ticket non neg /price non neg
+           ) {
 
           ctx.addIssue({
 
@@ -272,7 +266,7 @@ const createEventSchema = z.object({
 
         }
 
-
+// seat<0
         if (
           data.totalSeats === undefined ||
           data.totalSeats < 1
@@ -293,7 +287,7 @@ const createEventSchema = z.object({
 
         }
 
-
+// ticket <0
         if (
           data.maxTicketsPerUser === undefined ||
           data.maxTicketsPerUser < 1
@@ -352,7 +346,8 @@ const updateEventSchema = z.object({
 
   body: z
     .object({
-
+// event information
+// update event information /information vebent update
 
       // Basic Information
 
@@ -369,7 +364,7 @@ const updateEventSchema = z.object({
         )
         .optional(),
 
-
+// slog logic
       slug: z
         .string()
         .trim()

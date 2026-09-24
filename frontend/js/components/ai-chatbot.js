@@ -398,6 +398,8 @@
         if (botButton) {
             botButton.classList.add("scale-95", "opacity-90");
         }
+//  AI button (on ,off) 
+
         isOpen = true;
 
         const input = document.getElementById("aiMessageInput");
@@ -739,7 +741,7 @@
                        flex h-14 w-14 items-center justify-center
                        rounded-full bg-gradient-to-tr from-[#244522] via-[#31572c] to-[#42773b]
                        text-white shadow-[0_10px_25px_-4px_rgba(49,87,44,0.5)]
-                       ring-4 ring-white/95 transition-all duration-300
+                       ring-2 ring-white/95 transition-all duration-300
                        hover:scale-110 hover:shadow-[0_15px_30px_-4px_rgba(49,87,44,0.65)]
                        active:scale-95 sm:right-6 cursor-pointer"
                 title="Open EventEase AI Assistant"

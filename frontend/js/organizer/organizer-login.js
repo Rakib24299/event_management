@@ -86,17 +86,13 @@ function hideError() {
 // Password Show / Hide
 
 if (
-    togglePassword &&
-    passwordInput
-) {
+    togglePassword && passwordInput) {
 
     togglePassword.addEventListener(
         "click",
         () => {
 
-            const isPassword =
-                passwordInput.type ===
-                "password";
+            const isPassword = passwordInput.type === "password";
 
 
             passwordInput.type =

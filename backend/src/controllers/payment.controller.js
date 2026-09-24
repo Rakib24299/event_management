@@ -5,15 +5,62 @@ const catchAsync =
   require("../utils/catchAsync");
 
 
+// HELPER: BUILD FRONTEND REDIRECT URL
+const getFrontendUrl = (req) => {
+  let url =
+    req.body?.value_d ||
+    req.query?.frontendUrl ||
+    process.env.FRONTEND_URL ||
+    "http://127.0.0.1:5500";
+
+  return url.replace(/\/+$/, "");
+};
+
+const buildFrontendRedirectUrl = (req, pagePath, queryParams = {}) => {
+  let baseUrl = getFrontendUrl(req);
+  let cleanPath = pagePath.startsWith("/") ? pagePath : `/${pagePath}`;
+
+  if (baseUrl.endsWith("/frontend") && cleanPath.startsWith("/frontend/")) {
+    cleanPath = cleanPath.replace(/^\/frontend/, "");
+  } else if (
+    !baseUrl.includes("/frontend") &&
+    (baseUrl.includes("5500") || baseUrl.includes("5501") || baseUrl.includes("127.0.0.1"))
+  ) {
+    if (!cleanPath.startsWith("/frontend/")) {
+      cleanPath = `/frontend${cleanPath}`;
+    }
+  }
+
+  const searchParams = new URLSearchParams();
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (value !== undefined && value !== null && value !== "") {
+      searchParams.set(key, value);
+    }
+  }
+
+  const queryStr = searchParams.toString();
+  return `${baseUrl}${cleanPath}${queryStr ? `?${queryStr}` : ""}`;
+};
+
+
 // CREATE PAYMENT
 
 const createPayment =
   catchAsync(async (req, res) => {
 
+    const origin =
+      req.body.frontendUrl ||
+      req.body.origin ||
+      req.headers.origin ||
+      (req.headers.referer ? new URL(req.headers.referer).origin : null);
+
     const result =
       await paymentService.createPayment(
         req.user.id,
-        req.body
+        {
+          ...req.body,
+          frontendUrl: origin,
+        }
       );
 
     return res.status(201).json({
@@ -53,10 +100,6 @@ const sslPaymentSuccess =
         req.body
       );
 
-    const frontendUrl =
-      process.env.FRONTEND_URL ||
-      "http://localhost:3000";
-
     const bookingId =
       result.booking?._id || "";
 
@@ -68,11 +111,11 @@ const sslPaymentSuccess =
       result.booking?.event ||
       "";
 
-    const basePath = frontendUrl.includes("5500")
-      ? `${frontendUrl}/frontend/pages/user/payment-success.html`
-      : `${frontendUrl}/pages/user/payment-success.html`;
-
-    const redirectUrl = `${basePath}?bookingId=${encodeURIComponent(bookingId)}&paymentId=${encodeURIComponent(paymentId)}&eventId=${encodeURIComponent(eventId)}`;
+    const redirectUrl = buildFrontendRedirectUrl(
+      req,
+      "/pages/user/payment-success.html",
+      { bookingId, paymentId, eventId }
+    );
 
     return res.redirect(redirectUrl);
 
@@ -89,20 +132,16 @@ const sslPaymentFail =
         req.body
       );
 
-    const frontendUrl =
-      process.env.FRONTEND_URL ||
-      "http://localhost:3000";
-
     const bookingId =
       result?.booking?._id || result?.booking || "";
 
-    const basePath = frontendUrl.includes("5500")
-      ? `${frontendUrl}/frontend/pages/user/my-bookings.html`
-      : `${frontendUrl}/pages/user/my-bookings.html`;
-
-    return res.redirect(
-      `${basePath}?paymentStatus=failed&bookingId=${encodeURIComponent(bookingId)}`
+    const redirectUrl = buildFrontendRedirectUrl(
+      req,
+      "/pages/user/my-bookings.html",
+      { paymentStatus: "failed", bookingId }
     );
+
+    return res.redirect(redirectUrl);
 
   });
 
@@ -117,20 +156,16 @@ const sslPaymentCancel =
         req.body
       );
 
-    const frontendUrl =
-      process.env.FRONTEND_URL ||
-      "http://localhost:3000";
-
     const bookingId =
       result?.booking?._id || result?.booking || "";
 
-    const basePath = frontendUrl.includes("5500")
-      ? `${frontendUrl}/frontend/pages/user/my-bookings.html`
-      : `${frontendUrl}/pages/user/my-bookings.html`;
-
-    return res.redirect(
-      `${basePath}?paymentStatus=cancelled&bookingId=${encodeURIComponent(bookingId)}`
+    const redirectUrl = buildFrontendRedirectUrl(
+      req,
+      "/pages/user/my-bookings.html",
+      { paymentStatus: "cancelled", bookingId }
     );
+
+    return res.redirect(redirectUrl);
 
   });
 

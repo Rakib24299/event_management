@@ -13,7 +13,7 @@ const createError = (message, statusCode) => {
   return error;
 };
 
-// OTP GENERATE BOOKING OTP/OPT MAKER
+// OTP GENERATE BOOKING OTP/ OTP MAKER
 
 const generateBookingOtp = () => {
   return Math.floor(
@@ -259,6 +259,8 @@ const createBooking = async (
   if (existingPendingBooking) {
     const otp = generateBookingOtp();
     const otpExpiresAt = getOtpExpiry();
+    
+    // BEFORE PENDING BOOKING UPDATE
 
     if (existingPendingBooking.ticketQuantity !== quantity) {
       existingPendingBooking.ticketQuantity = quantity;
@@ -327,10 +329,12 @@ const createBooking = async (
 
   const otp = generateBookingOtp();
   const otpExpiresAt = getOtpExpiry();
+
+  // FREE EVENT CALCULATION
+
   const isFree = eventData.eventType === "free";
 
-  const totalAmount =
-    isFree
+  const totalAmount = isFree
       ? 0
       : Number(eventData.ticketPrice || 0) * quantity;
 
@@ -344,7 +348,7 @@ const createBooking = async (
   
   // PENDING BOOKING (pending to confirm)
 
-
+// booking id (send to DB)
   const booking =
     await Booking.create({
       user: userId,
@@ -362,7 +366,7 @@ const createBooking = async (
       cancelledAt: null,
     });
 
-  // RESERVE SEATS (paid events only)
+  // RESERVE SEATS (paid events only) / SEAT CACULATION
 
   if (!isFree) {
     eventData.availableSeats -= quantity;
@@ -370,6 +374,7 @@ const createBooking = async (
   }
 
   // SEND OTP EMAIL TEMPLATE
+  // free booking template
 
   const user = await User.findById(userId).select("name email");
   if (user?.email) {
@@ -458,9 +463,10 @@ const generateFreeBookingOtp = async (
     );
   }
 
+  // confirm badge logic
+
   if (
-    booking.bookingStatus ===
-    "confirmed"
+    booking.bookingStatus === "confirmed"
   ) {
     return {
       booking,
@@ -587,6 +593,7 @@ const generateFreeBookingOtp = async (
 };
 
 // SEND / RESEND BOOKING OTP (Free or Paid)
+// resend otp
 
 const sendBookingOtp = async (bookingId, userId) => {
   const booking = await Booking.findById(bookingId);
@@ -944,6 +951,7 @@ const cancelBooking = async (
   }
 
   // ALREADY CANCELLED
+  //cencle event
 
   if (
     booking.bookingStatus ===
@@ -1025,6 +1033,9 @@ const cancelBooking = async (
   }
 
   // REFUND CALCULATION
+  //refund time
+  // 70,60,50,20
+  //70,50,20
 
   let refundPercentage = 0;
 
@@ -1116,6 +1127,7 @@ const cancelBooking = async (
   booking.isOtpVerified =
     false;
 
+    // REFUND PENDING
   booking.refundStatus =
     refundAmount > 0
       ? "pending"
@@ -1145,6 +1157,8 @@ const cancelBooking = async (
   }
 
   // CREATE NOTIFICATION
+  // NORIFICATION FOR CENCLE /CANCLE NOTIFICATION
+  //REFUND NOTIFICATION
 
   try {
 
@@ -1228,6 +1242,7 @@ const getMyConfirmedBookings = async (
       );
  
       // SHOW CONFIRM BOOKings
+      // confirmed badge logic 1
 
   return await populateBooking(
     Booking.find({

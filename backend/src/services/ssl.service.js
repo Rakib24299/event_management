@@ -35,6 +35,7 @@ const getSSLConfig = () => {
 const createSSLSession = async ({
   payment,
   booking,
+  frontendUrl,
 }) => {
 
   if (!payment) {
@@ -91,7 +92,7 @@ const createSSLSession = async ({
   } = getSSLConfig();
 
 
-  // AMOUNT
+  // AMOUNT 
 
   const totalAmount =
     Number(booking.totalAmount);
@@ -321,6 +322,13 @@ const createSSLSession = async ({
     "value_c",
     booking.user._id.toString()
   );
+
+  if (frontendUrl) {
+    formData.append(
+      "value_d",
+      frontendUrl.toString()
+    );
+  }
 
 
   // SEND REQUEST TO SSLCOMMERZ

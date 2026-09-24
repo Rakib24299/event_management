@@ -248,7 +248,8 @@ function renderConfirmedBookings() {
 
 }
 
-// Create Confirmed Booking Card
+// Create Confirmed Booking  Card
+//confirmed badge
 
 function createConfirmedBookingCard(
   booking,
@@ -805,6 +806,8 @@ async function downloadTicketPDF(
       document.createElement("div");
       
       // ticket PDF Formet
+      // template ticket
+      // ticket template
 
     ticketEl.style.cssText =
       "position:fixed;left:-9999px;top:0;width:800px;font-family:Arial,sans-serif;";
@@ -825,7 +828,7 @@ async function downloadTicketPDF(
             BOOKING CONFIRMED
           </p>
 
-          <h1 style="font-size:36px;font-weight:800;margin:8px 0 0;">
+          <h1 style=" font-size:36px;font-weight:800;margin:8px 0 0;">
             Event Ticket
           </h1>
 

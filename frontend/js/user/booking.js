@@ -125,6 +125,32 @@ function formatPrice(price) {
 }
 
 
+// Format Location
+
+function formatLocation(value) {
+    if (!value) {
+        return null;
+    }
+
+    if (typeof value === "string") {
+        const trimmed = value.trim();
+        return trimmed.length > 0 ? trimmed : null;
+    }
+
+    if (typeof value === "object") {
+        return (
+            value.venueName ||
+            value.name ||
+            value.address ||
+            [value.street, value.city, value.country].filter(Boolean).join(", ") ||
+            null
+        );
+    }
+
+    return null;
+}
+
+
 // Load User Information
 
 function loadUserInformation() {
@@ -268,8 +294,10 @@ function displayEvent() {
 
 
     bookingEventLocation.textContent =
-        eventData.location ||
-        eventData.venue ||
+        formatLocation(eventData.venue) ||
+        formatLocation(eventData.location) ||
+        formatLocation(eventData.venueName) ||
+        formatLocation(eventData.address) ||
         "Location not available";
 
 

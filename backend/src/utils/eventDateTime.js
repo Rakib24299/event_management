@@ -24,8 +24,7 @@ const getEventEndDateTime = (event) => {
     }
 
 
-    const endTime =
-        event.endTime;
+    const endTime =  event.endTime;
 
 
     if (endTime) {
@@ -37,12 +36,7 @@ const getEventEndDateTime = (event) => {
 
 
         if (
-            timeParts.length >=
-            2 &&
-            !Number.isNaN(
-                timeParts[0]
-            ) &&
-            !Number.isNaN(
+            timeParts.length >=  2 &&  !Number.isNaN( timeParts[0] ) &&  !Number.isNaN(
                 timeParts[1]
             )
         ) {
@@ -51,14 +45,7 @@ const getEventEndDateTime = (event) => {
 
                 timeParts[0],
 
-                timeParts[1] ||
-                    0,
-
-                0,
-
-                0
-
-            );
+                timeParts[1] ||  0,  0,  0 );
 
         }
 
@@ -69,35 +56,24 @@ const getEventEndDateTime = (event) => {
 
 };
 
-
+//event expired
+//expired event
 const isEventExpired = (event) => {
 
-    const endDateTime =
-        getEventEndDateTime(event);
+    const endDateTime = getEventEndDateTime(event);
 
 
-    return (
-        endDateTime !==
-        null &&
-        endDateTime <
-        new Date()
-    );
+    return (  endDateTime !== null &&   endDateTime <   new Date()  );
 
 };
 
 
 const isEventUpcoming = (event) => {
 
-    const endDateTime =
-        getEventEndDateTime(event);
+    const endDateTime = getEventEndDateTime(event);
 
 
-    return (
-        endDateTime !==
-        null &&
-        endDateTime >=
-        new Date()
-    );
+    return (   endDateTime !==  null &&  endDateTime >=  new Date()  );
 
 };
 
@@ -120,7 +96,8 @@ const isEventInAdminHistory = (event) => {
     const now =
         new Date();
 
-
+//delete event
+//event delete from database
     const cutoff =
         new Date(
             now.getTime() -

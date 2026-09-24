@@ -42,6 +42,17 @@ const eventsList =
 const retryEventsButton =
     document.getElementById("retryEventsButton");
 
+const statusFilter =
+    document.getElementById("statusFilter");
+
+const eventSearch =
+    document.getElementById("eventSearch");
+
+const emptyMessage =
+    document.getElementById("emptyMessage");
+
+let allEvents = [];
+
 // Authentication
 
 const token =
@@ -242,6 +253,28 @@ function getStatusBadge(event) {
         `;
     }
 
+    if (
+        status === "rejected"
+    ) {
+
+        return `
+            <span
+                class="
+                    inline-flex
+                    rounded-full
+                    bg-rose-100
+                    px-3
+                    py-1
+                    text-xs
+                    font-semibold
+                    text-rose-600
+                "
+            >
+                Rejected
+            </span>
+        `;
+    }
+
     return `
         <span
             class="
@@ -258,6 +291,87 @@ function getStatusBadge(event) {
             Published
         </span>
     `;
+}
+
+// Filter and Display Events
+
+function filterAndDisplayEvents() {
+
+    const selectedStatus =
+        (statusFilter?.value || "all")
+            .toLowerCase()
+            .trim();
+
+    const searchQuery =
+        (eventSearch?.value || "")
+            .toLowerCase()
+            .trim();
+
+    const filtered =
+        allEvents.filter(event => {
+
+            const eventStatus =
+                String(
+                    event.status ||
+                    event.eventStatus ||
+                    "published"
+                )
+                    .toLowerCase()
+                    .trim();
+
+            if (selectedStatus !== "all") {
+                if (selectedStatus === "cancelled") {
+                    if (
+                        eventStatus !== "cancelled" &&
+                        eventStatus !== "canceled"
+                    ) {
+                        return false;
+                    }
+                } else if (eventStatus !== selectedStatus) {
+                    return false;
+                }
+            }
+
+            if (searchQuery) {
+                const title =
+                    String(event.title || "")
+                        .toLowerCase();
+
+                const category =
+                    String(
+                        event.category?.name ||
+                        event.category ||
+                        ""
+                    ).toLowerCase();
+
+                const location =
+                    String(getEventLocation(event))
+                        .toLowerCase();
+
+                const matchesSearch =
+                    title.includes(searchQuery) ||
+                    category.includes(searchQuery) ||
+                    location.includes(searchQuery);
+
+                if (!matchesSearch) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+    if (emptyMessage) {
+        if (allEvents.length === 0) {
+            emptyMessage.textContent =
+                "You haven't created any events yet.";
+        } else {
+            emptyMessage.textContent =
+                "No events found matching your filter criteria.";
+        }
+    }
+
+    displayEvents(filtered);
 }
 
 // Display Events
@@ -742,8 +856,12 @@ async function loadMyEvents() {
 
         eventsLoading.classList.add("hidden");
 
-        const activeEvents = (events || []).filter(event => !isEventExpired(event));
-        displayEvents(activeEvents);
+        allEvents =
+            (events || []).filter(
+                event => !isEventExpired(event)
+            );
+
+        filterAndDisplayEvents();
 
     } catch (error) {
 
@@ -759,6 +877,26 @@ async function loadMyEvents() {
             "Unable to load your events. Please try again."
         );
     }
+}
+
+// Filter Events Listeners
+
+if (statusFilter) {
+
+    statusFilter.addEventListener(
+        "change",
+        filterAndDisplayEvents
+    );
+
+}
+
+if (eventSearch) {
+
+    eventSearch.addEventListener(
+        "input",
+        filterAndDisplayEvents
+    );
+
 }
 
 // Retry

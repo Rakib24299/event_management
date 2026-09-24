@@ -11,8 +11,7 @@ const authMiddleware =
 
 // CREATE PAYMENT
 
-router.post(
-  "/create",
+router.post( "/create",
   authMiddleware,
   paymentController.createPayment
 );
@@ -33,6 +32,7 @@ router.post(
 
 
 // SSLCommerz SUCCESS
+
 router.post("/sslcommerz/success",
   paymentController.sslPaymentSuccess
 );

@@ -1072,7 +1072,7 @@ const createEvent = async (
   const event = await Event.create({
 
     title: title.trim(),
-
+// slug auto
     slug: uniqueSlug,
 
     organizer: organizerId,
@@ -1095,8 +1095,7 @@ const createEvent = async (
         venue?.city || "",
 
       country:
-        venue?.country ||
-        "Bangladesh",
+        venue?.country || "Bangladesh",
 
     },
 
@@ -1127,6 +1126,9 @@ const createEvent = async (
             finalMaxTicketsPerUser,
         }
       : {}),
+
+      //event darft
+      // darft event
 
     status: "draft",
 

@@ -128,6 +128,8 @@ const getTicketPdfBuffer = async (bookingId, userId) => {
     ticketQuantity > 0 ? totalAmount / ticketQuantity : 0;
 
   // HEADER
+  // template ticket
+  // ticket template
 
   doc
     .rect(margin, currentY, contentWidth, 70)

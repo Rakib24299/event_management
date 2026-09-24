@@ -1,6 +1,7 @@
 const axios = require("axios");
 
 // SEND EMAIL SYSTEM
+// Email APi
 
 const sendEmail = async ({ to, subject, text, html }) => {
   try {

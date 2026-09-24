@@ -38,7 +38,7 @@ const bookingSchema = new Schema(
         1,
         "At least 1 ticket is required.",
       ],
-
+// max 5 (ticket)
       max: [
         5,
         "You cannot buy more than 5 tickets at once.",

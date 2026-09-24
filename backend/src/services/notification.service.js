@@ -47,18 +47,19 @@ const emitNotification = (
         }
 
 
+        // NOTIFICATION REAL TIME
+        //REAL TIME NOTIFICATION
+
         const userId =
             notification.user.toString();
 
-
+// notificaton for user
         const roomName =
             `user_${userId}`;
 
+// notification for user
 
-        io.to(roomName).emit(
-            "newNotification",
-            notification
-        );
+        io.to(roomName).emit( "newNotification",  notification  );
 
 
         console.log(
@@ -79,6 +80,7 @@ const emitNotification = (
 
 
 // CREATE SINGLE NOTIFICATION
+//CREATE NOTIFICATION
 
 const createNotification =
     async (
@@ -98,8 +100,7 @@ const createNotification =
                     payload.message,
 
                 type:
-                    payload.type ||
-                    "system",
+                    payload.type || "system",
 
                 isRead:
                     false,
@@ -108,6 +109,7 @@ const createNotification =
 
 
         // REAL-TIME NOTIFICATION
+        
 
         emitNotification(
             notification
@@ -466,6 +468,7 @@ const getNotificationStats =
 
 
 // ADMIN: SEND NOTIFICATION
+//ADMIN NOTIFICATION
 
 const sendAdminNotification =
     async ({
@@ -538,7 +541,7 @@ const sendAdminNotification =
 
             }
 
-
+//NOTIFICATION DATABASE
             const notification =
                 await createNotification({
 

@@ -74,7 +74,9 @@ function escapeHTML(value) {
 }
 
 
-// Format Time Helper
+// Format Time Helper 
+//MASSAGE TIME
+//MASSAGE DATE
 
 function formatMessageTime(dateValue) {
     if (!dateValue) return "";
@@ -156,6 +158,9 @@ function initSocket() {
     });
 
     // Typing indicators
+    //ADMIN IS TYPING
+    //ORGANIZER IS TYPEING
+
     socket.on("chat:typing", (data) => {
         if (selectedOrganizer && String(data.senderId) === String(selectedOrganizer._id)) {
             if (typingUserName) {
@@ -299,6 +304,8 @@ function renderOrganizersList(filterQuery = "") {
         return;
     }
 
+
+    //  CHAT LIST
     organizersList.innerHTML = filtered
         .map((org) => {
             const isSelected = selectedOrganizer && String(selectedOrganizer._id) === String(org._id);
@@ -311,6 +318,8 @@ function renderOrganizersList(filterQuery = "") {
             const lastMsgText = org.latestMessage ? org.latestMessage.text : "No messages yet";
             const lastMsgTime = org.latestMessage ? formatRelativeTime(org.latestMessage.createdAt) : "";
 
+
+            // CHAT BOX
             return `
                 <div
                     class="organizer-item flex items-center gap-3.5 p-4 cursor-pointer transition select-none ${
@@ -378,6 +387,7 @@ function renderOrganizersList(filterQuery = "") {
 
 
 // Select Organizer & Load Conversation
+// 
 
 async function selectOrganizer(org) {
     selectedOrganizer = org;
@@ -576,7 +586,8 @@ async function handleSendMessage(e) {
     messageTextInput.value = "";
     sendMessageBtn.disabled = true;
 
-    // Emit stop typing
+    // Emit stop typing 
+    // STOP TYPING
     if (socket) {
         socket.emit("chat:stop_typing", {
             senderId: currentAdmin?._id,
@@ -643,6 +654,8 @@ if (messageTextInput) {
             isToAdmin: false,
         });
 
+        // TYPING OFF
+        //TYPING LIMIT
         clearTimeout(typingTimeout);
         typingTimeout = setTimeout(() => {
             socket.emit("chat:stop_typing", {
@@ -650,6 +663,7 @@ if (messageTextInput) {
                 receiverId: selectedOrganizer._id,
                 isToAdmin: false,
             });
+
         }, 2000);
     });
 }

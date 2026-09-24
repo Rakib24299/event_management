@@ -187,6 +187,32 @@ function formatLocation(value) {
 
 }
 
+// Format Category
+
+function formatCategory(value) {
+
+    if (!value) {
+        return "Event";
+    }
+
+    if (typeof value === "string") {
+        const trimmed = value.trim();
+        return trimmed.length > 0 ? trimmed : "Event";
+    }
+
+    if (typeof value === "object") {
+        return (
+            value.name ||
+            value.title ||
+            value.slug ||
+            "Event"
+        );
+    }
+
+    return "Event";
+
+}
+
 // Get Event From Booking
 
 function getBookingEvent(booking) {
@@ -456,8 +482,7 @@ function createLatestEventCard(event) {
         ) || "Location not available";
 
     const category =
-        event.category ||
-        "Event";
+        formatCategory(event.category);
 
     const price =
         event.ticketPrice ??

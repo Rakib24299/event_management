@@ -225,9 +225,14 @@ const displayEventInformation = () => {
     }
 
     // Location
-    let location = eventData.location || eventData.venue || eventData.address || "";
+    let location = eventData.venue || eventData.location || eventData.address || "";
     if (location && typeof location === "object") {
-        location = location.name || location.address || location.venue || JSON.stringify(location);
+        location =
+            location.venueName ||
+            location.name ||
+            location.address ||
+            [location.street, location.city, location.country].filter(Boolean).join(", ") ||
+            "";
     }
     if (successEventLocation) {
         successEventLocation.textContent = location || "Online / To be announced";
@@ -291,10 +296,20 @@ const displayBookingInformation = () => {
         paymentMethod === "free" ||
         paymentMethod === "free_registration";
 
+    const bookingCurrentStatus =
+        completedBooking?.bookingStatus ||
+        completedBooking?.status ||
+        successData?.bookingStatus ||
+        "confirmed";
+
     if (successBookingId) successBookingId.textContent = bookingId || "--";
     if (successTicketQuantity) successTicketQuantity.textContent = quantity;
     if (successPaymentMethod) {
-        successPaymentMethod.textContent = isFreeEvent ? "Free Registration" : String(paymentMethod).toUpperCase().replace(/_/g, " ");
+        successPaymentMethod.textContent = isFreeEvent
+            ? "Free Registration"
+            : paymentMethod === "sslcommerz"
+            ? "SSLCommerz"
+            : String(paymentMethod).toUpperCase().replace(/_/g, " ");
     }
     if (successTotalAmount) {
         successTotalAmount.textContent = isFreeEvent ? "Free" : formatMoney(totalAmount);
@@ -306,8 +321,12 @@ const displayBookingInformation = () => {
         successPaymentStatus.textContent = isFreeEvent ? "CONFIRMED" : String(paymentStatus).toUpperCase();
     }
 
-    if (successBookingStatus) successBookingStatus.textContent = "";
-    if (bookingStatus) bookingStatus.textContent = "";
+    if (successBookingStatus) {
+        successBookingStatus.textContent = String(bookingCurrentStatus).toUpperCase();
+    }
+    if (bookingStatus) {
+        bookingStatus.textContent = String(bookingCurrentStatus).toUpperCase();
+    }
 
     // Clean up UI for Free vs Paid
     if (isFreeEvent) {
@@ -376,7 +395,6 @@ const fetchBookingData = async () => {
     if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
 
     try {
-        // Try public endpoint first, fallback to standard endpoint
         let response = await fetch(`${API_URL}/bookings/public/${encodeURIComponent(bookingId)}`, { headers });
         if (!response.ok) {
             response = await fetch(`${API_URL}/bookings/${encodeURIComponent(bookingId)}`, { headers });
@@ -400,6 +418,36 @@ const fetchBookingData = async () => {
         }
     } catch (err) {
         console.warn("Could not fetch booking from API:", err);
+    }
+};
+
+// API FETCH: PAYMENT
+
+const fetchPaymentData = async () => {
+    const paymentId = getPaymentId();
+    const bookingId = getBookingId();
+    if (!paymentId && !bookingId) return;
+
+    const authToken = getToken();
+    const headers = { "Content-Type": "application/json" };
+    if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
+
+    try {
+        const endpoint = paymentId
+            ? `${API_URL}/payments/${encodeURIComponent(paymentId)}`
+            : `${API_URL}/payments/booking/${encodeURIComponent(bookingId)}`;
+
+        const response = await fetch(endpoint, { headers });
+        if (response.ok) {
+            const result = await response.json();
+            const payment = result?.data || result;
+            if (payment && (payment._id || payment.id || payment.transactionId)) {
+                completedPayment = payment;
+                displayBookingInformation();
+            }
+        }
+    } catch (err) {
+        console.warn("Could not fetch payment details from API:", err);
     }
 };
 
@@ -489,7 +537,7 @@ if (generateQrButton) {
 const initialize = async () => {
     console.log("Initializing Booking & Payment Success Page...");
 
-    // 1. Render immediately from session storage cache
+    // 1. Render immediately from session storage cache and URL params
     loadSessionCache();
     displayEventInformation();
     displayBookingInformation();
@@ -498,10 +546,13 @@ const initialize = async () => {
     // 2. Fetch fresh booking from backend
     await fetchBookingData();
 
-    // 3. Fetch fresh event details from public API
+    // 3. Fetch payment details if needed
+    await fetchPaymentData();
+
+    // 4. Fetch fresh event details from public API
     await fetchEventData();
 
-    // 4. Final render
+    // 5. Final render
     displayEventInformation();
     displayBookingInformation();
     displayOTP();

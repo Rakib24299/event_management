@@ -66,7 +66,7 @@ function initSocket() {
     socket.on("connect", () => {
         console.log("[Socket] Connected to server as Organizer:", socket.id);
         
-        // Join rooms
+        // Join rooms /JOIN CHAT
         if (currentOrganizer && currentOrganizer._id) {
             socket.emit("joinOrganizerRoom", currentOrganizer._id);
             socket.emit("joinUserRoom", currentOrganizer._id);
@@ -328,7 +328,9 @@ function setupEventListeners() {
         }
     });
 
-    // Typing emission
+    // Typing emission 
+    //TYPING ORGANIZER
+    //TYPING INDICATOR ORGA
     messageInput.addEventListener("input", () => {
         if (!socket || !currentAdmin) return;
 
@@ -339,13 +341,16 @@ function setupEventListeners() {
             senderRole: "organizer",
         });
 
+        // TYPING LIMIT
+        //TYPING OFF
+        
         clearTimeout(typingTimeout);
         typingTimeout = setTimeout(() => {
             socket.emit("chat:stop_typing", {
                 receiverId: currentAdmin._id,
                 senderId: currentOrganizer._id,
             });
-        }, 1500);
+        }, 2000);
     });
 }
 

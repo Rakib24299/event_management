@@ -37,30 +37,25 @@ const createError =
 
 // TRANSACTION ID
 
+//Payment ID
+
 const generateTransactionId =
   () => {
 
-    return `EE${Date.now()}${Math.floor(
-      Math.random() * 1000
-    )}`;
-
-  };
+    return `EE${Date.now()}${Math.floor(Math.random() * 1000 )}`; };
 
 
-// BOOKING OTP
+// BOOKING OTP / generate otp
 
 const generateBookingOtp =
   () => {
 
-    return Math.floor(
-      100000 +
-      Math.random() * 900000
-    ).toString();
+    return Math.floor( 100000 + Math.random() * 900000 ).toString();
 
   };
 
 
-// OTP EXPIRY
+// OTP EXPIRY 5 minuites
 
 const getOtpExpiry =
   () => {
@@ -74,19 +69,19 @@ const getOtpExpiry =
 
 
 // PLATFORM FEE 10%
+// 10% platform
+
 
 const getPlatformFeePercentage =
   () => {
 
     return Number(
-      process.env.PLATFORM_FEE_PERCENTAGE ||
-      10
-    );
+      process.env.PLATFORM_FEE_PERCENTAGE ||10 );
 
   };
 
 
-// CREATE PAYMENT
+// CREATE PAYMENT main
 
 const createPayment =
   async (
@@ -177,9 +172,8 @@ const createPayment =
     // FREE EVENT
 
     if (
-      booking.event.eventType ===
-      "free"
-    ) {
+      booking.event.eventType === "free" ) 
+      {
 
       throw createError(
         "Payment is not required for a free event.",
@@ -198,12 +192,10 @@ const createPayment =
 
 
     if (
-      !Number.isFinite(
-        totalAmount
-      ) ||
+      !Number.isFinite( totalAmount ) ||
       totalAmount < 10
     ) {
-
+// AT LEAST PAYMENT
       throw createError(
         "Payment amount must be at least 10 BDT for SSLCOMMERZ.",
         400
@@ -216,7 +208,7 @@ const createPayment =
 
     let payment = null;
 
-
+// paymnet by ID
     if (booking.payment) {
 
       payment =
@@ -231,9 +223,10 @@ const createPayment =
 
     if (!payment) {
 
-     const feePercentage = getPlatformFeePercentage(); // ১০%
+     const feePercentage = getPlatformFeePercentage(); //10%
 
 // 10% platefrom fee
+
 const platformFee = Number(
   ((totalAmount * feePercentage) / 100).toFixed(2)
 );
@@ -376,6 +369,11 @@ const organizerAmount = Number(
 
         booking,
 
+        frontendUrl:
+          paymentData?.frontendUrl ||
+          paymentData?.origin ||
+          null,
+
       });
 
 
@@ -428,6 +426,7 @@ const organizerAmount = Number(
 
 
 // FINALIZE SSL PAYMENT
+//  SUCCESS PAYMENT
 
 const finalizeSSLPayment =
   async (
@@ -481,10 +480,7 @@ const finalizeSSLPayment =
 
 
     if (
-      validation.status !==
-        "VALID" &&
-      validation.status !==
-        "VALIDATED"
+      validation.status !==  "VALID" && validation.status !== "VALIDATED"
     ) {
 
       throw createError(
@@ -498,10 +494,7 @@ const finalizeSSLPayment =
     // FIND PAYMENT
 
     const payment =
-      await Payment.findOne({
-        transactionId:
-          tranId,
-      });
+      await Payment.findOne({  transactionId: tranId, });
 
 
     if (!payment) {
@@ -539,6 +532,7 @@ const finalizeSSLPayment =
 
 
     // VERIFY TRANSACTION ID
+    //payment id (tran id)
 
     if (
       validation.tran_id !==
@@ -724,7 +718,7 @@ const finalizeSSLPayment =
     await payment.save();
 
     
-    // UPDATE BOOKING: CONFIRM BOOKING & GENERATE GATE OTP
+    // UPDATE BOOKING: CONFIRM BOOKING OTP & GENERATE GATE OTP
      
 
     const gateOtp =
@@ -742,18 +736,15 @@ const finalizeSSLPayment =
     booking.isOtpVerified =
       true;
 
- // CONFIRM BOOKING
-    booking.bookingStatus =
-      "confirmed";
+ // CONFIRM BOOKING  
+//  confirmed badge logic
+    booking.bookingStatus = "confirmed";
 
     await booking.save();
 
     // UPDATED BOOKING
 
-    const updatedBooking =
-      await Booking.findById(
-        booking._id
-      )
+    const updatedBooking =  await Booking.findById(  booking._id  )
         .populate(
           "user",
           "name email profileImage"
@@ -1550,7 +1541,8 @@ const getPaymentReceiptPdfBuffer =
         currentY = margin;
       }
     };
-
+//  template receipt
+// receipt template
     doc.rect(margin, currentY, contentWidth, 70).fill(PRIMARY);
     doc.font("Helvetica-Bold").fontSize(26).fill("#ffffff").text("EventEase", margin + 20, currentY + 18);
     doc.font("Helvetica").fontSize(12).fill("#ffffff").opacity(0.85).text("PAYMENT RECEIPT", margin + 20, currentY + 42);

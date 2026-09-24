@@ -281,8 +281,11 @@ function renderRevenueBarChart(data) {
         data.last1Month?.platformFee || 0
     ];
 
-    // BAR SHOW
+// BAR SHOW
     const ctx = chartCanvas.getContext("2d");
+
+// BAR CHART(design)
+// bar design
 
     revenueChart = new Chart(ctx, {
         type: "bar",

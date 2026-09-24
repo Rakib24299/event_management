@@ -45,7 +45,7 @@ const galleryImageSchema = new Schema(
 
 
 // Venue Schema
-
+// required
 const venueSchema = new Schema(
     {
         venueName: {

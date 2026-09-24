@@ -579,7 +579,7 @@ function renderEvents(events) {
     eventsError.classList.add("hidden");
   }
 
-  // SHOW EVENTS RENDER 4 
+  // SHOW EVENTS RENDER 4 /event list 4
   const displayEvents = events.slice(0, 4);
 
   featuredEventsContainer.innerHTML = displayEvents
@@ -737,6 +737,7 @@ async function fetchCategories() {
 
 
 // Fetch Events /SHOW EVENTS API
+// show events
 
 
 async function fetchEvents() {

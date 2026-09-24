@@ -504,6 +504,46 @@ const formatDate = (
 };
 
 
+// FORMAT LOCATION
+
+const formatLocation = (
+    value
+) => {
+
+    if (!value) {
+
+        return null;
+
+    }
+
+
+    if (typeof value === "string") {
+
+        const trimmed = value.trim();
+
+        return trimmed.length > 0 ? trimmed : null;
+
+    }
+
+
+    if (typeof value === "object") {
+
+        return (
+            value.venueName ||
+            value.name ||
+            value.address ||
+            [value.street, value.city, value.country].filter(Boolean).join(", ") ||
+            null
+        );
+
+    }
+
+
+    return null;
+
+};
+
+
 // GET EVENT IMAGE URL
 
 const getEventImage = (
@@ -910,10 +950,10 @@ const renderEvent = () => {
     if (eventLocation) {
 
         eventLocation.textContent =
-            eventData.location ||
-            eventData.venue ||
-            eventData.venueName ||
-            eventData.address ||
+            formatLocation(eventData.venue) ||
+            formatLocation(eventData.location) ||
+            formatLocation(eventData.venueName) ||
+            formatLocation(eventData.address) ||
             "Location not available";
 
     }
@@ -1146,25 +1186,22 @@ const getMaxTickets = () => {
 };
 
 
-// UPDATE QUANTITY UI
+// UPDATE QUANTITY UI 
+//  TICKET +- 
 
 const updateQuantityUI = () => {
 
-    const price =
-        getTicketPrice();
+    const price = getTicketPrice();
 
 
-    const maxTickets =
-        getMaxTickets();
+    const maxTickets =  getMaxTickets();
 
 
     if (
-        ticketQuantity >
-        maxTickets
-    ) {
+        ticketQuantity >  maxTickets )
+         {
 
-        ticketQuantity =
-            maxTickets;
+        ticketQuantity =  maxTickets;
 
     }
 
@@ -1173,15 +1210,13 @@ const updateQuantityUI = () => {
         ticketQuantity < 1
     ) {
 
-        ticketQuantity =
-            1;
+        ticketQuantity =  1;
 
     }
 
+    // TICKET Calculation /TOTAL TICKET 
 
-    const subtotal =
-        price *
-        ticketQuantity;
+    const subtotal =  price * ticketQuantity;
 
 
     // Quantity display
@@ -1194,7 +1229,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // Ticket price
+    // Ticket price 
 
     if (ticketPrice) {
 
@@ -1228,7 +1263,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // Subtotal
+    // Subtotal / TOTAL TICKET
 
     if (summarySubtotal) {
 
@@ -1261,6 +1296,7 @@ const updateQuantityUI = () => {
                 eventData?.availableSeats || 0
             );
 
+//  aviable seats
 
         quantityMessage.textContent =
             `Maximum ${maxTickets} ticket(s) per user${
@@ -1291,6 +1327,7 @@ const updateQuantityUI = () => {
                 eventData?.availableSeats || 0
             );
 
+// FREE TICKET payment
 
         const cannotIncrease =
             ticketQuantity >= maxTickets ||
@@ -1307,7 +1344,7 @@ const updateQuantityUI = () => {
     }
 
 
-    // Confirm button
+    // Confirm button payment
 
     if (
         confirmPaymentButton &&
@@ -1317,6 +1354,7 @@ const updateQuantityUI = () => {
         const availableSeats =
             eventData?.availableSeats;
 
+// free seats
 
         const hasSeats =
             eventData?.eventType === "free" ||
@@ -1335,7 +1373,7 @@ const updateQuantityUI = () => {
 };
 
 
-// INCREASE QUANTITY
+// INCREASE QUANTITY ticket +
 
 const increaseTicketQuantity = () => {
 
@@ -1361,9 +1399,7 @@ const increaseTicketQuantity = () => {
 
 
     if (
-        availableSeats > 0 &&
-        ticketQuantity >=
-            availableSeats
+        availableSeats > 0 && ticketQuantity >=  availableSeats
     ) {
 
         return;
@@ -1379,7 +1415,7 @@ const increaseTicketQuantity = () => {
 };
 
 
-// DECREASE QUANTITY
+// DECREASE QUANTITY TICKET -
 
 const decreaseTicketQuantity = () => {
 
@@ -1663,6 +1699,10 @@ const createSSLCommerzPayment = async (
     );
 
 
+    const frontendBaseUrl =
+        window.location.origin +
+        (window.location.pathname.includes("/frontend/") ? "/frontend" : "");
+
     const result =
         await apiRequest(
             "/payments/create",
@@ -1673,7 +1713,10 @@ const createSSLCommerzPayment = async (
                     JSON.stringify({
 
                         booking:
-                            bookingId
+                            bookingId,
+
+                        frontendUrl:
+                            frontendBaseUrl
 
                     })
 

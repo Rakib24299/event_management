@@ -55,7 +55,8 @@ const uploadProfileImage = async (userId, file) => {
 
 
 
-  
+  // image delete
+  // delete image
   // Delete old image if exists
   if (user.profileImage?.publicId) {
     await deleteFromCloudinary(user.profileImage.publicId);

@@ -428,21 +428,26 @@ const loadSuccessData =
 
 const getBookingId =
   () => {
+    const urlParams =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const urlBookingId =
+      urlParams.get("bookingId") ||
+      urlParams.get("id");
 
     return (
-
+      urlBookingId ||
       getId(
         completedBooking
       ) ||
-
       sessionStorage.getItem(
         "confirmedBookingId"
       ) ||
-
       sessionStorage.getItem(
         "paymentBookingId"
       )
-
     );
   };
 
@@ -451,17 +456,22 @@ const getBookingId =
 
 const getPaymentId =
   () => {
+    const urlParams =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const urlPaymentId =
+      urlParams.get("paymentId");
 
     return (
-
+      urlPaymentId ||
       getId(
         completedPayment
       ) ||
-
       sessionStorage.getItem(
         "paymentId"
       )
-
     );
   };
 
@@ -820,10 +830,21 @@ const displayOTP =
 
 const getEventId =
   () => {
+    const urlParams =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const urlEventId =
+      urlParams.get("eventId") ||
+      urlParams.get("event");
+
+    if (urlEventId) {
+      return urlEventId;
+    }
 
     const event =
       completedBooking?.event;
-
 
     if (
       event &&
@@ -838,11 +859,12 @@ const getEventId =
       );
     }
 
-
     return (
       event ||
       completedBooking?.eventId ||
       successData?.eventId ||
+      sessionStorage.getItem("selectedEventId") ||
+      sessionStorage.getItem("paymentEventId") ||
       null
     );
   };
@@ -1050,8 +1072,8 @@ const displayEventInformation =
     // LOCATION
 
     let location =
-      eventData.location ||
       eventData.venue ||
+      eventData.location ||
       eventData.address ||
       "";
 
@@ -1063,12 +1085,11 @@ const displayEventInformation =
     ) {
 
       location =
+        location.venueName ||
         location.name ||
         location.address ||
-        location.venue ||
-        JSON.stringify(
-          location
-        );
+        [location.street, location.city, location.country].filter(Boolean).join(", ") ||
+        "";
     }
 
 
@@ -1121,10 +1142,41 @@ const initialize =
       "Initializing Booking Success Page..."
     );
 
-
-    const hasData =
+    let hasData =
       loadSuccessData();
 
+    const bookingId =
+      getBookingId();
+
+    if (!hasData && bookingId) {
+      try {
+        const authToken = getToken();
+        const headers = { "Content-Type": "application/json" };
+        if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
+
+        let response = await fetch(`${API_URL}/bookings/public/${encodeURIComponent(bookingId)}`, { headers });
+        if (!response.ok) {
+          response = await fetch(`${API_URL}/bookings/${encodeURIComponent(bookingId)}`, { headers });
+        }
+
+        if (response.ok) {
+          const result = await response.json();
+          const booking = result?.data || result;
+          if (booking && (booking._id || booking.id)) {
+            completedBooking = booking;
+            if (booking.event && typeof booking.event === "object") {
+              eventData = booking.event;
+            }
+            if (booking.payment && typeof booking.payment === "object") {
+              completedPayment = booking.payment;
+            }
+            hasData = true;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch booking from API:", err);
+      }
+    }
 
     if (!hasData) {
 
@@ -1142,6 +1194,7 @@ const initialize =
       ) {
 
         successBookingId.textContent =
+          bookingId ||
           sessionStorage.getItem(
             "confirmedBookingId"
           ) || "--";
@@ -1155,7 +1208,6 @@ const initialize =
         otpMessage.textContent =
           "Booking data was not found.";
       }
-
 
       return;
     }

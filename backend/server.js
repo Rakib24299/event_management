@@ -140,6 +140,7 @@ io.on(
     );
 
     // CHAT TYPING INDICATORS
+    // IS TYPING
 
     socket.on(
       "chat:typing",
@@ -165,6 +166,10 @@ io.on(
       "chat:stop_typing",
       (data) => {
         if (!data || !data.receiverId) return;
+
+
+        // EATCH CHAT
+
 
         io.to(`user_${data.receiverId}`).emit("chat:stop_typing", {
           senderId: data.senderId,
